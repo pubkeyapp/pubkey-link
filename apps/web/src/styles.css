@@ -1,0 +1,9 @@
+html,
+body,
+#root {
+  height: 100%;
+}
+
+:root[data-mantine-color-scheme='dark'] {
+  --mantine-color-body: var(--mantine-color-dark-8) !important;
+}

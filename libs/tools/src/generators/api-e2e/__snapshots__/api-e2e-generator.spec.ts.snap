@@ -1,0 +1,177 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`api-e2e generator should run successfully 1`] = `
+"import { AdminCreateTestInput, AdminFindManyTestInput, AdminUpdateTestInput, Test } from '@proj/sdk'
+import { getAliceCookie, getBobCookie, sdk, uniqueId } from '../support'
+
+describe('api-test-feature', () => {
+  describe('api-test-admin-resolver', () => {
+    const testName = uniqueId('acme-test')
+    let testId: string
+    let cookie: string
+
+    beforeAll(async () => {
+      cookie = await getAliceCookie()
+      const created = await sdk.adminCreateTest({ input: { name: testName } }, { cookie })
+      testId = created.data.created.id
+    })
+
+    describe('authorized', () => {
+      beforeAll(async () => {
+        cookie = await getAliceCookie()
+      })
+
+      it('should create a test', async () => {
+        const input: AdminCreateTestInput = {
+          name: uniqueId('test'),
+        }
+
+        const res = await sdk.adminCreateTest({ input }, { cookie })
+
+        const item: Test = res.data.created
+        expect(item.name).toBe(input.name)
+        expect(item.id).toBeDefined()
+        expect(item.createdAt).toBeDefined()
+        expect(item.updatedAt).toBeDefined()
+      })
+
+      it('should update a test', async () => {
+        const createInput: AdminCreateTestInput = {
+          name: uniqueId('test'),
+        }
+        const createdRes = await sdk.adminCreateTest({ input: createInput }, { cookie })
+        const testId = createdRes.data.created.id
+        const input: AdminUpdateTestInput = {
+          name: uniqueId('test'),
+        }
+
+        const res = await sdk.adminUpdateTest({ testId, input }, { cookie })
+
+        const item: Test = res.data.updated
+        expect(item.name).toBe(input.name)
+      })
+
+      it('should find a list of tests (find all)', async () => {
+        const createInput: AdminCreateTestInput = {
+          name: uniqueId('test'),
+        }
+        const createdRes = await sdk.adminCreateTest({ input: createInput }, { cookie })
+        const testId = createdRes.data.created.id
+
+        const input: AdminFindManyTestInput = {}
+
+        const res = await sdk.adminFindManyTest({ input }, { cookie })
+
+        expect(res.data.paging.meta.totalCount).toBeGreaterThan(1)
+        expect(res.data.paging.data.length).toBeGreaterThan(1)
+        // First item should be the one we created above
+        console.log(res.data.paging.data)
+        expect(res.data.paging.data[0].id).toBe(testId)
+      })
+
+      it('should find a list of tests (find new one)', async () => {
+        const createInput: AdminCreateTestInput = {
+          name: uniqueId('test'),
+        }
+        const createdRes = await sdk.adminCreateTest({ input: createInput }, { cookie })
+        const testId = createdRes.data.created.id
+
+        const input: AdminFindManyTestInput = {
+          search: testId,
+        }
+
+        const res = await sdk.adminFindManyTest({ input }, { cookie })
+
+        expect(res.data.paging.meta.totalCount).toBe(1)
+        expect(res.data.paging.data.length).toBe(1)
+        expect(res.data.paging.data[0].id).toBe(testId)
+      })
+
+      it('should find a test by id', async () => {
+        const createInput: AdminCreateTestInput = {
+          name: uniqueId('test'),
+        }
+        const createdRes = await sdk.adminCreateTest({ input: createInput }, { cookie })
+        const testId = createdRes.data.created.id
+
+        const res = await sdk.adminFindOneTest({ testId }, { cookie })
+
+        expect(res.data.item.id).toBe(testId)
+      })
+
+      it('should delete a test', async () => {
+        const createInput: AdminCreateTestInput = {
+          name: uniqueId('test'),
+        }
+        const createdRes = await sdk.adminCreateTest({ input: createInput }, { cookie })
+        const testId = createdRes.data.created.id
+
+        const res = await sdk.adminDeleteTest({ testId }, { cookie })
+
+        expect(res.data.deleted).toBe(true)
+
+        const findRes = await sdk.adminFindManyTest({ input: { search: testId } }, { cookie })
+        expect(findRes.data.paging.meta.totalCount).toBe(0)
+        expect(findRes.data.paging.data.length).toBe(0)
+      })
+    })
+
+    describe('unauthorized', () => {
+      let cookie: string
+      beforeAll(async () => {
+        cookie = await getBobCookie()
+      })
+
+      it('should not create a test', async () => {
+        expect.assertions(1)
+        const input: AdminCreateTestInput = {
+          name: uniqueId('test'),
+        }
+
+        try {
+          await sdk.adminCreateTest({ input }, { cookie })
+        } catch (e) {
+          expect(e.message).toBe('Unauthorized: User is not Admin')
+        }
+      })
+
+      it('should not update a test', async () => {
+        expect.assertions(1)
+        try {
+          await sdk.adminUpdateTest({ testId, input: {} }, { cookie })
+        } catch (e) {
+          expect(e.message).toBe('Unauthorized: User is not Admin')
+        }
+      })
+
+      it('should not find a list of tests (find all)', async () => {
+        expect.assertions(1)
+        try {
+          await sdk.adminFindManyTest({ input: {} }, { cookie })
+        } catch (e) {
+          expect(e.message).toBe('Unauthorized: User is not Admin')
+        }
+      })
+
+      it('should not find a test by id', async () => {
+        expect.assertions(1)
+        try {
+          await sdk.adminFindOneTest({ testId }, { cookie })
+        } catch (e) {
+          expect(e.message).toBe('Unauthorized: User is not Admin')
+        }
+      })
+
+      it('should not delete a test', async () => {
+        expect.assertions(1)
+        try {
+          await sdk.adminDeleteTest({ testId }, { cookie })
+        } catch (e) {
+          expect(e.message).toBe('Unauthorized: User is not Admin')
+        }
+      })
+    })
+  })
+})
+"
+`;

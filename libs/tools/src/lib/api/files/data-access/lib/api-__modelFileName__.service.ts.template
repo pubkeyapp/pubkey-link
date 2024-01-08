@@ -1,0 +1,7 @@
+import { Injectable } from '@nestjs/common'
+import { <%= app.className %><%= admin.className %><%= model.className %>Service } from './<%= app.fileName %>-<%= admin.fileName %>-<%= model.fileName %>.service'
+
+@Injectable()
+export class <%= app.className %><%= model.className %>Service {
+  constructor(readonly <%= admin.propertyName %>: <%= app.className %><%= admin.className %><%= model.className %>Service) {}
+}

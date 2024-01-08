@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "WebFeature",
+  "title": "",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use?"
+    },
+    "app": {
+      "type": "string",
+      "description": "The name of the application you are adding the feature to.",
+      "default": "web"
+    },
+    "skipAdminCrud": {
+      "type": "boolean",
+      "description": "Do not create an admin crud library for this feature.",
+      "default": false
+    },
+    "skipDataAccess": {
+      "type": "boolean",
+      "description": "Do not create a data access library for this feature.",
+      "default": false
+    },
+    "skipFeature": {
+      "type": "boolean",
+      "description": "Do not create a feature library for this feature.",
+      "default": false
+    },
+    "skipUi": {
+      "type": "boolean",
+      "description": "Do not create a ui library for this feature.",
+      "default": false
+    }
+  },
+  "required": ["name"]
+}

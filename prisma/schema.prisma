@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Identity {
+  id           String              @id @default(cuid())
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  provider     IdentityProvider
+  providerId   String
+  name         String?
+  accessToken  String?
+  refreshToken String?
+  profile      Json?
+  verified     Boolean             @default(false)
+  owner        User                @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId      String
+  challenges   IdentityChallenge[]
+
+  @@unique([provider, providerId])
+}
+
+model IdentityChallenge {
+  id         String           @id @default(cuid())
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  challenge  String           @unique
+  signature  String?
+  ip         String
+  userAgent  String
+  verified   Boolean          @default(false)
+  identity   Identity         @relation(fields: [provider, providerId], references: [provider, providerId], onDelete: Cascade)
+  provider   IdentityProvider
+  providerId String
+}
+
+model User {
+  id         String     @id @default(cuid())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  avatarUrl  String?
+  developer  Boolean    @default(false)
+  name       String?
+  password   String?
+  role       UserRole   @default(User)
+  status     UserStatus @default(Created)
+  username   String     @unique
+  identities Identity[]
+}
+
+enum IdentityProvider {
+  Discord
+  GitHub
+  Solana
+  Twitter
+}
+
+enum UserRole {
+  Admin
+  User
+}
+
+enum UserStatus {
+  Active
+  Created
+  Inactive
+}

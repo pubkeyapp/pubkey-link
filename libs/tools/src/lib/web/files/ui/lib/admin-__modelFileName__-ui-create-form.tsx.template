@@ -1,0 +1,24 @@
+import { AdminCreate<%= modelClassName %>Input } from '@<%= npmScope %>/sdk'
+import { formFieldText, UiForm, UiFormField } from '@pubkey-ui/core'
+import { ReactNode } from 'react'
+
+export function Admin<%= modelClassName %>UiCreateForm({
+  children,
+  submit,
+}: {
+  children?: ReactNode
+  submit: (res: AdminCreate<%= modelClassName %>Input) => Promise<boolean>
+}) {
+  const model: AdminCreate<%= modelClassName %>Input = {
+    <%= label %>: '',
+  }
+
+  const fields: UiFormField<AdminCreate<%= modelClassName %>Input>[] = [
+    formFieldText('<%= label %>', { label: '<%= labelClassName %>', required: true, }),
+  ]
+  return (
+    <UiForm model={model} fields={fields} submit={(res) => submit(res as AdminCreate<%= modelClassName %>Input)}>
+      {children}
+    </UiForm>
+  )
+}

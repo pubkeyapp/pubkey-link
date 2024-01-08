@@ -1,0 +1,9 @@
+import { Module } from '@nestjs/common'
+import { <%= app.className %><%= model.className %>DataAccessModule } from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-data-access'
+<% if (adminCrud) { %> import { <%= app.className %><%= admin.className %><%= model.className %>Resolver } from './<%= app.fileName %>-<%= admin.fileName %>-<%= model.fileName %>.resolver' <% } %>
+
+@Module({
+  imports: [<%= app.className %><%= model.className %>DataAccessModule],
+  providers: [<% if (adminCrud) { %><%= app.className %><%= admin.className %><%= model.className %>Resolver,<% } %>],
+})
+export class <%= app.className %><%= model.className %>FeatureModule {}

@@ -1,0 +1,15 @@
+import { useRoutes } from 'react-router-dom'
+import { Admin<%= modelClassName %>DetailFeature } from './admin-<%= modelFileName %>-detail.feature'
+import { Admin<%= modelClassName %>CreateFeature } from './admin-<%= modelFileName %>-create.feature'
+import { Admin<%= modelClassName %>ListFeature } from './admin-<%= modelFileName %>-list.feature'
+
+export default function Admin<%= modelClassName %>Routes() {
+  return useRoutes([
+    { path: '', element: <Admin<%= modelClassName %>ListFeature /> },
+    {
+      path: 'create',
+      element: <Admin<%= modelClassName %>CreateFeature />,
+    },
+    { path: ':<%= modelPropertyName %>Id/*', element: <Admin<%= modelClassName %>DetailFeature /> },
+  ])
+}

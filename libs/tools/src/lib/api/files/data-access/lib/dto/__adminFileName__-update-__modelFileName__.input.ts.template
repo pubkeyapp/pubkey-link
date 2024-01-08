@@ -1,0 +1,7 @@
+import { Field, InputType } from '@nestjs/graphql'
+
+@InputType()
+export class <%= admin.className %>Update<%= model.className %>Input {
+  @Field({ nullable: true })
+  <%= label.propertyName %>?: string
+}

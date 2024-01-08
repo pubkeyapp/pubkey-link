@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "PrismaModel",
+  "title": "",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the model to create.",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use?"
+    },
+    "label": {
+      "type": "string",
+      "description": "The label field for the model. Generally 'name' or 'title'.",
+      "default": "name"
+    }
+  },
+  "required": ["name"]
+}

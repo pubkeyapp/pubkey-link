@@ -1,0 +1,54 @@
+import { AdminCreate<%= modelClassName %>Input, AdminFindMany<%= modelClassName %>Input } from '@<%= npmScope %>/sdk'
+import { useSdk } from '@<%= npmScope %>/<%= app %>-core-data-access'
+import { toastError, toastSuccess } from '@pubkey-ui/core'
+import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
+
+export function useAdminFindMany<%= modelClassName %>(props?: Partial<AdminFindMany<%= modelClassName %>Input>) {
+  const sdk = useSdk()
+  const [limit, setLimit] = useState(props?.limit ?? 10)
+  const [page, setPage] = useState(props?.page ?? 1)
+  const [search, setSearch] = useState<string>(props?.search ?? '')
+
+  const input: AdminFindMany<%= modelClassName %>Input = { page, limit, search }
+  const query = useQuery({
+    queryKey: ['admin', 'find-many-<%= modelFileName %>', input],
+    queryFn: () => sdk.adminFindMany<%= modelClassName %>({ input }).then((res) => res.data),
+    })
+  const total = query.data?.paging?.meta?.totalCount ?? 0
+  const items = query.data?.paging.data ?? []
+
+  return {
+    items,
+    query,
+    pagination: {
+      page,
+      setPage,
+      limit,
+      setLimit,
+      total,
+    },
+    setSearch,
+    create<%= modelClassName %>: (input: AdminCreate<%= modelClassName %>Input) =>
+      sdk
+        .adminCreate<%= modelClassName %>({ input })
+        .then((res) => res.data)
+        .then((res) => {
+          if (res.created) {
+            toastSuccess(`<%= modelClassName %> created`)
+          } else {
+            toastError(`<%= modelClassName %> not created`)
+          }
+          return res.created
+        })
+        .catch((err) => {
+          toastError(err.message)
+          return undefined
+        }),
+    delete<%= modelClassName %>: (<%= modelPropertyName %>Id: string) =>
+      sdk.adminDelete<%= modelClassName %>({ <%= modelPropertyName %>Id }).then(() => {
+        toastSuccess('<%= modelClassName %> deleted')
+        return query.refetch()
+      }),
+  }
+}

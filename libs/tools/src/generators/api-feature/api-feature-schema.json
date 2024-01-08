@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "ApiFeature",
+  "title": "",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the feature.",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use?"
+    },
+    "app": {
+      "type": "string",
+      "description": "The name of the application you are adding the feature to.",
+      "default": "api"
+    },
+    "label": {
+      "type": "string",
+      "description": "The label field for the model. Generally 'name' or 'title'.",
+      "default": "name"
+    },
+    "modelName": {
+      "type": "string",
+      "description": "The name of the model for this feature."
+    },
+    "skipAdminCrud": {
+      "type": "boolean",
+      "description": "Do not create an admin crud library for this feature.",
+      "default": false
+    },
+    "skipDataAccess": {
+      "type": "boolean",
+      "description": "Do not create a data access library for this feature.",
+      "default": false
+    },
+    "skipE2e": {
+      "type": "boolean",
+      "description": "Do not create an e2e test for this feature.",
+      "default": false
+    },
+    "skipFeature": {
+      "type": "boolean",
+      "description": "Do not create a feature library for this feature.",
+      "default": false
+    },
+    "skipSdk": {
+      "type": "boolean",
+      "description": "Do not create the SDK file for this feature.",
+      "default": false
+    },
+    "skipUtil": {
+      "type": "boolean",
+      "description": "Do not create a util library for this feature.",
+      "default": true
+    }
+  },
+  "required": ["name"]
+}
