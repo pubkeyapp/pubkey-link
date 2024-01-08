@@ -1,0 +1,13 @@
+{
+  "name": "web-app-feature",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/web/app/feature/src",
+  "projectType": "library",
+  "tags": ["app:web", "type:feature"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    }
+  }
+}

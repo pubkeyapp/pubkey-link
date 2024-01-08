@@ -16,6 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@pubkey-link/anchor": ["libs/anchor/src/index.ts"],
+      "@pubkey-link/api-app-data-access": ["libs/api/app/data-access/src/index.ts"],
+      "@pubkey-link/api-app-feature": ["libs/api/app/feature/src/index.ts"],
       "@pubkey-link/api-auth-data-access": ["libs/api/auth/data-access/src/index.ts"],
       "@pubkey-link/api-auth-feature": ["libs/api/auth/feature/src/index.ts"],
       "@pubkey-link/api-core-data-access": ["libs/api/core/data-access/src/index.ts"],
@@ -26,6 +28,9 @@
       "@pubkey-link/api-user-feature": ["libs/api/user/feature/src/index.ts"],
       "@pubkey-link/sdk": ["libs/sdk/src/index.ts"],
       "@pubkey-link/tools": ["libs/tools/src/index.ts"],
+      "@pubkey-link/web-app-data-access": ["libs/web/app/data-access/src/index.ts"],
+      "@pubkey-link/web-app-feature": ["libs/web/app/feature/src/index.ts"],
+      "@pubkey-link/web-app-ui": ["libs/web/app/ui/src/index.ts"],
       "@pubkey-link/web-auth-data-access": ["libs/web/auth/data-access/src/index.ts"],
       "@pubkey-link/web-auth-feature": ["libs/web/auth/feature/src/index.ts"],
       "@pubkey-link/web-auth-ui": ["libs/web/auth/ui/src/index.ts"],

@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AdminCreateAppInput {
+  avatarUrl: String
+  name: String!
+}
+
 input AdminCreateIdentityInput {
   ownerId: String!
   provider: IdentityProvider!
@@ -11,6 +16,12 @@ input AdminCreateIdentityInput {
 input AdminCreateUserInput {
   password: String
   username: String!
+}
+
+input AdminFindManyAppInput {
+  limit: Int = 10
+  page: Int = 1
+  search: String
 }
 
 input AdminFindManyIdentityInput {
@@ -26,6 +37,11 @@ input AdminFindManyUserInput {
   status: UserStatus
 }
 
+input AdminUpdateAppInput {
+  avatarUrl: String
+  name: String
+}
+
 input AdminUpdateUserInput {
   avatarUrl: String
   developer: Boolean
@@ -35,6 +51,14 @@ input AdminUpdateUserInput {
   username: String
 }
 
+type App {
+  avatarUrl: String
+  createdAt: DateTime
+  id: String!
+  name: String!
+  updatedAt: DateTime
+}
+
 type AppConfig {
   authDiscordEnabled: Boolean!
   authGithubEnabled: Boolean!
@@ -42,6 +66,11 @@ type AppConfig {
   authRegisterEnabled: Boolean!
   authSolanaEnabled: Boolean!
   authTwitterEnabled: Boolean!
+}
+
+type AppPaging {
+  data: [App!]!
+  meta: PagingMeta!
 }
 
 """
@@ -100,10 +129,13 @@ input LoginInput {
 }
 
 type Mutation {
+  adminCreateApp(input: AdminCreateAppInput!): App
   adminCreateIdentity(input: AdminCreateIdentityInput!): Identity
   adminCreateUser(input: AdminCreateUserInput!): User
+  adminDeleteApp(appId: String!): Boolean
   adminDeleteIdentity(identityId: String!): Boolean
   adminDeleteUser(userId: String!): Boolean
+  adminUpdateApp(appId: String!, input: AdminUpdateAppInput!): App
   adminUpdateUser(input: AdminUpdateUserInput!, userId: String!): User
   anonVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
   login(input: LoginInput!): User
@@ -126,8 +158,10 @@ type PagingMeta {
 }
 
 type Query {
+  adminFindManyApp(input: AdminFindManyAppInput!): AppPaging!
   adminFindManyIdentity(input: AdminFindManyIdentityInput!): [Identity!]
   adminFindManyUser(input: AdminFindManyUserInput!): UserPaging!
+  adminFindOneApp(appId: String!): App
   adminFindOneUser(userId: String!): User
   anonRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
   appConfig: AppConfig!

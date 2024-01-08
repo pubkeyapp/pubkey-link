@@ -1,16 +1,19 @@
+import { AdminAppFeature } from '@pubkey-link/web-app-feature'
 import { DevAdminRoutes } from '@pubkey-link/web-dev-feature'
 import { AdminUserFeature } from '@pubkey-link/web-user-feature'
 import { UiContainer, UiDashboardGrid, UiDashboardItem, UiNotFound } from '@pubkey-ui/core'
-import { IconUsers } from '@tabler/icons-react'
+import { IconApps, IconUsers } from '@tabler/icons-react'
 import { Navigate, RouteObject, useRoutes } from 'react-router-dom'
 
 const links: UiDashboardItem[] = [
-  // Admin Dashboard Links
+  // Admin Dashboard Links are added by the web-feature generator
+  { label: 'Apps', icon: IconApps, to: '/admin/apps' },
   { label: 'Users', icon: IconUsers, to: '/admin/users' },
 ]
 
 const routes: RouteObject[] = [
-  // Admin Dashboard Routes
+  // Admin Dashboard Routes are added by the web-feature generator
+  { path: 'apps/*', element: <AdminAppFeature /> },
   { path: 'development/*', element: <DevAdminRoutes /> },
   { path: 'users/*', element: <AdminUserFeature /> },
 ]

@@ -1,0 +1,40 @@
+fragment AppDetails on App {
+  createdAt
+  id
+  name
+  avatarUrl
+  updatedAt
+}
+
+query adminFindManyApp($input: AdminFindManyAppInput!) {
+  paging: adminFindManyApp(input: $input) {
+    data {
+      ...AppDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query adminFindOneApp($appId: String!) {
+  item: adminFindOneApp(appId: $appId) {
+    ...AppDetails
+  }
+}
+
+mutation adminCreateApp($input: AdminCreateAppInput!) {
+  created: adminCreateApp(input: $input) {
+    ...AppDetails
+  }
+}
+
+mutation adminUpdateApp($appId: String!, $input: AdminUpdateAppInput!) {
+  updated: adminUpdateApp(appId: $appId, input: $input) {
+    ...AppDetails
+  }
+}
+
+mutation adminDeleteApp($appId: String!) {
+  deleted: adminDeleteApp(appId: $appId)
+}

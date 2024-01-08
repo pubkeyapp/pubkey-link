@@ -7,6 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model App {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String   @unique
+  avatarUrl String?
+}
+
 model Identity {
   id           String              @id @default(cuid())
   createdAt    DateTime            @default(now())
