@@ -13,6 +13,24 @@ model App {
   updatedAt DateTime @updatedAt
   name      String   @unique
   avatarUrl String?
+  bots      AppBot[]
+}
+
+model AppBot {
+  id           String         @id @default(cuid())
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  name         String
+  avatarUrl    String?
+  provider     AppBotProvider
+  status       AppBotStatus   @default(Active)
+  token        String /// @encrypted
+  clientId     String /// @encrypted
+  clientSecret String /// @encrypted
+  app          App            @relation(fields: [appId], references: [id], onDelete: Cascade)
+  appId        String
+
+  @@unique([appId, provider])
 }
 
 model Identity {
@@ -59,6 +77,15 @@ model User {
   status     UserStatus @default(Created)
   username   String     @unique
   identities Identity[]
+}
+
+enum AppBotProvider {
+  Discord
+}
+
+enum AppBotStatus {
+  Active
+  Inactive
 }
 
 enum IdentityProvider {

@@ -1,0 +1,46 @@
+fragment AppBotDetails on AppBot {
+  id
+  createdAt
+  updatedAt
+  name
+  avatarUrl
+  provider
+  status
+  token
+  clientId
+  clientSecret
+  appId
+}
+
+query adminFindManyAppBot($input: AdminFindManyAppBotInput!) {
+  paging: adminFindManyAppBot(input: $input) {
+    data {
+      ...AppBotDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query adminFindOneAppBot($appBotId: String!) {
+  item: adminFindOneAppBot(appBotId: $appBotId) {
+    ...AppBotDetails
+  }
+}
+
+mutation adminCreateAppBot($input: AdminCreateAppBotInput!) {
+  created: adminCreateAppBot(input: $input) {
+    ...AppBotDetails
+  }
+}
+
+mutation adminUpdateAppBot($appBotId: String!, $input: AdminUpdateAppBotInput!) {
+  updated: adminUpdateAppBot(appBotId: $appBotId, input: $input) {
+    ...AppBotDetails
+  }
+}
+
+mutation adminDeleteAppBot($appBotId: String!) {
+  deleted: adminDeleteAppBot(appBotId: $appBotId)
+}

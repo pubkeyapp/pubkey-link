@@ -1,4 +1,5 @@
 import { Group } from '@mantine/core'
+import { AdminAppBotFeature } from '@pubkey-link/web-app-bot-feature'
 import { useAdminFindOneApp } from '@pubkey-link/web-app-data-access'
 import { AppUiLabel } from '@pubkey-link/web-app-ui'
 import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoutes } from '@pubkey-ui/core'
@@ -33,6 +34,11 @@ export function AdminAppDetailFeature() {
             value: 'overview',
             label: 'Overview',
             component: <AdminAppDetailOverviewTab appId={appId} />,
+          },
+          {
+            value: 'bots',
+            label: 'Bots',
+            component: <AdminAppBotFeature appId={appId} />,
           },
           {
             value: 'settings',

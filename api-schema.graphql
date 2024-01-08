@@ -2,6 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AdminCreateAppBotInput {
+  appId: String!
+  clientId: String!
+  clientSecret: String!
+  name: String!
+  provider: AppBotProvider!
+  token: String!
+}
+
 input AdminCreateAppInput {
   avatarUrl: String
   name: String!
@@ -16,6 +25,13 @@ input AdminCreateIdentityInput {
 input AdminCreateUserInput {
   password: String
   username: String!
+}
+
+input AdminFindManyAppBotInput {
+  appId: String!
+  limit: Int = 10
+  page: Int = 1
+  search: String
 }
 
 input AdminFindManyAppInput {
@@ -35,6 +51,14 @@ input AdminFindManyUserInput {
   role: UserRole
   search: String
   status: UserStatus
+}
+
+input AdminUpdateAppBotInput {
+  clientId: String
+  clientSecret: String
+  name: String
+  status: AppBotStatus
+  token: String
 }
 
 input AdminUpdateAppInput {
@@ -57,6 +81,34 @@ type App {
   id: String!
   name: String!
   updatedAt: DateTime
+}
+
+type AppBot {
+  appId: String!
+  avatarUrl: String
+  clientId: String
+  clientSecret: String
+  createdAt: DateTime
+  id: String!
+  name: String!
+  provider: AppBotProvider!
+  status: AppBotStatus!
+  token: String
+  updatedAt: DateTime
+}
+
+type AppBotPaging {
+  data: [AppBot!]!
+  meta: PagingMeta!
+}
+
+enum AppBotProvider {
+  Discord
+}
+
+enum AppBotStatus {
+  Active
+  Inactive
 }
 
 type AppConfig {
@@ -130,12 +182,15 @@ input LoginInput {
 
 type Mutation {
   adminCreateApp(input: AdminCreateAppInput!): App
+  adminCreateAppBot(input: AdminCreateAppBotInput!): AppBot
   adminCreateIdentity(input: AdminCreateIdentityInput!): Identity
   adminCreateUser(input: AdminCreateUserInput!): User
   adminDeleteApp(appId: String!): Boolean
+  adminDeleteAppBot(appBotId: String!): Boolean
   adminDeleteIdentity(identityId: String!): Boolean
   adminDeleteUser(userId: String!): Boolean
   adminUpdateApp(appId: String!, input: AdminUpdateAppInput!): App
+  adminUpdateAppBot(appBotId: String!, input: AdminUpdateAppBotInput!): AppBot
   adminUpdateUser(input: AdminUpdateUserInput!, userId: String!): User
   anonVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
   login(input: LoginInput!): User
@@ -159,9 +214,11 @@ type PagingMeta {
 
 type Query {
   adminFindManyApp(input: AdminFindManyAppInput!): AppPaging!
+  adminFindManyAppBot(input: AdminFindManyAppBotInput!): AppBotPaging!
   adminFindManyIdentity(input: AdminFindManyIdentityInput!): [Identity!]
   adminFindManyUser(input: AdminFindManyUserInput!): UserPaging!
   adminFindOneApp(appId: String!): App
+  adminFindOneAppBot(appBotId: String!): AppBot
   adminFindOneUser(userId: String!): User
   anonRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
   appConfig: AppConfig!
