@@ -4,12 +4,12 @@ import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
-export function useAdminFindManyUser() {
+export function useAdminFindManyUser(props?: AdminFindManyUserInput) {
   const sdk = useSdk()
   const [role, setRole] = useState<UserRole | undefined>(undefined)
   const [status, setStatus] = useState<UserStatus | undefined>(undefined)
-  const [limit, setLimit] = useState(10)
-  const [page, setPage] = useState(1)
+  const [limit, setLimit] = useState(props?.limit ?? 10)
+  const [page, setPage] = useState(props?.page ?? 1)
   const [search, setSearch] = useState<string>('')
 
   const input: AdminFindManyUserInput = { limit, page, role, search, status }

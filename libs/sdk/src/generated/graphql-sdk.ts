@@ -38,6 +38,12 @@ export type AdminCreateAppInput = {
   name: Scalars['String']['input']
 }
 
+export type AdminCreateAppUserInput = {
+  appId: Scalars['String']['input']
+  role: AppUserRole
+  userId: Scalars['String']['input']
+}
+
 export type AdminCreateIdentityInput = {
   ownerId: Scalars['String']['input']
   provider: IdentityProvider
@@ -59,6 +65,14 @@ export type AdminFindManyAppBotInput = {
 export type AdminFindManyAppInput = {
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
+  search?: InputMaybe<Scalars['String']['input']>
+}
+
+export type AdminFindManyAppUserInput = {
+  appId: Scalars['String']['input']
+  limit?: InputMaybe<Scalars['Int']['input']>
+  page?: InputMaybe<Scalars['Int']['input']>
+  role?: InputMaybe<AppUserRole>
   search?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -86,6 +100,12 @@ export type AdminUpdateAppBotInput = {
 export type AdminUpdateAppInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>
   name?: InputMaybe<Scalars['String']['input']>
+}
+
+export type AdminUpdateAppUserInput = {
+  appId: Scalars['String']['input']
+  role: AppUserRole
+  userId: Scalars['String']['input']
 }
 
 export type AdminUpdateUserInput = {
@@ -152,6 +172,28 @@ export type AppPaging = {
   meta: PagingMeta
 }
 
+export type AppUser = {
+  __typename?: 'AppUser'
+  appId: Scalars['String']['output']
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  id: Scalars['String']['output']
+  role: AppUserRole
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+  user?: Maybe<User>
+  userId: Scalars['String']['output']
+}
+
+export type AppUserPaging = {
+  __typename?: 'AppUserPaging'
+  data: Array<AppUser>
+  meta: PagingMeta
+}
+
+export enum AppUserRole {
+  Admin = 'Admin',
+  User = 'User',
+}
+
 export type Identity = {
   __typename?: 'Identity'
   challenges?: Maybe<Array<IdentityChallenge>>
@@ -203,14 +245,17 @@ export type Mutation = {
   __typename?: 'Mutation'
   adminCreateApp?: Maybe<App>
   adminCreateAppBot?: Maybe<AppBot>
+  adminCreateAppUser?: Maybe<AppUser>
   adminCreateIdentity?: Maybe<Identity>
   adminCreateUser?: Maybe<User>
   adminDeleteApp?: Maybe<Scalars['Boolean']['output']>
   adminDeleteAppBot?: Maybe<Scalars['Boolean']['output']>
+  adminDeleteAppUser?: Maybe<Scalars['Boolean']['output']>
   adminDeleteIdentity?: Maybe<Scalars['Boolean']['output']>
   adminDeleteUser?: Maybe<Scalars['Boolean']['output']>
   adminUpdateApp?: Maybe<App>
   adminUpdateAppBot?: Maybe<AppBot>
+  adminUpdateAppUser?: Maybe<AppUser>
   adminUpdateUser?: Maybe<User>
   anonVerifyIdentityChallenge?: Maybe<IdentityChallenge>
   login?: Maybe<User>
@@ -230,6 +275,10 @@ export type MutationAdminCreateAppBotArgs = {
   input: AdminCreateAppBotInput
 }
 
+export type MutationAdminCreateAppUserArgs = {
+  input: AdminCreateAppUserInput
+}
+
 export type MutationAdminCreateIdentityArgs = {
   input: AdminCreateIdentityInput
 }
@@ -244,6 +293,10 @@ export type MutationAdminDeleteAppArgs = {
 
 export type MutationAdminDeleteAppBotArgs = {
   appBotId: Scalars['String']['input']
+}
+
+export type MutationAdminDeleteAppUserArgs = {
+  appUserId: Scalars['String']['input']
 }
 
 export type MutationAdminDeleteIdentityArgs = {
@@ -262,6 +315,11 @@ export type MutationAdminUpdateAppArgs = {
 export type MutationAdminUpdateAppBotArgs = {
   appBotId: Scalars['String']['input']
   input: AdminUpdateAppBotInput
+}
+
+export type MutationAdminUpdateAppUserArgs = {
+  appUserId: Scalars['String']['input']
+  input: AdminUpdateAppUserInput
 }
 
 export type MutationAdminUpdateUserArgs = {
@@ -312,10 +370,12 @@ export type Query = {
   __typename?: 'Query'
   adminFindManyApp: AppPaging
   adminFindManyAppBot: AppBotPaging
+  adminFindManyAppUser: AppUserPaging
   adminFindManyIdentity?: Maybe<Array<Identity>>
   adminFindManyUser: UserPaging
   adminFindOneApp?: Maybe<App>
   adminFindOneAppBot?: Maybe<AppBot>
+  adminFindOneAppUser?: Maybe<AppUser>
   adminFindOneUser?: Maybe<User>
   anonRequestIdentityChallenge?: Maybe<IdentityChallenge>
   appConfig: AppConfig
@@ -335,6 +395,10 @@ export type QueryAdminFindManyAppBotArgs = {
   input: AdminFindManyAppBotInput
 }
 
+export type QueryAdminFindManyAppUserArgs = {
+  input: AdminFindManyAppUserInput
+}
+
 export type QueryAdminFindManyIdentityArgs = {
   input: AdminFindManyIdentityInput
 }
@@ -349,6 +413,10 @@ export type QueryAdminFindOneAppArgs = {
 
 export type QueryAdminFindOneAppBotArgs = {
   appBotId: Scalars['String']['input']
+}
+
+export type QueryAdminFindOneAppUserArgs = {
+  appUserId: Scalars['String']['input']
 }
 
 export type QueryAdminFindOneUserArgs = {
@@ -555,6 +623,117 @@ export type AdminDeleteAppBotMutationVariables = Exact<{
 }>
 
 export type AdminDeleteAppBotMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
+export type AppUserDetailsFragment = {
+  __typename?: 'AppUser'
+  appId: string
+  createdAt?: Date | null
+  id: string
+  role: AppUserRole
+  userId: string
+  updatedAt?: Date | null
+}
+
+export type AdminFindManyAppUserQueryVariables = Exact<{
+  input: AdminFindManyAppUserInput
+}>
+
+export type AdminFindManyAppUserQuery = {
+  __typename?: 'Query'
+  paging: {
+    __typename?: 'AppUserPaging'
+    data: Array<{
+      __typename?: 'AppUser'
+      appId: string
+      createdAt?: Date | null
+      id: string
+      role: AppUserRole
+      userId: string
+      updatedAt?: Date | null
+      user?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        id: string
+        name?: string | null
+        profileUrl?: string | null
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
+    }>
+    meta: {
+      __typename?: 'PagingMeta'
+      currentPage: number
+      isFirstPage: boolean
+      isLastPage: boolean
+      nextPage?: number | null
+      pageCount?: number | null
+      previousPage?: number | null
+      totalCount?: number | null
+    }
+  }
+}
+
+export type AdminFindOneAppUserQueryVariables = Exact<{
+  appUserId: Scalars['String']['input']
+}>
+
+export type AdminFindOneAppUserQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'AppUser'
+    appId: string
+    createdAt?: Date | null
+    id: string
+    role: AppUserRole
+    userId: string
+    updatedAt?: Date | null
+  } | null
+}
+
+export type AdminCreateAppUserMutationVariables = Exact<{
+  input: AdminCreateAppUserInput
+}>
+
+export type AdminCreateAppUserMutation = {
+  __typename?: 'Mutation'
+  created?: {
+    __typename?: 'AppUser'
+    appId: string
+    createdAt?: Date | null
+    id: string
+    role: AppUserRole
+    userId: string
+    updatedAt?: Date | null
+  } | null
+}
+
+export type AdminUpdateAppUserMutationVariables = Exact<{
+  appUserId: Scalars['String']['input']
+  input: AdminUpdateAppUserInput
+}>
+
+export type AdminUpdateAppUserMutation = {
+  __typename?: 'Mutation'
+  updated?: {
+    __typename?: 'AppUser'
+    appId: string
+    createdAt?: Date | null
+    id: string
+    role: AppUserRole
+    userId: string
+    updatedAt?: Date | null
+  } | null
+}
+
+export type AdminDeleteAppUserMutationVariables = Exact<{
+  appUserId: Scalars['String']['input']
+}>
+
+export type AdminDeleteAppUserMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
 export type AppDetailsFragment = {
   __typename?: 'App'
@@ -1208,6 +1387,16 @@ export const AppBotDetailsFragmentDoc = gql`
     appId
   }
 `
+export const AppUserDetailsFragmentDoc = gql`
+  fragment AppUserDetails on AppUser {
+    appId
+    createdAt
+    id
+    role
+    userId
+    updatedAt
+  }
+`
 export const AppDetailsFragmentDoc = gql`
   fragment AppDetails on App {
     createdAt
@@ -1321,6 +1510,53 @@ export const AdminUpdateAppBotDocument = gql`
 export const AdminDeleteAppBotDocument = gql`
   mutation adminDeleteAppBot($appBotId: String!) {
     deleted: adminDeleteAppBot(appBotId: $appBotId)
+  }
+`
+export const AdminFindManyAppUserDocument = gql`
+  query adminFindManyAppUser($input: AdminFindManyAppUserInput!) {
+    paging: adminFindManyAppUser(input: $input) {
+      data {
+        ...AppUserDetails
+        user {
+          ...UserDetails
+        }
+      }
+      meta {
+        ...PagingMetaDetails
+      }
+    }
+  }
+  ${AppUserDetailsFragmentDoc}
+  ${UserDetailsFragmentDoc}
+  ${PagingMetaDetailsFragmentDoc}
+`
+export const AdminFindOneAppUserDocument = gql`
+  query adminFindOneAppUser($appUserId: String!) {
+    item: adminFindOneAppUser(appUserId: $appUserId) {
+      ...AppUserDetails
+    }
+  }
+  ${AppUserDetailsFragmentDoc}
+`
+export const AdminCreateAppUserDocument = gql`
+  mutation adminCreateAppUser($input: AdminCreateAppUserInput!) {
+    created: adminCreateAppUser(input: $input) {
+      ...AppUserDetails
+    }
+  }
+  ${AppUserDetailsFragmentDoc}
+`
+export const AdminUpdateAppUserDocument = gql`
+  mutation adminUpdateAppUser($appUserId: String!, $input: AdminUpdateAppUserInput!) {
+    updated: adminUpdateAppUser(appUserId: $appUserId, input: $input) {
+      ...AppUserDetails
+    }
+  }
+  ${AppUserDetailsFragmentDoc}
+`
+export const AdminDeleteAppUserDocument = gql`
+  mutation adminDeleteAppUser($appUserId: String!) {
+    deleted: adminDeleteAppUser(appUserId: $appUserId)
   }
 `
 export const AdminFindManyAppDocument = gql`
@@ -1581,6 +1817,11 @@ const AdminFindOneAppBotDocumentString = print(AdminFindOneAppBotDocument)
 const AdminCreateAppBotDocumentString = print(AdminCreateAppBotDocument)
 const AdminUpdateAppBotDocumentString = print(AdminUpdateAppBotDocument)
 const AdminDeleteAppBotDocumentString = print(AdminDeleteAppBotDocument)
+const AdminFindManyAppUserDocumentString = print(AdminFindManyAppUserDocument)
+const AdminFindOneAppUserDocumentString = print(AdminFindOneAppUserDocument)
+const AdminCreateAppUserDocumentString = print(AdminCreateAppUserDocument)
+const AdminUpdateAppUserDocumentString = print(AdminUpdateAppUserDocument)
+const AdminDeleteAppUserDocumentString = print(AdminDeleteAppUserDocument)
 const AdminFindManyAppDocumentString = print(AdminFindManyAppDocument)
 const AdminFindOneAppDocumentString = print(AdminFindOneAppDocument)
 const AdminCreateAppDocumentString = print(AdminCreateAppDocument)
@@ -1713,6 +1954,111 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'adminDeleteAppBot',
+        'mutation',
+        variables,
+      )
+    },
+    adminFindManyAppUser(
+      variables: AdminFindManyAppUserQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindManyAppUserQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindManyAppUserQuery>(AdminFindManyAppUserDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindManyAppUser',
+        'query',
+        variables,
+      )
+    },
+    adminFindOneAppUser(
+      variables: AdminFindOneAppUserQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindOneAppUserQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindOneAppUserQuery>(AdminFindOneAppUserDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindOneAppUser',
+        'query',
+        variables,
+      )
+    },
+    adminCreateAppUser(
+      variables: AdminCreateAppUserMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminCreateAppUserMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminCreateAppUserMutation>(AdminCreateAppUserDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminCreateAppUser',
+        'mutation',
+        variables,
+      )
+    },
+    adminUpdateAppUser(
+      variables: AdminUpdateAppUserMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminUpdateAppUserMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminUpdateAppUserMutation>(AdminUpdateAppUserDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminUpdateAppUser',
+        'mutation',
+        variables,
+      )
+    },
+    adminDeleteAppUser(
+      variables: AdminDeleteAppUserMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminDeleteAppUserMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminDeleteAppUserMutation>(AdminDeleteAppUserDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminDeleteAppUser',
         'mutation',
         variables,
       )
@@ -2311,6 +2657,8 @@ export const AppBotProviderSchema = z.nativeEnum(AppBotProvider)
 
 export const AppBotStatusSchema = z.nativeEnum(AppBotStatus)
 
+export const AppUserRoleSchema = z.nativeEnum(AppUserRole)
+
 export const IdentityProviderSchema = z.nativeEnum(IdentityProvider)
 
 export const UserRoleSchema = z.nativeEnum(UserRole)
@@ -2332,6 +2680,14 @@ export function AdminCreateAppInputSchema(): z.ZodObject<Properties<AdminCreateA
   return z.object({
     avatarUrl: z.string().nullish(),
     name: z.string(),
+  })
+}
+
+export function AdminCreateAppUserInputSchema(): z.ZodObject<Properties<AdminCreateAppUserInput>> {
+  return z.object({
+    appId: z.string(),
+    role: AppUserRoleSchema,
+    userId: z.string(),
   })
 }
 
@@ -2367,6 +2723,16 @@ export function AdminFindManyAppInputSchema(): z.ZodObject<Properties<AdminFindM
   })
 }
 
+export function AdminFindManyAppUserInputSchema(): z.ZodObject<Properties<AdminFindManyAppUserInput>> {
+  return z.object({
+    appId: z.string(),
+    limit: z.number().nullish(),
+    page: z.number().nullish(),
+    role: AppUserRoleSchema.nullish(),
+    search: z.string().nullish(),
+  })
+}
+
 export function AdminFindManyIdentityInputSchema(): z.ZodObject<Properties<AdminFindManyIdentityInput>> {
   return z.object({
     ownerId: z.string().nullish(),
@@ -2398,6 +2764,14 @@ export function AdminUpdateAppInputSchema(): z.ZodObject<Properties<AdminUpdateA
   return z.object({
     avatarUrl: z.string().nullish(),
     name: z.string().nullish(),
+  })
+}
+
+export function AdminUpdateAppUserInputSchema(): z.ZodObject<Properties<AdminUpdateAppUserInput>> {
+  return z.object({
+    appId: z.string(),
+    role: AppUserRoleSchema,
+    userId: z.string(),
   })
 }
 

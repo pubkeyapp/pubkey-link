@@ -2,6 +2,7 @@ import { Group } from '@mantine/core'
 import { AdminAppBotFeature } from '@pubkey-link/web-app-bot-feature'
 import { useAdminFindOneApp } from '@pubkey-link/web-app-data-access'
 import { AppUiLabel } from '@pubkey-link/web-app-ui'
+import { AdminAppUserFeature } from '@pubkey-link/web-app-user-feature'
 import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoutes } from '@pubkey-ui/core'
 import { useParams } from 'react-router-dom'
 import { AdminAppDetailOverviewTab } from './admin-app-detail-overview.tab'
@@ -39,6 +40,11 @@ export function AdminAppDetailFeature() {
             value: 'bots',
             label: 'Bots',
             component: <AdminAppBotFeature appId={appId} />,
+          },
+          {
+            value: 'users',
+            label: 'Users',
+            component: <AdminAppUserFeature appId={appId} />,
           },
           {
             value: 'settings',

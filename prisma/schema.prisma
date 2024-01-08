@@ -8,12 +8,13 @@ datasource db {
 }
 
 model App {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name      String   @unique
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  name      String    @unique
   avatarUrl String?
   bots      AppBot[]
+  users     AppUser[]
 }
 
 model AppBot {
@@ -31,6 +32,19 @@ model AppBot {
   appId        String
 
   @@unique([appId, provider])
+}
+
+model AppUser {
+  id        String      @id @default(cuid())
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  role      AppUserRole @default(User)
+  app       App         @relation(fields: [appId], references: [id], onDelete: Cascade)
+  appId     String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  @@unique([appId, userId])
 }
 
 model Identity {
@@ -76,6 +90,7 @@ model User {
   role       UserRole   @default(User)
   status     UserStatus @default(Created)
   username   String     @unique
+  apps       AppUser[]
   identities Identity[]
 }
 
@@ -86,6 +101,11 @@ enum AppBotProvider {
 enum AppBotStatus {
   Active
   Inactive
+}
+
+enum AppUserRole {
+  Admin
+  User
 }
 
 enum IdentityProvider {

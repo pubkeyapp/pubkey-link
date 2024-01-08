@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ApiCoreService, slugifyId } from '@pubkey-link/api-core-data-access'
+import { AppUserRole } from '@pubkey-link/sdk'
 import { AdminCreateAppInput } from './dto/admin-create-app.input'
 import { AdminFindManyAppInput } from './dto/admin-find-many-app.input'
 import { AdminUpdateAppInput } from './dto/admin-update-app.input'
@@ -10,11 +11,18 @@ import { getAdminAppWhereInput } from './helpers/get-admin-app-where.input'
 export class ApiAdminAppService {
   constructor(private readonly core: ApiCoreService) {}
 
-  async createApp(input: AdminCreateAppInput) {
+  async createApp(userId: string, input: AdminCreateAppInput) {
     const name = slugifyId(input.name.trim())
     if (name.length < 3) throw new Error('Name must be at least 3 characters long')
     try {
-      return this.core.data.app.create({ data: input })
+      return this.core.data.app.create({
+        data: {
+          ...input,
+          users: {
+            create: { userId, role: AppUserRole.Admin },
+          },
+        },
+      })
     } catch (e) {
       throw new Error(`Error creating app`)
     }

@@ -1,15 +1,14 @@
-import { Resolver } from '@nestjs/graphql'
-import { ApiAppService } from '@pubkey-link/api-app-data-access'
-import { ApiAuthGraphQLAdminGuard } from '@pubkey-link/api-auth-data-access'
-import { Mutation, Query, Args } from '@nestjs/graphql'
 import { UseGuards } from '@nestjs/common'
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import {
   AdminCreateAppInput,
   AdminFindManyAppInput,
+  AdminUpdateAppInput,
+  ApiAppService,
   App,
   AppPaging,
-  AdminUpdateAppInput,
 } from '@pubkey-link/api-app-data-access'
+import { ApiAuthGraphQLAdminGuard, CtxUser } from '@pubkey-link/api-auth-data-access'
 
 @Resolver()
 @UseGuards(ApiAuthGraphQLAdminGuard)
@@ -17,8 +16,8 @@ export class ApiAdminAppResolver {
   constructor(private readonly service: ApiAppService) {}
 
   @Mutation(() => App, { nullable: true })
-  adminCreateApp(@Args('input') input: AdminCreateAppInput) {
-    return this.service.admin.createApp(input)
+  adminCreateApp(@CtxUser() user: { id: string }, @Args('input') input: AdminCreateAppInput) {
+    return this.service.admin.createApp(user.id, input)
   }
 
   @Mutation(() => Boolean, { nullable: true })

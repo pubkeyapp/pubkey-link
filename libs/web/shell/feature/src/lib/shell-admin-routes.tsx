@@ -9,7 +9,6 @@ const links: UiDashboardItem[] = [
   // Admin Dashboard Links are added by the web-feature generator
   { label: 'Apps', icon: IconApps, to: '/admin/apps' },
   { label: 'Users', icon: IconUsers, to: '/admin/users' },
-  { label: 'AppBots', icon: IconUsers, to: '/admin/app-bots' },
 ]
 
 const routes: RouteObject[] = [

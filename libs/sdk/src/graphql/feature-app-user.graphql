@@ -1,0 +1,44 @@
+fragment AppUserDetails on AppUser {
+  appId
+  createdAt
+  id
+  role
+  userId
+  updatedAt
+}
+
+query adminFindManyAppUser($input: AdminFindManyAppUserInput!) {
+  paging: adminFindManyAppUser(input: $input) {
+    data {
+      ...AppUserDetails
+      user {
+        ...UserDetails
+      }
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query adminFindOneAppUser($appUserId: String!) {
+  item: adminFindOneAppUser(appUserId: $appUserId) {
+    ...AppUserDetails
+  }
+}
+
+mutation adminCreateAppUser($input: AdminCreateAppUserInput!) {
+  created: adminCreateAppUser(input: $input) {
+    ...AppUserDetails
+  }
+}
+
+mutation adminUpdateAppUser($appUserId: String!, $input: AdminUpdateAppUserInput!) {
+  updated: adminUpdateAppUser(appUserId: $appUserId, input: $input) {
+    ...AppUserDetails
+  }
+}
+
+mutation adminDeleteAppUser($appUserId: String!) {
+  deleted: adminDeleteAppUser(appUserId: $appUserId)
+}

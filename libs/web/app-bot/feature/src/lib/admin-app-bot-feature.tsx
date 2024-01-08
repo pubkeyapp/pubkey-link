@@ -1,3 +1,4 @@
+import { UiNotFound } from '@pubkey-ui/core'
 import { useRoutes } from 'react-router-dom'
 import { AdminAppBotCreateFeature } from './admin-app-bot-create.feature'
 import { AdminAppBotDetailFeature } from './admin-app-bot-detail.feature'
@@ -11,5 +12,6 @@ export default function AdminAppBotRoutes({ appId }: { appId: string }) {
       element: <AdminAppBotCreateFeature appId={appId} />,
     },
     { path: ':appBotId/*', element: <AdminAppBotDetailFeature /> },
+    { path: '*', element: <UiNotFound to={`/admin/apps/${appId}/users`} /> },
   ])
 }

@@ -49,7 +49,7 @@ export function AdminAppBotUiTable({
                   variant="light"
                   size="sm"
                   component={Link}
-                  to={`/admin/appBots/${item.id}/settings`}
+                  to={`/admin/apps/${item.appId}/bots/${item.id}/settings`}
                 >
                   <IconPencil size={16} />
                 </ActionIcon>
