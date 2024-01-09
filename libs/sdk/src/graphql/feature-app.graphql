@@ -38,3 +38,42 @@ mutation adminUpdateApp($appId: String!, $input: AdminUpdateAppInput!) {
 mutation adminDeleteApp($appId: String!) {
   deleted: adminDeleteApp(appId: $appId)
 }
+
+query userFindManyApp($input: UserFindManyAppInput!) {
+  paging: userFindManyApp(input: $input) {
+    data {
+      ...AppDetails
+      user {
+        ...AppUserDetails
+      }
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query userFindOneApp($appId: String!) {
+  item: userFindOneApp(appId: $appId) {
+    ...AppDetails
+    user {
+      ...AppUserDetails
+    }
+  }
+}
+
+mutation userCreateApp($input: UserCreateAppInput!) {
+  created: userCreateApp(input: $input) {
+    ...AppDetails
+  }
+}
+
+mutation userUpdateApp($appId: String!, $input: UserUpdateAppInput!) {
+  updated: userUpdateApp(appId: $appId, input: $input) {
+    ...AppDetails
+  }
+}
+
+mutation userDeleteApp($appId: String!) {
+  deleted: userDeleteApp(appId: $appId)
+}

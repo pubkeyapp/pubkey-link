@@ -101,6 +101,7 @@ type App {
   id: String!
   name: String!
   updatedAt: DateTime
+  user: AppUser
 }
 
 type AppBot {
@@ -239,8 +240,11 @@ type Mutation {
   login(input: LoginInput!): User
   logout: Boolean
   register(input: RegisterInput!): User
+  userCreateApp(input: UserCreateAppInput!): App
+  userDeleteApp(appId: String!): Boolean
   userDeleteIdentity(identityId: String!): Boolean
   userLinkIdentity(input: LinkIdentityInput!): Identity
+  userUpdateApp(appId: String!, input: UserUpdateAppInput!): App
   userUpdateUser(input: UserUpdateUserInput!): User
   userVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
 }
@@ -269,8 +273,10 @@ type Query {
   appConfig: AppConfig!
   me: User
   uptime: Float!
+  userFindManyApp(input: UserFindManyAppInput!): AppPaging!
   userFindManyIdentity(input: UserFindManyIdentityInput!): [Identity!]
   userFindManyUser(input: UserFindManyUserInput!): UserPaging!
+  userFindOneApp(appId: String!): App
   userFindOneUser(username: String!): User
   userRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
 }
@@ -299,6 +305,16 @@ type User {
   username: String
 }
 
+input UserCreateAppInput {
+  name: String!
+}
+
+input UserFindManyAppInput {
+  limit: Int = 10
+  page: Int = 1
+  search: String
+}
+
 input UserFindManyIdentityInput {
   username: String!
 }
@@ -323,6 +339,11 @@ enum UserStatus {
   Active
   Created
   Inactive
+}
+
+input UserUpdateAppInput {
+  avatarUrl: String
+  name: String
 }
 
 input UserUpdateUserInput {

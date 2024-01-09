@@ -1,7 +1,6 @@
-import { Anchor, Avatar, AvatarProps, Group, Tooltip } from '@mantine/core'
+import { Avatar, AvatarProps, Tooltip } from '@mantine/core'
 import { App, getRandomInt } from '@pubkey-link/sdk'
 import { getColorByIndex } from '@pubkey-ui/core'
-import { Link } from 'react-router-dom'
 
 export function AppUiAvatar({
   app,
@@ -30,13 +29,3 @@ export function AppUiAvatar({
   )
 }
 
-export function AppUiLabel({ app }: { app: App }) {
-  return (
-    <Group gap="sm" p={4}>
-      <AppUiAvatar size="sm" app={app} />
-      <Anchor component={Link} to={app.id} size="lg" fw={500}>
-        {app.name}
-      </Anchor>
-    </Group>
-  )
-}

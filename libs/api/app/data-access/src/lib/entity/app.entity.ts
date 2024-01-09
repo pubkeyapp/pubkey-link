@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql'
+import { Field, HideField, ObjectType } from '@nestjs/graphql'
 
 @ObjectType()
 export class App {
@@ -12,4 +12,6 @@ export class App {
   name!: string
   @Field({ nullable: true })
   avatarUrl?: string | null
+  @HideField()
+  users?: unknown[]
 }

@@ -30,14 +30,14 @@ export function AdminAppBotDetailFeature() {
       <UiTabRoutes
         tabs={[
           {
-            value: 'dashboard',
+            path: 'dashboard',
             label: 'Dashboard',
-            component: <AdminAppBotDetailDashboardTab appBotId={appBotId} />,
+            element: <AdminAppBotDetailDashboardTab appBotId={appBotId} />,
           },
           {
-            value: 'settings',
+            path: 'settings',
             label: 'Settings',
-            component: <AdminAppBotDetailSettingsTab appBotId={appBotId} />,
+            element: <AdminAppBotDetailSettingsTab appBotId={appBotId} />,
           },
         ]}
       />

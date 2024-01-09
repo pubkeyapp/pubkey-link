@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 
 import { AppUiLabel } from './app-ui-label'
 
-export function AdminAppUiTable({
+export function UserAppUiTable({
   deleteApp,
   apps = [],
   onPageChange,
@@ -34,7 +34,7 @@ export function AdminAppUiTable({
         columns={[
           {
             accessor: 'name',
-            render: (item) => <AppUiLabel app={item} to={item.id}/>,
+            render: (item) => <AppUiLabel app={item} to={item.id} />,
           },
           {
             accessor: 'actions',

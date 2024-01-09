@@ -35,14 +35,14 @@ export function AdminUserDetailFeature() {
         <UiTabRoutes
           tabs={[
             {
-              value: 'settings',
+              path: 'settings',
               label: 'Settings',
-              component: <AdminUserDetailFeatureSettings userId={userId} />,
+              element: <AdminUserDetailFeatureSettings userId={userId} />,
             },
             {
-              value: 'identities',
+              path: 'identities',
               label: 'Identities',
-              component: <AdminUserDetailFeatureIdentities userId={userId} />,
+              element: <AdminUserDetailFeatureIdentities userId={userId} />,
             },
           ]}
         />

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
+import { AppUserRole } from '@prisma/client'
 import { ApiCoreService, slugifyId } from '@pubkey-link/api-core-data-access'
-import { AppUserRole } from '@pubkey-link/sdk'
 import { AdminCreateAppInput } from './dto/admin-create-app.input'
 import { AdminFindManyAppInput } from './dto/admin-find-many-app.input'
 import { AdminUpdateAppInput } from './dto/admin-update-app.input'

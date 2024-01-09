@@ -29,14 +29,14 @@ export function Admin<%= modelClassName %>DetailFeature() {
       <UiTabRoutes
         tabs={[
           {
-            value: 'overview',
+            path: 'overview',
             label: 'Overview',
-            component: <Admin<%= modelClassName %>DetailOverviewTab <%= modelPropertyName %>Id={<%= modelPropertyName %>Id} />,
+            element: <Admin<%= modelClassName %>DetailOverviewTab <%= modelPropertyName %>Id={<%= modelPropertyName %>Id} />,
           },
           {
-            value: 'settings',
+            path: 'settings',
             label: 'Settings',
-            component: <Admin<%= modelClassName %>DetailSettingsTab <%= modelPropertyName %>Id={<%= modelPropertyName %>Id} />,
+            element: <Admin<%= modelClassName %>DetailSettingsTab <%= modelPropertyName %>Id={<%= modelPropertyName %>Id} />,
           },
         ]}
       />

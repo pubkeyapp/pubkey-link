@@ -124,6 +124,7 @@ export type App = {
   id: Scalars['String']['output']
   name: Scalars['String']['output']
   updatedAt?: Maybe<Scalars['DateTime']['output']>
+  user?: Maybe<AppUser>
 }
 
 export type AppBot = {
@@ -261,8 +262,11 @@ export type Mutation = {
   login?: Maybe<User>
   logout?: Maybe<Scalars['Boolean']['output']>
   register?: Maybe<User>
+  userCreateApp?: Maybe<App>
+  userDeleteApp?: Maybe<Scalars['Boolean']['output']>
   userDeleteIdentity?: Maybe<Scalars['Boolean']['output']>
   userLinkIdentity?: Maybe<Identity>
+  userUpdateApp?: Maybe<App>
   userUpdateUser?: Maybe<User>
   userVerifyIdentityChallenge?: Maybe<IdentityChallenge>
 }
@@ -339,12 +343,25 @@ export type MutationRegisterArgs = {
   input: RegisterInput
 }
 
+export type MutationUserCreateAppArgs = {
+  input: UserCreateAppInput
+}
+
+export type MutationUserDeleteAppArgs = {
+  appId: Scalars['String']['input']
+}
+
 export type MutationUserDeleteIdentityArgs = {
   identityId: Scalars['String']['input']
 }
 
 export type MutationUserLinkIdentityArgs = {
   input: LinkIdentityInput
+}
+
+export type MutationUserUpdateAppArgs = {
+  appId: Scalars['String']['input']
+  input: UserUpdateAppInput
 }
 
 export type MutationUserUpdateUserArgs = {
@@ -381,8 +398,10 @@ export type Query = {
   appConfig: AppConfig
   me?: Maybe<User>
   uptime: Scalars['Float']['output']
+  userFindManyApp: AppPaging
   userFindManyIdentity?: Maybe<Array<Identity>>
   userFindManyUser: UserPaging
+  userFindOneApp?: Maybe<App>
   userFindOneUser?: Maybe<User>
   userRequestIdentityChallenge?: Maybe<IdentityChallenge>
 }
@@ -427,12 +446,20 @@ export type QueryAnonRequestIdentityChallengeArgs = {
   input: RequestIdentityChallengeInput
 }
 
+export type QueryUserFindManyAppArgs = {
+  input: UserFindManyAppInput
+}
+
 export type QueryUserFindManyIdentityArgs = {
   input: UserFindManyIdentityInput
 }
 
 export type QueryUserFindManyUserArgs = {
   input: UserFindManyUserInput
+}
+
+export type QueryUserFindOneAppArgs = {
+  appId: Scalars['String']['input']
 }
 
 export type QueryUserFindOneUserArgs = {
@@ -468,6 +495,16 @@ export type User = {
   username?: Maybe<Scalars['String']['output']>
 }
 
+export type UserCreateAppInput = {
+  name: Scalars['String']['input']
+}
+
+export type UserFindManyAppInput = {
+  limit?: InputMaybe<Scalars['Int']['input']>
+  page?: InputMaybe<Scalars['Int']['input']>
+  search?: InputMaybe<Scalars['String']['input']>
+}
+
 export type UserFindManyIdentityInput = {
   username: Scalars['String']['input']
 }
@@ -493,6 +530,11 @@ export enum UserStatus {
   Active = 'Active',
   Created = 'Created',
   Inactive = 'Inactive',
+}
+
+export type UserUpdateAppInput = {
+  avatarUrl?: InputMaybe<Scalars['String']['input']>
+  name?: InputMaybe<Scalars['String']['input']>
 }
 
 export type UserUpdateUserInput = {
@@ -835,6 +877,108 @@ export type AdminDeleteAppMutationVariables = Exact<{
 }>
 
 export type AdminDeleteAppMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
+export type UserFindManyAppQueryVariables = Exact<{
+  input: UserFindManyAppInput
+}>
+
+export type UserFindManyAppQuery = {
+  __typename?: 'Query'
+  paging: {
+    __typename?: 'AppPaging'
+    data: Array<{
+      __typename?: 'App'
+      createdAt?: Date | null
+      id: string
+      name: string
+      avatarUrl?: string | null
+      updatedAt?: Date | null
+      user?: {
+        __typename?: 'AppUser'
+        appId: string
+        createdAt?: Date | null
+        id: string
+        role: AppUserRole
+        userId: string
+        updatedAt?: Date | null
+      } | null
+    }>
+    meta: {
+      __typename?: 'PagingMeta'
+      currentPage: number
+      isFirstPage: boolean
+      isLastPage: boolean
+      nextPage?: number | null
+      pageCount?: number | null
+      previousPage?: number | null
+      totalCount?: number | null
+    }
+  }
+}
+
+export type UserFindOneAppQueryVariables = Exact<{
+  appId: Scalars['String']['input']
+}>
+
+export type UserFindOneAppQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'App'
+    createdAt?: Date | null
+    id: string
+    name: string
+    avatarUrl?: string | null
+    updatedAt?: Date | null
+    user?: {
+      __typename?: 'AppUser'
+      appId: string
+      createdAt?: Date | null
+      id: string
+      role: AppUserRole
+      userId: string
+      updatedAt?: Date | null
+    } | null
+  } | null
+}
+
+export type UserCreateAppMutationVariables = Exact<{
+  input: UserCreateAppInput
+}>
+
+export type UserCreateAppMutation = {
+  __typename?: 'Mutation'
+  created?: {
+    __typename?: 'App'
+    createdAt?: Date | null
+    id: string
+    name: string
+    avatarUrl?: string | null
+    updatedAt?: Date | null
+  } | null
+}
+
+export type UserUpdateAppMutationVariables = Exact<{
+  appId: Scalars['String']['input']
+  input: UserUpdateAppInput
+}>
+
+export type UserUpdateAppMutation = {
+  __typename?: 'Mutation'
+  updated?: {
+    __typename?: 'App'
+    createdAt?: Date | null
+    id: string
+    name: string
+    avatarUrl?: string | null
+    updatedAt?: Date | null
+  } | null
+}
+
+export type UserDeleteAppMutationVariables = Exact<{
+  appId: Scalars['String']['input']
+}>
+
+export type UserDeleteAppMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
 export type LoginMutationVariables = Exact<{
   input: LoginInput
@@ -1612,6 +1756,57 @@ export const AdminDeleteAppDocument = gql`
     deleted: adminDeleteApp(appId: $appId)
   }
 `
+export const UserFindManyAppDocument = gql`
+  query userFindManyApp($input: UserFindManyAppInput!) {
+    paging: userFindManyApp(input: $input) {
+      data {
+        ...AppDetails
+        user {
+          ...AppUserDetails
+        }
+      }
+      meta {
+        ...PagingMetaDetails
+      }
+    }
+  }
+  ${AppDetailsFragmentDoc}
+  ${AppUserDetailsFragmentDoc}
+  ${PagingMetaDetailsFragmentDoc}
+`
+export const UserFindOneAppDocument = gql`
+  query userFindOneApp($appId: String!) {
+    item: userFindOneApp(appId: $appId) {
+      ...AppDetails
+      user {
+        ...AppUserDetails
+      }
+    }
+  }
+  ${AppDetailsFragmentDoc}
+  ${AppUserDetailsFragmentDoc}
+`
+export const UserCreateAppDocument = gql`
+  mutation userCreateApp($input: UserCreateAppInput!) {
+    created: userCreateApp(input: $input) {
+      ...AppDetails
+    }
+  }
+  ${AppDetailsFragmentDoc}
+`
+export const UserUpdateAppDocument = gql`
+  mutation userUpdateApp($appId: String!, $input: UserUpdateAppInput!) {
+    updated: userUpdateApp(appId: $appId, input: $input) {
+      ...AppDetails
+    }
+  }
+  ${AppDetailsFragmentDoc}
+`
+export const UserDeleteAppDocument = gql`
+  mutation userDeleteApp($appId: String!) {
+    deleted: userDeleteApp(appId: $appId)
+  }
+`
 export const LoginDocument = gql`
   mutation login($input: LoginInput!) {
     login(input: $input) {
@@ -1837,6 +2032,11 @@ const AdminFindOneAppDocumentString = print(AdminFindOneAppDocument)
 const AdminCreateAppDocumentString = print(AdminCreateAppDocument)
 const AdminUpdateAppDocumentString = print(AdminUpdateAppDocument)
 const AdminDeleteAppDocumentString = print(AdminDeleteAppDocument)
+const UserFindManyAppDocumentString = print(UserFindManyAppDocument)
+const UserFindOneAppDocumentString = print(UserFindOneAppDocument)
+const UserCreateAppDocumentString = print(UserCreateAppDocument)
+const UserUpdateAppDocumentString = print(UserUpdateAppDocument)
+const UserDeleteAppDocumentString = print(UserDeleteAppDocument)
 const LoginDocumentString = print(LoginDocument)
 const LogoutDocumentString = print(LogoutDocument)
 const RegisterDocumentString = print(RegisterDocument)
@@ -2174,6 +2374,111 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'adminDeleteApp',
+        'mutation',
+        variables,
+      )
+    },
+    userFindManyApp(
+      variables: UserFindManyAppQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserFindManyAppQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserFindManyAppQuery>(UserFindManyAppDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userFindManyApp',
+        'query',
+        variables,
+      )
+    },
+    userFindOneApp(
+      variables: UserFindOneAppQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserFindOneAppQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserFindOneAppQuery>(UserFindOneAppDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userFindOneApp',
+        'query',
+        variables,
+      )
+    },
+    userCreateApp(
+      variables: UserCreateAppMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserCreateAppMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserCreateAppMutation>(UserCreateAppDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userCreateApp',
+        'mutation',
+        variables,
+      )
+    },
+    userUpdateApp(
+      variables: UserUpdateAppMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserUpdateAppMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserUpdateAppMutation>(UserUpdateAppDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userUpdateApp',
+        'mutation',
+        variables,
+      )
+    },
+    userDeleteApp(
+      variables: UserDeleteAppMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserDeleteAppMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserDeleteAppMutation>(UserDeleteAppDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userDeleteApp',
         'mutation',
         variables,
       )
@@ -2824,6 +3129,20 @@ export function RequestIdentityChallengeInputSchema(): z.ZodObject<Properties<Re
   })
 }
 
+export function UserCreateAppInputSchema(): z.ZodObject<Properties<UserCreateAppInput>> {
+  return z.object({
+    name: z.string(),
+  })
+}
+
+export function UserFindManyAppInputSchema(): z.ZodObject<Properties<UserFindManyAppInput>> {
+  return z.object({
+    limit: z.number().nullish(),
+    page: z.number().nullish(),
+    search: z.string().nullish(),
+  })
+}
+
 export function UserFindManyIdentityInputSchema(): z.ZodObject<Properties<UserFindManyIdentityInput>> {
   return z.object({
     username: z.string(),
@@ -2835,6 +3154,13 @@ export function UserFindManyUserInputSchema(): z.ZodObject<Properties<UserFindMa
     limit: z.number().nullish(),
     page: z.number().nullish(),
     search: z.string().nullish(),
+  })
+}
+
+export function UserUpdateAppInputSchema(): z.ZodObject<Properties<UserUpdateAppInput>> {
+  return z.object({
+    avatarUrl: z.string().nullish(),
+    name: z.string().nullish(),
   })
 }
 

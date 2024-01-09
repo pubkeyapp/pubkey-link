@@ -1,3 +1,4 @@
+import { UserAppFeature } from '@pubkey-link/web-app-feature'
 import { AuthLoginFeature, AuthRegisterFeature } from '@pubkey-link/web-auth-feature'
 import { DashboardFeature } from '@pubkey-link/web-dashboard-feature'
 import { HomeFeature } from '@pubkey-link/web-home-feature'
@@ -23,6 +24,7 @@ export function ShellRoutes() {
     layout: [
       // Here you can add routes that are part of the main layout
       { path: '/dashboard', element: <DashboardFeature /> },
+      { path: '/apps/*', element: <UserAppFeature /> },
       { path: '/profile/*', element: <UserFeature /> },
       { path: '/settings/*', element: <SettingsFeature /> },
       { path: '/solana/*', element: <SolanaFeature /> },

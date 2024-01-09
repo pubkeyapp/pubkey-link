@@ -21,7 +21,7 @@ export function AdminAppDetailFeature() {
 
   return (
     <UiPage
-      title={<AppUiLabel app={item} />}
+      title={<AppUiLabel app={item} to={item.id} />}
       leftAction={<UiBack />}
       rightAction={
         <Group>
@@ -32,24 +32,24 @@ export function AdminAppDetailFeature() {
       <UiTabRoutes
         tabs={[
           {
-            value: 'overview',
+            path: 'overview',
             label: 'Overview',
-            component: <AdminAppDetailOverviewTab appId={appId} />,
+            element: <AdminAppDetailOverviewTab appId={appId} />,
           },
           {
-            value: 'bots',
+            path: 'bots',
             label: 'Bots',
-            component: <AdminAppBotFeature appId={appId} />,
+            element: <AdminAppBotFeature appId={appId} />,
           },
           {
-            value: 'users',
+            path: 'users',
             label: 'Users',
-            component: <AdminAppUserFeature appId={appId} />,
+            element: <AdminAppUserFeature appId={appId} />,
           },
           {
-            value: 'settings',
+            path: 'settings',
             label: 'Settings',
-            component: <AdminAppDetailSettingsTab appId={appId} />,
+            element: <AdminAppDetailSettingsTab appId={appId} />,
           },
         ]}
       />

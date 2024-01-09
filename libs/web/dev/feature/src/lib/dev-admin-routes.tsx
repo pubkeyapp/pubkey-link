@@ -9,9 +9,9 @@ export default function DevAdminRoutes() {
       <UiTabRoutes
         grow={false}
         tabs={[
-          { value: 'new', label: 'New', component: <DevNew /> },
-          { value: 'user-autocomplete', label: 'User Autocomplete', component: <DevUserAutocomplete /> },
-          { value: 'identity-wizard', label: 'Identity Wizard', component: <DevIdentityWizard /> },
+          { path: 'new', label: 'New', element: <DevNew /> },
+          { path: 'user-autocomplete', label: 'User Autocomplete', element: <DevUserAutocomplete /> },
+          { path: 'identity-wizard', label: 'Identity Wizard', element: <DevIdentityWizard /> },
         ]}
       />
     </UiContainer>
