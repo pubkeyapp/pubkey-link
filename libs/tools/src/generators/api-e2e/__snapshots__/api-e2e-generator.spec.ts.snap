@@ -65,7 +65,6 @@ describe('api-test-feature', () => {
         expect(res.data.paging.meta.totalCount).toBeGreaterThan(1)
         expect(res.data.paging.data.length).toBeGreaterThan(1)
         // First item should be the one we created above
-        console.log(res.data.paging.data)
         expect(res.data.paging.data[0].id).toBe(testId)
       })
 

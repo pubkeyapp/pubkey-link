@@ -27,6 +27,7 @@ jobs:
       parallel-commands: |
         pnpm nx-cloud record -- pnpm nx format:check
       parallel-commands-on-agents: |
+        pnpm prisma generate
         pnpm nx affected --target=lint --parallel=3
         pnpm nx affected --target=test --parallel=3 --ci --code-coverage --exclude anchor
         pnpm nx affected --target=build --parallel=3
@@ -37,3 +38,6 @@ jobs:
     with:
       node-version: 20.10.0
       number-of-agents: 3
+      install-commands: |
+        pnpm install --frozen-lockfile
+        pnpm prisma generate

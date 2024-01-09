@@ -1,32 +1,42 @@
-import { AdminCreateAppUserInput, AdminFindManyAppUserInput, AdminUpdateAppUserInput, AppUser } from '@pubkey-link/sdk'
+import {
+  AdminCreateAppUserInput,
+  AdminFindManyAppUserInput,
+  AdminUpdateAppUserInput,
+  AppUser,
+  AppUserRole,
+} from '@pubkey-link/sdk'
 import { getAliceCookie, getBobCookie, sdk, uniqueId } from '../support'
 
 describe('api-app-user-feature', () => {
   describe('api-app-user-admin-resolver', () => {
-    const app-userName = uniqueId('acme-app-user')
-    let appUserId: string
-    let cookie: string
+    let alice: string
+    let userId: string
+    let appId: string
 
     beforeAll(async () => {
-      cookie = await getAliceCookie()
-      const created = await sdk.adminCreateAppUser({ input: { name: app-userName } }, { cookie })
-      appUserId = created.data.created.id
+      alice = await getAliceCookie()
+    })
+    beforeEach(async () => {
+      appId = await sdk
+        .adminCreateApp({ input: { name: uniqueId('app') } }, { cookie: alice })
+        .then((res) => res.data.created.id)
+      userId = await sdk
+        .adminCreateUser({ input: { username: uniqueId('user') } }, { cookie: alice })
+        .then((res) => res.data.created.id)
     })
 
     describe('authorized', () => {
-      beforeAll(async () => {
-        cookie = await getAliceCookie()
-      })
-
       it('should create a app-user', async () => {
         const input: AdminCreateAppUserInput = {
-          name: uniqueId('app-user'),
+          role: AppUserRole.User,
+          userId,
+          appId,
         }
 
-        const res = await sdk.adminCreateAppUser({ input }, { cookie })
+        const res = await sdk.adminCreateAppUser({ input }, { cookie: alice })
 
         const item: AppUser = res.data.created
-        expect(item.name).toBe(input.name)
+        expect(item.role).toBe(input.role)
         expect(item.id).toBeDefined()
         expect(item.createdAt).toBeDefined()
         expect(item.updatedAt).toBeDefined()
@@ -34,50 +44,60 @@ describe('api-app-user-feature', () => {
 
       it('should update a app-user', async () => {
         const createInput: AdminCreateAppUserInput = {
-          name: uniqueId('app-user'),
+          role: AppUserRole.User,
+          userId,
+          appId,
         }
-        const createdRes = await sdk.adminCreateAppUser({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateAppUser({ input: createInput }, { cookie: alice })
         const appUserId = createdRes.data.created.id
         const input: AdminUpdateAppUserInput = {
-          name: uniqueId('app-user'),
+          role: AppUserRole.Admin,
+          userId,
+          appId,
         }
 
-        const res = await sdk.adminUpdateAppUser({ appUserId, input }, { cookie })
+        const res = await sdk.adminUpdateAppUser({ appUserId, input }, { cookie: alice })
 
         const item: AppUser = res.data.updated
-        expect(item.name).toBe(input.name)
+        expect(item.role).toBe(input.role)
       })
 
       it('should find a list of appUsers (find all)', async () => {
         const createInput: AdminCreateAppUserInput = {
-          name: uniqueId('app-user'),
+          role: AppUserRole.User,
+          userId,
+          appId,
         }
-        const createdRes = await sdk.adminCreateAppUser({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateAppUser({ input: createInput }, { cookie: alice })
         const appUserId = createdRes.data.created.id
 
-        const input: AdminFindManyAppUserInput = {}
+        const input: AdminFindManyAppUserInput = {
+          appId,
+        }
 
-        const res = await sdk.adminFindManyAppUser({ input }, { cookie })
+        const res = await sdk.adminFindManyAppUser({ input }, { cookie: alice })
 
         expect(res.data.paging.meta.totalCount).toBeGreaterThan(1)
         expect(res.data.paging.data.length).toBeGreaterThan(1)
         // First item should be the one we created above
-        console.log(res.data.paging.data)
         expect(res.data.paging.data[0].id).toBe(appUserId)
       })
 
       it('should find a list of appUsers (find new one)', async () => {
         const createInput: AdminCreateAppUserInput = {
-          name: uniqueId('app-user'),
+          role: AppUserRole.User,
+          userId,
+          appId,
         }
-        const createdRes = await sdk.adminCreateAppUser({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateAppUser({ input: createInput }, { cookie: alice })
         const appUserId = createdRes.data.created.id
 
         const input: AdminFindManyAppUserInput = {
+          appId,
           search: appUserId,
         }
 
-        const res = await sdk.adminFindManyAppUser({ input }, { cookie })
+        const res = await sdk.adminFindManyAppUser({ input }, { cookie: alice })
 
         expect(res.data.paging.meta.totalCount).toBe(1)
         expect(res.data.paging.data.length).toBe(1)
@@ -86,47 +106,54 @@ describe('api-app-user-feature', () => {
 
       it('should find a app-user by id', async () => {
         const createInput: AdminCreateAppUserInput = {
-          name: uniqueId('app-user'),
+          role: AppUserRole.User,
+          userId,
+          appId,
         }
-        const createdRes = await sdk.adminCreateAppUser({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateAppUser({ input: createInput }, { cookie: alice })
         const appUserId = createdRes.data.created.id
 
-        const res = await sdk.adminFindOneAppUser({ appUserId }, { cookie })
+        const res = await sdk.adminFindOneAppUser({ appUserId }, { cookie: alice })
 
         expect(res.data.item.id).toBe(appUserId)
       })
 
       it('should delete a app-user', async () => {
         const createInput: AdminCreateAppUserInput = {
-          name: uniqueId('app-user'),
+          role: AppUserRole.User,
+          userId,
+          appId,
         }
-        const createdRes = await sdk.adminCreateAppUser({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateAppUser({ input: createInput }, { cookie: alice })
         const appUserId = createdRes.data.created.id
 
-        const res = await sdk.adminDeleteAppUser({ appUserId }, { cookie })
+        const res = await sdk.adminDeleteAppUser({ appUserId }, { cookie: alice })
 
         expect(res.data.deleted).toBe(true)
 
-        const findRes = await sdk.adminFindManyAppUser({ input: { search: appUserId } }, { cookie })
+        const findRes = await sdk.adminFindManyAppUser({ input: { appId, search: appUserId } }, { cookie: alice })
         expect(findRes.data.paging.meta.totalCount).toBe(0)
         expect(findRes.data.paging.data.length).toBe(0)
       })
     })
 
     describe('unauthorized', () => {
-      let cookie: string
+      let bob: string
+
       beforeAll(async () => {
-        cookie = await getBobCookie()
+        bob = await getBobCookie()
       })
 
       it('should not create a app-user', async () => {
         expect.assertions(1)
         const input: AdminCreateAppUserInput = {
-          name: uniqueId('app-user'),
+          role: AppUserRole.User,
+          userId,
+          appId,
         }
 
         try {
-          await sdk.adminCreateAppUser({ input }, { cookie })
+          await sdk.adminCreateAppUser({ input }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
@@ -134,8 +161,16 @@ describe('api-app-user-feature', () => {
 
       it('should not update a app-user', async () => {
         expect.assertions(1)
+        const appUserId = await sdk
+          .adminCreateAppUser({ input: { role: AppUserRole.User, userId, appId } }, { cookie: alice })
+          .then((res) => res.data.created.id)
+
         try {
-          await sdk.adminUpdateAppUser({ appUserId, input: {} }, { cookie })
+          const updated = await sdk.adminUpdateAppUser(
+            { appUserId, input: { appId, role: AppUserRole.Admin, userId } },
+            { cookie: bob },
+          )
+          console.log('updated', updated)
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
@@ -144,25 +179,33 @@ describe('api-app-user-feature', () => {
       it('should not find a list of appUsers (find all)', async () => {
         expect.assertions(1)
         try {
-          await sdk.adminFindManyAppUser({ input: {} }, { cookie })
+          await sdk.adminFindManyAppUser({ input: { appId } }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
       })
 
       it('should not find a app-user by id', async () => {
+        const appUserId = await sdk
+          .adminCreateAppUser({ input: { role: AppUserRole.User, userId, appId } }, { cookie: alice })
+          .then((res) => res.data.created.id)
+
         expect.assertions(1)
         try {
-          await sdk.adminFindOneAppUser({ appUserId }, { cookie })
+          await sdk.adminFindOneAppUser({ appUserId }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
       })
 
-      it('should not delete a app-user', async () => {
+      it('should not delete an app-user', async () => {
+        const appUserId = await sdk
+          .adminCreateAppUser({ input: { role: AppUserRole.User, userId, appId } }, { cookie: alice })
+          .then((res) => res.data.created.id)
+
         expect.assertions(1)
         try {
-          await sdk.adminDeleteAppUser({ appUserId }, { cookie })
+          await sdk.adminDeleteAppUser({ appUserId }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
