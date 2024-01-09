@@ -46,8 +46,8 @@ mutation adminDeleteIdentity($identityId: String!) {
   deleted: adminDeleteIdentity(identityId: $identityId)
 }
 
-query userFindManyIdentity {
-  items: userFindManyIdentity {
+query userFindManyIdentity($input: UserFindManyIdentityInput!) {
+  items: userFindManyIdentity(input: $input) {
     ...IdentityDetails
   }
 }

@@ -8,7 +8,7 @@ export function useUserProfile() {
   const sdk = useSdk()
   const me = useMe(sdk)
   const { user } = useAuth()
-  const { query } = useUserFineOneUser(user?.username as string)
+  const { query } = useUserFineOneUser({ username: user?.username as string })
 
   return {
     user: query.data?.item,

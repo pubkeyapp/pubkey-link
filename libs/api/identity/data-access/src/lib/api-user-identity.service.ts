@@ -5,6 +5,7 @@ import { verifySignature } from '@pubkeyapp/solana-verify-wallet'
 import { ApiSolanaIdentityService } from './api-solana-identity.service'
 import { LinkIdentityInput } from './dto/link-identity-input'
 import { RequestIdentityChallengeInput } from './dto/request-identity-challenge.input'
+import { UserFindManyIdentityInput } from './dto/user-find-many-identity-input'
 import { VerifyIdentityChallengeInput } from './dto/verify-identity-challenge-input'
 import { sha256 } from './helpers/sha256'
 
@@ -31,9 +32,9 @@ export class ApiUserIdentityService {
     return true
   }
 
-  async findManyIdentity(userId: string): Promise<PrismaIdentity[]> {
+  async findManyIdentity(input: UserFindManyIdentityInput): Promise<PrismaIdentity[]> {
     const items = await this.core.data.identity.findMany({
-      where: { ownerId: userId },
+      where: { owner: { username: input.username } },
       orderBy: [{ provider: 'asc' }, { providerId: 'asc' }],
     })
 

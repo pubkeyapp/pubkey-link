@@ -427,6 +427,10 @@ export type QueryAnonRequestIdentityChallengeArgs = {
   input: RequestIdentityChallengeInput
 }
 
+export type QueryUserFindManyIdentityArgs = {
+  input: UserFindManyIdentityInput
+}
+
 export type QueryUserFindManyUserArgs = {
   input: UserFindManyUserInput
 }
@@ -462,6 +466,10 @@ export type User = {
   status?: Maybe<UserStatus>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   username?: Maybe<Scalars['String']['output']>
+}
+
+export type UserFindManyIdentityInput = {
+  username: Scalars['String']['input']
 }
 
 export type UserFindManyUserInput = {
@@ -1035,7 +1043,9 @@ export type AdminDeleteIdentityMutationVariables = Exact<{
 
 export type AdminDeleteIdentityMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
-export type UserFindManyIdentityQueryVariables = Exact<{ [key: string]: never }>
+export type UserFindManyIdentityQueryVariables = Exact<{
+  input: UserFindManyIdentityInput
+}>
 
 export type UserFindManyIdentityQuery = {
   __typename?: 'Query'
@@ -1674,8 +1684,8 @@ export const AdminDeleteIdentityDocument = gql`
   }
 `
 export const UserFindManyIdentityDocument = gql`
-  query userFindManyIdentity {
-    items: userFindManyIdentity {
+  query userFindManyIdentity($input: UserFindManyIdentityInput!) {
+    items: userFindManyIdentity(input: $input) {
       ...IdentityDetails
     }
   }
@@ -2325,7 +2335,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
       )
     },
     userFindManyIdentity(
-      variables?: UserFindManyIdentityQueryVariables,
+      variables: UserFindManyIdentityQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
       data: UserFindManyIdentityQuery
@@ -2811,6 +2821,12 @@ export function RequestIdentityChallengeInputSchema(): z.ZodObject<Properties<Re
   return z.object({
     provider: IdentityProviderSchema,
     providerId: z.string(),
+  })
+}
+
+export function UserFindManyIdentityInputSchema(): z.ZodObject<Properties<UserFindManyIdentityInput>> {
+  return z.object({
+    username: z.string(),
   })
 }
 

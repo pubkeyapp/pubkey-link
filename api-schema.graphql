@@ -269,7 +269,7 @@ type Query {
   appConfig: AppConfig!
   me: User
   uptime: Float!
-  userFindManyIdentity: [Identity!]
+  userFindManyIdentity(input: UserFindManyIdentityInput!): [Identity!]
   userFindManyUser(input: UserFindManyUserInput!): UserPaging!
   userFindOneUser(username: String!): User
   userRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
@@ -297,6 +297,10 @@ type User {
   status: UserStatus
   updatedAt: DateTime
   username: String
+}
+
+input UserFindManyIdentityInput {
+  username: String!
 }
 
 input UserFindManyUserInput {

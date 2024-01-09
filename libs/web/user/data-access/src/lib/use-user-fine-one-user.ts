@@ -1,7 +1,7 @@
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { useQuery } from '@tanstack/react-query'
 
-export function useUserFineOneUser(username: string) {
+export function useUserFineOneUser({ username }: { username: string }) {
   const sdk = useSdk()
   const query = useQuery({
     queryKey: ['user', 'find-one-user', username],

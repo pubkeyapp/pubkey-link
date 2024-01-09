@@ -13,8 +13,8 @@ import { Link, useParams } from 'react-router-dom'
 export function UserDetailFeature() {
   const { user: authUser } = useAuth()
   const { username } = useParams<{ username: string }>() as { username: string }
-  const { user, query } = useUserFineOneUser(username)
-  const { items } = useUserFindManyIdentity()
+  const { user, query } = useUserFineOneUser({ username })
+  const { items } = useUserFindManyIdentity({ username })
 
   if (query.isLoading) {
     return <UiLoader />
