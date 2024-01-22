@@ -1,0 +1,15 @@
+import { Paper } from '@mantine/core'
+import type { <%= model.className %> } from '@pubkey-link/sdk'
+import { UiDebugModal, UiGroup } from '@pubkey-ui/core'
+import { <%= model.className %>UiItem } from './<%= model.fileName %>-ui-item'
+
+export function <%= model.className %>UiGridItem({ <%= model.propertyName %>, to }: { <%= model.propertyName %>: <%= model.className %>; to?: string }) {
+  return (
+    <Paper withBorder p="md">
+      <UiGroup>
+        <<%= model.className %>UiItem <%= model.propertyName %>={<%= model.propertyName %>} to={to} />
+        <UiDebugModal data={<%= model.propertyName %>} />
+      </UiGroup>
+    </Paper>
+  )
+}

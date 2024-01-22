@@ -1,0 +1,33 @@
+import { AvatarProps, Group, type GroupProps, Stack, Text } from '@mantine/core'
+import { <%= model.className %> } from '@pubkey-link/sdk'
+import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core'
+import { <%= model.className %>UiAvatar } from './<%= model.fileName %>-ui-avatar'
+
+export function <%= model.className %>UiItem({
+  anchorProps,
+  avatarProps,
+  groupProps,
+  <%= model.propertyName %>,
+  to,
+}: {
+  anchorProps?: UiAnchorProps
+  avatarProps?: Omit<AvatarProps, 'src'>
+  groupProps?: GroupProps
+  <%= model.propertyName %>?: <%= model.className %>
+  to?: string | null
+}) {
+  if (!<%= model.propertyName %>) return null
+
+  return (
+    <UiAnchor to={to ?? undefined} underline="never" {...anchorProps}>
+      <Group gap="sm" {...groupProps}>
+        <<%= model.className %>UiAvatar <%= model.propertyName %>={<%= model.propertyName %>} {...avatarProps} />
+        <Stack gap={1}>
+          <Text size="sm" fw={500}>
+            {<%= model.propertyName %>?.<%= label.propertyName %>}
+          </Text>
+        </Stack>
+      </Group>
+    </UiAnchor>
+  )
+}

@@ -1,0 +1,48 @@
+import { Button, Group } from '@mantine/core'
+import { UiPageLimit, UiSearchField } from '@<%= npmScope %>/<%= app %>-ui-core'
+import { useAdminFindMany<%= modelClassName %> } from '@<%= npmScope %>/<%= app %>-<%= modelFileName %>-data-access'
+import { Admin<%= modelClassName %>UiTable } from '@<%= npmScope %>/<%= app %>-<%= modelFileName %>-ui'
+import { UiBack, UiDebugModal, UiInfo, UiLoader, UiPage } from '@pubkey-ui/core'
+import { Link } from 'react-router-dom'
+
+export function Admin<%= modelClassName %>ListFeature() {
+  const { delete<%= modelClassName %>, items, pagination, query, setSearch } = useAdminFindMany<%= modelClassName %>()
+
+  return (
+    <UiPage
+      title="<%= modelClassNamePlural %>"
+      leftAction={<UiBack />}
+      rightAction={
+        <Group>
+          <UiDebugModal data={items} />
+          <Button component={Link} to="create">
+            Create
+          </Button>
+        </Group>
+      }
+    >
+      <Group>
+        <UiSearchField placeholder="Search <%= modelPropertyName %>" setSearch={setSearch} />
+        <UiPageLimit limit={pagination.limit} setLimit={pagination.setLimit} setPage={pagination.setPage} />
+      </Group>
+
+      {query.isLoading ? (
+        <UiLoader />
+      ) : items?.length ? (
+        <Admin<%= modelClassName %>UiTable
+          delete<%= modelClassName %>={(<%= modelPropertyName %>) => {
+            if (!window.confirm('Are you sure?')) return
+            return delete<%= modelClassName %>(<%= modelPropertyName %>.id)
+          }}
+          <%= modelPropertyNamePlural %>={items}
+          page={pagination.page}
+          totalRecords={pagination.total}
+          recordsPerPage={pagination.limit}
+          onPageChange={(page) => void pagination.setPage(page)}
+        />
+      ) : (
+        <UiInfo message="No <%= modelPropertyNamePlural %> found" />
+      )}
+    </UiPage>
+  )
+}

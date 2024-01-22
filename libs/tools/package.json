@@ -1,0 +1,22 @@
+{
+  "name": "@pubkey-link/tools",
+  "version": "0.0.1",
+  "dependencies": {
+    "@nx/devkit": "17.2.8",
+    "@clack/prompts": "^0.7.0",
+    "@mrleebo/prisma-ast": "^0.8.0",
+    "@nx/nest": "17.2.8",
+    "@nx/react": "17.2.8",
+    "dotenv": "16.3.1",
+    "pg": "^8.11.2",
+    "pluralize": "^8.0.0",
+    "ts-morph": "^21.0.1",
+    "tslib": "^2.3.0",
+    "@nx/eslint": "17.2.8",
+    "@nx/js": "17.2.8"
+  },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts",
+  "generators": "./generators.json"
+}

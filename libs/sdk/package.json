@@ -1,0 +1,9 @@
+{
+  "name": "@pubkey-link/sdk",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "peerDependencies": {
+    "graphql": "^16.6.0",
+    "graphql-request": "^6.0.0"
+  }
+}

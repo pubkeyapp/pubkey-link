@@ -1,0 +1,171 @@
+import { <%= actor.className %>Create<%= model.className %>Input, <%= actor.className %>FindMany<%= model.className %>Input, <%= actor.className %>Update<%= model.className %>Input, <%= model.className %> } from '@<%= npmScope %>/sdk'
+import { getAliceCookie, getBobCookie, sdk, uniqueId } from '../support'
+
+describe('api-<%= model.fileName %>-feature', () => {
+  describe('api-<%= model.fileName %>-<%= actor.fileName %>-resolver', () => {
+    const <%= model.propertyName %>Name = uniqueId('acme-<%= model.fileName %>')
+    let <%= model.propertyName %>Id: string
+    let cookie: string
+
+    beforeAll(async () => {
+      cookie = await getAliceCookie()
+      const created = await sdk.<%= actor.fileName %>Create<%= model.className %>({ input: { name: <%= model.propertyName %>Name } }, { cookie })
+      <%= model.propertyName %>Id = created.data.created.id
+    })
+
+    describe('authorized', () => {
+      beforeAll(async () => {
+        cookie = await getAliceCookie()
+      })
+
+      it('should create a <%= model.fileName %>', async () => {
+        const input: <%= actor.className %>Create<%= model.className %>Input = {
+          name: uniqueId('<%= model.fileName %>'),
+        }
+
+        const res = await sdk.<%= actor.fileName %>Create<%= model.className %>({ input }, { cookie })
+
+        const item: <%= model.className %> = res.data.created
+        expect(item.name).toBe(input.name)
+        expect(item.id).toBeDefined()
+        expect(item.createdAt).toBeDefined()
+        expect(item.updatedAt).toBeDefined()
+      })
+
+      it('should update a <%= model.fileName %>', async () => {
+        const createInput: <%= actor.className %>Create<%= model.className %>Input = {
+          name: uniqueId('<%= model.fileName %>'),
+        }
+        const createdRes = await sdk.<%= actor.fileName %>Create<%= model.className %>({ input: createInput }, { cookie })
+        const <%= model.propertyName %>Id = createdRes.data.created.id
+        const input: <%= actor.className %>Update<%= model.className %>Input = {
+          name: uniqueId('<%= model.fileName %>'),
+        }
+
+        const res = await sdk.<%= actor.fileName %>Update<%= model.className %>({ <%= model.propertyName %>Id, input }, { cookie })
+
+        const item: <%= model.className %> = res.data.updated
+        expect(item.name).toBe(input.name)
+      })
+
+      it('should find a list of <%= modelPropertyNamePlural %> (find all)', async () => {
+        const createInput: <%= actor.className %>Create<%= model.className %>Input = {
+          name: uniqueId('<%= model.fileName %>'),
+        }
+        const createdRes = await sdk.<%= actor.fileName %>Create<%= model.className %>({ input: createInput }, { cookie })
+        const <%= model.propertyName %>Id = createdRes.data.created.id
+
+        const input: <%= actor.className %>FindMany<%= model.className %>Input = {}
+
+        const res = await sdk.<%= actor.fileName %>FindMany<%= model.className %>({ input }, { cookie })
+
+        expect(res.data.paging.meta.totalCount).toBeGreaterThan(1)
+        expect(res.data.paging.data.length).toBeGreaterThan(1)
+        // First item should be the one we created above
+        expect(res.data.paging.data[0].id).toBe(<%= model.propertyName %>Id)
+      })
+
+      it('should find a list of <%= modelPropertyNamePlural %> (find new one)', async () => {
+        const createInput: <%= actor.className %>Create<%= model.className %>Input = {
+          name: uniqueId('<%= model.fileName %>'),
+        }
+        const createdRes = await sdk.<%= actor.fileName %>Create<%= model.className %>({ input: createInput }, { cookie })
+        const <%= model.propertyName %>Id = createdRes.data.created.id
+
+        const input: <%= actor.className %>FindMany<%= model.className %>Input = {
+          search: <%= model.propertyName %>Id,
+        }
+
+        const res = await sdk.<%= actor.fileName %>FindMany<%= model.className %>({ input }, { cookie })
+
+        expect(res.data.paging.meta.totalCount).toBe(1)
+        expect(res.data.paging.data.length).toBe(1)
+        expect(res.data.paging.data[0].id).toBe(<%= model.propertyName %>Id)
+      })
+
+      it('should find a <%= model.fileName %> by id', async () => {
+        const createInput: <%= actor.className %>Create<%= model.className %>Input = {
+          name: uniqueId('<%= model.fileName %>'),
+        }
+        const createdRes = await sdk.<%= actor.fileName %>Create<%= model.className %>({ input: createInput }, { cookie })
+        const <%= model.propertyName %>Id = createdRes.data.created.id
+
+        const res = await sdk.<%= actor.fileName %>FindOne<%= model.className %>({ <%= model.propertyName %>Id }, { cookie })
+
+        expect(res.data.item.id).toBe(<%= model.propertyName %>Id)
+      })
+
+      it('should delete a <%= model.fileName %>', async () => {
+        const createInput: <%= actor.className %>Create<%= model.className %>Input = {
+          name: uniqueId('<%= model.fileName %>'),
+        }
+        const createdRes = await sdk.<%= actor.fileName %>Create<%= model.className %>({ input: createInput }, { cookie })
+        const <%= model.propertyName %>Id = createdRes.data.created.id
+
+        const res = await sdk.<%= actor.fileName %>Delete<%= model.className %>({ <%= model.propertyName %>Id }, { cookie })
+
+        expect(res.data.deleted).toBe(true)
+
+        const findRes = await sdk.<%= actor.fileName %>FindMany<%= model.className %>({ input: { search: <%= model.propertyName %>Id } }, { cookie })
+        expect(findRes.data.paging.meta.totalCount).toBe(0)
+        expect(findRes.data.paging.data.length).toBe(0)
+      })
+    })
+
+    describe('unauthorized', () => {
+      let cookie: string
+      beforeAll(async () => {
+        cookie = await getBobCookie()
+      })
+
+      it('should not create a <%= model.fileName %>', async () => {
+        expect.assertions(1)
+        const input: <%= actor.className %>Create<%= model.className %>Input = {
+          name: uniqueId('<%= model.fileName %>'),
+        }
+
+        try {
+          await sdk.<%= actor.fileName %>Create<%= model.className %>({ input }, { cookie })
+        } catch (e) {
+          expect(e.message).toBe('Unauthorized: User is not <%= actor.className %>')
+        }
+      })
+
+      it('should not update a <%= model.fileName %>', async () => {
+        expect.assertions(1)
+        try {
+          await sdk.<%= actor.fileName %>Update<%= model.className %>({ <%= model.propertyName %>Id, input: {} }, { cookie })
+        } catch (e) {
+          expect(e.message).toBe('Unauthorized: User is not <%= actor.className %>')
+        }
+      })
+
+      it('should not find a list of <%= modelPropertyNamePlural %> (find all)', async () => {
+        expect.assertions(1)
+        try {
+          await sdk.<%= actor.fileName %>FindMany<%= model.className %>({ input: {} }, { cookie })
+        } catch (e) {
+          expect(e.message).toBe('Unauthorized: User is not <%= actor.className %>')
+        }
+      })
+
+      it('should not find a <%= model.fileName %> by id', async () => {
+        expect.assertions(1)
+        try {
+          await sdk.<%= actor.fileName %>FindOne<%= model.className %>({ <%= model.propertyName %>Id }, { cookie })
+        } catch (e) {
+          expect(e.message).toBe('Unauthorized: User is not <%= actor.className %>')
+        }
+      })
+
+      it('should not delete a <%= model.fileName %>', async () => {
+        expect.assertions(1)
+        try {
+          await sdk.<%= actor.fileName %>Delete<%= model.className %>({ <%= model.propertyName %>Id }, { cookie })
+        } catch (e) {
+          expect(e.message).toBe('Unauthorized: User is not <%= actor.className %>')
+        }
+      })
+    })
+  })
+})

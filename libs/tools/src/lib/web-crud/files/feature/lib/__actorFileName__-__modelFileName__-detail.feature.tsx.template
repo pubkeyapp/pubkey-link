@@ -1,0 +1,45 @@
+import { Group } from '@mantine/core'
+import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoutes } from '@pubkey-ui/core'
+import { use<%= actor.className %>FindOne<%= model.className %> } from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-data-access'
+import { useParams } from 'react-router-dom'
+import { <%= actor.className %><%= model.className %>DetailOverviewTab } from './<%= actor.propertyName %>-<%= model.fileName %>-detail-overview.tab'
+import { <%= actor.className %><%= model.className %>DetailSettingsTab } from './<%= actor.propertyName %>-<%= model.fileName %>-detail-settings.tab'
+
+export function <%= actor.className %><%= model.className %>DetailFeature() {
+  const { <%= model.propertyName %>Id } = useParams<{ <%= model.propertyName %>Id: string }>() as { <%= model.propertyName %>Id: string }
+  const { item, query } = use<%= actor.className %>FindOne<%= model.className %>({ <%= model.propertyName %>Id })
+
+  if (query.isLoading) {
+    return <UiLoader />
+  }
+  if (!item) {
+    return <UiError message="<%= model.className %> not found." />
+  }
+
+  return (
+    <UiPage
+      title={<Group>{item.<%= label.propertyName %>}</Group> }
+      leftAction={<UiBack />}
+      rightAction={
+        <Group>
+          <UiDebugModal data={item} />
+        </Group>
+      }
+    >
+      <UiTabRoutes
+        tabs={[
+          {
+            path: 'overview',
+            label: 'Overview',
+            element: <<%= actor.className %><%= model.className %>DetailOverviewTab <%= model.propertyName %>Id={<%= model.propertyName %>Id} />,
+          },
+          {
+            path: 'settings',
+            label: 'Settings',
+            element: <<%= actor.className %><%= model.className %>DetailSettingsTab <%= model.propertyName %>Id={<%= model.propertyName %>Id} />,
+          },
+        ]}
+      />
+    </UiPage>
+  )
+}

@@ -1,0 +1,1100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`web-feature generator should run successfully 4`] = `""`;
+
+exports[`web-feature generator should run successfully 5`] = `""`;
+
+exports[`web-feature generator should run successfully 6`] = `""`;
+
+exports[`web-feature generator should run successfully with crud 4`] = `
+"export * from './lib/use-admin-find-many-test';
+export * from './lib/use-admin-find-one-test';
+export * from './lib/use-user-find-many-test';
+export * from './lib/use-user-find-one-test';
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 5`] = `
+"import { AdminCreateTestInput, AdminFindManyTestInput } from '@proj/sdk';
+import { useSdk } from '@proj/web-core-data-access';
+import { toastError, toastSuccess } from '@pubkey-ui/core';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+
+export function useAdminFindManyTest(props?: Partial<AdminFindManyTestInput>) {
+  const sdk = useSdk();
+  const [limit, setLimit] = useState(props?.limit ?? 10);
+  const [page, setPage] = useState(props?.page ?? 1);
+  const [search, setSearch] = useState<string>(props?.search ?? '');
+
+  const input: AdminFindManyTestInput = { page, limit, search };
+  const query = useQuery({
+    queryKey: ['admin', 'find-many-test', input],
+    queryFn: () => sdk.adminFindManyTest({ input }).then((res) => res.data),
+  });
+  const total = query.data?.paging?.meta?.totalCount ?? 0;
+  const items = query.data?.paging.data ?? [];
+
+  return {
+    items,
+    query,
+    pagination: {
+      page,
+      setPage,
+      limit,
+      setLimit,
+      total,
+    },
+    setSearch,
+    createTest: (input: AdminCreateTestInput) =>
+      sdk
+        .adminCreateTest({ input })
+        .then((res) => res.data)
+        .then((res) => {
+          if (res.created) {
+            toastSuccess(\`Test created\`);
+          } else {
+            toastError(\`Test not created\`);
+          }
+          return res.created;
+        })
+        .catch((err) => {
+          toastError(err.message);
+          return undefined;
+        }),
+    deleteTest: (testId: string) =>
+      sdk.adminDeleteTest({ testId }).then(() => {
+        toastSuccess('Test deleted');
+        return query.refetch();
+      }),
+  };
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 6`] = `
+"import { AdminUpdateTestInput } from '@proj/sdk';
+import { useSdk } from '@proj/web-core-data-access';
+import { toastError, toastSuccess } from '@pubkey-ui/core';
+import { useQuery } from '@tanstack/react-query';
+
+export function useAdminFindOneTest({ testId }: { testId: string }) {
+  const sdk = useSdk();
+  const query = useQuery({
+    queryKey: ['admin', 'find-one-test', testId],
+    queryFn: () => sdk.adminFindOneTest({ testId }).then((res) => res.data),
+    retry: 0,
+  });
+  const item = query.data?.item ?? undefined;
+
+  return {
+    item,
+    query,
+    updateTest: async (input: AdminUpdateTestInput) =>
+      sdk
+        .adminUpdateTest({ testId, input })
+        .then((res) => res.data)
+        .then(async (res) => {
+          if (res) {
+            toastSuccess('Test updated');
+            await query.refetch();
+            return true;
+          }
+          toastError('Test not updated');
+          return false;
+        })
+        .catch((err) => {
+          toastError(err.message);
+          return false;
+        }),
+  };
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 7`] = `
+"import { UserCreateTestInput, UserFindManyTestInput } from '@proj/sdk';
+import { useSdk } from '@proj/web-core-data-access';
+import { toastError, toastSuccess } from '@pubkey-ui/core';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+
+export function useUserFindManyTest(props?: Partial<UserFindManyTestInput>) {
+  const sdk = useSdk();
+  const [limit, setLimit] = useState(props?.limit ?? 10);
+  const [page, setPage] = useState(props?.page ?? 1);
+  const [search, setSearch] = useState<string>(props?.search ?? '');
+
+  const input: UserFindManyTestInput = { page, limit, search };
+  const query = useQuery({
+    queryKey: ['user', 'find-many-test', input],
+    queryFn: () => sdk.userFindManyTest({ input }).then((res) => res.data),
+  });
+  const total = query.data?.paging?.meta?.totalCount ?? 0;
+  const items = query.data?.paging.data ?? [];
+
+  return {
+    items,
+    query,
+    pagination: {
+      page,
+      setPage,
+      limit,
+      setLimit,
+      total,
+    },
+    setSearch,
+    createTest: (input: UserCreateTestInput) =>
+      sdk
+        .userCreateTest({ input })
+        .then((res) => res.data)
+        .then((res) => {
+          if (res.created) {
+            toastSuccess(\`Test created\`);
+          } else {
+            toastError(\`Test not created\`);
+          }
+          return res.created;
+        })
+        .catch((err) => {
+          toastError(err.message);
+          return undefined;
+        }),
+    deleteTest: (testId: string) =>
+      sdk.userDeleteTest({ testId }).then(() => {
+        toastSuccess('Test deleted');
+        return query.refetch();
+      }),
+  };
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 8`] = `
+"import { UserUpdateTestInput } from '@proj/sdk';
+import { useSdk } from '@proj/web-core-data-access';
+import { toastError, toastSuccess } from '@pubkey-ui/core';
+import { useQuery } from '@tanstack/react-query';
+
+export function useUserFindOneTest({ testId }: { testId: string }) {
+  const sdk = useSdk();
+  const query = useQuery({
+    queryKey: ['user', 'find-one-test', testId],
+    queryFn: () => sdk.userFindOneTest({ testId }).then((res) => res.data),
+    retry: 0,
+  });
+  const item = query.data?.item ?? undefined;
+
+  return {
+    item,
+    query,
+    updateTest: async (input: UserUpdateTestInput) =>
+      sdk
+        .userUpdateTest({ testId, input })
+        .then((res) => res.data)
+        .then(async (res) => {
+          if (res) {
+            toastSuccess('Test updated');
+            await query.refetch();
+            return true;
+          }
+          toastError('Test not updated');
+          return false;
+        })
+        .catch((err) => {
+          toastError(err.message);
+          return false;
+        }),
+  };
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 9`] = `
+"export const AdminTestFeature = lazy(() => import('./lib/admin-test.routes'));
+import { lazy } from 'react';
+
+export const UserTestFeature = lazy(() => import('./lib/user-test.routes'));
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 10`] = `
+"import { AdminCreateTestInput } from '@proj/sdk';
+import { useAdminFindManyTest } from '@proj/web-test-data-access';
+import { AdminTestUiCreateForm } from '@proj/web-test-ui';
+import { toastError, UiBack, UiCard, UiPage } from '@pubkey-ui/core';
+import { useNavigate } from 'react-router-dom';
+
+export function AdminTestCreateFeature() {
+  const navigate = useNavigate();
+  const { createTest } = useAdminFindManyTest();
+
+  async function submit(input: AdminCreateTestInput) {
+    return createTest(input)
+      .then((res) => {
+        if (res) {
+          navigate(\`/admin/tests/\${res?.id}\`);
+        }
+      })
+      .then(() => true)
+      .catch((err) => {
+        toastError(err.message);
+        return false;
+      });
+  }
+
+  return (
+    <UiPage leftAction={<UiBack />} title="Create Test">
+      <UiCard>
+        <AdminTestUiCreateForm submit={submit} />
+      </UiCard>
+    </UiPage>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 11`] = `
+"import { useAdminFindOneTest } from '@proj/web-test-data-access';
+import { UiCard, UiDebug, UiError, UiLoader } from '@pubkey-ui/core';
+
+export function AdminTestDetailOverviewTab({ testId }: { testId: string }) {
+  const { item, query } = useAdminFindOneTest({ testId });
+
+  if (query.isLoading) {
+    return <UiLoader />;
+  }
+  if (!item) {
+    return <UiError message="Test not found." />;
+  }
+
+  return (
+    <UiCard>
+      <UiDebug data={item} open />
+    </UiCard>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 12`] = `
+"import { useAdminFindOneTest } from '@proj/web-test-data-access';
+import { AdminTestUiUpdateForm } from '@proj/web-test-ui';
+import { UiCard, UiError, UiLoader } from '@pubkey-ui/core';
+
+export function AdminTestDetailSettingsTab({ testId }: { testId: string }) {
+  const { item, query, updateTest } = useAdminFindOneTest({ testId });
+
+  if (query.isLoading) {
+    return <UiLoader />;
+  }
+  if (!item) {
+    return <UiError message="Test not found." />;
+  }
+
+  return (
+    <UiCard>
+      <AdminTestUiUpdateForm test={item} submit={updateTest} />
+    </UiCard>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 13`] = `
+"import { Group } from '@mantine/core';
+import {
+  UiBack,
+  UiDebugModal,
+  UiError,
+  UiLoader,
+  UiPage,
+  UiTabRoutes,
+} from '@pubkey-ui/core';
+import { useAdminFindOneTest } from '@proj/web-test-data-access';
+import { useParams } from 'react-router-dom';
+import { AdminTestDetailOverviewTab } from './admin-test-detail-overview.tab';
+import { AdminTestDetailSettingsTab } from './admin-test-detail-settings.tab';
+
+export function AdminTestDetailFeature() {
+  const { testId } = useParams<{ testId: string }>() as { testId: string };
+  const { item, query } = useAdminFindOneTest({ testId });
+
+  if (query.isLoading) {
+    return <UiLoader />;
+  }
+  if (!item) {
+    return <UiError message="Test not found." />;
+  }
+
+  return (
+    <UiPage
+      title={<Group>{item.name}</Group>}
+      leftAction={<UiBack />}
+      rightAction={
+        <Group>
+          <UiDebugModal data={item} />
+        </Group>
+      }
+    >
+      <UiTabRoutes
+        tabs={[
+          {
+            path: 'overview',
+            label: 'Overview',
+            element: <AdminTestDetailOverviewTab testId={testId} />,
+          },
+          {
+            path: 'settings',
+            label: 'Settings',
+            element: <AdminTestDetailSettingsTab testId={testId} />,
+          },
+        ]}
+      />
+    </UiPage>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 14`] = `
+"import { Button, Group } from '@mantine/core';
+import { UiPageLimit, UiSearchField } from '@proj/web-ui-core';
+import { useAdminFindManyTest } from '@proj/web-test-data-access';
+import { AdminTestUiTable } from '@proj/web-test-ui';
+import {
+  UiBack,
+  UiDebugModal,
+  UiInfo,
+  UiLoader,
+  UiPage,
+} from '@pubkey-ui/core';
+import { Link } from 'react-router-dom';
+
+export function AdminTestListFeature() {
+  const { deleteTest, items, pagination, query, setSearch } =
+    useAdminFindManyTest({
+      limit: 10,
+    });
+
+  return (
+    <UiPage
+      title="Tests"
+      leftAction={<UiBack />}
+      rightAction={
+        <Group>
+          <UiDebugModal data={items} />
+          <Button component={Link} to="create">
+            Create
+          </Button>
+        </Group>
+      }
+    >
+      <Group>
+        <UiSearchField placeholder="Search test" setSearch={setSearch} />
+        <UiPageLimit
+          limit={pagination.limit}
+          setLimit={pagination.setLimit}
+          setPage={pagination.setPage}
+        />
+      </Group>
+
+      {query.isLoading ? (
+        <UiLoader />
+      ) : items?.length ? (
+        <AdminTestUiTable
+          deleteTest={(test) => {
+            if (!window.confirm('Are you sure?')) return;
+            return deleteTest(test.id);
+          }}
+          tests={items}
+          page={pagination.page}
+          totalRecords={pagination.total}
+          recordsPerPage={pagination.limit}
+          onPageChange={(page) => void pagination.setPage(page)}
+        />
+      ) : (
+        <UiInfo message="No tests found" />
+      )}
+    </UiPage>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 15`] = `
+"import { useRoutes } from 'react-router-dom';
+import { AdminTestDetailFeature } from './admin-test-detail.feature';
+import { AdminTestCreateFeature } from './admin-test-create.feature';
+import { AdminTestListFeature } from './admin-test-list.feature';
+
+export default function AdminTestRoutes() {
+  return useRoutes([
+    { path: '', element: <AdminTestListFeature /> },
+    {
+      path: 'create',
+      element: <AdminTestCreateFeature />,
+    },
+    { path: ':testId/*', element: <AdminTestDetailFeature /> },
+  ]);
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 16`] = `
+"import { UserCreateTestInput } from '@proj/sdk';
+import { useUserFindManyTest } from '@proj/web-test-data-access';
+import { UserTestUiCreateForm } from '@proj/web-test-ui';
+import { toastError, UiBack, UiCard, UiPage } from '@pubkey-ui/core';
+import { useNavigate } from 'react-router-dom';
+
+export function UserTestCreateFeature() {
+  const navigate = useNavigate();
+  const { createTest } = useUserFindManyTest();
+
+  async function submit(input: UserCreateTestInput) {
+    return createTest(input)
+      .then((res) => {
+        if (res) {
+          navigate(\`/tests/\${res?.id}\`);
+        }
+      })
+      .then(() => true)
+      .catch((err) => {
+        toastError(err.message);
+        return false;
+      });
+  }
+
+  return (
+    <UiPage leftAction={<UiBack />} title="Create Test">
+      <UiCard>
+        <UserTestUiCreateForm submit={submit} />
+      </UiCard>
+    </UiPage>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 17`] = `
+"import { useUserFindOneTest } from '@proj/web-test-data-access';
+import { UiCard, UiDebug, UiError, UiLoader } from '@pubkey-ui/core';
+
+export function UserTestDetailOverviewTab({ testId }: { testId: string }) {
+  const { item, query } = useUserFindOneTest({ testId });
+
+  if (query.isLoading) {
+    return <UiLoader />;
+  }
+  if (!item) {
+    return <UiError message="Test not found." />;
+  }
+
+  return (
+    <UiCard>
+      <UiDebug data={item} open />
+    </UiCard>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 18`] = `
+"import { useUserFindOneTest } from '@proj/web-test-data-access';
+import { UserTestUiUpdateForm } from '@proj/web-test-ui';
+import { UiCard, UiError, UiLoader } from '@pubkey-ui/core';
+
+export function UserTestDetailSettingsTab({ testId }: { testId: string }) {
+  const { item, query, updateTest } = useUserFindOneTest({ testId });
+
+  if (query.isLoading) {
+    return <UiLoader />;
+  }
+  if (!item) {
+    return <UiError message="Test not found." />;
+  }
+
+  return (
+    <UiCard>
+      <UserTestUiUpdateForm test={item} submit={updateTest} />
+    </UiCard>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 19`] = `
+"import { Group } from '@mantine/core';
+import {
+  UiBack,
+  UiDebugModal,
+  UiError,
+  UiLoader,
+  UiPage,
+  UiTabRoutes,
+} from '@pubkey-ui/core';
+import { useUserFindOneTest } from '@proj/web-test-data-access';
+import { useParams } from 'react-router-dom';
+import { UserTestDetailOverviewTab } from './user-test-detail-overview.tab';
+import { UserTestDetailSettingsTab } from './user-test-detail-settings.tab';
+
+export function UserTestDetailFeature() {
+  const { testId } = useParams<{ testId: string }>() as { testId: string };
+  const { item, query } = useUserFindOneTest({ testId });
+
+  if (query.isLoading) {
+    return <UiLoader />;
+  }
+  if (!item) {
+    return <UiError message="Test not found." />;
+  }
+
+  return (
+    <UiPage
+      title={<Group>{item.name}</Group>}
+      leftAction={<UiBack />}
+      rightAction={
+        <Group>
+          <UiDebugModal data={item} />
+        </Group>
+      }
+    >
+      <UiTabRoutes
+        tabs={[
+          {
+            path: 'overview',
+            label: 'Overview',
+            element: <UserTestDetailOverviewTab testId={testId} />,
+          },
+          {
+            path: 'settings',
+            label: 'Settings',
+            element: <UserTestDetailSettingsTab testId={testId} />,
+          },
+        ]}
+      />
+    </UiPage>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 20`] = `
+"import { Button, Group } from '@mantine/core';
+import { UiPageLimit, UiSearchField } from '@proj/web-ui-core';
+import { useUserFindManyTest } from '@proj/web-test-data-access';
+import { TestUiGrid } from '@proj/web-test-ui';
+import {
+  UiBack,
+  UiDebugModal,
+  UiInfo,
+  UiLoader,
+  UiPage,
+} from '@pubkey-ui/core';
+import { Link } from 'react-router-dom';
+
+export function UserTestListFeature() {
+  const { deleteTest, items, pagination, query, setSearch } =
+    useUserFindManyTest({
+      limit: 12,
+    });
+
+  return (
+    <UiPage
+      title="Tests"
+      leftAction={<UiBack />}
+      rightAction={
+        <Group>
+          <UiDebugModal data={items} />
+          <Button component={Link} to="create">
+            Create
+          </Button>
+        </Group>
+      }
+    >
+      <Group>
+        <UiSearchField placeholder="Search test" setSearch={setSearch} />
+      </Group>
+
+      {query.isLoading ? (
+        <UiLoader />
+      ) : items?.length ? (
+        <TestUiGrid
+          tests={items}
+          page={pagination.page}
+          totalRecords={pagination.total}
+          onPageChange={pagination.setPage}
+          limit={pagination.limit}
+          setLimit={pagination.setLimit}
+          setPage={pagination.setPage}
+        />
+      ) : (
+        <UiInfo message="No tests found" />
+      )}
+    </UiPage>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 21`] = `
+"import { useRoutes } from 'react-router-dom';
+import { UserTestDetailFeature } from './user-test-detail.feature';
+import { UserTestCreateFeature } from './user-test-create.feature';
+import { UserTestListFeature } from './user-test-list.feature';
+
+export default function UserTestRoutes() {
+  return useRoutes([
+    { path: '', element: <UserTestListFeature /> },
+    {
+      path: 'create',
+      element: <UserTestCreateFeature />,
+    },
+    { path: ':testId/*', element: <UserTestDetailFeature /> },
+  ]);
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 22`] = `
+"export * from './lib/admin-test-ui-create-form';
+export * from './lib/admin-test-ui-table';
+export * from './lib/admin-test-ui-update-form';
+export * from './lib/test-ui-avatar';
+export * from './lib/test-ui-grid';
+export * from './lib/test-ui-grid-item';
+export * from './lib/test-ui-item';
+export * from './lib/user-test-ui-create-form';
+export * from './lib/user-test-ui-table';
+export * from './lib/user-test-ui-update-form';
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 23`] = `
+"import { Button, Group } from '@mantine/core';
+import { AdminCreateTestInput } from '@proj/sdk';
+import { formFieldText, UiForm, UiFormField } from '@pubkey-ui/core';
+import { ReactNode } from 'react';
+
+export function AdminTestUiCreateForm({
+  submit,
+}: {
+  submit: (res: AdminCreateTestInput) => Promise<boolean>;
+}) {
+  const model: AdminCreateTestInput = {
+    name: '',
+  };
+
+  const fields: UiFormField<AdminCreateTestInput>[] = [
+    formFieldText('name', { label: 'name', required: true }),
+  ];
+  return (
+    <UiForm
+      model={model}
+      fields={fields}
+      submit={(res) => submit(res as AdminCreateTestInput)}
+    >
+      <Group justify="right">
+        <Button type="submit">Create</Button>
+      </Group>
+    </UiForm>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 24`] = `
+"import { ActionIcon, Anchor, Group, ScrollArea } from '@mantine/core';
+import { Test } from '@proj/sdk';
+import { IconPencil, IconTrash } from '@tabler/icons-react';
+import { DataTable, DataTableProps } from 'mantine-datatable';
+import { Link } from 'react-router-dom';
+
+export function AdminTestUiTable({
+  deleteTest,
+  tests = [],
+  onPageChange,
+  page,
+  recordsPerPage,
+  totalRecords,
+}: {
+  deleteTest: (test: Test) => void;
+  tests: Test[];
+  page: DataTableProps['page'];
+  totalRecords: DataTableProps['totalRecords'];
+  recordsPerPage: DataTableProps['recordsPerPage'];
+  onPageChange: (page: number) => void;
+}) {
+  return (
+    <ScrollArea>
+      <DataTable
+        borderRadius="sm"
+        withTableBorder
+        shadow="xs"
+        onPageChange={onPageChange}
+        page={page ?? 1}
+        recordsPerPage={recordsPerPage ?? 10}
+        totalRecords={totalRecords ?? 1}
+        columns={[
+          {
+            accessor: 'name',
+            render: (item) => (
+              <Anchor
+                component={Link}
+                to={\`/admin/tests/\${item.id}\`}
+                size="sm"
+                fw={500}
+              >
+                {item.name}
+              </Anchor>
+            ),
+          },
+          {
+            accessor: 'actions',
+            title: 'Actions',
+            textAlign: 'right',
+            render: (item) => (
+              <Group gap="xs" justify="right">
+                <ActionIcon
+                  color="brand"
+                  variant="light"
+                  size="sm"
+                  component={Link}
+                  to={\`/admin/tests/\${item.id}/settings\`}
+                >
+                  <IconPencil size={16} />
+                </ActionIcon>
+                <ActionIcon
+                  color="red"
+                  variant="light"
+                  size="sm"
+                  onClick={() => deleteTest(item)}
+                >
+                  <IconTrash size={16} />
+                </ActionIcon>
+              </Group>
+            ),
+          },
+        ]}
+        records={tests}
+      />
+    </ScrollArea>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 25`] = `
+"import { Button, Group } from '@mantine/core';
+import { AdminUpdateTestInput, Test } from '@proj/sdk';
+import { formFieldText, UiForm, UiFormField } from '@pubkey-ui/core';
+
+export function AdminTestUiUpdateForm({
+  submit,
+  test,
+}: {
+  submit: (res: AdminUpdateTestInput) => Promise<boolean>;
+  test: Test;
+}) {
+  const model: AdminUpdateTestInput = {
+    name: test.name ?? '',
+  };
+
+  const fields: UiFormField<AdminUpdateTestInput>[] = [
+    formFieldText('name', { label: 'name' }),
+  ];
+  return (
+    <UiForm
+      model={model}
+      fields={fields}
+      submit={(res) => submit(res as AdminUpdateTestInput)}
+    >
+      <Group justify="right">
+        <Button type="submit">Save</Button>
+      </Group>
+    </UiForm>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 26`] = `
+"import { Test } from '@pubkey-link/sdk';
+import { UiAvatar, UiAvatarProps } from '@pubkey-link/web-ui-core';
+
+export type TestUiAvatarProps = UiAvatarProps & {
+  test?: Test;
+};
+
+export function TestUiAvatar({ test, ...props }: TestUiAvatarProps) {
+  return <UiAvatar avatarUrl={undefined} name={test?.name} {...props} />;
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 27`] = `
+"import { Paper } from '@mantine/core';
+import type { Test } from '@pubkey-link/sdk';
+import { UiDebugModal, UiGroup } from '@pubkey-ui/core';
+import { TestUiItem } from './test-ui-item';
+
+export function TestUiGridItem({ test, to }: { test: Test; to?: string }) {
+  return (
+    <Paper withBorder p="md">
+      <UiGroup>
+        <TestUiItem test={test} to={to} />
+        <UiDebugModal data={test} />
+      </UiGroup>
+    </Paper>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 28`] = `
+"import { Group, Pagination, SimpleGrid } from '@mantine/core';
+import type { Test } from '@pubkey-link/sdk';
+import { gridLimits, UiPageLimit } from '@pubkey-link/web-ui-core';
+import { UiDebugModal, UiGroup, UiStack } from '@pubkey-ui/core';
+import { DataTableProps } from 'mantine-datatable';
+import { TestUiGridItem } from './test-ui-grid-item';
+
+export function TestUiGrid({
+  tests = [],
+  onPageChange,
+  page,
+  totalRecords,
+  limit,
+  setLimit,
+  setPage,
+}: {
+  tests: Test[];
+  page: DataTableProps['page'];
+  totalRecords: number;
+  onPageChange: (page: number) => void;
+  limit: number;
+  setLimit: (limit: number) => void;
+  setPage: (page: number) => void;
+}) {
+  const totalPages = totalRecords / limit + 1;
+  return (
+    <UiStack>
+      <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="md">
+        {tests.map((test) => (
+          <TestUiGridItem key={test.id} to={test.id} test={test} />
+        ))}
+      </SimpleGrid>
+      <UiGroup>
+        <Pagination
+          disabled={totalPages < 2}
+          total={totalPages}
+          value={page}
+          onChange={onPageChange}
+        />
+        <Group>
+          <UiDebugModal data={tests} />
+          <UiPageLimit
+            data={gridLimits}
+            limit={limit}
+            setLimit={setLimit}
+            setPage={setPage}
+          />
+        </Group>
+      </UiGroup>
+    </UiStack>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 29`] = `
+"import {
+  AvatarProps,
+  Group,
+  type GroupProps,
+  Stack,
+  Text,
+} from '@mantine/core';
+import { Test } from '@pubkey-link/sdk';
+import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core';
+import { TestUiAvatar } from './test-ui-avatar';
+
+export function TestUiItem({
+  anchorProps,
+  avatarProps,
+  groupProps,
+  test,
+  to,
+}: {
+  anchorProps?: UiAnchorProps;
+  avatarProps?: Omit<AvatarProps, 'src'>;
+  groupProps?: GroupProps;
+  test?: Test;
+  to?: string | null;
+}) {
+  if (!test) return null;
+
+  return (
+    <UiAnchor to={to ?? undefined} underline="never" {...anchorProps}>
+      <Group gap="sm" {...groupProps}>
+        <TestUiAvatar test={test} {...avatarProps} />
+        <Stack gap={1}>
+          <Text size="sm" fw={500}>
+            {test?.name}
+          </Text>
+        </Stack>
+      </Group>
+    </UiAnchor>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 30`] = `
+"import { Button, Group } from '@mantine/core';
+import { UserCreateTestInput } from '@proj/sdk';
+import { formFieldText, UiForm, UiFormField } from '@pubkey-ui/core';
+import { ReactNode } from 'react';
+
+export function UserTestUiCreateForm({
+  submit,
+}: {
+  submit: (res: UserCreateTestInput) => Promise<boolean>;
+}) {
+  const model: UserCreateTestInput = {
+    name: '',
+  };
+
+  const fields: UiFormField<UserCreateTestInput>[] = [
+    formFieldText('name', { label: 'name', required: true }),
+  ];
+  return (
+    <UiForm
+      model={model}
+      fields={fields}
+      submit={(res) => submit(res as UserCreateTestInput)}
+    >
+      <Group justify="right">
+        <Button type="submit">Create</Button>
+      </Group>
+    </UiForm>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 31`] = `
+"import { ActionIcon, Anchor, Group, ScrollArea } from '@mantine/core';
+import { Test } from '@proj/sdk';
+import { IconPencil, IconTrash } from '@tabler/icons-react';
+import { DataTable, DataTableProps } from 'mantine-datatable';
+import { Link } from 'react-router-dom';
+
+export function UserTestUiTable({
+  deleteTest,
+  tests = [],
+  onPageChange,
+  page,
+  recordsPerPage,
+  totalRecords,
+}: {
+  deleteTest: (test: Test) => void;
+  tests: Test[];
+  page: DataTableProps['page'];
+  totalRecords: DataTableProps['totalRecords'];
+  recordsPerPage: DataTableProps['recordsPerPage'];
+  onPageChange: (page: number) => void;
+}) {
+  return (
+    <ScrollArea>
+      <DataTable
+        borderRadius="sm"
+        withTableBorder
+        shadow="xs"
+        onPageChange={onPageChange}
+        page={page ?? 1}
+        recordsPerPage={recordsPerPage ?? 10}
+        totalRecords={totalRecords ?? 1}
+        columns={[
+          {
+            accessor: 'name',
+            render: (item) => (
+              <Anchor
+                component={Link}
+                to={\`/tests/\${item.id}\`}
+                size="sm"
+                fw={500}
+              >
+                {item.name}
+              </Anchor>
+            ),
+          },
+          {
+            accessor: 'actions',
+            title: 'Actions',
+            textAlign: 'right',
+            render: (item) => (
+              <Group gap="xs" justify="right">
+                <ActionIcon
+                  color="brand"
+                  variant="light"
+                  size="sm"
+                  component={Link}
+                  to={\`/tests/\${item.id}/settings\`}
+                >
+                  <IconPencil size={16} />
+                </ActionIcon>
+                <ActionIcon
+                  color="red"
+                  variant="light"
+                  size="sm"
+                  onClick={() => deleteTest(item)}
+                >
+                  <IconTrash size={16} />
+                </ActionIcon>
+              </Group>
+            ),
+          },
+        ]}
+        records={tests}
+      />
+    </ScrollArea>
+  );
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 32`] = `
+"import { Button, Group } from '@mantine/core';
+import { UserUpdateTestInput, Test } from '@proj/sdk';
+import { formFieldText, UiForm, UiFormField } from '@pubkey-ui/core';
+
+export function UserTestUiUpdateForm({
+  submit,
+  test,
+}: {
+  submit: (res: UserUpdateTestInput) => Promise<boolean>;
+  test: Test;
+}) {
+  const model: UserUpdateTestInput = {
+    name: test.name ?? '',
+  };
+
+  const fields: UiFormField<UserUpdateTestInput>[] = [
+    formFieldText('name', { label: 'name' }),
+  ];
+  return (
+    <UiForm
+      model={model}
+      fields={fields}
+      submit={(res) => submit(res as UserUpdateTestInput)}
+    >
+      <Group justify="right">
+        <Button type="submit">Save</Button>
+      </Group>
+    </UiForm>
+  );
+}
+"
+`;

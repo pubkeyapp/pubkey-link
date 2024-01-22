@@ -1,0 +1,44 @@
+{
+  "generators": {
+    "api-crud": {
+      "factory": "./src/generators/api-crud/api-crud-generator",
+      "schema": "./src/generators/api-crud/api-crud-schema.json",
+      "description": "api-crud generator"
+    },
+    "api-feature": {
+      "factory": "./src/generators/api-feature/api-feature-generator",
+      "schema": "./src/generators/api-feature/api-feature-schema.json",
+      "description": "api-feature generator"
+    },
+    "prisma-model": {
+      "factory": "./src/generators/prisma-model/prisma-model-generator",
+      "schema": "./src/generators/prisma-model/prisma-model-schema.json",
+      "description": "prisma-model generator"
+    },
+    "prisma-sync": {
+      "factory": "./src/generators/prisma-sync/prisma-sync-generator",
+      "schema": "./src/generators/prisma-sync/prisma-sync-schema.json",
+      "description": "prisma-sync generator"
+    },
+    "rename": {
+      "factory": "./src/generators/rename/rename-generator",
+      "schema": "./src/generators/rename/rename-schema.json",
+      "description": "rename generator"
+    },
+    "setup": {
+      "factory": "./src/generators/setup/setup-generator",
+      "schema": "./src/generators/setup/setup-schema.json",
+      "description": "setup generator"
+    },
+    "web-crud": {
+      "factory": "./src/generators/web-crud/web-crud-generator",
+      "schema": "./src/generators/web-crud/web-crud-schema.json",
+      "description": "web-crud generator"
+    },
+    "web-feature": {
+      "factory": "./src/generators/web-feature/web-feature-generator",
+      "schema": "./src/generators/web-feature/web-feature-schema.json",
+      "description": "web-feature generator"
+    }
+  }
+}

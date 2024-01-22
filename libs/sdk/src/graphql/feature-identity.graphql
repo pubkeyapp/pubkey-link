@@ -1,0 +1,87 @@
+fragment IdentityDetails on Identity {
+  createdAt
+  expired
+  id
+  name
+  profile
+  provider
+  providerId
+  updatedAt
+  url
+  verified
+}
+
+fragment IdentityChallengeDetails on IdentityChallenge {
+  id
+  createdAt
+  updatedAt
+  provider
+  providerId
+  challenge
+  signature
+  ip
+  userAgent
+  verified
+}
+
+query adminFindManyIdentity($input: AdminFindManyIdentityInput!) {
+  items: adminFindManyIdentity(input: $input) {
+    ...IdentityDetails
+    challenges {
+      ...IdentityChallengeDetails
+    }
+    owner {
+      ...UserDetails
+    }
+  }
+}
+
+mutation adminCreateIdentity($input: AdminCreateIdentityInput!) {
+  created: adminCreateIdentity(input: $input) {
+    ...IdentityDetails
+  }
+}
+
+mutation adminDeleteIdentity($identityId: String!) {
+  deleted: adminDeleteIdentity(identityId: $identityId)
+}
+
+query userFindManyIdentity($input: UserFindManyIdentityInput!) {
+  items: userFindManyIdentity(input: $input) {
+    ...IdentityDetails
+  }
+}
+
+mutation userDeleteIdentity($identityId: String!) {
+  deleted: userDeleteIdentity(identityId: $identityId)
+}
+
+query userRequestIdentityChallenge($input: RequestIdentityChallengeInput!) {
+  challenge: userRequestIdentityChallenge(input: $input) {
+    ...IdentityChallengeDetails
+  }
+}
+
+mutation userVerifyIdentityChallenge($input: VerifyIdentityChallengeInput!) {
+  verified: userVerifyIdentityChallenge(input: $input) {
+    ...IdentityChallengeDetails
+  }
+}
+
+mutation userLinkIdentity($input: LinkIdentityInput!) {
+  linked: userLinkIdentity(input: $input) {
+    ...IdentityDetails
+  }
+}
+
+query anonRequestIdentityChallenge($input: RequestIdentityChallengeInput!) {
+  challenge: anonRequestIdentityChallenge(input: $input) {
+    ...IdentityChallengeDetails
+  }
+}
+
+mutation anonVerifyIdentityChallenge($input: VerifyIdentityChallengeInput!) {
+  verified: anonVerifyIdentityChallenge(input: $input) {
+    ...IdentityChallengeDetails
+  }
+}

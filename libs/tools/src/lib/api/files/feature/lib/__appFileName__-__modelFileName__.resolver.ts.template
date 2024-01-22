@@ -1,0 +1,8 @@
+import { Resolver } from '@nestjs/graphql'
+import { <%= app.className %><%= model.className %>Service } from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-data-access'
+import { <%= model.className %> } from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-data-access'
+
+@Resolver(() => <%= model.className %>)
+export class <%= app.className %><%= model.className %>Resolver {
+  constructor(private readonly service: <%= app.className %><%= model.className %>Service) {}
+}

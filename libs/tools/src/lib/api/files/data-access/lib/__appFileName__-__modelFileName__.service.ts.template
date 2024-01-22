@@ -1,0 +1,8 @@
+import { Injectable } from '@nestjs/common'
+
+@Injectable()
+export class <%= app.className %><%= model.className %>Service {
+  // Use the following command to generate the CRUD for this service for a certain actor
+  // nx g api-crud --app <%= app.className %> --model <%= model.fileName %> --actor <admin|user|etc...>
+  constructor() {}
+}

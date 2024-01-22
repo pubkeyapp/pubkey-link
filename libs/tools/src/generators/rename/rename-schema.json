@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "Rename",
+  "title": "",
+  "type": "object",
+  "properties": {
+    "dryRun": {
+      "type": "boolean",
+      "description": "Don't actually rename files, just print what would be done",
+      "default": false
+    },
+    "quiet": {
+      "type": "boolean",
+      "description": "Don't prompt for confirmation",
+      "default": false
+    },
+    "search": {
+      "type": "string",
+      "description": "Search for this text",
+      "default": "PubKey Link"
+    },
+    "replace": {
+      "type": "string",
+      "description": "Replace with this text"
+    }
+  },
+  "required": ["search"]
+}

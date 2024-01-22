@@ -1,0 +1,15 @@
+import { useRoutes } from 'react-router-dom'
+import { <%= actor.className %><%= model.className %>DetailFeature } from './<%= actor.propertyName %>-<%= model.fileName %>-detail.feature'
+import { <%= actor.className %><%= model.className %>CreateFeature } from './<%= actor.propertyName %>-<%= model.fileName %>-create.feature'
+import { <%= actor.className %><%= model.className %>ListFeature } from './<%= actor.propertyName %>-<%= model.fileName %>-list.feature'
+
+export default function <%= actor.className %><%= model.className %>Routes() {
+  return useRoutes([
+    { path: '', element: <<%= actor.className %><%= model.className %>ListFeature /> },
+    {
+      path: 'create',
+      element: <<%= actor.className %><%= model.className %>CreateFeature />,
+    },
+    { path: ':<%= model.propertyName %>Id/*', element: <<%= actor.className %><%= model.className %>DetailFeature /> },
+  ])
+}

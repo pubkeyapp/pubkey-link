@@ -1,0 +1,43 @@
+import { Resolver } from '@nestjs/graphql'
+import { <%= app.className %><%= model.className %>Service } from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-data-access'
+import { <%= app.className %>AuthGraphQL<%= actor.className %>Guard } from '@<%= npmScope %>/<%= app.fileName %>-auth-data-access'
+import { Mutation, Query, Args } from '@nestjs/graphql'
+import { UseGuards } from '@nestjs/common'
+import {
+  <%= actor.className %>Create<%= model.className %>Input,
+  <%= actor.className %>FindMany<%= model.className %>Input,
+  <%= model.className %>,
+  <%= model.className %>Paging,
+  <%= actor.className %>Update<%= model.className %>Input,
+} from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-data-access'
+
+@Resolver()
+@UseGuards(<%= app.className %>AuthGraphQL<%= actor.className %>Guard)
+export class <%= app.className %><%= actor.className %><%= model.className %>Resolver {
+  constructor(private readonly service: <%= app.className %><%= model.className %>Service) {}
+
+  @Mutation(() => <%= model.className %>, { nullable: true })
+  <%= actor.propertyName %>Create<%= model.className %>(@Args('input') input: <%= actor.className %>Create<%= model.className %>Input) {
+    return this.service.<%= actor.propertyName %>.create<%= model.className %>(input)
+  }
+
+  @Mutation(() => Boolean, { nullable: true })
+  <%= actor.propertyName %>Delete<%= model.className %>(@Args('<%= model.propertyName %>Id') <%= model.propertyName %>Id: string) {
+    return this.service.<%= actor.propertyName %>.delete<%= model.className %>(<%= model.propertyName %>Id)
+  }
+
+  @Query(() => <%= model.className %>Paging)
+  <%= actor.propertyName %>FindMany<%= model.className %>(@Args('input') input: <%= actor.className %>FindMany<%= model.className %>Input) {
+    return this.service.<%= actor.propertyName %>.findMany<%= model.className %>(input)
+  }
+
+  @Query(() => <%= model.className %>, { nullable: true })
+  <%= actor.propertyName %>FindOne<%= model.className %>(@Args('<%= model.propertyName %>Id') <%= model.propertyName %>Id: string) {
+    return this.service.<%= actor.propertyName %>.findOne<%= model.className %>(<%= model.propertyName %>Id)
+  }
+
+  @Mutation(() => <%= model.className %>, { nullable: true })
+  <%= actor.propertyName %>Update<%= model.className %>(@Args('<%= model.propertyName %>Id') <%= model.propertyName %>Id: string, @Args('input') input: <%= actor.className %>Update<%= model.className %>Input) {
+    return this.service.<%= actor.propertyName %>.update<%= model.className %>(<%= model.propertyName %>Id, input)
+  }
+}

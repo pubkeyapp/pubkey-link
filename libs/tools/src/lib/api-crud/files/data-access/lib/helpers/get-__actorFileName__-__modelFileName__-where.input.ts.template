@@ -1,0 +1,15 @@
+import { Prisma } from '@prisma/client'
+import { <%= actor.className %>FindMany<%= model.className %>Input } from '../dto/<%= actor.fileName %>-find-many-<%= model.fileName %>.input'
+
+export function get<%= actor.className %><%= model.className %>WhereInput(input: <%= actor.className %>FindMany<%= model.className %>Input): Prisma.<%= model.className %>WhereInput {
+  const where: Prisma.<%= model.className %>WhereInput = {}
+
+  if (input.search) {
+    where.OR = [
+      { id: { contains: input.search, mode: 'insensitive' } },
+      { <%= label.propertyName %>: { contains: input.search, mode: 'insensitive' } },
+    ]
+  }
+
+  return where
+}

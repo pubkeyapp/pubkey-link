@@ -1,0 +1,29 @@
+fragment AppConfigDetails on AppConfig {
+  authDiscordEnabled
+  authGithubEnabled
+  authGoogleEnabled
+  authPasswordEnabled
+  authRegisterEnabled
+  authSolanaEnabled
+  authTwitterEnabled
+}
+
+fragment PagingMetaDetails on PagingMeta {
+  currentPage
+  isFirstPage
+  isLastPage
+  nextPage
+  pageCount
+  previousPage
+  totalCount
+}
+
+query uptime {
+  uptime
+}
+
+query appConfig {
+  config: appConfig {
+    ...AppConfigDetails
+  }
+}

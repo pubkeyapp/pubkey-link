@@ -1,0 +1,15 @@
+import { Field, ObjectType } from '@nestjs/graphql'
+
+@ObjectType()
+export class <%= model.className %> {
+  @Field()
+  id!: string
+  @Field({ nullable: true })
+  createdAt?: Date
+  @Field({ nullable: true })
+  updatedAt?: Date
+  <% for (let field of fields){ %>
+    @Field(<% if(field.optional){ %>{ nullable: true }<% } %>)
+    <%= field.name %><% if(field.optional){ %>?<% } else { %>!<% } %>: <%= field.type %>
+  <% } %>
+}

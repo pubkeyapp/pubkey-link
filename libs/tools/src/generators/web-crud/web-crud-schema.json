@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "WebCrudSchema",
+  "title": "",
+  "type": "object",
+  "properties": {
+    "app": {
+      "alias": "a",
+      "type": "string",
+      "description": "The name of the application you are adding the feature to.",
+      "x-prompt": "What is the name of the application you are adding the feature to?",
+      "default": "web"
+    },
+    "actor": {
+      "type": "string",
+      "description": "The name of the actor you are adding the feature to.",
+      "x-prompt": "What is the name of the actor you are adding the feature to?"
+    },
+    "label": {
+      "type": "string",
+      "description": "The label field for the model. Generally 'name' or 'title'.",
+      "default": "name"
+    },
+    "model": {
+      "type": "string",
+      "description": "The name of the model for this feature.",
+      "x-prompt": "What is the name of the model for this feature?"
+    }
+  },
+  "required": ["app", "actor", "model"]
+}

@@ -1,0 +1,42 @@
+import { Group, Pagination, SimpleGrid } from '@mantine/core'
+import type { <%= model.className %> } from '@pubkey-link/sdk'
+import { gridLimits, UiPageLimit } from '@pubkey-link/web-ui-core'
+import { UiDebugModal, UiGroup, UiStack } from '@pubkey-ui/core'
+import { DataTableProps } from 'mantine-datatable'
+import { <%= model.className %>UiGridItem } from './<%= model.propertyName %>-ui-grid-item'
+
+export function <%= model.className %>UiGrid({
+  <%= plural.propertyName %> = [],
+  onPageChange,
+  page,
+  totalRecords,
+  limit,
+  setLimit,
+  setPage,
+}: {
+  <%= plural.propertyName %>: <%= model.className %>[]
+  page: DataTableProps['page']
+  totalRecords: number
+  onPageChange: (page: number) => void
+  limit: number
+  setLimit: (limit: number) => void
+  setPage: (page: number) => void
+}) {
+  const totalPages = totalRecords / limit + 1
+  return (
+    <UiStack>
+      <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="md">
+        {<%= plural.propertyName %>.map((<%= model.propertyName %>) => (
+          <<%= model.className %>UiGridItem key={<%= model.propertyName %>.id} to={<%= model.propertyName %>.id} <%= model.propertyName %>={<%= model.propertyName %>} />
+        ))}
+      </SimpleGrid>
+      <UiGroup>
+        <Pagination disabled={totalPages < 2} total={totalPages} value={page} onChange={onPageChange} />
+        <Group>
+          <UiDebugModal data={<%= plural.propertyName %>} />
+          <UiPageLimit data={gridLimits} limit={limit} setLimit={setLimit} setPage={setPage} />
+        </Group>
+      </UiGroup>
+    </UiStack>
+  )
+}

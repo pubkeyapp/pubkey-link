@@ -1,0 +1,21 @@
+mutation login($input: LoginInput!) {
+  login(input: $input) {
+    ...UserDetails
+  }
+}
+
+mutation logout {
+  logout
+}
+
+mutation register($input: RegisterInput!) {
+  register(input: $input) {
+    ...UserDetails
+  }
+}
+
+query me {
+  me {
+    ...UserDetails
+  }
+}

@@ -1,0 +1,206 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input AdminCreateIdentityInput {
+  ownerId: String!
+  provider: IdentityProvider!
+  providerId: String!
+}
+
+input AdminCreateUserInput {
+  password: String
+  username: String!
+}
+
+input AdminFindManyIdentityInput {
+  ownerId: String
+  provider: IdentityProvider
+}
+
+input AdminFindManyUserInput {
+  limit: Int = 10
+  page: Int = 1
+  role: UserRole
+  search: String
+  status: UserStatus
+}
+
+input AdminUpdateUserInput {
+  avatarUrl: String
+  developer: Boolean
+  name: String
+  role: UserRole
+  status: UserStatus
+  username: String
+}
+
+type AppConfig {
+  authDiscordEnabled: Boolean!
+  authGithubEnabled: Boolean!
+  authGoogleEnabled: Boolean!
+  authPasswordEnabled: Boolean!
+  authRegisterEnabled: Boolean!
+  authSolanaEnabled: Boolean!
+  authTwitterEnabled: Boolean!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Identity {
+  challenges: [IdentityChallenge!]
+  createdAt: DateTime!
+  expired: Boolean
+  id: String!
+  name: String
+  owner: User
+  profile: JSON
+  provider: IdentityProvider!
+  providerId: String!
+  updatedAt: DateTime!
+  url: String
+  verified: Boolean
+}
+
+type IdentityChallenge {
+  challenge: String!
+  createdAt: DateTime!
+  id: String!
+  ip: String!
+  provider: IdentityProvider!
+  providerId: String!
+  signature: String
+  updatedAt: DateTime!
+  userAgent: String!
+  verified: Boolean!
+}
+
+enum IdentityProvider {
+  Discord
+  GitHub
+  Google
+  Solana
+  Twitter
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+
+input LinkIdentityInput {
+  provider: IdentityProvider!
+  providerId: String!
+}
+
+input LoginInput {
+  password: String!
+  username: String!
+}
+
+type Mutation {
+  adminCreateIdentity(input: AdminCreateIdentityInput!): Identity
+  adminCreateUser(input: AdminCreateUserInput!): User
+  adminDeleteIdentity(identityId: String!): Boolean
+  adminDeleteUser(userId: String!): Boolean
+  adminUpdateUser(input: AdminUpdateUserInput!, userId: String!): User
+  anonVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
+  login(input: LoginInput!): User
+  logout: Boolean
+  register(input: RegisterInput!): User
+  userDeleteIdentity(identityId: String!): Boolean
+  userLinkIdentity(input: LinkIdentityInput!): Identity
+  userUpdateUser(input: UserUpdateUserInput!): User
+  userVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
+}
+
+type PagingMeta {
+  currentPage: Int!
+  isFirstPage: Boolean!
+  isLastPage: Boolean!
+  nextPage: Int
+  pageCount: Int
+  previousPage: Int
+  totalCount: Int
+}
+
+type Query {
+  adminFindManyIdentity(input: AdminFindManyIdentityInput!): [Identity!]
+  adminFindManyUser(input: AdminFindManyUserInput!): UserPaging!
+  adminFindOneUser(userId: String!): User
+  anonRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
+  appConfig: AppConfig!
+  me: User
+  uptime: Float!
+  userFindManyIdentity(input: UserFindManyIdentityInput!): [Identity!]
+  userFindManyUser(input: UserFindManyUserInput!): UserPaging!
+  userFindOneUser(username: String!): User
+  userRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
+}
+
+input RegisterInput {
+  password: String!
+  username: String!
+}
+
+input RequestIdentityChallengeInput {
+  provider: IdentityProvider!
+  providerId: String!
+}
+
+type User {
+  avatarUrl: String
+  createdAt: DateTime
+  developer: Boolean
+  id: String!
+  identities: [Identity!]
+  name: String
+  profileUrl: String!
+  role: UserRole
+  status: UserStatus
+  updatedAt: DateTime
+  username: String
+}
+
+input UserFindManyIdentityInput {
+  username: String!
+}
+
+input UserFindManyUserInput {
+  limit: Int = 10
+  page: Int = 1
+  search: String
+}
+
+type UserPaging {
+  data: [User!]!
+  meta: PagingMeta!
+}
+
+enum UserRole {
+  Admin
+  User
+}
+
+enum UserStatus {
+  Active
+  Created
+  Inactive
+}
+
+input UserUpdateUserInput {
+  avatarUrl: String
+  developer: Boolean
+  name: String
+}
+
+input VerifyIdentityChallengeInput {
+  challenge: String!
+  provider: IdentityProvider!
+  providerId: String!
+  signature: String!
+  useLedger: Boolean = false
+}

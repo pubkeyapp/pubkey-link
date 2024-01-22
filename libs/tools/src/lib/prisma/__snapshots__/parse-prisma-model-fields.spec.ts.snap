@@ -1,0 +1,120 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`parse-prisma-model-fields should normalize model input with name ({
+  fields: [
+    'title',
+    'content',
+    'views:Int',
+    'owner:User?:relation@(fields: [ownerId], references: [id])',
+    'ownerId:String?',
+    [length]: 5
+  ]
+}) 1`] = `
+[
+  {
+    "attributes": [],
+    "isOptional": false,
+    "name": "title",
+    "type": " String",
+  },
+  {
+    "attributes": [],
+    "isOptional": false,
+    "name": "content",
+    "type": " String",
+  },
+  {
+    "attributes": [],
+    "isOptional": false,
+    "name": "views",
+    "type": "Int",
+  },
+  {
+    "attributes": [
+      {
+        "name": "relation",
+        "params": undefined,
+      },
+      {
+        "name": "",
+        "params": [
+          {
+            "name": "fields",
+          },
+        ],
+      },
+    ],
+    "isOptional": true,
+    "name": "owner",
+    "type": "User",
+  },
+  {
+    "attributes": [],
+    "isOptional": true,
+    "name": "ownerId",
+    "type": "String",
+  },
+]
+`;
+
+exports[`parse-prisma-model-fields should normalize model input with name ({ fields: [ 'description:String', 'amount:Int', [length]: 2 ] }) 1`] = `
+[
+  {
+    "attributes": [],
+    "isOptional": false,
+    "name": "description",
+    "type": "String",
+  },
+  {
+    "attributes": [],
+    "isOptional": false,
+    "name": "amount",
+    "type": "Int",
+  },
+]
+`;
+
+exports[`parse-prisma-model-fields should normalize model input with name ({ fields: [ 'description:String?', [length]: 1 ] }) 1`] = `
+[
+  {
+    "attributes": [],
+    "isOptional": true,
+    "name": "description",
+    "type": "String",
+  },
+]
+`;
+
+exports[`parse-prisma-model-fields should normalize model input with name ({ fields: [ 'owner:User', 'ownerId:String', [length]: 2 ] }) 1`] = `
+[
+  {
+    "attributes": [],
+    "isOptional": false,
+    "name": "owner",
+    "type": "User",
+  },
+  {
+    "attributes": [],
+    "isOptional": false,
+    "name": "ownerId",
+    "type": "String",
+  },
+]
+`;
+
+exports[`parse-prisma-model-fields should normalize model input with name ({ fields: [ 'owner:User?', 'ownerId:String?', [length]: 2 ] }) 1`] = `
+[
+  {
+    "attributes": [],
+    "isOptional": true,
+    "name": "owner",
+    "type": "User",
+  },
+  {
+    "attributes": [],
+    "isOptional": true,
+    "name": "ownerId",
+    "type": "String",
+  },
+]
+`;

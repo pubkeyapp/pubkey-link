@@ -1,0 +1,57 @@
+import { Button, Group } from '@mantine/core'
+import { UiPageLimit, UiSearchField } from '@<%= npmScope %>/<%= app.fileName %>-ui-core'
+import { use<%= actor.className %>FindMany<%= model.className %> } from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-data-access'
+import { <% if(actorAdmin){ %><%= actor.className %><%= model.className %>UiTable<% } else { %><%= model.className %>UiGrid<% } %> } from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-ui'
+import { UiBack, UiDebugModal, UiInfo, UiLoader, UiPage } from '@pubkey-ui/core'
+import { Link } from 'react-router-dom'
+
+export function <%= actor.className %><%= model.className %>ListFeature() {
+  const { delete<%= model.className %>, items, pagination, query, setSearch } = use<%= actor.className %>FindMany<%= model.className %>({
+    limit: <% if(actorAdmin){ %>10<% } else { %>12<% } %>,
+  })
+
+  return (
+    <UiPage
+      title="<%= plural.className %>"
+      leftAction={<UiBack />}
+      rightAction={
+        <Group>
+          <UiDebugModal data={items} />
+          <Button component={Link} to="create">
+            Create
+          </Button>
+        </Group>
+      }
+    >
+      <Group>
+        <UiSearchField placeholder="Search <%= model.propertyName %>" setSearch={setSearch} />
+        <% if(actorAdmin){ %><UiPageLimit limit={pagination.limit} setLimit={pagination.setLimit} setPage={pagination.setPage} /><% } %>
+      </Group>
+
+      {query.isLoading ? (
+        <UiLoader />
+      ) : items?.length ? <% if(actorAdmin){ %>
+                            (<<%= actor.className %><%= model.className %>UiTable
+                               delete<%= model.className %>={(<%= model.propertyName %>) => {
+                                 if (!window.confirm('Are you sure?')) return
+                                 return delete<%= model.className %>(<%= model.propertyName %>.id)
+                               }}
+                               <%= plural.propertyName %>={items}
+                               page={pagination.page}
+                               totalRecords={pagination.total}
+                               recordsPerPage={pagination.limit}
+                               onPageChange={(page) => void pagination.setPage(page)}
+                             />)<% } else{ %>(<<%= model.className %>UiGrid
+                                <%= plural.propertyName %>={items}
+                                page={pagination.page}
+                                totalRecords={pagination.total}
+                                onPageChange={pagination.setPage}
+                                limit={pagination.limit}
+                                setLimit={pagination.setLimit}
+                                setPage={pagination.setPage}
+                          />)<% } %> : (
+        <UiInfo message="No <%= plural.propertyName %> found" />
+      )}
+    </UiPage>
+  )
+}

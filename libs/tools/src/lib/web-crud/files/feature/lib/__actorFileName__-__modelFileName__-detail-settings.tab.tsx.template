@@ -1,0 +1,20 @@
+import { use<%= actor.className %>FindOne<%= model.className %> } from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-data-access'
+import { <%= actor.className %><%= model.className %>UiUpdateForm } from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-ui'
+import { UiCard, UiError, UiLoader } from '@pubkey-ui/core'
+
+export function <%= actor.className %><%= model.className %>DetailSettingsTab({ <%= model.propertyName %>Id }: { <%= model.propertyName %>Id: string }) {
+  const { item, query, update<%= model.className %> } = use<%= actor.className %>FindOne<%= model.className %>({ <%= model.propertyName %>Id })
+
+  if (query.isLoading) {
+    return <UiLoader />
+  }
+  if (!item) {
+    return <UiError message="<%= model.className %> not found." />
+  }
+
+return (
+    <UiCard>
+      <<%= actor.className %><%= model.className %>UiUpdateForm <%= model.propertyName %>={item} submit={update<%= model.className %>} />
+    </UiCard>
+  )
+}

@@ -1,0 +1,30 @@
+import { Button, Group } from '@mantine/core'
+import { <%= actor.className %>Update<%= model.className %>Input, <%= model.className %> } from '@<%= npmScope %>/sdk'
+import { formFieldText, UiForm, UiFormField } from '@pubkey-ui/core'
+
+export function <%= actor.className %><%= model.className %>UiUpdateForm({
+  submit,
+  <%= model.propertyName %>
+}: {
+  submit: (res: <%= actor.className %>Update<%= model.className %>Input) => Promise<boolean>
+  <%= model.propertyName %>: <%= model.className %>
+}) {
+  const model: <%= actor.className %>Update<%= model.className %>Input = {
+    <% for (let field of fields){ %>
+      <%= field.name %>: <%= model.propertyName %>.<%= field.name %> ?? '',
+    <% } %>
+  }
+
+  const fields: UiFormField<<%= actor.className %>Update<%= model.className %>Input>[] = [
+    <% for (let field of fields){ %>
+      formFieldText('<%= field.name %>', { label: '<%= field.name %>', }),
+    <% } %>
+  ]
+  return (
+    <UiForm model={model} fields={fields} submit={(res) => submit(res as <%= actor.className %>Update<%= model.className %>Input)}>
+      <Group justify="right">
+        <Button type="submit">Save</Button>
+      </Group>
+    </UiForm>
+  )
+}

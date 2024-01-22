@@ -1,0 +1,32 @@
+import { <%= actor.className %>Create<%= model.className %>Input } from '@<%= npmScope %>/sdk'
+import { use<%= actor.className %>FindMany<%= model.className %> } from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-data-access'
+import { <%= actor.className %><%= model.className %>UiCreateForm } from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-ui'
+import { toastError, UiBack, UiCard, UiPage } from '@pubkey-ui/core'
+import { useNavigate } from 'react-router-dom'
+
+export function <%= actor.className %><%= model.className %>CreateFeature() {
+  const navigate = useNavigate()
+  const { create<%= model.className %> } = use<%= actor.className %>FindMany<%= model.className %>()
+
+  async function submit(input: <%= actor.className %>Create<%= model.className %>Input) {
+    return create<%= model.className %>(input)
+      .then((res) => {
+         if (res) {
+           navigate(`<% if(actorAdmin){ %>/admin/<% } else{ %>/<% } %><%= plural.propertyName %>/${res?.id}`)
+         }
+       })
+      .then(() => true)
+      .catch((err) => {
+        toastError(err.message)
+        return false
+      })
+  }
+
+  return (
+    <UiPage leftAction={<UiBack />} title="Create <%= model.className %>">
+      <UiCard>
+        <<%= actor.className %><%= model.className %>UiCreateForm submit={submit} />
+      </UiCard>
+    </UiPage>
+  )
+}

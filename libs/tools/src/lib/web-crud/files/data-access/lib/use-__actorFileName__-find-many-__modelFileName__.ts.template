@@ -1,0 +1,54 @@
+import { <%= actor.className %>Create<%= model.className %>Input, <%= actor.className %>FindMany<%= model.className %>Input } from '@<%= npmScope %>/sdk'
+import { useSdk } from '@<%= npmScope %>/<%= app.fileName %>-core-data-access'
+import { toastError, toastSuccess } from '@pubkey-ui/core'
+import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
+
+export function use<%= actor.className %>FindMany<%= model.className %>(props?: Partial<<%= actor.className %>FindMany<%= model.className %>Input>) {
+  const sdk = useSdk()
+  const [limit, setLimit] = useState(props?.limit ?? 10)
+  const [page, setPage] = useState(props?.page ?? 1)
+  const [search, setSearch] = useState<string>(props?.search ?? '')
+
+  const input: <%= actor.className %>FindMany<%= model.className %>Input = { page, limit, search }
+  const query = useQuery({
+    queryKey: ['<%= actor.propertyName %>', 'find-many-<%= model.fileName %>', input],
+    queryFn: () => sdk.<%= actor.propertyName %>FindMany<%= model.className %>({ input }).then((res) => res.data),
+    })
+  const total = query.data?.paging?.meta?.totalCount ?? 0
+  const items = query.data?.paging.data ?? []
+
+  return {
+    items,
+    query,
+    pagination: {
+      page,
+      setPage,
+      limit,
+      setLimit,
+      total,
+    },
+    setSearch,
+    create<%= model.className %>: (input: <%= actor.className %>Create<%= model.className %>Input) =>
+      sdk
+        .<%= actor.propertyName %>Create<%= model.className %>({ input })
+        .then((res) => res.data)
+        .then((res) => {
+          if (res.created) {
+            toastSuccess(`<%= model.className %> created`)
+          } else {
+            toastError(`<%= model.className %> not created`)
+          }
+          return res.created
+        })
+        .catch((err) => {
+          toastError(err.message)
+          return undefined
+        }),
+    delete<%= model.className %>: (<%= model.propertyName %>Id: string) =>
+      sdk.<%= actor.propertyName %>Delete<%= model.className %>({ <%= model.propertyName %>Id }).then(() => {
+        toastSuccess('<%= model.className %> deleted')
+        return query.refetch()
+      }),
+  }
+}

@@ -1,0 +1,19 @@
+import { use<%= actor.className %>FindOne<%= model.className %> } from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-data-access'
+import { UiCard, UiDebug, UiError, UiLoader } from '@pubkey-ui/core'
+
+export function <%= actor.className %><%= model.className %>DetailOverviewTab({ <%= model.propertyName %>Id }: { <%= model.propertyName %>Id: string }) {
+  const { item, query } = use<%= actor.className %>FindOne<%= model.className %>({ <%= model.propertyName %>Id })
+
+  if (query.isLoading) {
+    return <UiLoader />
+  }
+  if (!item) {
+    return <UiError message="<%= model.className %> not found." />
+  }
+
+  return (
+    <UiCard>
+      <UiDebug data={item} open />
+    </UiCard>
+  )
+}
