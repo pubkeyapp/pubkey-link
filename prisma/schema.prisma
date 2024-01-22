@@ -7,6 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Community {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String
+  avatarUrl   String?
+  description String?
+  websiteUrl  String?
+  discordUrl  String?
+  githubUrl   String?
+  twitterUrl  String?
+  telegramUrl String?
+
+  @@unique([name])
+}
+
 model Identity {
   id           String              @id @default(cuid())
   createdAt    DateTime            @default(now())

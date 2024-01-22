@@ -2,6 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AdminCreateCommunityInput {
+  avatarUrl: String
+  description: String
+  discordUrl: String
+  githubUrl: String
+  name: String!
+  telegramUrl: String
+  twitterUrl: String
+  websiteUrl: String
+}
+
 input AdminCreateIdentityInput {
   ownerId: String!
   provider: IdentityProvider!
@@ -11,6 +22,12 @@ input AdminCreateIdentityInput {
 input AdminCreateUserInput {
   password: String
   username: String!
+}
+
+input AdminFindManyCommunityInput {
+  limit: Int = 10
+  page: Int = 1
+  search: String
 }
 
 input AdminFindManyIdentityInput {
@@ -24,6 +41,17 @@ input AdminFindManyUserInput {
   role: UserRole
   search: String
   status: UserStatus
+}
+
+input AdminUpdateCommunityInput {
+  avatarUrl: String
+  description: String
+  discordUrl: String
+  githubUrl: String
+  name: String
+  telegramUrl: String
+  twitterUrl: String
+  websiteUrl: String
 }
 
 input AdminUpdateUserInput {
@@ -43,6 +71,25 @@ type AppConfig {
   authRegisterEnabled: Boolean!
   authSolanaEnabled: Boolean!
   authTwitterEnabled: Boolean!
+}
+
+type Community {
+  avatarUrl: String
+  createdAt: DateTime
+  description: String
+  discordUrl: String
+  githubUrl: String
+  id: String!
+  name: String!
+  telegramUrl: String
+  twitterUrl: String
+  updatedAt: DateTime
+  websiteUrl: String
+}
+
+type CommunityPaging {
+  data: [Community!]!
+  meta: PagingMeta!
 }
 
 """
@@ -102,17 +149,23 @@ input LoginInput {
 }
 
 type Mutation {
+  adminCreateCommunity(input: AdminCreateCommunityInput!): Community
   adminCreateIdentity(input: AdminCreateIdentityInput!): Identity
   adminCreateUser(input: AdminCreateUserInput!): User
+  adminDeleteCommunity(communityId: String!): Boolean
   adminDeleteIdentity(identityId: String!): Boolean
   adminDeleteUser(userId: String!): Boolean
+  adminUpdateCommunity(communityId: String!, input: AdminUpdateCommunityInput!): Community
   adminUpdateUser(input: AdminUpdateUserInput!, userId: String!): User
   anonVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
   login(input: LoginInput!): User
   logout: Boolean
   register(input: RegisterInput!): User
+  userCreateCommunity(input: UserCreateCommunityInput!): Community
+  userDeleteCommunity(communityId: String!): Boolean
   userDeleteIdentity(identityId: String!): Boolean
   userLinkIdentity(input: LinkIdentityInput!): Identity
+  userUpdateCommunity(communityId: String!, input: UserUpdateCommunityInput!): Community
   userUpdateUser(input: UserUpdateUserInput!): User
   userVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
 }
@@ -128,15 +181,19 @@ type PagingMeta {
 }
 
 type Query {
+  adminFindManyCommunity(input: AdminFindManyCommunityInput!): CommunityPaging!
   adminFindManyIdentity(input: AdminFindManyIdentityInput!): [Identity!]
   adminFindManyUser(input: AdminFindManyUserInput!): UserPaging!
+  adminFindOneCommunity(communityId: String!): Community
   adminFindOneUser(userId: String!): User
   anonRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
   appConfig: AppConfig!
   me: User
   uptime: Float!
+  userFindManyCommunity(input: UserFindManyCommunityInput!): CommunityPaging!
   userFindManyIdentity(input: UserFindManyIdentityInput!): [Identity!]
   userFindManyUser(input: UserFindManyUserInput!): UserPaging!
+  userFindOneCommunity(communityId: String!): Community
   userFindOneUser(username: String!): User
   userRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
 }
@@ -165,6 +222,23 @@ type User {
   username: String
 }
 
+input UserCreateCommunityInput {
+  avatarUrl: String
+  description: String
+  discordUrl: String
+  githubUrl: String
+  name: String!
+  telegramUrl: String
+  twitterUrl: String
+  websiteUrl: String
+}
+
+input UserFindManyCommunityInput {
+  limit: Int = 10
+  page: Int = 1
+  search: String
+}
+
 input UserFindManyIdentityInput {
   username: String!
 }
@@ -189,6 +263,17 @@ enum UserStatus {
   Active
   Created
   Inactive
+}
+
+input UserUpdateCommunityInput {
+  avatarUrl: String
+  description: String
+  discordUrl: String
+  githubUrl: String
+  name: String
+  telegramUrl: String
+  twitterUrl: String
+  websiteUrl: String
 }
 
 input UserUpdateUserInput {

@@ -1,0 +1,79 @@
+fragment CommunityDetails on Community {
+  createdAt
+  id
+  name
+  avatarUrl
+  description
+  websiteUrl
+  discordUrl
+  githubUrl
+  twitterUrl
+  telegramUrl
+  updatedAt
+}
+
+query adminFindManyCommunity($input: AdminFindManyCommunityInput!) {
+  paging: adminFindManyCommunity(input: $input) {
+    data {
+      ...CommunityDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query adminFindOneCommunity($communityId: String!) {
+  item: adminFindOneCommunity(communityId: $communityId) {
+    ...CommunityDetails
+  }
+}
+
+mutation adminCreateCommunity($input: AdminCreateCommunityInput!) {
+  created: adminCreateCommunity(input: $input) {
+    ...CommunityDetails
+  }
+}
+
+mutation adminUpdateCommunity($communityId: String!, $input: AdminUpdateCommunityInput!) {
+  updated: adminUpdateCommunity(communityId: $communityId, input: $input) {
+    ...CommunityDetails
+  }
+}
+
+mutation adminDeleteCommunity($communityId: String!) {
+  deleted: adminDeleteCommunity(communityId: $communityId)
+}
+
+query userFindManyCommunity($input: UserFindManyCommunityInput!) {
+  paging: userFindManyCommunity(input: $input) {
+    data {
+      ...CommunityDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query userFindOneCommunity($communityId: String!) {
+  item: userFindOneCommunity(communityId: $communityId) {
+    ...CommunityDetails
+  }
+}
+
+mutation userCreateCommunity($input: UserCreateCommunityInput!) {
+  created: userCreateCommunity(input: $input) {
+    ...CommunityDetails
+  }
+}
+
+mutation userUpdateCommunity($communityId: String!, $input: UserUpdateCommunityInput!) {
+  updated: userUpdateCommunity(communityId: $communityId, input: $input) {
+    ...CommunityDetails
+  }
+}
+
+mutation userDeleteCommunity($communityId: String!) {
+  deleted: userDeleteCommunity(communityId: $communityId)
+}

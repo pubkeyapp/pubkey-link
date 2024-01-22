@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { Prisma, UserStatus } from '@prisma/client'
-import { fakeUsers, provisionUsers } from './api-core-provision-data'
+import { fakeUsers, provisionCommunities, provisionUsers } from './api-core-provision-data'
 import { hashPassword } from './helpers/hash-validate-password'
 import { ApiCoreService } from './api-core.service'
 import { slugifyId } from './helpers/slugify-id'
@@ -32,6 +32,22 @@ export class ApiCoreProvisionService implements OnModuleInit {
 
   private async provisionDatabase() {
     await this.provisionUsers()
+    await this.provisionCommunities()
+  }
+
+  private async provisionCommunities() {
+    await Promise.all(provisionCommunities.map((community) => this.provisionCommunity(community)))
+  }
+
+  private async provisionCommunity(input: Prisma.CommunityCreateInput) {
+    const id = slugifyId(input.name).toLowerCase()
+    const found = await this.core.data.community.findUnique({ where: { id } })
+    if (!found) {
+      await this.core.data.community.create({ data: { ...input, id } })
+      this.logger.verbose(`Provisioned Community ${input.name}`)
+      return
+    }
+    this.logger.verbose(`Community ${input.name} already exists`)
   }
 
   private async provisionUsers() {
