@@ -1,4 +1,3 @@
-import { Button, Group } from '@mantine/core'
 import { AdminCreateAppInput } from '@pubkey-link/sdk'
 import { useAdminFindManyApp } from '@pubkey-link/web-app-data-access'
 import { AdminAppUiCreateForm } from '@pubkey-link/web-app-ui'
@@ -26,11 +25,7 @@ export function AdminAppCreateFeature() {
   return (
     <UiPage leftAction={<UiBack />} title="Create App">
       <UiCard>
-        <AdminAppUiCreateForm submit={submit}>
-          <Group justify="right">
-            <Button type="submit">Create</Button>
-          </Group>
-        </AdminAppUiCreateForm>
+        <AdminAppUiCreateForm submit={submit} />
       </UiCard>
     </UiPage>
   )

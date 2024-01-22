@@ -91,7 +91,7 @@ export function useTransferSol({ address }: { address: PublicKey }) {
     ...useQueries({ address }).transferSol,
     onSuccess,
     onError: (error: unknown) => {
-      toastError(`Requesting airdrop failed! ${error}`)
+      toastError(`Sending transaction failed! ${error}`)
     },
   })
 }

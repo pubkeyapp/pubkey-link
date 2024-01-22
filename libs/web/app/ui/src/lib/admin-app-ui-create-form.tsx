@@ -1,14 +1,8 @@
+import { Button, Group } from '@mantine/core'
 import { AdminCreateAppInput } from '@pubkey-link/sdk'
 import { formFieldText, UiForm, UiFormField } from '@pubkey-ui/core'
-import { ReactNode } from 'react'
 
-export function AdminAppUiCreateForm({
-  children,
-  submit,
-}: {
-  children?: ReactNode
-  submit: (res: AdminCreateAppInput) => Promise<boolean>
-}) {
+export function AdminAppUiCreateForm({ submit }: { submit: (res: AdminCreateAppInput) => Promise<boolean> }) {
   const model: AdminCreateAppInput = {
     avatarUrl: '',
     name: '',
@@ -20,7 +14,9 @@ export function AdminAppUiCreateForm({
   ]
   return (
     <UiForm model={model} fields={fields} submit={(res) => submit(res as AdminCreateAppInput)}>
-      {children}
+      <Group justify="right">
+        <Button type="submit">Create</Button>
+      </Group>
     </UiForm>
   )
 }

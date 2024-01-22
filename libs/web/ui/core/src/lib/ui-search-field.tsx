@@ -5,6 +5,7 @@ export function UiSearchField({
   placeholder = 'Search...',
   setSearch,
   searchValue = '',
+  ...props
 }: TextInputProps & {
   setSearch: (query: string) => void
   searchValue?: string
@@ -22,6 +23,7 @@ export function UiSearchField({
           setSearch(value.trim())
         }
       }}
+      {...props}
     />
   )
 }
