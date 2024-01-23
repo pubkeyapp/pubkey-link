@@ -6,5 +6,5 @@ export type CommunityUiAvatarProps = UiAvatarProps & {
 }
 
 export function CommunityUiAvatar({ community, ...props }: CommunityUiAvatarProps) {
-  return <UiAvatar avatarUrl={undefined} name={community?.name} {...props} />
+  return <UiAvatar avatarUrl={community?.avatarUrl} name={community?.name} {...props} />
 }

@@ -10,8 +10,8 @@ import { getAdminCommunityWhereInput } from './helpers/get-admin-community-where
 export class ApiAdminCommunityService {
   constructor(private readonly core: ApiCoreService) {}
 
-  async createCommunity(input: AdminCreateCommunityInput) {
-    return this.core.data.community.create({ data: input })
+  async createCommunity(userId: string, input: AdminCreateCommunityInput) {
+    return this.core.createCommunity({ userId, input })
   }
 
   async deleteCommunity(communityId: string) {
@@ -30,7 +30,7 @@ export class ApiAdminCommunityService {
   }
 
   async findOneCommunity(communityId: string) {
-    return this.core.data.community.findUnique({ where: { id: communityId } })
+    return this.core.getCommunityById(communityId)
   }
 
   async updateCommunity(communityId: string, input: AdminUpdateCommunityInput) {

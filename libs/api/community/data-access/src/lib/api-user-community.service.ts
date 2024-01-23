@@ -10,8 +10,8 @@ import { getUserCommunityWhereInput } from './helpers/get-user-community-where.i
 export class ApiUserCommunityService {
   constructor(private readonly core: ApiCoreService) {}
 
-  async createCommunity(input: UserCreateCommunityInput) {
-    return this.core.data.community.create({ data: input })
+  async createCommunity(userId: string, input: UserCreateCommunityInput) {
+    return this.core.createCommunity({ userId, input })
   }
 
   async deleteCommunity(communityId: string) {
@@ -22,7 +22,7 @@ export class ApiUserCommunityService {
   async findManyCommunity(input: UserFindManyCommunityInput): Promise<CommunityPaging> {
     return this.core.data.community
       .paginate({
-        orderBy: { createdAt: 'desc' },
+        orderBy: { name: 'asc' },
         where: getUserCommunityWhereInput(input),
       })
       .withPages({ limit: input.limit, page: input.page })

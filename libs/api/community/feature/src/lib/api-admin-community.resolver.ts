@@ -1,15 +1,15 @@
-import { Resolver } from '@nestjs/graphql'
-import { ApiCommunityService } from '@pubkey-link/api-community-data-access'
-import { ApiAuthGraphQLAdminGuard } from '@pubkey-link/api-auth-data-access'
-import { Mutation, Query, Args } from '@nestjs/graphql'
-import { UseGuards } from '@nestjs/common'
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import {
   AdminCreateCommunityInput,
   AdminFindManyCommunityInput,
+  AdminUpdateCommunityInput,
+  ApiCommunityService,
   Community,
   CommunityPaging,
-  AdminUpdateCommunityInput,
 } from '@pubkey-link/api-community-data-access'
+import { ApiAuthGraphQLAdminGuard } from '@pubkey-link/api-auth-data-access'
+import { UseGuards } from '@nestjs/common'
+import { CtxUserId } from '@pubkey-link/api-auth-data-access'
 
 @Resolver()
 @UseGuards(ApiAuthGraphQLAdminGuard)
@@ -17,8 +17,8 @@ export class ApiAdminCommunityResolver {
   constructor(private readonly service: ApiCommunityService) {}
 
   @Mutation(() => Community, { nullable: true })
-  adminCreateCommunity(@Args('input') input: AdminCreateCommunityInput) {
-    return this.service.admin.createCommunity(input)
+  adminCreateCommunity(@CtxUserId() userId: string, @Args('input') input: AdminCreateCommunityInput) {
+    return this.service.admin.createCommunity(userId, input)
   }
 
   @Mutation(() => Boolean, { nullable: true })

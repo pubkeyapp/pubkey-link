@@ -15,6 +15,7 @@ import { useParams } from 'react-router-dom'
 import { lazy } from 'react'
 import { UiIcon } from '@pubkey-link/web-ui-core'
 import { CommunityUiItem } from '@pubkey-link/web-community-ui'
+import { UserCommunityMemberFeature } from '@pubkey-link/web-community-member-feature'
 
 const RouteDashboard = lazy(() => import('./user-community-detail-dashboard.tab'))
 const RouteSettings = lazy(() => import('./user-community-detail-settings.tab'))
@@ -36,6 +37,12 @@ export function UserCommunityDetailFeature() {
       label: 'Dashboard',
       element: <RouteDashboard communityId={communityId} />,
       leftSection: <UiIcon type="dashboard" size={20} />,
+    },
+    {
+      path: 'members',
+      label: 'Members',
+      element: <UserCommunityMemberFeature communityId={communityId} />,
+      leftSection: <UiIcon type="users" size={20} />,
     },
     {
       path: 'settings',

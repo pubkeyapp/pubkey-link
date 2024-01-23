@@ -1,18 +1,17 @@
 import { faker } from '@faker-js/faker'
-import { IdentityProvider, Prisma, UserRole, UserStatus } from '@prisma/client'
+import { CommunityRole, IdentityProvider, Prisma, UserRole, UserStatus } from '@prisma/client'
 
 export const provisionCommunities: Prisma.CommunityCreateInput[] = [
   {
-    id: 'pubkey',
     name: 'PubKey',
     description: 'Decentralized identities on Solana',
     avatarUrl: 'https://avatars.githubusercontent.com/u/125477168?v=4',
-    // members: {
-    //   create: [
-    //     { user: { connect: { id: 'beeman' } }, role: AppMemberRole.Admin },
-    //     { user: { connect: { id: 'alice' } }, role: AppMemberRole.Member },
-    //   ],
-    // },
+    members: {
+      create: [
+        { user: { connect: { id: 'beeman' } }, role: CommunityRole.Admin },
+        { user: { connect: { id: 'alice' } }, role: CommunityRole.Member },
+      ],
+    },
     // rules: {
     //   create: [
     //     //
@@ -23,7 +22,6 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     // },
   },
   {
-    id: 'deanslist',
     name: "Dean's List DAO",
     description: 'A DAO turned Network State',
     avatarUrl: 'https://avatars.githubusercontent.com/u/137821488?v=4',
@@ -31,7 +29,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     //   create: [
     //     // // no prettier formatting here please
     //     // prettier-ignore
-    //     { name: 'NFT Holders', conditions: { create: [{ type: 'CollectionAsset', value: '5FusHaKEKjfKsmQwXNrhFcFABGGxu7iYCdbvyVSRe3Ri', amount: '1', name: 'Deanslist' }] } },
+    //     { name: 'One of Us', conditions: { create: [{ type: 'CollectionAsset', value: '5FusHaKEKjfKsmQwXNrhFcFABGGxu7iYCdbvyVSRe3Ri', amount: '1', name: 'Deanslist' }] } },
     //     {
     //       name: 'Business Visa',
     //       conditions: {
@@ -51,25 +49,24 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     //     { name: 'DEAN Holder (Whale)' },
     //   ],
     // },
-    // members: {
-    //   create: [
-    //     { user: { connect: { id: 'beeman' } }, role: AppMemberRole.Admin },
-    //     { user: { connect: { id: 'alice' } }, role: AppMemberRole.Admin },
-    //     { user: { connect: { id: 'bob' } }, role: AppMemberRole.Member },
-    //   ],
-    // },
+    members: {
+      create: [
+        { user: { connect: { id: 'beeman' } }, role: CommunityRole.Admin },
+        { user: { connect: { id: 'alice' } }, role: CommunityRole.Admin },
+        { user: { connect: { id: 'bob' } }, role: CommunityRole.Member },
+      ],
+    },
   },
   {
-    id: 'marinade',
     name: 'Marinade',
     description: 'A DAO with a staking protocol built on Solana',
     avatarUrl: 'https://avatars.githubusercontent.com/u/81361338?v=4',
-    // members: {
-    //   create: [
-    //     { user: { connect: { id: 'beeman' } }, role: AppMemberRole.Admin },
-    //     { user: { connect: { id: 'bob' } }, role: AppMemberRole.Member },
-    //   ],
-    // },
+    members: {
+      create: [
+        { user: { connect: { id: 'beeman' } }, role: CommunityRole.Admin },
+        { user: { connect: { id: 'bob' } }, role: CommunityRole.Member },
+      ],
+    },
     // rules: {
     //   create: [ { name: 'MNDE Holders' }, { name: 'MNDE Holders (Shark)' }, { name: 'MNDE Holders (Whale)' }, ],
     // },

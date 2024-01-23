@@ -4,6 +4,7 @@ import { useAdminFindOneCommunity } from '@pubkey-link/web-community-data-access
 import { useParams } from 'react-router-dom'
 import { AdminCommunityDetailOverviewTab } from './admin-community-detail-overview.tab'
 import { AdminCommunityDetailSettingsTab } from './admin-community-detail-settings.tab'
+import { AdminCommunityMemberFeature } from '@pubkey-link/web-community-member-feature'
 
 export function AdminCommunityDetailFeature() {
   const { communityId } = useParams<{ communityId: string }>() as { communityId: string }
@@ -28,6 +29,12 @@ export function AdminCommunityDetailFeature() {
     >
       <UiTabRoutes
         tabs={[
+          {
+            path: 'members',
+            label: 'Members',
+            element: <AdminCommunityMemberFeature communityId={communityId} />,
+          },
+
           {
             path: 'overview',
             label: 'Overview',

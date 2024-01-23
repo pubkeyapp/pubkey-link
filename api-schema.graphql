@@ -13,6 +13,12 @@ input AdminCreateCommunityInput {
   websiteUrl: String
 }
 
+input AdminCreateCommunityMemberInput {
+  communityId: String!
+  role: CommunityRole!
+  userId: String!
+}
+
 input AdminCreateIdentityInput {
   ownerId: String!
   provider: IdentityProvider!
@@ -27,6 +33,14 @@ input AdminCreateUserInput {
 input AdminFindManyCommunityInput {
   limit: Int = 10
   page: Int = 1
+  search: String
+}
+
+input AdminFindManyCommunityMemberInput {
+  communityId: String!
+  limit: Int = 10
+  page: Int = 1
+  role: CommunityRole
   search: String
 }
 
@@ -52,6 +66,10 @@ input AdminUpdateCommunityInput {
   telegramUrl: String
   twitterUrl: String
   websiteUrl: String
+}
+
+input AdminUpdateCommunityMemberInput {
+  role: CommunityRole!
 }
 
 input AdminUpdateUserInput {
@@ -87,9 +105,29 @@ type Community {
   websiteUrl: String
 }
 
+type CommunityMember {
+  communityId: String!
+  createdAt: DateTime
+  id: String!
+  role: CommunityRole!
+  updatedAt: DateTime
+  user: User
+  userId: String!
+}
+
+type CommunityMemberPaging {
+  data: [CommunityMember!]!
+  meta: PagingMeta!
+}
+
 type CommunityPaging {
   data: [Community!]!
   meta: PagingMeta!
+}
+
+enum CommunityRole {
+  Admin
+  Member
 }
 
 """
@@ -150,22 +188,28 @@ input LoginInput {
 
 type Mutation {
   adminCreateCommunity(input: AdminCreateCommunityInput!): Community
+  adminCreateCommunityMember(input: AdminCreateCommunityMemberInput!): CommunityMember
   adminCreateIdentity(input: AdminCreateIdentityInput!): Identity
   adminCreateUser(input: AdminCreateUserInput!): User
   adminDeleteCommunity(communityId: String!): Boolean
+  adminDeleteCommunityMember(communityMemberId: String!): Boolean
   adminDeleteIdentity(identityId: String!): Boolean
   adminDeleteUser(userId: String!): Boolean
   adminUpdateCommunity(communityId: String!, input: AdminUpdateCommunityInput!): Community
+  adminUpdateCommunityMember(communityMemberId: String!, input: AdminUpdateCommunityMemberInput!): CommunityMember
   adminUpdateUser(input: AdminUpdateUserInput!, userId: String!): User
   anonVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
   login(input: LoginInput!): User
   logout: Boolean
   register(input: RegisterInput!): User
   userCreateCommunity(input: UserCreateCommunityInput!): Community
+  userCreateCommunityMember(input: UserCreateCommunityMemberInput!): CommunityMember
   userDeleteCommunity(communityId: String!): Boolean
+  userDeleteCommunityMember(communityMemberId: String!): Boolean
   userDeleteIdentity(identityId: String!): Boolean
   userLinkIdentity(input: LinkIdentityInput!): Identity
   userUpdateCommunity(communityId: String!, input: UserUpdateCommunityInput!): Community
+  userUpdateCommunityMember(communityMemberId: String!, input: UserUpdateCommunityMemberInput!): CommunityMember
   userUpdateUser(input: UserUpdateUserInput!): User
   userVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
 }
@@ -182,18 +226,22 @@ type PagingMeta {
 
 type Query {
   adminFindManyCommunity(input: AdminFindManyCommunityInput!): CommunityPaging!
+  adminFindManyCommunityMember(input: AdminFindManyCommunityMemberInput!): CommunityMemberPaging!
   adminFindManyIdentity(input: AdminFindManyIdentityInput!): [Identity!]
   adminFindManyUser(input: AdminFindManyUserInput!): UserPaging!
   adminFindOneCommunity(communityId: String!): Community
+  adminFindOneCommunityMember(communityMemberId: String!): CommunityMember
   adminFindOneUser(userId: String!): User
   anonRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
   appConfig: AppConfig!
   me: User
   uptime: Float!
   userFindManyCommunity(input: UserFindManyCommunityInput!): CommunityPaging!
+  userFindManyCommunityMember(input: UserFindManyCommunityMemberInput!): CommunityMemberPaging!
   userFindManyIdentity(input: UserFindManyIdentityInput!): [Identity!]
   userFindManyUser(input: UserFindManyUserInput!): UserPaging!
   userFindOneCommunity(communityId: String!): Community
+  userFindOneCommunityMember(communityMemberId: String!): CommunityMember
   userFindOneUser(username: String!): User
   userRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
 }
@@ -233,9 +281,23 @@ input UserCreateCommunityInput {
   websiteUrl: String
 }
 
+input UserCreateCommunityMemberInput {
+  communityId: String!
+  role: CommunityRole!
+  userId: String!
+}
+
 input UserFindManyCommunityInput {
   limit: Int = 10
   page: Int = 1
+  search: String
+}
+
+input UserFindManyCommunityMemberInput {
+  communityId: String!
+  limit: Int = 10
+  page: Int = 1
+  role: CommunityRole
   search: String
 }
 
@@ -274,6 +336,10 @@ input UserUpdateCommunityInput {
   telegramUrl: String
   twitterUrl: String
   websiteUrl: String
+}
+
+input UserUpdateCommunityMemberInput {
+  role: CommunityRole!
 }
 
 input UserUpdateUserInput {

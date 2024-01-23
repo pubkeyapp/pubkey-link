@@ -1,6 +1,6 @@
-import { IconDashboard, IconQuestionMark, IconSettings, IconUsersGroup } from '@tabler/icons-react'
+import { IconDashboard, IconQuestionMark, IconSettings, IconUsers, IconUsersGroup } from '@tabler/icons-react'
 
-export type UiIconType = 'community' | 'dashboard' | 'settings'
+export type UiIconType = 'community' | 'dashboard' | 'settings' | 'users'
 export function UiIcon({ type, ...props }: { type: UiIconType | string; size?: number }) {
   switch (type) {
     case 'community':
@@ -9,6 +9,8 @@ export function UiIcon({ type, ...props }: { type: UiIconType | string; size?: n
       return <IconDashboard {...props} />
     case 'settings':
       return <IconSettings {...props} />
+    case 'users':
+      return <IconUsers {...props} />
     default:
       return <IconQuestionMark {...props} />
   }

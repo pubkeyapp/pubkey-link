@@ -6,7 +6,7 @@ import { ApiUserCommunityService } from './api-user-community.service'
 
 @Module({
   imports: [ApiCoreDataAccessModule],
-  providers: [ApiCommunityService, ApiAdminCommunityService, ApiUserCommunityService],
+  providers: [ApiAdminCommunityService, ApiCommunityService, ApiUserCommunityService],
   exports: [ApiCommunityService],
 })
 export class ApiCommunityDataAccessModule {}

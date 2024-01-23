@@ -1,6 +1,7 @@
 export * from './lib/api-auth-data-access.module'
 export * from './lib/api-auth.service'
 export * from './lib/contexts/ctx-user'
+export * from './lib/contexts/ctx-user-id'
 export * from './lib/dto/login.input'
 export * from './lib/dto/register.input'
 export * from './lib/guards/api-anon-jwt-guard'

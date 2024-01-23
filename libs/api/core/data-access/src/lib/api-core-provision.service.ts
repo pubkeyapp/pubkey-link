@@ -40,10 +40,9 @@ export class ApiCoreProvisionService implements OnModuleInit {
   }
 
   private async provisionCommunity(input: Prisma.CommunityCreateInput) {
-    const id = slugifyId(input.name).toLowerCase()
-    const found = await this.core.data.community.findUnique({ where: { id } })
+    const found = await this.core.getCommunityById(slugifyId(input.name).toLowerCase())
     if (!found) {
-      await this.core.data.community.create({ data: { ...input, id } })
+      await this.core.createCommunity({ input })
       this.logger.verbose(`Provisioned Community ${input.name}`)
       return
     }

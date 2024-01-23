@@ -25,7 +25,7 @@ export function CommunityUiGrid({
   const totalPages = totalRecords / limit + 1
   return (
     <UiStack>
-      <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="md">
+      <SimpleGrid cols={{ base: 1, sm: 2, xl: 3 }} spacing="md">
         {communities.map((community) => (
           <CommunityUiGridItem key={community.id} to={community.id} community={community} />
         ))}

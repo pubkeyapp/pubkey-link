@@ -1,0 +1,77 @@
+fragment CommunityMemberDetails on CommunityMember {
+  communityId
+  createdAt
+  id
+  role
+  updatedAt
+  user {
+    ...UserDetails
+  }
+  userId
+}
+
+query adminFindManyCommunityMember($input: AdminFindManyCommunityMemberInput!) {
+  paging: adminFindManyCommunityMember(input: $input) {
+    data {
+      ...CommunityMemberDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query adminFindOneCommunityMember($communityMemberId: String!) {
+  item: adminFindOneCommunityMember(communityMemberId: $communityMemberId) {
+    ...CommunityMemberDetails
+  }
+}
+
+mutation adminCreateCommunityMember($input: AdminCreateCommunityMemberInput!) {
+  created: adminCreateCommunityMember(input: $input) {
+    ...CommunityMemberDetails
+  }
+}
+
+mutation adminUpdateCommunityMember($communityMemberId: String!, $input: AdminUpdateCommunityMemberInput!) {
+  updated: adminUpdateCommunityMember(communityMemberId: $communityMemberId, input: $input) {
+    ...CommunityMemberDetails
+  }
+}
+
+mutation adminDeleteCommunityMember($communityMemberId: String!) {
+  deleted: adminDeleteCommunityMember(communityMemberId: $communityMemberId)
+}
+
+query userFindManyCommunityMember($input: UserFindManyCommunityMemberInput!) {
+  paging: userFindManyCommunityMember(input: $input) {
+    data {
+      ...CommunityMemberDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query userFindOneCommunityMember($communityMemberId: String!) {
+  item: userFindOneCommunityMember(communityMemberId: $communityMemberId) {
+    ...CommunityMemberDetails
+  }
+}
+
+mutation userCreateCommunityMember($input: UserCreateCommunityMemberInput!) {
+  created: userCreateCommunityMember(input: $input) {
+    ...CommunityMemberDetails
+  }
+}
+
+mutation userUpdateCommunityMember($communityMemberId: String!, $input: UserUpdateCommunityMemberInput!) {
+  updated: userUpdateCommunityMember(communityMemberId: $communityMemberId, input: $input) {
+    ...CommunityMemberDetails
+  }
+}
+
+mutation userDeleteCommunityMember($communityMemberId: String!) {
+  deleted: userDeleteCommunityMember(communityMemberId: $communityMemberId)
+}

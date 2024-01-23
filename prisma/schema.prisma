@@ -8,9 +8,9 @@ datasource db {
 }
 
 model Community {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id          String            @id @default(cuid())
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
   name        String
   avatarUrl   String?
   description String?
@@ -19,8 +19,22 @@ model Community {
   githubUrl   String?
   twitterUrl  String?
   telegramUrl String?
+  members     CommunityMember[]
 
   @@unique([name])
+}
+
+model CommunityMember {
+  id          String        @id @default(cuid())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  role        CommunityRole
+  community   Community     @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  communityId String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+
+  @@unique([communityId, userId])
 }
 
 model Identity {
@@ -56,17 +70,23 @@ model IdentityChallenge {
 }
 
 model User {
-  id         String     @id @default(cuid())
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  avatarUrl  String?
-  developer  Boolean    @default(false)
-  name       String?
-  password   String?
-  role       UserRole   @default(User)
-  status     UserStatus @default(Created)
-  username   String     @unique
-  identities Identity[]
+  id          String            @id @default(cuid())
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  avatarUrl   String?
+  developer   Boolean           @default(false)
+  name        String?
+  password    String?
+  role        UserRole          @default(User)
+  status      UserStatus        @default(Created)
+  username    String            @unique
+  communities CommunityMember[]
+  identities  Identity[]
+}
+
+enum CommunityRole {
+  Admin
+  Member
 }
 
 enum IdentityProvider {
