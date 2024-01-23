@@ -7,6 +7,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Bot {
+  id           String    @id @default(cuid())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  name         String    @unique
+  avatarUrl    String?
+  status       BotStatus @default(Active)
+  token        String /// @encrypted
+  clientId     String /// @encrypted
+  clientSecret String /// @encrypted
+  community    Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  communityId  String    @unique
+}
+
 model Community {
   id          String            @id @default(cuid())
   createdAt   DateTime          @default(now())
@@ -22,6 +36,7 @@ model Community {
   members     CommunityMember[]
   rules       Rule[]
   cluster     NetworkCluster
+  bot         Bot?
 
   @@unique([name])
 }
@@ -142,6 +157,11 @@ model User {
   username    String            @unique
   communities CommunityMember[]
   identities  Identity[]
+}
+
+enum BotStatus {
+  Active
+  Inactive
 }
 
 enum CommunityRole {

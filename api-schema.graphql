@@ -2,6 +2,13 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AdminCreateBotInput {
+  clientId: String!
+  clientSecret: String!
+  communityId: String!
+  token: String!
+}
+
 input AdminCreateCommunityInput {
   avatarUrl: String
   cluster: NetworkCluster!
@@ -49,6 +56,12 @@ input AdminCreateUserInput {
   username: String!
 }
 
+input AdminFindManyBotInput {
+  limit: Int = 10
+  page: Int = 1
+  search: String
+}
+
 input AdminFindManyCommunityInput {
   limit: Int = 10
   page: Int = 1
@@ -94,6 +107,15 @@ input AdminFindManyUserInput {
   role: UserRole
   search: String
   status: UserStatus
+}
+
+input AdminUpdateBotInput {
+  avatarUrl: String
+  clientId: String
+  clientSecret: String
+  communityId: String
+  name: String
+  token: String
 }
 
 input AdminUpdateCommunityInput {
@@ -144,6 +166,34 @@ type AppConfig {
   authTwitterEnabled: Boolean!
 }
 
+type Bot {
+  application: JSON
+  avatarUrl: String
+  communityId: String!
+  createdAt: DateTime
+  developersUrl: String!
+  id: String!
+  inviteUrl: String!
+  name: String!
+  redirectUrl: String!
+  redirectUrlSet: Boolean
+  started: Boolean!
+  status: BotStatus!
+  updatedAt: DateTime
+  verificationUrl: String!
+  verificationUrlSet: Boolean
+}
+
+type BotPaging {
+  data: [Bot!]!
+  meta: PagingMeta!
+}
+
+enum BotStatus {
+  Active
+  Inactive
+}
+
 type Community {
   avatarUrl: String
   cluster: NetworkCluster!
@@ -188,6 +238,21 @@ enum CommunityRole {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type DiscordServer {
+  icon: String
+  id: String!
+  name: String!
+  permissions: [String!]
+}
+
+type DiscordServerRole {
+  color: Int!
+  id: String!
+  managed: Boolean!
+  name: String!
+  position: Int!
+}
 
 type Identity {
   challenges: [IdentityChallenge!]
@@ -241,6 +306,7 @@ input LoginInput {
 }
 
 type Mutation {
+  adminCreateBot(input: AdminCreateBotInput!): Bot
   adminCreateCommunity(input: AdminCreateCommunityInput!): Community
   adminCreateCommunityMember(input: AdminCreateCommunityMemberInput!): CommunityMember
   adminCreateIdentity(input: AdminCreateIdentityInput!): Identity
@@ -248,6 +314,7 @@ type Mutation {
   adminCreateNetworkToken(input: AdminCreateNetworkTokenInput!): NetworkToken
   adminCreateRule(input: AdminCreateRuleInput!): Rule
   adminCreateUser(input: AdminCreateUserInput!): User
+  adminDeleteBot(botId: String!): Boolean
   adminDeleteCommunity(communityId: String!): Boolean
   adminDeleteCommunityMember(communityMemberId: String!): Boolean
   adminDeleteIdentity(identityId: String!): Boolean
@@ -255,6 +322,7 @@ type Mutation {
   adminDeleteNetworkToken(networkTokenId: String!): Boolean
   adminDeleteRule(ruleId: String!): Boolean
   adminDeleteUser(userId: String!): Boolean
+  adminUpdateBot(botId: String!, input: AdminUpdateBotInput!): Bot
   adminUpdateCommunity(communityId: String!, input: AdminUpdateCommunityInput!): Community
   adminUpdateCommunityMember(communityMemberId: String!, input: AdminUpdateCommunityMemberInput!): CommunityMember
   adminUpdateNetwork(input: AdminUpdateNetworkInput!, networkId: String!): Network
@@ -265,14 +333,20 @@ type Mutation {
   login(input: LoginInput!): User
   logout: Boolean
   register(input: RegisterInput!): User
+  userCreateBot(input: UserCreateBotInput!): Bot
   userCreateCommunity(input: UserCreateCommunityInput!): Community
   userCreateCommunityMember(input: UserCreateCommunityMemberInput!): CommunityMember
   userCreateRule(input: UserCreateRuleInput!): Rule
+  userDeleteBot(botId: String!): Boolean
   userDeleteCommunity(communityId: String!): Boolean
   userDeleteCommunityMember(communityMemberId: String!): Boolean
   userDeleteIdentity(identityId: String!): Boolean
   userDeleteRule(ruleId: String!): Boolean
+  userLeaveBotServer(botId: String!, serverId: String!): Boolean
   userLinkIdentity(input: LinkIdentityInput!): Identity
+  userStartBot(botId: String!): Boolean
+  userStopBot(botId: String!): Boolean
+  userUpdateBot(botId: String!, input: UserUpdateBotInput!): Bot
   userUpdateCommunity(communityId: String!, input: UserUpdateCommunityInput!): Community
   userUpdateCommunityMember(communityMemberId: String!, input: UserUpdateCommunityMemberInput!): CommunityMember
   userUpdateRule(input: UserUpdateRuleInput!, ruleId: String!): Rule
@@ -354,6 +428,7 @@ type PagingMeta {
 }
 
 type Query {
+  adminFindManyBot(input: AdminFindManyBotInput!): BotPaging!
   adminFindManyCommunity(input: AdminFindManyCommunityInput!): CommunityPaging!
   adminFindManyCommunityMember(input: AdminFindManyCommunityMemberInput!): CommunityMemberPaging!
   adminFindManyIdentity(input: AdminFindManyIdentityInput!): [Identity!]
@@ -361,6 +436,7 @@ type Query {
   adminFindManyNetworkToken(input: AdminFindManyNetworkTokenInput!): NetworkTokenPaging!
   adminFindManyRule(input: AdminFindManyRuleInput!): RulePaging!
   adminFindManyUser(input: AdminFindManyUserInput!): UserPaging!
+  adminFindOneBot(botId: String!): Bot
   adminFindOneCommunity(communityId: String!): Community
   adminFindOneCommunityMember(communityMemberId: String!): CommunityMember
   adminFindOneNetwork(networkId: String!): Network
@@ -377,10 +453,14 @@ type Query {
   userFindManyNetworkToken(input: UserFindManyNetworkTokenInput!): NetworkTokenPaging!
   userFindManyRule(input: UserFindManyRuleInput!): RulePaging!
   userFindManyUser(input: UserFindManyUserInput!): UserPaging!
+  userFindOneBot(communityId: String!): Bot
   userFindOneCommunity(communityId: String!): Community
   userFindOneCommunityMember(communityMemberId: String!): CommunityMember
   userFindOneRule(ruleId: String!): Rule
   userFindOneUser(username: String!): User
+  userGetBotRoles(botId: String!, serverId: String!): [DiscordServerRole!]
+  userGetBotServer(botId: String!, serverId: String!): DiscordServer
+  userGetBotServers(botId: String!): [DiscordServer!]
   userRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
 }
 
@@ -442,6 +522,13 @@ type User {
   status: UserStatus
   updatedAt: DateTime
   username: String
+}
+
+input UserCreateBotInput {
+  clientId: String!
+  clientSecret: String!
+  communityId: String!
+  token: String!
 }
 
 input UserCreateCommunityInput {
@@ -521,6 +608,14 @@ enum UserStatus {
   Active
   Created
   Inactive
+}
+
+input UserUpdateBotInput {
+  avatarUrl: String
+  clientId: String
+  clientSecret: String
+  name: String
+  token: String
 }
 
 input UserUpdateCommunityInput {

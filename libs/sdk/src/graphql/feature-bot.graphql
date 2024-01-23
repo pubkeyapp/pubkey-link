@@ -1,0 +1,122 @@
+fragment BotDetails on Bot {
+  avatarUrl
+  communityId
+  createdAt
+  developersUrl
+  id
+  inviteUrl
+  name
+  redirectUrl
+  redirectUrlSet
+  started
+  status
+  updatedAt
+  verificationUrl
+  verificationUrlSet
+}
+
+fragment DiscordServerDetails on DiscordServer {
+  id
+  name
+  icon
+  permissions
+}
+
+fragment DiscordServerRoleDetails on DiscordServerRole {
+  id
+  name
+  managed
+  color
+  position
+}
+
+query adminFindManyBot($input: AdminFindManyBotInput!) {
+  paging: adminFindManyBot(input: $input) {
+    data {
+      ...BotDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query adminFindOneBot($botId: String!) {
+  item: adminFindOneBot(botId: $botId) {
+    ...BotDetails
+  }
+}
+
+mutation adminCreateBot($input: AdminCreateBotInput!) {
+  created: adminCreateBot(input: $input) {
+    ...BotDetails
+  }
+}
+
+mutation adminUpdateBot($botId: String!, $input: AdminUpdateBotInput!) {
+  updated: adminUpdateBot(botId: $botId, input: $input) {
+    ...BotDetails
+  }
+}
+
+mutation adminDeleteBot($botId: String!) {
+  deleted: adminDeleteBot(botId: $botId)
+}
+
+query userFindOneBot($communityId: String!) {
+  item: userFindOneBot(communityId: $communityId) {
+    ...BotDetails
+  }
+}
+
+mutation userCreateBot($input: UserCreateBotInput!) {
+  created: userCreateBot(input: $input) {
+    ...BotDetails
+  }
+}
+
+mutation userUpdateBot($botId: String!, $input: UserUpdateBotInput!) {
+  updated: userUpdateBot(botId: $botId, input: $input) {
+    ...BotDetails
+  }
+}
+
+mutation userDeleteBot($botId: String!) {
+  deleted: userDeleteBot(botId: $botId)
+}
+
+mutation userStartBot($botId: String!) {
+  started: userStartBot(botId: $botId)
+}
+
+mutation userStopBot($botId: String!) {
+  stopped: userStopBot(botId: $botId)
+}
+
+mutation userLeaveBotServer($botId: String!, $serverId: String!) {
+  left: userLeaveBotServer(botId: $botId, serverId: $serverId)
+}
+
+query userGetBotRoles($botId: String!, $serverId: String!) {
+  items: userGetBotRoles(botId: $botId, serverId: $serverId) {
+    ...DiscordServerRoleDetails
+  }
+}
+
+query userGetBotServers($botId: String!) {
+  items: userGetBotServers(botId: $botId) {
+    ...DiscordServerDetails
+  }
+}
+
+query userGetBotServer($botId: String!, $serverId: String!) {
+  item: userGetBotServer(botId: $botId, serverId: $serverId) {
+    ...DiscordServerDetails
+  }
+}
+
+query userGetBotRoles($botId: String!, $serverId: String!) {
+  items: userGetBotRoles(botId: $botId, serverId: $serverId) {
+    ...DiscordServerRoleDetails
+  }
+}

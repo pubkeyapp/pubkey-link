@@ -1,3 +1,4 @@
+import { IconSettings } from '@tabler/icons-react'
 import { IconNetwork, IconUsers, IconUsersGroup } from '@tabler/icons-react'
 import { DevAdminRoutes } from '@pubkey-link/web-dev-feature'
 import { AdminUserFeature } from '@pubkey-link/web-user-feature'
@@ -5,12 +6,14 @@ import { UiContainer, UiDashboardGrid, UiDashboardItem, UiNotFound } from '@pubk
 import { Navigate, RouteObject, useRoutes } from 'react-router-dom'
 import { AdminCommunityFeature } from '@pubkey-link/web-community-feature'
 import { AdminNetworkFeature } from '@pubkey-link/web-network-feature'
+import { AdminBotFeature } from '@pubkey-link/web-bot-feature'
 
 const links: UiDashboardItem[] = [
   // Admin Dashboard Links are added by the web-crud generator
   { label: 'Communities', icon: IconUsersGroup, to: '/admin/communities' },
   { label: 'Networks', icon: IconNetwork, to: '/admin/networks' },
   { label: 'Users', icon: IconUsers, to: '/admin/users' },
+  { label: 'Bots', icon: IconSettings, to: '/admin/bots' },
 ]
 
 const routes: RouteObject[] = [
@@ -19,6 +22,7 @@ const routes: RouteObject[] = [
   { path: 'development/*', element: <DevAdminRoutes /> },
   { path: 'networks/*', element: <AdminNetworkFeature /> },
   { path: 'users/*', element: <AdminUserFeature /> },
+  { path: 'bots/*', element: <AdminBotFeature /> },
 ]
 
 export default function ShellAdminRoutes() {

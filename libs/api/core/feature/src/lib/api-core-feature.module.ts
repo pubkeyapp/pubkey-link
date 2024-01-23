@@ -10,6 +10,7 @@ import { ApiCommunityMemberFeatureModule } from '@pubkey-link/api-community-memb
 import { ApiRuleFeatureModule } from '@pubkey-link/api-rule-feature'
 import { ApiNetworkFeatureModule } from '@pubkey-link/api-network-feature'
 import { ApiNetworkTokenFeatureModule } from '@pubkey-link/api-network-token-feature'
+import { ApiBotFeatureModule } from '@pubkey-link/api-bot-feature'
 
 const imports = [
   // The api-feature generator will add the imports here
@@ -22,6 +23,7 @@ const imports = [
   ApiRuleFeatureModule,
   ApiNetworkFeatureModule,
   ApiNetworkTokenFeatureModule,
+  ApiBotFeatureModule,
 ]
 
 @Module({
