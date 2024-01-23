@@ -2,10 +2,10 @@ import { Injectable, Logger } from '@nestjs/common'
 import { ApiAdminNetworkService } from './api-admin-network.service'
 import { getAnybodiesVaultMap } from '@pubkey-link/api-network-util'
 import { NetworkCluster } from '@prisma/client'
-import { createUmi } from '@metaplex-foundation/umi-bundle-defaults'
+import { createUmi, publicKey, Umi } from '@metaplex-foundation/umi'
 import { dasApi, DasApiAsset, DasApiAssetList } from '@metaplex-foundation/digital-asset-standard-api'
-import { publicKey, Umi } from '@metaplex-foundation/umi'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
+import { web3JsRpc } from '@metaplex-foundation/umi-rpc-web3js'
 
 export interface NetworkAsset {
   accounts: string[]
@@ -23,6 +23,14 @@ export class ApiNetworkService {
     return getAnybodiesVaultMap({ vaultId })
       .then((map) => map.find((item) => item.owner === owner)?.accounts ?? [])
       .then((accounts) => ({ owner, accounts, amount: `${accounts.length}` }))
+  }
+
+  async getAccountInfo({ cluster, account }: { cluster: NetworkCluster; account: string }) {
+    return this.getNetwork(cluster).then((res) => res.rpc.getAccount(publicKey(account)))
+  }
+
+  async getAsset({ cluster, account }: { cluster: NetworkCluster; account: string }) {
+    return this.getNetwork(cluster).then((res) => res.rpc.getAsset(publicKey(account)))
   }
 
   async getSolanaNftAssets({ account, cluster, owner }: { owner: string; cluster: NetworkCluster; account: string }) {
@@ -83,7 +91,7 @@ export class ApiNetworkService {
       if (!network) {
         throw new Error(`Network not found for cluster: ${cluster}`)
       }
-      this.networks.set(cluster, createUmi(network.endpoint, 'confirmed').use(dasApi()))
+      this.networks.set(cluster, createUmi().use(web3JsRpc(network.endpoint, 'confirmed')).use(dasApi()))
       this.logger.verbose(`Network created for cluster: ${cluster}`)
     }
     const umi = this.networks.get(cluster)

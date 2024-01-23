@@ -41,6 +41,9 @@ dependencies:
   '@metaplex-foundation/umi-bundle-defaults':
     specifier: ^0.9.0
     version: 0.9.0(@metaplex-foundation/umi@0.9.0)(@solana/web3.js@1.88.0)
+  '@metaplex-foundation/umi-rpc-web3js':
+    specifier: ^0.9.0
+    version: 0.9.0(@metaplex-foundation/umi@0.9.0)(@solana/web3.js@1.88.0)
   '@mrleebo/prisma-ast':
     specifier: ^0.8.0
     version: 0.8.0

@@ -22,7 +22,7 @@ export class ApiAdminNetworkService {
   async findManyNetwork(input: AdminFindManyNetworkInput): Promise<NetworkPaging> {
     return this.core.data.network
       .paginate({
-        orderBy: { createdAt: 'desc' },
+        orderBy: { name: 'desc' },
         where: getAdminNetworkWhereInput(input),
       })
       .withPages({ limit: input.limit, page: input.page })

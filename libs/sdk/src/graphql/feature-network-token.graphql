@@ -1,0 +1,48 @@
+fragment NetworkTokenDetails on NetworkToken {
+  id
+  createdAt
+  updatedAt
+  cluster
+  type
+  account
+  program
+  name
+  symbol
+  description
+  imageUrl
+  metadataUrl
+  raw
+}
+
+query adminFindManyNetworkToken($input: AdminFindManyNetworkTokenInput!) {
+  paging: adminFindManyNetworkToken(input: $input) {
+    data {
+      ...NetworkTokenDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query adminFindOneNetworkToken($networkTokenId: String!) {
+  item: adminFindOneNetworkToken(networkTokenId: $networkTokenId) {
+    ...NetworkTokenDetails
+  }
+}
+
+mutation adminCreateNetworkToken($input: AdminCreateNetworkTokenInput!) {
+  created: adminCreateNetworkToken(input: $input) {
+    ...NetworkTokenDetails
+  }
+}
+
+mutation adminUpdateNetworkToken($networkTokenId: String!, $input: AdminUpdateNetworkTokenInput!) {
+  updated: adminUpdateNetworkToken(networkTokenId: $networkTokenId, input: $input) {
+    ...NetworkTokenDetails
+  }
+}
+
+mutation adminDeleteNetworkToken($networkTokenId: String!) {
+  deleted: adminDeleteNetworkToken(networkTokenId: $networkTokenId)
+}

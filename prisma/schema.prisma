@@ -79,6 +79,26 @@ model Network {
   type      NetworkType
   name      String         @unique
   endpoint  String
+  tokens    NetworkToken[]
+}
+
+model NetworkToken {
+  id          String           @id @default(cuid())
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  network     Network          @relation(fields: [cluster], references: [cluster])
+  cluster     NetworkCluster
+  type        NetworkTokenType
+  name        String
+  account     String
+  program     String
+  imageUrl    String?
+  metadataUrl String?
+  description String?
+  symbol      String?
+  raw         Json?
+
+  @@unique([account, cluster])
 }
 
 model Rule {
@@ -138,6 +158,12 @@ enum NetworkCluster {
   SolanaDevnet
   SolanaMainnet
   SolanaTestnet
+}
+
+enum NetworkTokenType {
+  Fungible
+  NonFungible
+  Unknown
 }
 
 enum NetworkType {

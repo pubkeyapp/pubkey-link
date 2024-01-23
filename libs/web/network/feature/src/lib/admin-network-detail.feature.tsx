@@ -2,9 +2,9 @@ import { Group } from '@mantine/core'
 import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoutes } from '@pubkey-ui/core'
 import { useAdminFindOneNetwork } from '@pubkey-link/web-network-data-access'
 import { useParams } from 'react-router-dom'
-import { AdminNetworkDetailOverviewTab } from './admin-network-detail-overview.tab'
 import { AdminNetworkDetailSettingsTab } from './admin-network-detail-settings.tab'
 import { NetworkUiItem } from '@pubkey-link/web-network-ui'
+import { AdminNetworkTokenFeature } from '@pubkey-link/web-network-token-feature'
 
 export function AdminNetworkDetailFeature() {
   const { networkId } = useParams<{ networkId: string }>() as { networkId: string }
@@ -29,11 +29,7 @@ export function AdminNetworkDetailFeature() {
     >
       <UiTabRoutes
         tabs={[
-          {
-            path: 'overview',
-            label: 'Overview',
-            element: <AdminNetworkDetailOverviewTab networkId={networkId} />,
-          },
+          { path: 'tokens', label: 'Tokens', element: <AdminNetworkTokenFeature cluster={item.cluster} /> },
           {
             path: 'settings',
             label: 'Settings',
