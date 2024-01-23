@@ -7,6 +7,7 @@ import { ApiCoreController } from './api-core.controller'
 import { ApiCoreResolver } from './api-core.resolver'
 import { ApiCommunityFeatureModule } from '@pubkey-link/api-community-feature'
 import { ApiCommunityMemberFeatureModule } from '@pubkey-link/api-community-member-feature'
+import { ApiRuleFeatureModule } from '@pubkey-link/api-rule-feature'
 
 const imports = [
   // The api-feature generator will add the imports here
@@ -16,6 +17,7 @@ const imports = [
   ApiUserFeatureModule,
   ApiCommunityFeatureModule,
   ApiCommunityMemberFeatureModule,
+  ApiRuleFeatureModule,
 ]
 
 @Module({

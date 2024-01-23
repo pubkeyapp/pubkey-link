@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import { AdminCommunityDetailOverviewTab } from './admin-community-detail-overview.tab'
 import { AdminCommunityDetailSettingsTab } from './admin-community-detail-settings.tab'
 import { AdminCommunityMemberFeature } from '@pubkey-link/web-community-member-feature'
+import { AdminRuleFeature } from '@pubkey-link/web-rule-feature'
 
 export function AdminCommunityDetailFeature() {
   const { communityId } = useParams<{ communityId: string }>() as { communityId: string }
@@ -30,15 +31,19 @@ export function AdminCommunityDetailFeature() {
       <UiTabRoutes
         tabs={[
           {
-            path: 'members',
-            label: 'Members',
-            element: <AdminCommunityMemberFeature communityId={communityId} />,
-          },
-
-          {
             path: 'overview',
             label: 'Overview',
             element: <AdminCommunityDetailOverviewTab communityId={communityId} />,
+          },
+          {
+            path: 'rules',
+            label: 'Rules',
+            element: <AdminRuleFeature communityId={communityId} />,
+          },
+          {
+            path: 'members',
+            label: 'Members',
+            element: <AdminCommunityMemberFeature communityId={communityId} />,
           },
           {
             path: 'settings',

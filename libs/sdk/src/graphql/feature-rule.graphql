@@ -1,0 +1,84 @@
+fragment RuleDetails on Rule {
+  createdAt
+  id
+  communityId
+  name
+  description
+  conditions {
+    ...RuleConditionDetails
+  }
+  updatedAt
+}
+
+fragment RuleConditionDetails on RuleCondition {
+  createdAt
+  id
+  name
+  updatedAt
+}
+
+query adminFindManyRule($input: AdminFindManyRuleInput!) {
+  paging: adminFindManyRule(input: $input) {
+    data {
+      ...RuleDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query adminFindOneRule($ruleId: String!) {
+  item: adminFindOneRule(ruleId: $ruleId) {
+    ...RuleDetails
+  }
+}
+
+mutation adminCreateRule($input: AdminCreateRuleInput!) {
+  created: adminCreateRule(input: $input) {
+    ...RuleDetails
+  }
+}
+
+mutation adminUpdateRule($ruleId: String!, $input: AdminUpdateRuleInput!) {
+  updated: adminUpdateRule(ruleId: $ruleId, input: $input) {
+    ...RuleDetails
+  }
+}
+
+mutation adminDeleteRule($ruleId: String!) {
+  deleted: adminDeleteRule(ruleId: $ruleId)
+}
+
+query userFindManyRule($input: UserFindManyRuleInput!) {
+  paging: userFindManyRule(input: $input) {
+    data {
+      ...RuleDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query userFindOneRule($ruleId: String!) {
+  item: userFindOneRule(ruleId: $ruleId) {
+    ...RuleDetails
+  }
+}
+
+mutation userCreateRule($input: UserCreateRuleInput!) {
+  created: userCreateRule(input: $input) {
+    ...RuleDetails
+  }
+}
+
+mutation userUpdateRule($ruleId: String!, $input: UserUpdateRuleInput!) {
+  updated: userUpdateRule(ruleId: $ruleId, input: $input) {
+    ...RuleDetails
+  }
+}
+
+mutation userDeleteRule($ruleId: String!) {
+  deleted: userDeleteRule(ruleId: $ruleId)
+}

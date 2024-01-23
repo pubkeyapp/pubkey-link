@@ -25,6 +25,12 @@ input AdminCreateIdentityInput {
   providerId: String!
 }
 
+input AdminCreateRuleInput {
+  communityId: String!
+  description: String
+  name: String!
+}
+
 input AdminCreateUserInput {
   password: String
   username: String!
@@ -49,6 +55,13 @@ input AdminFindManyIdentityInput {
   provider: IdentityProvider
 }
 
+input AdminFindManyRuleInput {
+  communityId: String!
+  limit: Int = 10
+  page: Int = 1
+  search: String
+}
+
 input AdminFindManyUserInput {
   limit: Int = 10
   page: Int = 1
@@ -70,6 +83,11 @@ input AdminUpdateCommunityInput {
 
 input AdminUpdateCommunityMemberInput {
   role: CommunityRole!
+}
+
+input AdminUpdateRuleInput {
+  description: String
+  name: String
 }
 
 input AdminUpdateUserInput {
@@ -190,13 +208,16 @@ type Mutation {
   adminCreateCommunity(input: AdminCreateCommunityInput!): Community
   adminCreateCommunityMember(input: AdminCreateCommunityMemberInput!): CommunityMember
   adminCreateIdentity(input: AdminCreateIdentityInput!): Identity
+  adminCreateRule(input: AdminCreateRuleInput!): Rule
   adminCreateUser(input: AdminCreateUserInput!): User
   adminDeleteCommunity(communityId: String!): Boolean
   adminDeleteCommunityMember(communityMemberId: String!): Boolean
   adminDeleteIdentity(identityId: String!): Boolean
+  adminDeleteRule(ruleId: String!): Boolean
   adminDeleteUser(userId: String!): Boolean
   adminUpdateCommunity(communityId: String!, input: AdminUpdateCommunityInput!): Community
   adminUpdateCommunityMember(communityMemberId: String!, input: AdminUpdateCommunityMemberInput!): CommunityMember
+  adminUpdateRule(input: AdminUpdateRuleInput!, ruleId: String!): Rule
   adminUpdateUser(input: AdminUpdateUserInput!, userId: String!): User
   anonVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
   login(input: LoginInput!): User
@@ -204,12 +225,15 @@ type Mutation {
   register(input: RegisterInput!): User
   userCreateCommunity(input: UserCreateCommunityInput!): Community
   userCreateCommunityMember(input: UserCreateCommunityMemberInput!): CommunityMember
+  userCreateRule(input: UserCreateRuleInput!): Rule
   userDeleteCommunity(communityId: String!): Boolean
   userDeleteCommunityMember(communityMemberId: String!): Boolean
   userDeleteIdentity(identityId: String!): Boolean
+  userDeleteRule(ruleId: String!): Boolean
   userLinkIdentity(input: LinkIdentityInput!): Identity
   userUpdateCommunity(communityId: String!, input: UserUpdateCommunityInput!): Community
   userUpdateCommunityMember(communityMemberId: String!, input: UserUpdateCommunityMemberInput!): CommunityMember
+  userUpdateRule(input: UserUpdateRuleInput!, ruleId: String!): Rule
   userUpdateUser(input: UserUpdateUserInput!): User
   userVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
 }
@@ -228,9 +252,11 @@ type Query {
   adminFindManyCommunity(input: AdminFindManyCommunityInput!): CommunityPaging!
   adminFindManyCommunityMember(input: AdminFindManyCommunityMemberInput!): CommunityMemberPaging!
   adminFindManyIdentity(input: AdminFindManyIdentityInput!): [Identity!]
+  adminFindManyRule(input: AdminFindManyRuleInput!): RulePaging!
   adminFindManyUser(input: AdminFindManyUserInput!): UserPaging!
   adminFindOneCommunity(communityId: String!): Community
   adminFindOneCommunityMember(communityMemberId: String!): CommunityMember
+  adminFindOneRule(ruleId: String!): Rule
   adminFindOneUser(userId: String!): User
   anonRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
   appConfig: AppConfig!
@@ -239,9 +265,11 @@ type Query {
   userFindManyCommunity(input: UserFindManyCommunityInput!): CommunityPaging!
   userFindManyCommunityMember(input: UserFindManyCommunityMemberInput!): CommunityMemberPaging!
   userFindManyIdentity(input: UserFindManyIdentityInput!): [Identity!]
+  userFindManyRule(input: UserFindManyRuleInput!): RulePaging!
   userFindManyUser(input: UserFindManyUserInput!): UserPaging!
   userFindOneCommunity(communityId: String!): Community
   userFindOneCommunityMember(communityMemberId: String!): CommunityMember
+  userFindOneRule(ruleId: String!): Rule
   userFindOneUser(username: String!): User
   userRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
 }
@@ -254,6 +282,28 @@ input RegisterInput {
 input RequestIdentityChallengeInput {
   provider: IdentityProvider!
   providerId: String!
+}
+
+type Rule {
+  communityId: String!
+  conditions: [RuleCondition!]
+  createdAt: DateTime
+  description: String
+  id: String!
+  name: String!
+  updatedAt: DateTime
+}
+
+type RuleCondition {
+  createdAt: DateTime
+  id: String!
+  name: String!
+  updatedAt: DateTime
+}
+
+type RulePaging {
+  data: [Rule!]!
+  meta: PagingMeta!
 }
 
 type User {
@@ -287,6 +337,12 @@ input UserCreateCommunityMemberInput {
   userId: String!
 }
 
+input UserCreateRuleInput {
+  communityId: String!
+  description: String
+  name: String!
+}
+
 input UserFindManyCommunityInput {
   limit: Int = 10
   page: Int = 1
@@ -303,6 +359,13 @@ input UserFindManyCommunityMemberInput {
 
 input UserFindManyIdentityInput {
   username: String!
+}
+
+input UserFindManyRuleInput {
+  communityId: String!
+  limit: Int = 10
+  page: Int = 1
+  search: String
 }
 
 input UserFindManyUserInput {
@@ -340,6 +403,11 @@ input UserUpdateCommunityInput {
 
 input UserUpdateCommunityMemberInput {
   role: CommunityRole!
+}
+
+input UserUpdateRuleInput {
+  description: String
+  name: String
 }
 
 input UserUpdateUserInput {

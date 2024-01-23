@@ -16,6 +16,7 @@ import { lazy } from 'react'
 import { UiIcon } from '@pubkey-link/web-ui-core'
 import { CommunityUiItem } from '@pubkey-link/web-community-ui'
 import { UserCommunityMemberFeature } from '@pubkey-link/web-community-member-feature'
+import { UserRuleFeature } from '@pubkey-link/web-rule-feature'
 
 const RouteDashboard = lazy(() => import('./user-community-detail-dashboard.tab'))
 const RouteSettings = lazy(() => import('./user-community-detail-settings.tab'))
@@ -37,6 +38,12 @@ export function UserCommunityDetailFeature() {
       label: 'Dashboard',
       element: <RouteDashboard communityId={communityId} />,
       leftSection: <UiIcon type="dashboard" size={20} />,
+    },
+    {
+      path: 'rules',
+      label: 'Rules',
+      element: <UserRuleFeature communityId={communityId} />,
+      leftSection: <UiIcon type="rules" size={20} />,
     },
     {
       path: 'members',

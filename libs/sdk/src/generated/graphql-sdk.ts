@@ -4,7 +4,6 @@ import { GraphQLClient } from 'graphql-request'
 import { GraphQLClientRequestHeaders } from 'graphql-request/build/cjs/types'
 import { GraphQLError, print } from 'graphql'
 import gql from 'graphql-tag'
-
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
@@ -48,6 +47,12 @@ export type AdminCreateIdentityInput = {
   providerId: Scalars['String']['input']
 }
 
+export type AdminCreateRuleInput = {
+  communityId: Scalars['String']['input']
+  description?: InputMaybe<Scalars['String']['input']>
+  name: Scalars['String']['input']
+}
+
 export type AdminCreateUserInput = {
   password?: InputMaybe<Scalars['String']['input']>
   username: Scalars['String']['input']
@@ -72,6 +77,13 @@ export type AdminFindManyIdentityInput = {
   provider?: InputMaybe<IdentityProvider>
 }
 
+export type AdminFindManyRuleInput = {
+  communityId: Scalars['String']['input']
+  limit?: InputMaybe<Scalars['Int']['input']>
+  page?: InputMaybe<Scalars['Int']['input']>
+  search?: InputMaybe<Scalars['String']['input']>
+}
+
 export type AdminFindManyUserInput = {
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
@@ -93,6 +105,11 @@ export type AdminUpdateCommunityInput = {
 
 export type AdminUpdateCommunityMemberInput = {
   role: CommunityRole
+}
+
+export type AdminUpdateRuleInput = {
+  description?: InputMaybe<Scalars['String']['input']>
+  name?: InputMaybe<Scalars['String']['input']>
 }
 
 export type AdminUpdateUserInput = {
@@ -211,13 +228,16 @@ export type Mutation = {
   adminCreateCommunity?: Maybe<Community>
   adminCreateCommunityMember?: Maybe<CommunityMember>
   adminCreateIdentity?: Maybe<Identity>
+  adminCreateRule?: Maybe<Rule>
   adminCreateUser?: Maybe<User>
   adminDeleteCommunity?: Maybe<Scalars['Boolean']['output']>
   adminDeleteCommunityMember?: Maybe<Scalars['Boolean']['output']>
   adminDeleteIdentity?: Maybe<Scalars['Boolean']['output']>
+  adminDeleteRule?: Maybe<Scalars['Boolean']['output']>
   adminDeleteUser?: Maybe<Scalars['Boolean']['output']>
   adminUpdateCommunity?: Maybe<Community>
   adminUpdateCommunityMember?: Maybe<CommunityMember>
+  adminUpdateRule?: Maybe<Rule>
   adminUpdateUser?: Maybe<User>
   anonVerifyIdentityChallenge?: Maybe<IdentityChallenge>
   login?: Maybe<User>
@@ -225,12 +245,15 @@ export type Mutation = {
   register?: Maybe<User>
   userCreateCommunity?: Maybe<Community>
   userCreateCommunityMember?: Maybe<CommunityMember>
+  userCreateRule?: Maybe<Rule>
   userDeleteCommunity?: Maybe<Scalars['Boolean']['output']>
   userDeleteCommunityMember?: Maybe<Scalars['Boolean']['output']>
   userDeleteIdentity?: Maybe<Scalars['Boolean']['output']>
+  userDeleteRule?: Maybe<Scalars['Boolean']['output']>
   userLinkIdentity?: Maybe<Identity>
   userUpdateCommunity?: Maybe<Community>
   userUpdateCommunityMember?: Maybe<CommunityMember>
+  userUpdateRule?: Maybe<Rule>
   userUpdateUser?: Maybe<User>
   userVerifyIdentityChallenge?: Maybe<IdentityChallenge>
 }
@@ -245,6 +268,10 @@ export type MutationAdminCreateCommunityMemberArgs = {
 
 export type MutationAdminCreateIdentityArgs = {
   input: AdminCreateIdentityInput
+}
+
+export type MutationAdminCreateRuleArgs = {
+  input: AdminCreateRuleInput
 }
 
 export type MutationAdminCreateUserArgs = {
@@ -263,6 +290,10 @@ export type MutationAdminDeleteIdentityArgs = {
   identityId: Scalars['String']['input']
 }
 
+export type MutationAdminDeleteRuleArgs = {
+  ruleId: Scalars['String']['input']
+}
+
 export type MutationAdminDeleteUserArgs = {
   userId: Scalars['String']['input']
 }
@@ -275,6 +306,11 @@ export type MutationAdminUpdateCommunityArgs = {
 export type MutationAdminUpdateCommunityMemberArgs = {
   communityMemberId: Scalars['String']['input']
   input: AdminUpdateCommunityMemberInput
+}
+
+export type MutationAdminUpdateRuleArgs = {
+  input: AdminUpdateRuleInput
+  ruleId: Scalars['String']['input']
 }
 
 export type MutationAdminUpdateUserArgs = {
@@ -302,6 +338,10 @@ export type MutationUserCreateCommunityMemberArgs = {
   input: UserCreateCommunityMemberInput
 }
 
+export type MutationUserCreateRuleArgs = {
+  input: UserCreateRuleInput
+}
+
 export type MutationUserDeleteCommunityArgs = {
   communityId: Scalars['String']['input']
 }
@@ -312,6 +352,10 @@ export type MutationUserDeleteCommunityMemberArgs = {
 
 export type MutationUserDeleteIdentityArgs = {
   identityId: Scalars['String']['input']
+}
+
+export type MutationUserDeleteRuleArgs = {
+  ruleId: Scalars['String']['input']
 }
 
 export type MutationUserLinkIdentityArgs = {
@@ -326,6 +370,11 @@ export type MutationUserUpdateCommunityArgs = {
 export type MutationUserUpdateCommunityMemberArgs = {
   communityMemberId: Scalars['String']['input']
   input: UserUpdateCommunityMemberInput
+}
+
+export type MutationUserUpdateRuleArgs = {
+  input: UserUpdateRuleInput
+  ruleId: Scalars['String']['input']
 }
 
 export type MutationUserUpdateUserArgs = {
@@ -352,9 +401,11 @@ export type Query = {
   adminFindManyCommunity: CommunityPaging
   adminFindManyCommunityMember: CommunityMemberPaging
   adminFindManyIdentity?: Maybe<Array<Identity>>
+  adminFindManyRule: RulePaging
   adminFindManyUser: UserPaging
   adminFindOneCommunity?: Maybe<Community>
   adminFindOneCommunityMember?: Maybe<CommunityMember>
+  adminFindOneRule?: Maybe<Rule>
   adminFindOneUser?: Maybe<User>
   anonRequestIdentityChallenge?: Maybe<IdentityChallenge>
   appConfig: AppConfig
@@ -363,9 +414,11 @@ export type Query = {
   userFindManyCommunity: CommunityPaging
   userFindManyCommunityMember: CommunityMemberPaging
   userFindManyIdentity?: Maybe<Array<Identity>>
+  userFindManyRule: RulePaging
   userFindManyUser: UserPaging
   userFindOneCommunity?: Maybe<Community>
   userFindOneCommunityMember?: Maybe<CommunityMember>
+  userFindOneRule?: Maybe<Rule>
   userFindOneUser?: Maybe<User>
   userRequestIdentityChallenge?: Maybe<IdentityChallenge>
 }
@@ -382,6 +435,10 @@ export type QueryAdminFindManyIdentityArgs = {
   input: AdminFindManyIdentityInput
 }
 
+export type QueryAdminFindManyRuleArgs = {
+  input: AdminFindManyRuleInput
+}
+
 export type QueryAdminFindManyUserArgs = {
   input: AdminFindManyUserInput
 }
@@ -392,6 +449,10 @@ export type QueryAdminFindOneCommunityArgs = {
 
 export type QueryAdminFindOneCommunityMemberArgs = {
   communityMemberId: Scalars['String']['input']
+}
+
+export type QueryAdminFindOneRuleArgs = {
+  ruleId: Scalars['String']['input']
 }
 
 export type QueryAdminFindOneUserArgs = {
@@ -414,6 +475,10 @@ export type QueryUserFindManyIdentityArgs = {
   input: UserFindManyIdentityInput
 }
 
+export type QueryUserFindManyRuleArgs = {
+  input: UserFindManyRuleInput
+}
+
 export type QueryUserFindManyUserArgs = {
   input: UserFindManyUserInput
 }
@@ -424,6 +489,10 @@ export type QueryUserFindOneCommunityArgs = {
 
 export type QueryUserFindOneCommunityMemberArgs = {
   communityMemberId: Scalars['String']['input']
+}
+
+export type QueryUserFindOneRuleArgs = {
+  ruleId: Scalars['String']['input']
 }
 
 export type QueryUserFindOneUserArgs = {
@@ -442,6 +511,31 @@ export type RegisterInput = {
 export type RequestIdentityChallengeInput = {
   provider: IdentityProvider
   providerId: Scalars['String']['input']
+}
+
+export type Rule = {
+  __typename?: 'Rule'
+  communityId: Scalars['String']['output']
+  conditions?: Maybe<Array<RuleCondition>>
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  description?: Maybe<Scalars['String']['output']>
+  id: Scalars['String']['output']
+  name: Scalars['String']['output']
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type RuleCondition = {
+  __typename?: 'RuleCondition'
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  id: Scalars['String']['output']
+  name: Scalars['String']['output']
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type RulePaging = {
+  __typename?: 'RulePaging'
+  data: Array<Rule>
+  meta: PagingMeta
 }
 
 export type User = {
@@ -476,6 +570,12 @@ export type UserCreateCommunityMemberInput = {
   userId: Scalars['String']['input']
 }
 
+export type UserCreateRuleInput = {
+  communityId: Scalars['String']['input']
+  description?: InputMaybe<Scalars['String']['input']>
+  name: Scalars['String']['input']
+}
+
 export type UserFindManyCommunityInput = {
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
@@ -492,6 +592,13 @@ export type UserFindManyCommunityMemberInput = {
 
 export type UserFindManyIdentityInput = {
   username: Scalars['String']['input']
+}
+
+export type UserFindManyRuleInput = {
+  communityId: Scalars['String']['input']
+  limit?: InputMaybe<Scalars['Int']['input']>
+  page?: InputMaybe<Scalars['Int']['input']>
+  search?: InputMaybe<Scalars['String']['input']>
 }
 
 export type UserFindManyUserInput = {
@@ -530,6 +637,11 @@ export type UserUpdateCommunityInput = {
 
 export type UserUpdateCommunityMemberInput = {
   role: CommunityRole
+}
+
+export type UserUpdateRuleInput = {
+  description?: InputMaybe<Scalars['String']['input']>
+  name?: InputMaybe<Scalars['String']['input']>
 }
 
 export type UserUpdateUserInput = {
@@ -1421,6 +1533,263 @@ export type AnonVerifyIdentityChallengeMutation = {
   } | null
 }
 
+export type RuleDetailsFragment = {
+  __typename?: 'Rule'
+  createdAt?: Date | null
+  id: string
+  communityId: string
+  name: string
+  description?: string | null
+  updatedAt?: Date | null
+  conditions?: Array<{
+    __typename?: 'RuleCondition'
+    createdAt?: Date | null
+    id: string
+    name: string
+    updatedAt?: Date | null
+  }> | null
+}
+
+export type RuleConditionDetailsFragment = {
+  __typename?: 'RuleCondition'
+  createdAt?: Date | null
+  id: string
+  name: string
+  updatedAt?: Date | null
+}
+
+export type AdminFindManyRuleQueryVariables = Exact<{
+  input: AdminFindManyRuleInput
+}>
+
+export type AdminFindManyRuleQuery = {
+  __typename?: 'Query'
+  paging: {
+    __typename?: 'RulePaging'
+    data: Array<{
+      __typename?: 'Rule'
+      createdAt?: Date | null
+      id: string
+      communityId: string
+      name: string
+      description?: string | null
+      updatedAt?: Date | null
+      conditions?: Array<{
+        __typename?: 'RuleCondition'
+        createdAt?: Date | null
+        id: string
+        name: string
+        updatedAt?: Date | null
+      }> | null
+    }>
+    meta: {
+      __typename?: 'PagingMeta'
+      currentPage: number
+      isFirstPage: boolean
+      isLastPage: boolean
+      nextPage?: number | null
+      pageCount?: number | null
+      previousPage?: number | null
+      totalCount?: number | null
+    }
+  }
+}
+
+export type AdminFindOneRuleQueryVariables = Exact<{
+  ruleId: Scalars['String']['input']
+}>
+
+export type AdminFindOneRuleQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'Rule'
+    createdAt?: Date | null
+    id: string
+    communityId: string
+    name: string
+    description?: string | null
+    updatedAt?: Date | null
+    conditions?: Array<{
+      __typename?: 'RuleCondition'
+      createdAt?: Date | null
+      id: string
+      name: string
+      updatedAt?: Date | null
+    }> | null
+  } | null
+}
+
+export type AdminCreateRuleMutationVariables = Exact<{
+  input: AdminCreateRuleInput
+}>
+
+export type AdminCreateRuleMutation = {
+  __typename?: 'Mutation'
+  created?: {
+    __typename?: 'Rule'
+    createdAt?: Date | null
+    id: string
+    communityId: string
+    name: string
+    description?: string | null
+    updatedAt?: Date | null
+    conditions?: Array<{
+      __typename?: 'RuleCondition'
+      createdAt?: Date | null
+      id: string
+      name: string
+      updatedAt?: Date | null
+    }> | null
+  } | null
+}
+
+export type AdminUpdateRuleMutationVariables = Exact<{
+  ruleId: Scalars['String']['input']
+  input: AdminUpdateRuleInput
+}>
+
+export type AdminUpdateRuleMutation = {
+  __typename?: 'Mutation'
+  updated?: {
+    __typename?: 'Rule'
+    createdAt?: Date | null
+    id: string
+    communityId: string
+    name: string
+    description?: string | null
+    updatedAt?: Date | null
+    conditions?: Array<{
+      __typename?: 'RuleCondition'
+      createdAt?: Date | null
+      id: string
+      name: string
+      updatedAt?: Date | null
+    }> | null
+  } | null
+}
+
+export type AdminDeleteRuleMutationVariables = Exact<{
+  ruleId: Scalars['String']['input']
+}>
+
+export type AdminDeleteRuleMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
+export type UserFindManyRuleQueryVariables = Exact<{
+  input: UserFindManyRuleInput
+}>
+
+export type UserFindManyRuleQuery = {
+  __typename?: 'Query'
+  paging: {
+    __typename?: 'RulePaging'
+    data: Array<{
+      __typename?: 'Rule'
+      createdAt?: Date | null
+      id: string
+      communityId: string
+      name: string
+      description?: string | null
+      updatedAt?: Date | null
+      conditions?: Array<{
+        __typename?: 'RuleCondition'
+        createdAt?: Date | null
+        id: string
+        name: string
+        updatedAt?: Date | null
+      }> | null
+    }>
+    meta: {
+      __typename?: 'PagingMeta'
+      currentPage: number
+      isFirstPage: boolean
+      isLastPage: boolean
+      nextPage?: number | null
+      pageCount?: number | null
+      previousPage?: number | null
+      totalCount?: number | null
+    }
+  }
+}
+
+export type UserFindOneRuleQueryVariables = Exact<{
+  ruleId: Scalars['String']['input']
+}>
+
+export type UserFindOneRuleQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'Rule'
+    createdAt?: Date | null
+    id: string
+    communityId: string
+    name: string
+    description?: string | null
+    updatedAt?: Date | null
+    conditions?: Array<{
+      __typename?: 'RuleCondition'
+      createdAt?: Date | null
+      id: string
+      name: string
+      updatedAt?: Date | null
+    }> | null
+  } | null
+}
+
+export type UserCreateRuleMutationVariables = Exact<{
+  input: UserCreateRuleInput
+}>
+
+export type UserCreateRuleMutation = {
+  __typename?: 'Mutation'
+  created?: {
+    __typename?: 'Rule'
+    createdAt?: Date | null
+    id: string
+    communityId: string
+    name: string
+    description?: string | null
+    updatedAt?: Date | null
+    conditions?: Array<{
+      __typename?: 'RuleCondition'
+      createdAt?: Date | null
+      id: string
+      name: string
+      updatedAt?: Date | null
+    }> | null
+  } | null
+}
+
+export type UserUpdateRuleMutationVariables = Exact<{
+  ruleId: Scalars['String']['input']
+  input: UserUpdateRuleInput
+}>
+
+export type UserUpdateRuleMutation = {
+  __typename?: 'Mutation'
+  updated?: {
+    __typename?: 'Rule'
+    createdAt?: Date | null
+    id: string
+    communityId: string
+    name: string
+    description?: string | null
+    updatedAt?: Date | null
+    conditions?: Array<{
+      __typename?: 'RuleCondition'
+      createdAt?: Date | null
+      id: string
+      name: string
+      updatedAt?: Date | null
+    }> | null
+  } | null
+}
+
+export type UserDeleteRuleMutationVariables = Exact<{
+  ruleId: Scalars['String']['input']
+}>
+
+export type UserDeleteRuleMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
 export type UserDetailsFragment = {
   __typename?: 'User'
   avatarUrl?: string | null
@@ -1721,6 +2090,28 @@ export const IdentityChallengeDetailsFragmentDoc = gql`
     verified
   }
 `
+export const RuleConditionDetailsFragmentDoc = gql`
+  fragment RuleConditionDetails on RuleCondition {
+    createdAt
+    id
+    name
+    updatedAt
+  }
+`
+export const RuleDetailsFragmentDoc = gql`
+  fragment RuleDetails on Rule {
+    createdAt
+    id
+    communityId
+    name
+    description
+    conditions {
+      ...RuleConditionDetails
+    }
+    updatedAt
+  }
+  ${RuleConditionDetailsFragmentDoc}
+`
 export const LoginDocument = gql`
   mutation login($input: LoginInput!) {
     login(input: $input) {
@@ -2017,6 +2408,92 @@ export const AnonVerifyIdentityChallengeDocument = gql`
   }
   ${IdentityChallengeDetailsFragmentDoc}
 `
+export const AdminFindManyRuleDocument = gql`
+  query adminFindManyRule($input: AdminFindManyRuleInput!) {
+    paging: adminFindManyRule(input: $input) {
+      data {
+        ...RuleDetails
+      }
+      meta {
+        ...PagingMetaDetails
+      }
+    }
+  }
+  ${RuleDetailsFragmentDoc}
+  ${PagingMetaDetailsFragmentDoc}
+`
+export const AdminFindOneRuleDocument = gql`
+  query adminFindOneRule($ruleId: String!) {
+    item: adminFindOneRule(ruleId: $ruleId) {
+      ...RuleDetails
+    }
+  }
+  ${RuleDetailsFragmentDoc}
+`
+export const AdminCreateRuleDocument = gql`
+  mutation adminCreateRule($input: AdminCreateRuleInput!) {
+    created: adminCreateRule(input: $input) {
+      ...RuleDetails
+    }
+  }
+  ${RuleDetailsFragmentDoc}
+`
+export const AdminUpdateRuleDocument = gql`
+  mutation adminUpdateRule($ruleId: String!, $input: AdminUpdateRuleInput!) {
+    updated: adminUpdateRule(ruleId: $ruleId, input: $input) {
+      ...RuleDetails
+    }
+  }
+  ${RuleDetailsFragmentDoc}
+`
+export const AdminDeleteRuleDocument = gql`
+  mutation adminDeleteRule($ruleId: String!) {
+    deleted: adminDeleteRule(ruleId: $ruleId)
+  }
+`
+export const UserFindManyRuleDocument = gql`
+  query userFindManyRule($input: UserFindManyRuleInput!) {
+    paging: userFindManyRule(input: $input) {
+      data {
+        ...RuleDetails
+      }
+      meta {
+        ...PagingMetaDetails
+      }
+    }
+  }
+  ${RuleDetailsFragmentDoc}
+  ${PagingMetaDetailsFragmentDoc}
+`
+export const UserFindOneRuleDocument = gql`
+  query userFindOneRule($ruleId: String!) {
+    item: userFindOneRule(ruleId: $ruleId) {
+      ...RuleDetails
+    }
+  }
+  ${RuleDetailsFragmentDoc}
+`
+export const UserCreateRuleDocument = gql`
+  mutation userCreateRule($input: UserCreateRuleInput!) {
+    created: userCreateRule(input: $input) {
+      ...RuleDetails
+    }
+  }
+  ${RuleDetailsFragmentDoc}
+`
+export const UserUpdateRuleDocument = gql`
+  mutation userUpdateRule($ruleId: String!, $input: UserUpdateRuleInput!) {
+    updated: userUpdateRule(ruleId: $ruleId, input: $input) {
+      ...RuleDetails
+    }
+  }
+  ${RuleDetailsFragmentDoc}
+`
+export const UserDeleteRuleDocument = gql`
+  mutation userDeleteRule($ruleId: String!) {
+    deleted: userDeleteRule(ruleId: $ruleId)
+  }
+`
 export const AdminCreateUserDocument = gql`
   mutation adminCreateUser($input: AdminCreateUserInput!) {
     created: adminCreateUser(input: $input) {
@@ -2139,6 +2616,16 @@ const UserVerifyIdentityChallengeDocumentString = print(UserVerifyIdentityChalle
 const UserLinkIdentityDocumentString = print(UserLinkIdentityDocument)
 const AnonRequestIdentityChallengeDocumentString = print(AnonRequestIdentityChallengeDocument)
 const AnonVerifyIdentityChallengeDocumentString = print(AnonVerifyIdentityChallengeDocument)
+const AdminFindManyRuleDocumentString = print(AdminFindManyRuleDocument)
+const AdminFindOneRuleDocumentString = print(AdminFindOneRuleDocument)
+const AdminCreateRuleDocumentString = print(AdminCreateRuleDocument)
+const AdminUpdateRuleDocumentString = print(AdminUpdateRuleDocument)
+const AdminDeleteRuleDocumentString = print(AdminDeleteRuleDocument)
+const UserFindManyRuleDocumentString = print(UserFindManyRuleDocument)
+const UserFindOneRuleDocumentString = print(UserFindOneRuleDocument)
+const UserCreateRuleDocumentString = print(UserCreateRuleDocument)
+const UserUpdateRuleDocumentString = print(UserUpdateRuleDocument)
+const UserDeleteRuleDocumentString = print(UserDeleteRuleDocument)
 const AdminCreateUserDocumentString = print(AdminCreateUserDocument)
 const AdminDeleteUserDocumentString = print(AdminDeleteUserDocument)
 const AdminFindManyUserDocumentString = print(AdminFindManyUserDocument)
@@ -2872,6 +3359,216 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
+    adminFindManyRule(
+      variables: AdminFindManyRuleQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindManyRuleQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindManyRuleQuery>(AdminFindManyRuleDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindManyRule',
+        'query',
+        variables,
+      )
+    },
+    adminFindOneRule(
+      variables: AdminFindOneRuleQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindOneRuleQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindOneRuleQuery>(AdminFindOneRuleDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindOneRule',
+        'query',
+        variables,
+      )
+    },
+    adminCreateRule(
+      variables: AdminCreateRuleMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminCreateRuleMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminCreateRuleMutation>(AdminCreateRuleDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminCreateRule',
+        'mutation',
+        variables,
+      )
+    },
+    adminUpdateRule(
+      variables: AdminUpdateRuleMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminUpdateRuleMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminUpdateRuleMutation>(AdminUpdateRuleDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminUpdateRule',
+        'mutation',
+        variables,
+      )
+    },
+    adminDeleteRule(
+      variables: AdminDeleteRuleMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminDeleteRuleMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminDeleteRuleMutation>(AdminDeleteRuleDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminDeleteRule',
+        'mutation',
+        variables,
+      )
+    },
+    userFindManyRule(
+      variables: UserFindManyRuleQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserFindManyRuleQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserFindManyRuleQuery>(UserFindManyRuleDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userFindManyRule',
+        'query',
+        variables,
+      )
+    },
+    userFindOneRule(
+      variables: UserFindOneRuleQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserFindOneRuleQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserFindOneRuleQuery>(UserFindOneRuleDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userFindOneRule',
+        'query',
+        variables,
+      )
+    },
+    userCreateRule(
+      variables: UserCreateRuleMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserCreateRuleMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserCreateRuleMutation>(UserCreateRuleDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userCreateRule',
+        'mutation',
+        variables,
+      )
+    },
+    userUpdateRule(
+      variables: UserUpdateRuleMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserUpdateRuleMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserUpdateRuleMutation>(UserUpdateRuleDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userUpdateRule',
+        'mutation',
+        variables,
+      )
+    },
+    userDeleteRule(
+      variables: UserDeleteRuleMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserDeleteRuleMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserDeleteRuleMutation>(UserDeleteRuleDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userDeleteRule',
+        'mutation',
+        variables,
+      )
+    },
     adminCreateUser(
       variables: AdminCreateUserMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -3091,6 +3788,14 @@ export function AdminCreateIdentityInputSchema(): z.ZodObject<Properties<AdminCr
   })
 }
 
+export function AdminCreateRuleInputSchema(): z.ZodObject<Properties<AdminCreateRuleInput>> {
+  return z.object({
+    communityId: z.string(),
+    description: z.string().nullish(),
+    name: z.string(),
+  })
+}
+
 export function AdminCreateUserInputSchema(): z.ZodObject<Properties<AdminCreateUserInput>> {
   return z.object({
     password: z.string().nullish(),
@@ -3123,6 +3828,15 @@ export function AdminFindManyIdentityInputSchema(): z.ZodObject<Properties<Admin
   })
 }
 
+export function AdminFindManyRuleInputSchema(): z.ZodObject<Properties<AdminFindManyRuleInput>> {
+  return z.object({
+    communityId: z.string(),
+    limit: z.number().nullish(),
+    page: z.number().nullish(),
+    search: z.string().nullish(),
+  })
+}
+
 export function AdminFindManyUserInputSchema(): z.ZodObject<Properties<AdminFindManyUserInput>> {
   return z.object({
     limit: z.number().nullish(),
@@ -3149,6 +3863,13 @@ export function AdminUpdateCommunityInputSchema(): z.ZodObject<Properties<AdminU
 export function AdminUpdateCommunityMemberInputSchema(): z.ZodObject<Properties<AdminUpdateCommunityMemberInput>> {
   return z.object({
     role: CommunityRoleSchema,
+  })
+}
+
+export function AdminUpdateRuleInputSchema(): z.ZodObject<Properties<AdminUpdateRuleInput>> {
+  return z.object({
+    description: z.string().nullish(),
+    name: z.string().nullish(),
   })
 }
 
@@ -3212,6 +3933,14 @@ export function UserCreateCommunityMemberInputSchema(): z.ZodObject<Properties<U
   })
 }
 
+export function UserCreateRuleInputSchema(): z.ZodObject<Properties<UserCreateRuleInput>> {
+  return z.object({
+    communityId: z.string(),
+    description: z.string().nullish(),
+    name: z.string(),
+  })
+}
+
 export function UserFindManyCommunityInputSchema(): z.ZodObject<Properties<UserFindManyCommunityInput>> {
   return z.object({
     limit: z.number().nullish(),
@@ -3233,6 +3962,15 @@ export function UserFindManyCommunityMemberInputSchema(): z.ZodObject<Properties
 export function UserFindManyIdentityInputSchema(): z.ZodObject<Properties<UserFindManyIdentityInput>> {
   return z.object({
     username: z.string(),
+  })
+}
+
+export function UserFindManyRuleInputSchema(): z.ZodObject<Properties<UserFindManyRuleInput>> {
+  return z.object({
+    communityId: z.string(),
+    limit: z.number().nullish(),
+    page: z.number().nullish(),
+    search: z.string().nullish(),
   })
 }
 
@@ -3260,6 +3998,13 @@ export function UserUpdateCommunityInputSchema(): z.ZodObject<Properties<UserUpd
 export function UserUpdateCommunityMemberInputSchema(): z.ZodObject<Properties<UserUpdateCommunityMemberInput>> {
   return z.object({
     role: CommunityRoleSchema,
+  })
+}
+
+export function UserUpdateRuleInputSchema(): z.ZodObject<Properties<UserUpdateRuleInput>> {
+  return z.object({
+    description: z.string().nullish(),
+    name: z.string().nullish(),
   })
 }
 

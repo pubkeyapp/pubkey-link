@@ -20,6 +20,7 @@ model Community {
   twitterUrl  String?
   telegramUrl String?
   members     CommunityMember[]
+  rules       Rule[]
 
   @@unique([name])
 }
@@ -67,6 +68,26 @@ model IdentityChallenge {
   identity   Identity         @relation(fields: [provider, providerId], references: [provider, providerId], onDelete: Cascade)
   provider   IdentityProvider
   providerId String
+}
+
+model Rule {
+  id          String          @id @default(cuid())
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  community   Community       @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  communityId String
+  name        String
+  description String?
+  conditions  RuleCondition[]
+}
+
+model RuleCondition {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  rule      Rule     @relation(fields: [ruleId], references: [id])
+  ruleId    String
 }
 
 model User {
