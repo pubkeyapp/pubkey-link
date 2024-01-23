@@ -14,6 +14,10 @@ fragment RuleConditionDetails on RuleCondition {
   createdAt
   id
   name
+  type
+  account
+  amount
+  filters
   updatedAt
 }
 
@@ -81,4 +85,8 @@ mutation userUpdateRule($ruleId: String!, $input: UserUpdateRuleInput!) {
 
 mutation userDeleteRule($ruleId: String!) {
   deleted: userDeleteRule(ruleId: $ruleId)
+}
+
+mutation userTestRule($ruleId: String!, $address: String!) {
+  result: userTestRule(ruleId: $ruleId, address: $address)
 }

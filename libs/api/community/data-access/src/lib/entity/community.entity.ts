@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql'
+import { NetworkCluster } from '@pubkey-link/api-network-data-access'
 
 @ObjectType()
 export class Community {
@@ -25,4 +26,6 @@ export class Community {
   twitterUrl?: string | null
   @Field({ nullable: true })
   telegramUrl?: string | null
+  @Field(() => NetworkCluster, { nullable: true })
+  cluster?: NetworkCluster
 }

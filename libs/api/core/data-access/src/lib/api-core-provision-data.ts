@@ -1,8 +1,17 @@
 import { faker } from '@faker-js/faker'
-import { CommunityRole, IdentityProvider, Prisma, UserRole, UserStatus } from '@prisma/client'
+import {
+  CommunityRole,
+  IdentityProvider,
+  NetworkCluster,
+  Prisma,
+  RuleConditionType,
+  UserRole,
+  UserStatus,
+} from '@prisma/client'
 
 export const provisionCommunities: Prisma.CommunityCreateInput[] = [
   {
+    cluster: NetworkCluster.SolanaMainnet,
     name: 'PubKey',
     description: 'Decentralized identities on Solana',
     avatarUrl: 'https://avatars.githubusercontent.com/u/125477168?v=4',
@@ -17,17 +26,72 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     },
   },
   {
+    cluster: NetworkCluster.SolanaMainnet,
     name: "Dean's List DAO",
     description: 'A DAO turned Network State',
     avatarUrl: 'https://avatars.githubusercontent.com/u/137821488?v=4',
     rules: {
       create: [
-        { name: 'One of Us', conditions: { create: [{ name: 'Deanslist Collection' }] } },
-        { name: 'Business Visa' },
-        { name: 'Business Visa (Expired)' },
-        { name: 'DEAN Holder' },
-        { name: 'DEAN Holder (Shark)' },
-        { name: 'DEAN Holder (Whale)' },
+        {
+          name: 'One of Us',
+          conditions: {
+            create: [
+              {
+                type: RuleConditionType.SolanaNftAssets,
+                name: 'Deanslist NFT holder',
+                account: '5FusHaKEKjfKsmQwXNrhFcFABGGxu7iYCdbvyVSRe3Ri',
+                amount: '1',
+              },
+              {
+                type: RuleConditionType.AnybodiesNftAssets,
+                name: 'Deanslist NFT staked in Anybodies Vault',
+                account: 'JiZUwqz0ETakNYOIulut',
+                amount: '1',
+              },
+            ],
+          },
+        },
+        {
+          name: 'Business Visa',
+          conditions: {
+            create: [
+              {
+                type: RuleConditionType.SolanaNftAssets,
+                name: 'Business Visa NFT holder',
+                account: '9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp',
+                amount: '1',
+                filters: { status: 'active' },
+              },
+            ],
+          },
+        },
+        {
+          name: 'Business Visa (Expired)',
+          conditions: {
+            create: [
+              {
+                type: RuleConditionType.SolanaNftAssets,
+                name: 'Business Visa NFT holder (Expired)',
+                account: '9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp',
+                amount: '1',
+                filters: { status: 'expired' },
+              },
+            ],
+          },
+        },
+        {
+          name: 'DEAN Holder',
+          conditions: {
+            create: [
+              {
+                type: RuleConditionType.SolanaTokenAmount,
+                name: '$DEAN token holder',
+                account: 'Ds52CDgqdWbTWsua1hgT3AuSSy4FNx2Ezge1br3jQ14a',
+                amount: '1000',
+              },
+            ],
+          },
+        },
       ],
     },
     members: {
@@ -39,6 +103,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     },
   },
   {
+    cluster: NetworkCluster.SolanaMainnet,
     name: 'Marinade',
     description: 'A DAO with a staking protocol built on Solana',
     avatarUrl: 'https://avatars.githubusercontent.com/u/81361338?v=4',
@@ -64,6 +129,14 @@ export const provisionUsers: Prisma.UserCreateInput[] = [
       create: [
         //
         { provider: IdentityProvider.GitHub, providerId: '36491' },
+        ...[
+          '3XN71ShwyPNYZ22fV4phQCnyPj6E6EbMLAD5ReLRvdRP',
+          '9VyTdXMBXXPaEcCXjhCqicLF975Ji2zz4SwMSvCYe9ks',
+          'BeEMuaaQCQPodQdaA7W6Rmsu7761vCabN4Tth6jA4VCP',
+          'BumrJWH5kf4MXZ5bEg7VyZY6oXAMr78jXC1mFiDAE3u3',
+          'CdrFwyi78fjEN3WFUc72KUxewFdxv1SUSaKAMVkPHQyd',
+          'Dd1JSwojUsptwFa97A3WRZU1SijCWYo9Qa3xLxT8yzb7',
+        ].map((providerId) => ({ provider: IdentityProvider.Solana, providerId, verified: true })),
       ],
     },
   },

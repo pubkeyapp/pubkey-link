@@ -2,7 +2,7 @@ import { Group } from '@mantine/core'
 import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoutes } from '@pubkey-ui/core'
 import { useAdminFindOneRule } from '@pubkey-link/web-rule-data-access'
 import { useParams } from 'react-router-dom'
-import { AdminRuleDetailOverviewTab } from './admin-rule-detail-overview.tab'
+import { AdminRuleDetailConditionsTab } from './admin-rule-detail-conditions.tab'
 import { AdminRuleDetailSettingsTab } from './admin-rule-detail-settings.tab'
 
 export function AdminRuleDetailFeature() {
@@ -29,9 +29,9 @@ export function AdminRuleDetailFeature() {
       <UiTabRoutes
         tabs={[
           {
-            path: 'overview',
-            label: 'Overview',
-            element: <AdminRuleDetailOverviewTab ruleId={ruleId} />,
+            path: 'conditions',
+            label: 'Conditions',
+            element: <AdminRuleDetailConditionsTab ruleId={ruleId} />,
           },
           {
             path: 'settings',

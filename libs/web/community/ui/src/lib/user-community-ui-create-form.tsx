@@ -1,9 +1,10 @@
 import { Button, Group } from '@mantine/core'
-import { UserCreateCommunityInput } from '@pubkey-link/sdk'
-import { formFieldText, UiForm, UiFormField } from '@pubkey-ui/core'
+import { getEnumOptions, NetworkCluster, UserCreateCommunityInput } from '@pubkey-link/sdk'
+import { formFieldSelect, formFieldText, UiForm, UiFormField } from '@pubkey-ui/core'
 
 export function UserCommunityUiCreateForm({ submit }: { submit: (res: UserCreateCommunityInput) => Promise<boolean> }) {
   const model: UserCreateCommunityInput = {
+    cluster: NetworkCluster.SolanaMainnet,
     avatarUrl: '',
     description: '',
     discordUrl: '',
@@ -15,6 +16,7 @@ export function UserCommunityUiCreateForm({ submit }: { submit: (res: UserCreate
   }
 
   const fields: UiFormField<UserCreateCommunityInput>[] = [
+    formFieldSelect('cluster', { label: 'Cluster', required: true, options: getEnumOptions(NetworkCluster) }),
     formFieldText('name', { label: 'Name', required: true }),
     formFieldText('description', { label: 'Description' }),
     formFieldText('avatarUrl', { label: 'Avatar Url' }),

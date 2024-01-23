@@ -5,10 +5,11 @@ import { UserFindManyRuleInput } from './dto/user-find-many-rule.input'
 import { UserUpdateRuleInput } from './dto/user-update-rule.input'
 import { RulePaging } from './entity/rule-paging.entity'
 import { getUserRuleWhereInput } from './helpers/get-user-rule-where.input'
+import { ApiRuleResolverService } from './api-rule-resolver.service'
 
 @Injectable()
 export class ApiUserRuleService {
-  constructor(private readonly core: ApiCoreService) {}
+  constructor(private readonly core: ApiCoreService, private readonly resolver: ApiRuleResolverService) {}
 
   async createRule(input: UserCreateRuleInput) {
     return this.core.data.rule.create({ data: input })
@@ -31,10 +32,23 @@ export class ApiUserRuleService {
   }
 
   async findOneRule(ruleId: string) {
-    return this.core.data.rule.findUnique({ where: { id: ruleId }, include: { conditions: true } })
+    return this.core.data.rule.findUnique({ where: { id: ruleId }, include: { conditions: true, community: true } })
   }
 
   async updateRule(ruleId: string, input: UserUpdateRuleInput) {
     return this.core.data.rule.update({ where: { id: ruleId }, data: input })
+  }
+
+  async testRule(ruleId: string, address: string) {
+    const rule = await this.findOneRule(ruleId)
+    if (!rule) {
+      throw new Error('Rule not found')
+    }
+
+    if (!rule.conditions.length) {
+      throw new Error('Rule has no conditions')
+    }
+
+    return this.resolver.resolve(rule.community.cluster, rule.conditions, address)
   }
 }

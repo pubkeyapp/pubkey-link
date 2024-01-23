@@ -21,6 +21,7 @@ model Community {
   telegramUrl String?
   members     CommunityMember[]
   rules       Rule[]
+  cluster     NetworkCluster
 
   @@unique([name])
 }
@@ -92,11 +93,15 @@ model Rule {
 }
 
 model RuleCondition {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String            @id @default(cuid())
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
   name      String
-  rule      Rule     @relation(fields: [ruleId], references: [id])
+  type      RuleConditionType
+  account   String
+  amount    String?
+  filters   Json?
+  rule      Rule              @relation(fields: [ruleId], references: [id])
   ruleId    String
 }
 
@@ -137,6 +142,12 @@ enum NetworkCluster {
 
 enum NetworkType {
   Solana
+}
+
+enum RuleConditionType {
+  AnybodiesNftAssets
+  SolanaNftAssets
+  SolanaTokenAmount
 }
 
 enum UserRole {

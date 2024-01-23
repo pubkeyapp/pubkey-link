@@ -1,7 +1,7 @@
 import { useAdminFindOneRule } from '@pubkey-link/web-rule-data-access'
 import { UiCard, UiDebug, UiError, UiLoader } from '@pubkey-ui/core'
 
-export function AdminRuleDetailOverviewTab({ ruleId }: { ruleId: string }) {
+export function AdminRuleDetailConditionsTab({ ruleId }: { ruleId: string }) {
   const { item, query } = useAdminFindOneRule({ ruleId })
 
   if (query.isLoading) {

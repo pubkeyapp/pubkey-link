@@ -1,7 +1,7 @@
 import { UserUpdateRuleInput } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 
 export function useUserFindOneRule({ ruleId }: { ruleId: string }) {
   const sdk = useSdk()
@@ -33,4 +33,29 @@ export function useUserFindOneRule({ ruleId }: { ruleId: string }) {
           return false
         }),
   }
+}
+
+export function useTestRule({ ruleId }: { ruleId: string }) {
+  const sdk = useSdk()
+
+  return useMutation({
+    mutationKey: ['user', 'test-rule', ruleId],
+    mutationFn: async (address: string) =>
+      sdk
+        .userTestRule({ ruleId, address })
+        .then((res) => res.data?.result)
+        .then(async (res) => {
+          if (res) {
+            console.log(res)
+            toastSuccess('Rule test passed')
+            return res
+          }
+          toastError('Rule test failed')
+          return undefined
+        })
+        .catch((err) => {
+          toastError(err.message)
+          return undefined
+        }),
+  })
 }

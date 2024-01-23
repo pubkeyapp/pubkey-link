@@ -11,11 +11,5 @@ export class AdminCreateNetworkInput {
   @Field()
   name!: string
   @Field()
-  decimals!: number
-  @Field()
   endpoint!: string
-  @Field()
-  explorerUrl!: string
-  @Field()
-  symbol!: string
 }

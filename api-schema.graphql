@@ -4,6 +4,7 @@
 
 input AdminCreateCommunityInput {
   avatarUrl: String
+  cluster: NetworkCluster!
   description: String
   discordUrl: String
   githubUrl: String
@@ -27,11 +28,8 @@ input AdminCreateIdentityInput {
 
 input AdminCreateNetworkInput {
   cluster: NetworkCluster!
-  decimals: Float!
   endpoint: String!
-  explorerUrl: String!
   name: String!
-  symbol: String!
   type: NetworkType!
 }
 
@@ -102,11 +100,8 @@ input AdminUpdateCommunityMemberInput {
 }
 
 input AdminUpdateNetworkInput {
-  decimals: Float
   endpoint: String
-  explorerUrl: String
   name: String
-  symbol: String
 }
 
 input AdminUpdateRuleInput {
@@ -135,6 +130,7 @@ type AppConfig {
 
 type Community {
   avatarUrl: String
+  cluster: NetworkCluster
   createdAt: DateTime
   description: String
   discordUrl: String
@@ -258,6 +254,7 @@ type Mutation {
   userDeleteIdentity(identityId: String!): Boolean
   userDeleteRule(ruleId: String!): Boolean
   userLinkIdentity(input: LinkIdentityInput!): Identity
+  userTestRule(address: String!, ruleId: String!): JSON
   userUpdateCommunity(communityId: String!, input: UserUpdateCommunityInput!): Community
   userUpdateCommunityMember(communityMemberId: String!, input: UserUpdateCommunityMemberInput!): CommunityMember
   userUpdateRule(input: UserUpdateRuleInput!, ruleId: String!): Rule
@@ -353,10 +350,20 @@ type Rule {
 }
 
 type RuleCondition {
+  account: String!
+  amount: String
   createdAt: DateTime
+  filters: JSON
   id: String!
   name: String!
+  type: RuleConditionType
   updatedAt: DateTime
+}
+
+enum RuleConditionType {
+  AnybodiesNftAssets
+  SolanaNftAssets
+  SolanaTokenAmount
 }
 
 type RulePaging {
@@ -380,6 +387,7 @@ type User {
 
 input UserCreateCommunityInput {
   avatarUrl: String
+  cluster: NetworkCluster!
   description: String
   discordUrl: String
   githubUrl: String

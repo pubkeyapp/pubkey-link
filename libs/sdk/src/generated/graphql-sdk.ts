@@ -26,6 +26,7 @@ export type Scalars = {
 
 export type AdminCreateCommunityInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>
+  cluster: NetworkCluster
   description?: InputMaybe<Scalars['String']['input']>
   discordUrl?: InputMaybe<Scalars['String']['input']>
   githubUrl?: InputMaybe<Scalars['String']['input']>
@@ -49,11 +50,8 @@ export type AdminCreateIdentityInput = {
 
 export type AdminCreateNetworkInput = {
   cluster: NetworkCluster
-  decimals: Scalars['Float']['input']
   endpoint: Scalars['String']['input']
-  explorerUrl: Scalars['String']['input']
   name: Scalars['String']['input']
-  symbol: Scalars['String']['input']
   type: NetworkType
 }
 
@@ -124,11 +122,8 @@ export type AdminUpdateCommunityMemberInput = {
 }
 
 export type AdminUpdateNetworkInput = {
-  decimals?: InputMaybe<Scalars['Float']['input']>
   endpoint?: InputMaybe<Scalars['String']['input']>
-  explorerUrl?: InputMaybe<Scalars['String']['input']>
   name?: InputMaybe<Scalars['String']['input']>
-  symbol?: InputMaybe<Scalars['String']['input']>
 }
 
 export type AdminUpdateRuleInput = {
@@ -159,6 +154,7 @@ export type AppConfig = {
 export type Community = {
   __typename?: 'Community'
   avatarUrl?: Maybe<Scalars['String']['output']>
+  cluster?: Maybe<NetworkCluster>
   createdAt?: Maybe<Scalars['DateTime']['output']>
   description?: Maybe<Scalars['String']['output']>
   discordUrl?: Maybe<Scalars['String']['output']>
@@ -278,6 +274,7 @@ export type Mutation = {
   userDeleteIdentity?: Maybe<Scalars['Boolean']['output']>
   userDeleteRule?: Maybe<Scalars['Boolean']['output']>
   userLinkIdentity?: Maybe<Identity>
+  userTestRule?: Maybe<Scalars['JSON']['output']>
   userUpdateCommunity?: Maybe<Community>
   userUpdateCommunityMember?: Maybe<CommunityMember>
   userUpdateRule?: Maybe<Rule>
@@ -400,6 +397,11 @@ export type MutationUserDeleteRuleArgs = {
 
 export type MutationUserLinkIdentityArgs = {
   input: LinkIdentityInput
+}
+
+export type MutationUserTestRuleArgs = {
+  address: Scalars['String']['input']
+  ruleId: Scalars['String']['input']
 }
 
 export type MutationUserUpdateCommunityArgs = {
@@ -607,10 +609,20 @@ export type Rule = {
 
 export type RuleCondition = {
   __typename?: 'RuleCondition'
+  account: Scalars['String']['output']
+  amount?: Maybe<Scalars['String']['output']>
   createdAt?: Maybe<Scalars['DateTime']['output']>
+  filters?: Maybe<Scalars['JSON']['output']>
   id: Scalars['String']['output']
   name: Scalars['String']['output']
+  type?: Maybe<RuleConditionType>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export enum RuleConditionType {
+  AnybodiesNftAssets = 'AnybodiesNftAssets',
+  SolanaNftAssets = 'SolanaNftAssets',
+  SolanaTokenAmount = 'SolanaTokenAmount',
 }
 
 export type RulePaging = {
@@ -636,6 +648,7 @@ export type User = {
 
 export type UserCreateCommunityInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>
+  cluster: NetworkCluster
   description?: InputMaybe<Scalars['String']['input']>
   discordUrl?: InputMaybe<Scalars['String']['input']>
   githubUrl?: InputMaybe<Scalars['String']['input']>
@@ -1745,6 +1758,10 @@ export type RuleDetailsFragment = {
     createdAt?: Date | null
     id: string
     name: string
+    type?: RuleConditionType | null
+    account: string
+    amount?: string | null
+    filters?: any | null
     updatedAt?: Date | null
   }> | null
 }
@@ -1754,6 +1771,10 @@ export type RuleConditionDetailsFragment = {
   createdAt?: Date | null
   id: string
   name: string
+  type?: RuleConditionType | null
+  account: string
+  amount?: string | null
+  filters?: any | null
   updatedAt?: Date | null
 }
 
@@ -1778,6 +1799,10 @@ export type AdminFindManyRuleQuery = {
         createdAt?: Date | null
         id: string
         name: string
+        type?: RuleConditionType | null
+        account: string
+        amount?: string | null
+        filters?: any | null
         updatedAt?: Date | null
       }> | null
     }>
@@ -1813,6 +1838,10 @@ export type AdminFindOneRuleQuery = {
       createdAt?: Date | null
       id: string
       name: string
+      type?: RuleConditionType | null
+      account: string
+      amount?: string | null
+      filters?: any | null
       updatedAt?: Date | null
     }> | null
   } | null
@@ -1837,6 +1866,10 @@ export type AdminCreateRuleMutation = {
       createdAt?: Date | null
       id: string
       name: string
+      type?: RuleConditionType | null
+      account: string
+      amount?: string | null
+      filters?: any | null
       updatedAt?: Date | null
     }> | null
   } | null
@@ -1862,6 +1895,10 @@ export type AdminUpdateRuleMutation = {
       createdAt?: Date | null
       id: string
       name: string
+      type?: RuleConditionType | null
+      account: string
+      amount?: string | null
+      filters?: any | null
       updatedAt?: Date | null
     }> | null
   } | null
@@ -1894,6 +1931,10 @@ export type UserFindManyRuleQuery = {
         createdAt?: Date | null
         id: string
         name: string
+        type?: RuleConditionType | null
+        account: string
+        amount?: string | null
+        filters?: any | null
         updatedAt?: Date | null
       }> | null
     }>
@@ -1929,6 +1970,10 @@ export type UserFindOneRuleQuery = {
       createdAt?: Date | null
       id: string
       name: string
+      type?: RuleConditionType | null
+      account: string
+      amount?: string | null
+      filters?: any | null
       updatedAt?: Date | null
     }> | null
   } | null
@@ -1953,6 +1998,10 @@ export type UserCreateRuleMutation = {
       createdAt?: Date | null
       id: string
       name: string
+      type?: RuleConditionType | null
+      account: string
+      amount?: string | null
+      filters?: any | null
       updatedAt?: Date | null
     }> | null
   } | null
@@ -1978,6 +2027,10 @@ export type UserUpdateRuleMutation = {
       createdAt?: Date | null
       id: string
       name: string
+      type?: RuleConditionType | null
+      account: string
+      amount?: string | null
+      filters?: any | null
       updatedAt?: Date | null
     }> | null
   } | null
@@ -1988,6 +2041,13 @@ export type UserDeleteRuleMutationVariables = Exact<{
 }>
 
 export type UserDeleteRuleMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
+export type UserTestRuleMutationVariables = Exact<{
+  ruleId: Scalars['String']['input']
+  address: Scalars['String']['input']
+}>
+
+export type UserTestRuleMutation = { __typename?: 'Mutation'; result?: any | null }
 
 export type UserDetailsFragment = {
   __typename?: 'User'
@@ -2308,6 +2368,10 @@ export const RuleConditionDetailsFragmentDoc = gql`
     createdAt
     id
     name
+    type
+    account
+    amount
+    filters
     updatedAt
   }
 `
@@ -2750,6 +2814,11 @@ export const UserDeleteRuleDocument = gql`
     deleted: userDeleteRule(ruleId: $ruleId)
   }
 `
+export const UserTestRuleDocument = gql`
+  mutation userTestRule($ruleId: String!, $address: String!) {
+    result: userTestRule(ruleId: $ruleId, address: $address)
+  }
+`
 export const AdminCreateUserDocument = gql`
   mutation adminCreateUser($input: AdminCreateUserInput!) {
     created: adminCreateUser(input: $input) {
@@ -2887,6 +2956,7 @@ const UserFindOneRuleDocumentString = print(UserFindOneRuleDocument)
 const UserCreateRuleDocumentString = print(UserCreateRuleDocument)
 const UserUpdateRuleDocumentString = print(UserUpdateRuleDocument)
 const UserDeleteRuleDocumentString = print(UserDeleteRuleDocument)
+const UserTestRuleDocumentString = print(UserTestRuleDocument)
 const AdminCreateUserDocumentString = print(AdminCreateUserDocument)
 const AdminDeleteUserDocumentString = print(AdminDeleteUserDocument)
 const AdminFindManyUserDocumentString = print(AdminFindManyUserDocument)
@@ -3935,6 +4005,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
+    userTestRule(
+      variables: UserTestRuleMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserTestRuleMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserTestRuleMutation>(UserTestRuleDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userTestRule',
+        'mutation',
+        variables,
+      )
+    },
     adminCreateUser(
       variables: AdminCreateUserMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -4125,6 +4216,8 @@ export const NetworkClusterSchema = z.nativeEnum(NetworkCluster)
 
 export const NetworkTypeSchema = z.nativeEnum(NetworkType)
 
+export const RuleConditionTypeSchema = z.nativeEnum(RuleConditionType)
+
 export const UserRoleSchema = z.nativeEnum(UserRole)
 
 export const UserStatusSchema = z.nativeEnum(UserStatus)
@@ -4132,6 +4225,7 @@ export const UserStatusSchema = z.nativeEnum(UserStatus)
 export function AdminCreateCommunityInputSchema(): z.ZodObject<Properties<AdminCreateCommunityInput>> {
   return z.object({
     avatarUrl: z.string().nullish(),
+    cluster: NetworkClusterSchema,
     description: z.string().nullish(),
     discordUrl: z.string().nullish(),
     githubUrl: z.string().nullish(),
@@ -4161,11 +4255,8 @@ export function AdminCreateIdentityInputSchema(): z.ZodObject<Properties<AdminCr
 export function AdminCreateNetworkInputSchema(): z.ZodObject<Properties<AdminCreateNetworkInput>> {
   return z.object({
     cluster: NetworkClusterSchema,
-    decimals: z.number(),
     endpoint: z.string(),
-    explorerUrl: z.string(),
     name: z.string(),
-    symbol: z.string(),
     type: NetworkTypeSchema,
   })
 }
@@ -4258,11 +4349,8 @@ export function AdminUpdateCommunityMemberInputSchema(): z.ZodObject<Properties<
 
 export function AdminUpdateNetworkInputSchema(): z.ZodObject<Properties<AdminUpdateNetworkInput>> {
   return z.object({
-    decimals: z.number().nullish(),
     endpoint: z.string().nullish(),
-    explorerUrl: z.string().nullish(),
     name: z.string().nullish(),
-    symbol: z.string().nullish(),
   })
 }
 
@@ -4315,6 +4403,7 @@ export function RequestIdentityChallengeInputSchema(): z.ZodObject<Properties<Re
 export function UserCreateCommunityInputSchema(): z.ZodObject<Properties<UserCreateCommunityInput>> {
   return z.object({
     avatarUrl: z.string().nullish(),
+    cluster: NetworkClusterSchema,
     description: z.string().nullish(),
     discordUrl: z.string().nullish(),
     githubUrl: z.string().nullish(),

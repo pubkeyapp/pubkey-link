@@ -1,3 +1,4 @@
+export * from './lib/ui-address-input'
 export * from './lib/ui-avatar'
 export * from './lib/ui-grid'
 export * from './lib/ui-icon'

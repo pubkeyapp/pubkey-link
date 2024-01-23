@@ -11,18 +11,12 @@ export function AdminNetworkUiUpdateForm({
 }) {
   const model: AdminUpdateNetworkInput = {
     name: network.name,
-    decimals: network.decimals,
     endpoint: network.endpoint,
-    explorerUrl: network.explorerUrl,
-    symbol: network.symbol,
   }
 
   const fields: UiFormField<AdminUpdateNetworkInput>[] = [
     formFieldText('name', { label: 'Name' }),
-    formFieldText('decimals', { label: 'Decimals' }),
     formFieldText('endpoint', { label: 'Endpoint' }),
-    formFieldText('explorerUrl', { label: 'ExplorerUrl' }),
-    formFieldText('symbol', { label: 'Symbol' }),
   ]
   return (
     <UiForm model={model} fields={fields} submit={(res) => submit(res as AdminUpdateNetworkInput)}>
