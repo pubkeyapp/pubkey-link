@@ -1,9 +1,9 @@
+import { IconCurrencySolana, IconSettings, IconUsers, IconUsersGroup } from '@tabler/icons-react'
 import { DashboardFeature } from '@pubkey-link/web-dashboard-feature'
 import { SettingsFeature } from '@pubkey-link/web-settings-feature'
 import { SolanaFeature } from '@pubkey-link/web-solana-feature'
 import { UserFeature } from '@pubkey-link/web-user-feature'
 import { UiDashboardItem } from '@pubkey-ui/core'
-import { IconCurrencySolana, IconSettings, IconUsers, IconUsersGroup } from '@tabler/icons-react'
 import { RouteObject, useRoutes } from 'react-router-dom'
 import { UserCommunityFeature } from '@pubkey-link/web-community-feature'
 

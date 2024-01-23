@@ -4,6 +4,7 @@ import { fakeUsers, provisionCommunities, provisionUsers } from './api-core-prov
 import { hashPassword } from './helpers/hash-validate-password'
 import { ApiCoreService } from './api-core.service'
 import { slugifyId } from './helpers/slugify-id'
+import { provisionNetworks } from './api-core-provision-data-networks'
 
 @Injectable()
 export class ApiCoreProvisionService implements OnModuleInit {
@@ -31,8 +32,26 @@ export class ApiCoreProvisionService implements OnModuleInit {
   }
 
   private async provisionDatabase() {
+    await this.provisionNetworks()
     await this.provisionUsers()
     await this.provisionCommunities()
+  }
+
+  private async provisionNetworks() {
+    await Promise.all(provisionNetworks.map((network) => this.provisionNetwork(network)))
+  }
+
+  private async provisionNetwork(input: Prisma.NetworkCreateInput) {
+    const existing = await this.core.data.network.count({ where: { cluster: input.cluster } })
+    if (existing < 1) {
+      this.logger.verbose(
+        `Creating network cluster (${input.cluster}) name = ${input.name}, endpoint = ${input.endpoint}`,
+      )
+      await this.core.data.network.create({ data: { ...input } })
+      this.logger.verbose(`Provisioned (${input.cluster}) name = ${input.name}, endpoint = ${input.endpoint}`)
+      return
+    }
+    this.logger.verbose(`Found network (${input.cluster}) name = ${input.name}, endpoint = ${input.endpoint}`)
   }
 
   private async provisionCommunities() {

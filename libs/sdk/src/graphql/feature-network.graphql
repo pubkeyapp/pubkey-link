@@ -1,0 +1,45 @@
+fragment NetworkDetails on Network {
+  createdAt
+  id
+  cluster
+  type
+  name
+  decimals
+  endpoint
+  explorerUrl
+  symbol
+  updatedAt
+}
+
+query adminFindManyNetwork($input: AdminFindManyNetworkInput!) {
+  paging: adminFindManyNetwork(input: $input) {
+    data {
+      ...NetworkDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query adminFindOneNetwork($networkId: String!) {
+  item: adminFindOneNetwork(networkId: $networkId) {
+    ...NetworkDetails
+  }
+}
+
+mutation adminCreateNetwork($input: AdminCreateNetworkInput!) {
+  created: adminCreateNetwork(input: $input) {
+    ...NetworkDetails
+  }
+}
+
+mutation adminUpdateNetwork($networkId: String!, $input: AdminUpdateNetworkInput!) {
+  updated: adminUpdateNetwork(networkId: $networkId, input: $input) {
+    ...NetworkDetails
+  }
+}
+
+mutation adminDeleteNetwork($networkId: String!) {
+  deleted: adminDeleteNetwork(networkId: $networkId)
+}

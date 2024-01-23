@@ -35,6 +35,7 @@ export const validationSchema = Joi.object({
   DATABASE_RESET: Joi.boolean().default(false),
   DATABASE_URL: Joi.string(),
   GRAPHQL_PLAYGROUND: Joi.boolean().default(false),
+  HELIUS_API_KEY: Joi.string().required().error(new Error(`HELIUS_API_KEY is required.`)),
   JWT_SECRET: Joi.string().required(),
   HOST: Joi.string().default('0.0.0.0'),
   NODE_ENV: Joi.string().valid('development', 'production', 'test', 'provision').default('development'),

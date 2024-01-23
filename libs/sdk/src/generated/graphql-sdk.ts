@@ -47,6 +47,16 @@ export type AdminCreateIdentityInput = {
   providerId: Scalars['String']['input']
 }
 
+export type AdminCreateNetworkInput = {
+  cluster: NetworkCluster
+  decimals: Scalars['Float']['input']
+  endpoint: Scalars['String']['input']
+  explorerUrl: Scalars['String']['input']
+  name: Scalars['String']['input']
+  symbol: Scalars['String']['input']
+  type: NetworkType
+}
+
 export type AdminCreateRuleInput = {
   communityId: Scalars['String']['input']
   description?: InputMaybe<Scalars['String']['input']>
@@ -77,6 +87,12 @@ export type AdminFindManyIdentityInput = {
   provider?: InputMaybe<IdentityProvider>
 }
 
+export type AdminFindManyNetworkInput = {
+  limit?: InputMaybe<Scalars['Int']['input']>
+  page?: InputMaybe<Scalars['Int']['input']>
+  search?: InputMaybe<Scalars['String']['input']>
+}
+
 export type AdminFindManyRuleInput = {
   communityId: Scalars['String']['input']
   limit?: InputMaybe<Scalars['Int']['input']>
@@ -105,6 +121,14 @@ export type AdminUpdateCommunityInput = {
 
 export type AdminUpdateCommunityMemberInput = {
   role: CommunityRole
+}
+
+export type AdminUpdateNetworkInput = {
+  decimals?: InputMaybe<Scalars['Float']['input']>
+  endpoint?: InputMaybe<Scalars['String']['input']>
+  explorerUrl?: InputMaybe<Scalars['String']['input']>
+  name?: InputMaybe<Scalars['String']['input']>
+  symbol?: InputMaybe<Scalars['String']['input']>
 }
 
 export type AdminUpdateRuleInput = {
@@ -228,15 +252,18 @@ export type Mutation = {
   adminCreateCommunity?: Maybe<Community>
   adminCreateCommunityMember?: Maybe<CommunityMember>
   adminCreateIdentity?: Maybe<Identity>
+  adminCreateNetwork?: Maybe<Network>
   adminCreateRule?: Maybe<Rule>
   adminCreateUser?: Maybe<User>
   adminDeleteCommunity?: Maybe<Scalars['Boolean']['output']>
   adminDeleteCommunityMember?: Maybe<Scalars['Boolean']['output']>
   adminDeleteIdentity?: Maybe<Scalars['Boolean']['output']>
+  adminDeleteNetwork?: Maybe<Scalars['Boolean']['output']>
   adminDeleteRule?: Maybe<Scalars['Boolean']['output']>
   adminDeleteUser?: Maybe<Scalars['Boolean']['output']>
   adminUpdateCommunity?: Maybe<Community>
   adminUpdateCommunityMember?: Maybe<CommunityMember>
+  adminUpdateNetwork?: Maybe<Network>
   adminUpdateRule?: Maybe<Rule>
   adminUpdateUser?: Maybe<User>
   anonVerifyIdentityChallenge?: Maybe<IdentityChallenge>
@@ -270,6 +297,10 @@ export type MutationAdminCreateIdentityArgs = {
   input: AdminCreateIdentityInput
 }
 
+export type MutationAdminCreateNetworkArgs = {
+  input: AdminCreateNetworkInput
+}
+
 export type MutationAdminCreateRuleArgs = {
   input: AdminCreateRuleInput
 }
@@ -290,6 +321,10 @@ export type MutationAdminDeleteIdentityArgs = {
   identityId: Scalars['String']['input']
 }
 
+export type MutationAdminDeleteNetworkArgs = {
+  networkId: Scalars['String']['input']
+}
+
 export type MutationAdminDeleteRuleArgs = {
   ruleId: Scalars['String']['input']
 }
@@ -306,6 +341,11 @@ export type MutationAdminUpdateCommunityArgs = {
 export type MutationAdminUpdateCommunityMemberArgs = {
   communityMemberId: Scalars['String']['input']
   input: AdminUpdateCommunityMemberInput
+}
+
+export type MutationAdminUpdateNetworkArgs = {
+  input: AdminUpdateNetworkInput
+  networkId: Scalars['String']['input']
 }
 
 export type MutationAdminUpdateRuleArgs = {
@@ -385,6 +425,37 @@ export type MutationUserVerifyIdentityChallengeArgs = {
   input: VerifyIdentityChallengeInput
 }
 
+export type Network = {
+  __typename?: 'Network'
+  cluster: NetworkCluster
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  decimals: Scalars['Int']['output']
+  endpoint: Scalars['String']['output']
+  explorerUrl: Scalars['String']['output']
+  id: Scalars['String']['output']
+  name: Scalars['String']['output']
+  symbol: Scalars['String']['output']
+  type: NetworkType
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export enum NetworkCluster {
+  SolanaCustom = 'SolanaCustom',
+  SolanaDevnet = 'SolanaDevnet',
+  SolanaMainnet = 'SolanaMainnet',
+  SolanaTestnet = 'SolanaTestnet',
+}
+
+export type NetworkPaging = {
+  __typename?: 'NetworkPaging'
+  data: Array<Network>
+  meta: PagingMeta
+}
+
+export enum NetworkType {
+  Solana = 'Solana',
+}
+
 export type PagingMeta = {
   __typename?: 'PagingMeta'
   currentPage: Scalars['Int']['output']
@@ -401,10 +472,12 @@ export type Query = {
   adminFindManyCommunity: CommunityPaging
   adminFindManyCommunityMember: CommunityMemberPaging
   adminFindManyIdentity?: Maybe<Array<Identity>>
+  adminFindManyNetwork: NetworkPaging
   adminFindManyRule: RulePaging
   adminFindManyUser: UserPaging
   adminFindOneCommunity?: Maybe<Community>
   adminFindOneCommunityMember?: Maybe<CommunityMember>
+  adminFindOneNetwork?: Maybe<Network>
   adminFindOneRule?: Maybe<Rule>
   adminFindOneUser?: Maybe<User>
   anonRequestIdentityChallenge?: Maybe<IdentityChallenge>
@@ -435,6 +508,10 @@ export type QueryAdminFindManyIdentityArgs = {
   input: AdminFindManyIdentityInput
 }
 
+export type QueryAdminFindManyNetworkArgs = {
+  input: AdminFindManyNetworkInput
+}
+
 export type QueryAdminFindManyRuleArgs = {
   input: AdminFindManyRuleInput
 }
@@ -449,6 +526,10 @@ export type QueryAdminFindOneCommunityArgs = {
 
 export type QueryAdminFindOneCommunityMemberArgs = {
   communityMemberId: Scalars['String']['input']
+}
+
+export type QueryAdminFindOneNetworkArgs = {
+  networkId: Scalars['String']['input']
 }
 
 export type QueryAdminFindOneRuleArgs = {
@@ -1533,6 +1614,124 @@ export type AnonVerifyIdentityChallengeMutation = {
   } | null
 }
 
+export type NetworkDetailsFragment = {
+  __typename?: 'Network'
+  createdAt?: Date | null
+  id: string
+  cluster: NetworkCluster
+  type: NetworkType
+  name: string
+  decimals: number
+  endpoint: string
+  explorerUrl: string
+  symbol: string
+  updatedAt?: Date | null
+}
+
+export type AdminFindManyNetworkQueryVariables = Exact<{
+  input: AdminFindManyNetworkInput
+}>
+
+export type AdminFindManyNetworkQuery = {
+  __typename?: 'Query'
+  paging: {
+    __typename?: 'NetworkPaging'
+    data: Array<{
+      __typename?: 'Network'
+      createdAt?: Date | null
+      id: string
+      cluster: NetworkCluster
+      type: NetworkType
+      name: string
+      decimals: number
+      endpoint: string
+      explorerUrl: string
+      symbol: string
+      updatedAt?: Date | null
+    }>
+    meta: {
+      __typename?: 'PagingMeta'
+      currentPage: number
+      isFirstPage: boolean
+      isLastPage: boolean
+      nextPage?: number | null
+      pageCount?: number | null
+      previousPage?: number | null
+      totalCount?: number | null
+    }
+  }
+}
+
+export type AdminFindOneNetworkQueryVariables = Exact<{
+  networkId: Scalars['String']['input']
+}>
+
+export type AdminFindOneNetworkQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'Network'
+    createdAt?: Date | null
+    id: string
+    cluster: NetworkCluster
+    type: NetworkType
+    name: string
+    decimals: number
+    endpoint: string
+    explorerUrl: string
+    symbol: string
+    updatedAt?: Date | null
+  } | null
+}
+
+export type AdminCreateNetworkMutationVariables = Exact<{
+  input: AdminCreateNetworkInput
+}>
+
+export type AdminCreateNetworkMutation = {
+  __typename?: 'Mutation'
+  created?: {
+    __typename?: 'Network'
+    createdAt?: Date | null
+    id: string
+    cluster: NetworkCluster
+    type: NetworkType
+    name: string
+    decimals: number
+    endpoint: string
+    explorerUrl: string
+    symbol: string
+    updatedAt?: Date | null
+  } | null
+}
+
+export type AdminUpdateNetworkMutationVariables = Exact<{
+  networkId: Scalars['String']['input']
+  input: AdminUpdateNetworkInput
+}>
+
+export type AdminUpdateNetworkMutation = {
+  __typename?: 'Mutation'
+  updated?: {
+    __typename?: 'Network'
+    createdAt?: Date | null
+    id: string
+    cluster: NetworkCluster
+    type: NetworkType
+    name: string
+    decimals: number
+    endpoint: string
+    explorerUrl: string
+    symbol: string
+    updatedAt?: Date | null
+  } | null
+}
+
+export type AdminDeleteNetworkMutationVariables = Exact<{
+  networkId: Scalars['String']['input']
+}>
+
+export type AdminDeleteNetworkMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
 export type RuleDetailsFragment = {
   __typename?: 'Rule'
   createdAt?: Date | null
@@ -2090,6 +2289,20 @@ export const IdentityChallengeDetailsFragmentDoc = gql`
     verified
   }
 `
+export const NetworkDetailsFragmentDoc = gql`
+  fragment NetworkDetails on Network {
+    createdAt
+    id
+    cluster
+    type
+    name
+    decimals
+    endpoint
+    explorerUrl
+    symbol
+    updatedAt
+  }
+`
 export const RuleConditionDetailsFragmentDoc = gql`
   fragment RuleConditionDetails on RuleCondition {
     createdAt
@@ -2408,6 +2621,49 @@ export const AnonVerifyIdentityChallengeDocument = gql`
   }
   ${IdentityChallengeDetailsFragmentDoc}
 `
+export const AdminFindManyNetworkDocument = gql`
+  query adminFindManyNetwork($input: AdminFindManyNetworkInput!) {
+    paging: adminFindManyNetwork(input: $input) {
+      data {
+        ...NetworkDetails
+      }
+      meta {
+        ...PagingMetaDetails
+      }
+    }
+  }
+  ${NetworkDetailsFragmentDoc}
+  ${PagingMetaDetailsFragmentDoc}
+`
+export const AdminFindOneNetworkDocument = gql`
+  query adminFindOneNetwork($networkId: String!) {
+    item: adminFindOneNetwork(networkId: $networkId) {
+      ...NetworkDetails
+    }
+  }
+  ${NetworkDetailsFragmentDoc}
+`
+export const AdminCreateNetworkDocument = gql`
+  mutation adminCreateNetwork($input: AdminCreateNetworkInput!) {
+    created: adminCreateNetwork(input: $input) {
+      ...NetworkDetails
+    }
+  }
+  ${NetworkDetailsFragmentDoc}
+`
+export const AdminUpdateNetworkDocument = gql`
+  mutation adminUpdateNetwork($networkId: String!, $input: AdminUpdateNetworkInput!) {
+    updated: adminUpdateNetwork(networkId: $networkId, input: $input) {
+      ...NetworkDetails
+    }
+  }
+  ${NetworkDetailsFragmentDoc}
+`
+export const AdminDeleteNetworkDocument = gql`
+  mutation adminDeleteNetwork($networkId: String!) {
+    deleted: adminDeleteNetwork(networkId: $networkId)
+  }
+`
 export const AdminFindManyRuleDocument = gql`
   query adminFindManyRule($input: AdminFindManyRuleInput!) {
     paging: adminFindManyRule(input: $input) {
@@ -2616,6 +2872,11 @@ const UserVerifyIdentityChallengeDocumentString = print(UserVerifyIdentityChalle
 const UserLinkIdentityDocumentString = print(UserLinkIdentityDocument)
 const AnonRequestIdentityChallengeDocumentString = print(AnonRequestIdentityChallengeDocument)
 const AnonVerifyIdentityChallengeDocumentString = print(AnonVerifyIdentityChallengeDocument)
+const AdminFindManyNetworkDocumentString = print(AdminFindManyNetworkDocument)
+const AdminFindOneNetworkDocumentString = print(AdminFindOneNetworkDocument)
+const AdminCreateNetworkDocumentString = print(AdminCreateNetworkDocument)
+const AdminUpdateNetworkDocumentString = print(AdminUpdateNetworkDocument)
+const AdminDeleteNetworkDocumentString = print(AdminDeleteNetworkDocument)
 const AdminFindManyRuleDocumentString = print(AdminFindManyRuleDocument)
 const AdminFindOneRuleDocumentString = print(AdminFindOneRuleDocument)
 const AdminCreateRuleDocumentString = print(AdminCreateRuleDocument)
@@ -3359,6 +3620,111 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
+    adminFindManyNetwork(
+      variables: AdminFindManyNetworkQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindManyNetworkQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindManyNetworkQuery>(AdminFindManyNetworkDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindManyNetwork',
+        'query',
+        variables,
+      )
+    },
+    adminFindOneNetwork(
+      variables: AdminFindOneNetworkQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindOneNetworkQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindOneNetworkQuery>(AdminFindOneNetworkDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindOneNetwork',
+        'query',
+        variables,
+      )
+    },
+    adminCreateNetwork(
+      variables: AdminCreateNetworkMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminCreateNetworkMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminCreateNetworkMutation>(AdminCreateNetworkDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminCreateNetwork',
+        'mutation',
+        variables,
+      )
+    },
+    adminUpdateNetwork(
+      variables: AdminUpdateNetworkMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminUpdateNetworkMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminUpdateNetworkMutation>(AdminUpdateNetworkDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminUpdateNetwork',
+        'mutation',
+        variables,
+      )
+    },
+    adminDeleteNetwork(
+      variables: AdminDeleteNetworkMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminDeleteNetworkMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminDeleteNetworkMutation>(AdminDeleteNetworkDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminDeleteNetwork',
+        'mutation',
+        variables,
+      )
+    },
     adminFindManyRule(
       variables: AdminFindManyRuleQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -3755,6 +4121,10 @@ export const CommunityRoleSchema = z.nativeEnum(CommunityRole)
 
 export const IdentityProviderSchema = z.nativeEnum(IdentityProvider)
 
+export const NetworkClusterSchema = z.nativeEnum(NetworkCluster)
+
+export const NetworkTypeSchema = z.nativeEnum(NetworkType)
+
 export const UserRoleSchema = z.nativeEnum(UserRole)
 
 export const UserStatusSchema = z.nativeEnum(UserStatus)
@@ -3785,6 +4155,18 @@ export function AdminCreateIdentityInputSchema(): z.ZodObject<Properties<AdminCr
     ownerId: z.string(),
     provider: IdentityProviderSchema,
     providerId: z.string(),
+  })
+}
+
+export function AdminCreateNetworkInputSchema(): z.ZodObject<Properties<AdminCreateNetworkInput>> {
+  return z.object({
+    cluster: NetworkClusterSchema,
+    decimals: z.number(),
+    endpoint: z.string(),
+    explorerUrl: z.string(),
+    name: z.string(),
+    symbol: z.string(),
+    type: NetworkTypeSchema,
   })
 }
 
@@ -3828,6 +4210,14 @@ export function AdminFindManyIdentityInputSchema(): z.ZodObject<Properties<Admin
   })
 }
 
+export function AdminFindManyNetworkInputSchema(): z.ZodObject<Properties<AdminFindManyNetworkInput>> {
+  return z.object({
+    limit: z.number().nullish(),
+    page: z.number().nullish(),
+    search: z.string().nullish(),
+  })
+}
+
 export function AdminFindManyRuleInputSchema(): z.ZodObject<Properties<AdminFindManyRuleInput>> {
   return z.object({
     communityId: z.string(),
@@ -3863,6 +4253,16 @@ export function AdminUpdateCommunityInputSchema(): z.ZodObject<Properties<AdminU
 export function AdminUpdateCommunityMemberInputSchema(): z.ZodObject<Properties<AdminUpdateCommunityMemberInput>> {
   return z.object({
     role: CommunityRoleSchema,
+  })
+}
+
+export function AdminUpdateNetworkInputSchema(): z.ZodObject<Properties<AdminUpdateNetworkInput>> {
+  return z.object({
+    decimals: z.number().nullish(),
+    endpoint: z.string().nullish(),
+    explorerUrl: z.string().nullish(),
+    name: z.string().nullish(),
+    symbol: z.string().nullish(),
   })
 }
 

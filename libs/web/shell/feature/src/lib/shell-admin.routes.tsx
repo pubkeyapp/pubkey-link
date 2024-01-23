@@ -1,21 +1,23 @@
-import { IconSettings, IconUsers, IconUsersGroup } from '@tabler/icons-react'
+import { IconNetwork, IconUsers, IconUsersGroup } from '@tabler/icons-react'
 import { DevAdminRoutes } from '@pubkey-link/web-dev-feature'
 import { AdminUserFeature } from '@pubkey-link/web-user-feature'
 import { UiContainer, UiDashboardGrid, UiDashboardItem, UiNotFound } from '@pubkey-ui/core'
 import { Navigate, RouteObject, useRoutes } from 'react-router-dom'
 import { AdminCommunityFeature } from '@pubkey-link/web-community-feature'
+import { AdminNetworkFeature } from '@pubkey-link/web-network-feature'
 
 const links: UiDashboardItem[] = [
   // Admin Dashboard Links are added by the web-crud generator
   { label: 'Communities', icon: IconUsersGroup, to: '/admin/communities' },
+  { label: 'Networks', icon: IconNetwork, to: '/admin/networks' },
   { label: 'Users', icon: IconUsers, to: '/admin/users' },
-  { label: 'Rules', icon: IconSettings, to: '/admin/rules' },
 ]
 
 const routes: RouteObject[] = [
   // Admin Dashboard Routes are added by the web-crud generator
   { path: 'communities/*', element: <AdminCommunityFeature /> },
   { path: 'development/*', element: <DevAdminRoutes /> },
+  { path: 'networks/*', element: <AdminNetworkFeature /> },
   { path: 'users/*', element: <AdminUserFeature /> },
 ]
 

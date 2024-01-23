@@ -25,6 +25,16 @@ input AdminCreateIdentityInput {
   providerId: String!
 }
 
+input AdminCreateNetworkInput {
+  cluster: NetworkCluster!
+  decimals: Float!
+  endpoint: String!
+  explorerUrl: String!
+  name: String!
+  symbol: String!
+  type: NetworkType!
+}
+
 input AdminCreateRuleInput {
   communityId: String!
   description: String
@@ -55,6 +65,12 @@ input AdminFindManyIdentityInput {
   provider: IdentityProvider
 }
 
+input AdminFindManyNetworkInput {
+  limit: Int = 10
+  page: Int = 1
+  search: String
+}
+
 input AdminFindManyRuleInput {
   communityId: String!
   limit: Int = 10
@@ -83,6 +99,14 @@ input AdminUpdateCommunityInput {
 
 input AdminUpdateCommunityMemberInput {
   role: CommunityRole!
+}
+
+input AdminUpdateNetworkInput {
+  decimals: Float
+  endpoint: String
+  explorerUrl: String
+  name: String
+  symbol: String
 }
 
 input AdminUpdateRuleInput {
@@ -208,15 +232,18 @@ type Mutation {
   adminCreateCommunity(input: AdminCreateCommunityInput!): Community
   adminCreateCommunityMember(input: AdminCreateCommunityMemberInput!): CommunityMember
   adminCreateIdentity(input: AdminCreateIdentityInput!): Identity
+  adminCreateNetwork(input: AdminCreateNetworkInput!): Network
   adminCreateRule(input: AdminCreateRuleInput!): Rule
   adminCreateUser(input: AdminCreateUserInput!): User
   adminDeleteCommunity(communityId: String!): Boolean
   adminDeleteCommunityMember(communityMemberId: String!): Boolean
   adminDeleteIdentity(identityId: String!): Boolean
+  adminDeleteNetwork(networkId: String!): Boolean
   adminDeleteRule(ruleId: String!): Boolean
   adminDeleteUser(userId: String!): Boolean
   adminUpdateCommunity(communityId: String!, input: AdminUpdateCommunityInput!): Community
   adminUpdateCommunityMember(communityMemberId: String!, input: AdminUpdateCommunityMemberInput!): CommunityMember
+  adminUpdateNetwork(input: AdminUpdateNetworkInput!, networkId: String!): Network
   adminUpdateRule(input: AdminUpdateRuleInput!, ruleId: String!): Rule
   adminUpdateUser(input: AdminUpdateUserInput!, userId: String!): User
   anonVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
@@ -238,6 +265,35 @@ type Mutation {
   userVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
 }
 
+type Network {
+  cluster: NetworkCluster!
+  createdAt: DateTime
+  decimals: Int!
+  endpoint: String!
+  explorerUrl: String!
+  id: String!
+  name: String!
+  symbol: String!
+  type: NetworkType!
+  updatedAt: DateTime
+}
+
+enum NetworkCluster {
+  SolanaCustom
+  SolanaDevnet
+  SolanaMainnet
+  SolanaTestnet
+}
+
+type NetworkPaging {
+  data: [Network!]!
+  meta: PagingMeta!
+}
+
+enum NetworkType {
+  Solana
+}
+
 type PagingMeta {
   currentPage: Int!
   isFirstPage: Boolean!
@@ -252,10 +308,12 @@ type Query {
   adminFindManyCommunity(input: AdminFindManyCommunityInput!): CommunityPaging!
   adminFindManyCommunityMember(input: AdminFindManyCommunityMemberInput!): CommunityMemberPaging!
   adminFindManyIdentity(input: AdminFindManyIdentityInput!): [Identity!]
+  adminFindManyNetwork(input: AdminFindManyNetworkInput!): NetworkPaging!
   adminFindManyRule(input: AdminFindManyRuleInput!): RulePaging!
   adminFindManyUser(input: AdminFindManyUserInput!): UserPaging!
   adminFindOneCommunity(communityId: String!): Community
   adminFindOneCommunityMember(communityMemberId: String!): CommunityMember
+  adminFindOneNetwork(networkId: String!): Network
   adminFindOneRule(ruleId: String!): Rule
   adminFindOneUser(userId: String!): User
   anonRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge

@@ -70,6 +70,16 @@ model IdentityChallenge {
   providerId String
 }
 
+model Network {
+  id        String         @id @default(cuid())
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @default(now()) @updatedAt
+  cluster   NetworkCluster @unique
+  type      NetworkType
+  name      String         @unique
+  endpoint  String
+}
+
 model Rule {
   id          String          @id @default(cuid())
   createdAt   DateTime        @default(now())
@@ -116,6 +126,17 @@ enum IdentityProvider {
   Google
   Solana
   Twitter
+}
+
+enum NetworkCluster {
+  SolanaCustom
+  SolanaDevnet
+  SolanaMainnet
+  SolanaTestnet
+}
+
+enum NetworkType {
+  Solana
 }
 
 enum UserRole {
