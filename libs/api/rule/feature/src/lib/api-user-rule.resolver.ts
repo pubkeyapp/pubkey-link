@@ -2,6 +2,7 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import {
   ApiRuleService,
   Rule,
+  RuleCondition,
   RulePaging,
   UserCreateRuleInput,
   UserFindManyRuleInput,
@@ -9,7 +10,6 @@ import {
 } from '@pubkey-link/api-rule-data-access'
 import { ApiAuthGraphQLUserGuard } from '@pubkey-link/api-auth-data-access'
 import { UseGuards } from '@nestjs/common'
-import { GraphQLJSON } from 'graphql-scalars'
 
 @Resolver()
 @UseGuards(ApiAuthGraphQLUserGuard)
@@ -36,9 +36,9 @@ export class ApiUserRuleResolver {
     return this.service.user.findOneRule(ruleId)
   }
 
-  @Mutation(() => GraphQLJSON, { nullable: true })
-  userTestRule(@Args('ruleId') ruleId: string, @Args('address') address: string) {
-    return this.service.user.testRule(ruleId, address)
+  @Mutation(() => [RuleCondition], { nullable: true })
+  userValidateRule(@Args('ruleId') ruleId: string, @Args('address') address: string) {
+    return this.service.user.validateRule(ruleId, address)
   }
 
   @Mutation(() => Rule, { nullable: true })

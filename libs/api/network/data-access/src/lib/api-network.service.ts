@@ -6,12 +6,7 @@ import { createUmi, publicKey, Umi } from '@metaplex-foundation/umi'
 import { dasApi, DasApiAsset, DasApiAssetList } from '@metaplex-foundation/digital-asset-standard-api'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { web3JsRpc } from '@metaplex-foundation/umi-rpc-web3js'
-
-export interface NetworkAsset {
-  accounts: string[]
-  amount: string
-  owner: string
-}
+import { NetworkAsset } from './entity/network-asset.entity'
 
 @Injectable()
 export class ApiNetworkService {
@@ -19,7 +14,7 @@ export class ApiNetworkService {
   private networks: Map<NetworkCluster, Umi> = new Map()
   constructor(readonly admin: ApiAdminNetworkService, readonly core: ApiCoreService) {}
 
-  async getAnybodiesVault({ owner, vaultId }: { owner: string; vaultId: string }): Promise<NetworkAsset> {
+  async resolveAnybodiesAsset({ owner, vaultId }: { owner: string; vaultId: string }): Promise<NetworkAsset> {
     return getAnybodiesVaultMap({ vaultId })
       .then((map) => map.find((item) => item.owner === owner)?.accounts ?? [])
       .then((accounts) => ({ owner, accounts, amount: `${accounts.length}` }))
@@ -33,13 +28,29 @@ export class ApiNetworkService {
     return this.getNetwork(cluster).then((res) => res.rpc.getAsset(publicKey(account)))
   }
 
-  async getSolanaNftAssets({ account, cluster, owner }: { owner: string; cluster: NetworkCluster; account: string }) {
+  async resolveSolanaNonFungibleAsset({
+    account,
+    cluster,
+    owner,
+  }: {
+    owner: string
+    cluster: NetworkCluster
+    account: string
+  }) {
     return this.getAllAssetsByOwner({ owner, cluster, groups: account })
       .then((assets) => assets.items?.map((item) => item.id?.toString()) ?? [])
       .then((accounts) => ({ owner, accounts, amount: `${accounts.length}` }))
   }
 
-  async getSolanaTokenAmount({ account, cluster, owner }: { owner: string; cluster: NetworkCluster; account: string }) {
+  async resolveSolanaFungibleAsset({
+    account,
+    cluster,
+    owner,
+  }: {
+    owner: string
+    cluster: NetworkCluster
+    account: string
+  }) {
     console.log('getSolanaTokenAmount', { cluster, account, owner })
     const accounts: string[] = []
 

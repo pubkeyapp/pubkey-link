@@ -26,6 +26,6 @@ export class Community {
   twitterUrl?: string | null
   @Field({ nullable: true })
   telegramUrl?: string | null
-  @Field(() => NetworkCluster, { nullable: true })
-  cluster?: NetworkCluster
+  @Field(() => NetworkCluster)
+  cluster!: NetworkCluster
 }

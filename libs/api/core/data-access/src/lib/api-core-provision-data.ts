@@ -9,9 +9,10 @@ import {
   UserStatus,
 } from '@prisma/client'
 
+const cluster = NetworkCluster.SolanaMainnet
 export const provisionCommunities: Prisma.CommunityCreateInput[] = [
   {
-    cluster: NetworkCluster.SolanaMainnet,
+    cluster,
     name: 'PubKey',
     description: 'Decentralized identities on Solana',
     avatarUrl: 'https://avatars.githubusercontent.com/u/125477168?v=4',
@@ -26,7 +27,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     },
   },
   {
-    cluster: NetworkCluster.SolanaMainnet,
+    cluster,
     name: "Dean's List DAO",
     description: 'A DAO turned Network State',
     avatarUrl: 'https://avatars.githubusercontent.com/u/137821488?v=4',
@@ -37,15 +38,20 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
           conditions: {
             create: [
               {
-                type: RuleConditionType.SolanaNftAssets,
+                type: RuleConditionType.SolanaNonFungibleAsset,
                 name: 'Deanslist NFT holder',
                 account: '5FusHaKEKjfKsmQwXNrhFcFABGGxu7iYCdbvyVSRe3Ri',
+                token: {
+                  connect: {
+                    account_cluster: { cluster, account: '5FusHaKEKjfKsmQwXNrhFcFABGGxu7iYCdbvyVSRe3Ri' },
+                  },
+                },
                 amount: '1',
               },
               {
-                type: RuleConditionType.AnybodiesNftAssets,
+                type: RuleConditionType.AnybodiesAsset,
                 name: 'Deanslist NFT staked in Anybodies Vault',
-                account: 'JiZUwqz0ETakNYOIulut',
+                config: { vaultId: 'JiZUwqz0ETakNYOIulut' },
                 amount: '1',
               },
             ],
@@ -56,9 +62,12 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
           conditions: {
             create: [
               {
-                type: RuleConditionType.SolanaNftAssets,
+                type: RuleConditionType.SolanaNonFungibleAsset,
                 name: 'Business Visa NFT holder',
                 account: '9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp',
+                token: {
+                  connect: { account_cluster: { cluster, account: '9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp' } },
+                },
                 amount: '1',
                 filters: { status: 'active' },
               },
@@ -70,9 +79,12 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
           conditions: {
             create: [
               {
-                type: RuleConditionType.SolanaNftAssets,
+                type: RuleConditionType.SolanaNonFungibleAsset,
                 name: 'Business Visa NFT holder (Expired)',
                 account: '9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp',
+                token: {
+                  connect: { account_cluster: { cluster, account: '9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp' } },
+                },
                 amount: '1',
                 filters: { status: 'expired' },
               },
@@ -84,10 +96,13 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
           conditions: {
             create: [
               {
-                type: RuleConditionType.SolanaTokenAmount,
+                type: RuleConditionType.SolanaFungibleAsset,
                 name: '$DEAN token holder',
                 account: 'Ds52CDgqdWbTWsua1hgT3AuSSy4FNx2Ezge1br3jQ14a',
                 amount: '1000',
+                token: {
+                  connect: { account_cluster: { cluster, account: 'Ds52CDgqdWbTWsua1hgT3AuSSy4FNx2Ezge1br3jQ14a' } },
+                },
               },
             ],
           },
@@ -103,7 +118,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     },
   },
   {
-    cluster: NetworkCluster.SolanaMainnet,
+    cluster,
     name: 'Marinade',
     description: 'A DAO with a staking protocol built on Solana',
     avatarUrl: 'https://avatars.githubusercontent.com/u/81361338?v=4',

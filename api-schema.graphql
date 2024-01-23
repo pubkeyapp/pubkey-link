@@ -146,7 +146,7 @@ type AppConfig {
 
 type Community {
   avatarUrl: String
-  cluster: NetworkCluster
+  cluster: NetworkCluster!
   createdAt: DateTime
   description: String
   discordUrl: String
@@ -273,11 +273,11 @@ type Mutation {
   userDeleteIdentity(identityId: String!): Boolean
   userDeleteRule(ruleId: String!): Boolean
   userLinkIdentity(input: LinkIdentityInput!): Identity
-  userTestRule(address: String!, ruleId: String!): JSON
   userUpdateCommunity(communityId: String!, input: UserUpdateCommunityInput!): Community
   userUpdateCommunityMember(communityMemberId: String!, input: UserUpdateCommunityMemberInput!): CommunityMember
   userUpdateRule(input: UserUpdateRuleInput!, ruleId: String!): Rule
   userUpdateUser(input: UserUpdateUserInput!): User
+  userValidateRule(address: String!, ruleId: String!): [RuleCondition!]
   userVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
 }
 
@@ -292,6 +292,12 @@ type Network {
   symbol: String!
   type: NetworkType!
   updatedAt: DateTime
+}
+
+type NetworkAsset {
+  accounts: [String!]!
+  amount: String!
+  owner: String!
 }
 
 enum NetworkCluster {
@@ -368,6 +374,7 @@ type Query {
   userFindManyCommunity(input: UserFindManyCommunityInput!): CommunityPaging!
   userFindManyCommunityMember(input: UserFindManyCommunityMemberInput!): CommunityMemberPaging!
   userFindManyIdentity(input: UserFindManyIdentityInput!): [Identity!]
+  userFindManyNetworkToken(input: UserFindManyNetworkTokenInput!): NetworkTokenPaging!
   userFindManyRule(input: UserFindManyRuleInput!): RulePaging!
   userFindManyUser(input: UserFindManyUserInput!): UserPaging!
   userFindOneCommunity(communityId: String!): Community
@@ -398,20 +405,24 @@ type Rule {
 }
 
 type RuleCondition {
-  account: String!
+  account: String
   amount: String
+  asset: NetworkAsset
+  config: JSON
   createdAt: DateTime
   filters: JSON
   id: String!
-  name: String!
-  type: RuleConditionType
+  token: NetworkToken
+  tokenId: String
+  type: RuleConditionType!
   updatedAt: DateTime
+  valid: Boolean
 }
 
 enum RuleConditionType {
-  AnybodiesNftAssets
-  SolanaNftAssets
-  SolanaTokenAmount
+  AnybodiesAsset
+  SolanaFungibleAsset
+  SolanaNonFungibleAsset
 }
 
 type RulePaging {
@@ -473,6 +484,14 @@ input UserFindManyCommunityMemberInput {
 
 input UserFindManyIdentityInput {
   username: String!
+}
+
+input UserFindManyNetworkTokenInput {
+  cluster: NetworkCluster!
+  limit: Int = 10
+  page: Int = 1
+  search: String
+  type: NetworkTokenType
 }
 
 input UserFindManyRuleInput {

@@ -23,7 +23,7 @@ export function RuleUiItem({
       <Group gap="sm" {...groupProps}>
         <RuleUiAvatar rule={rule} {...avatarProps} />
         <Stack gap={1}>
-          <Text size="sm" fw={500}>
+          <Text size="lg" fw={500}>
             {rule?.name}
           </Text>
         </Stack>

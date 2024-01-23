@@ -10,7 +10,7 @@ export type NetworkUiAvatarProps = UiAvatarProps & {
 
 export function NetworkUiAvatar({ network, ...props }: NetworkUiAvatarProps) {
   return (
-    <Avatar radius={100} color={getColorByIndex(getRandomInt(network?.name ?? ''))} {...props}>
+    <Avatar radius="sm" color={getColorByIndex(getRandomInt(network?.name ?? ''))} {...props}>
       <IconCurrencySolana size={24} />
     </Avatar>
   )

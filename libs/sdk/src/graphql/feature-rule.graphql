@@ -13,12 +13,22 @@ fragment RuleDetails on Rule {
 fragment RuleConditionDetails on RuleCondition {
   createdAt
   id
-  name
   type
   account
   amount
   filters
+  config
+  token {
+    ...NetworkTokenDetails
+  }
+  tokenId
+  asset {
+    owner
+    amount
+    accounts
+  }
   updatedAt
+  valid
 }
 
 query adminFindManyRule($input: AdminFindManyRuleInput!) {
@@ -87,6 +97,8 @@ mutation userDeleteRule($ruleId: String!) {
   deleted: userDeleteRule(ruleId: $ruleId)
 }
 
-mutation userTestRule($ruleId: String!, $address: String!) {
-  result: userTestRule(ruleId: $ruleId, address: $address)
+mutation userValidateRule($ruleId: String!, $address: String!) {
+  result: userValidateRule(ruleId: $ruleId, address: $address) {
+    ...RuleConditionDetails
+  }
 }

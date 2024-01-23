@@ -3,12 +3,12 @@ import { UserRuleDetailFeature } from './user-rule-detail.feature'
 import { UserRuleCreateFeature } from './user-rule-create.feature'
 import { UserRuleListFeature } from './user-rule-list.feature'
 
-export default function UserRuleRoutes({ communityId }: { communityId: string }) {
+export default function UserRuleRoutes() {
   return useRoutes([
-    { path: '', element: <UserRuleListFeature communityId={communityId} /> },
+    { path: '', element: <UserRuleListFeature /> },
     {
       path: 'create',
-      element: <UserRuleCreateFeature communityId={communityId} />,
+      element: <UserRuleCreateFeature />,
     },
     { path: ':ruleId/*', element: <UserRuleDetailFeature /> },
   ])

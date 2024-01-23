@@ -6,6 +6,7 @@ import { UserUpdateRuleInput } from './dto/user-update-rule.input'
 import { RulePaging } from './entity/rule-paging.entity'
 import { getUserRuleWhereInput } from './helpers/get-user-rule-where.input'
 import { ApiRuleResolverService } from './api-rule-resolver.service'
+import { RuleCondition } from './entity/rule-condition.entity'
 
 @Injectable()
 export class ApiUserRuleService {
@@ -25,21 +26,24 @@ export class ApiUserRuleService {
       .paginate({
         orderBy: { name: 'asc' },
         where: getUserRuleWhereInput(input),
-        include: { conditions: true },
+        include: { conditions: { include: { token: true } } },
       })
       .withPages({ limit: input.limit, page: input.page })
       .then(([data, meta]) => ({ data, meta }))
   }
 
   async findOneRule(ruleId: string) {
-    return this.core.data.rule.findUnique({ where: { id: ruleId }, include: { conditions: true, community: true } })
+    return this.core.data.rule.findUnique({
+      where: { id: ruleId },
+      include: { conditions: { include: { token: true }, orderBy: { name: 'asc' } }, community: true },
+    })
   }
 
   async updateRule(ruleId: string, input: UserUpdateRuleInput) {
     return this.core.data.rule.update({ where: { id: ruleId }, data: input })
   }
 
-  async testRule(ruleId: string, address: string) {
+  async validateRule(ruleId: string, address: string): Promise<RuleCondition[]> {
     const rule = await this.findOneRule(ruleId)
     if (!rule) {
       throw new Error('Rule not found')

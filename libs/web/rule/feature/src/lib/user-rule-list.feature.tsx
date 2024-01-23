@@ -5,10 +5,8 @@ import { UserRuleUiTable } from '@pubkey-link/web-rule-ui'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 import { Link } from 'react-router-dom'
 
-export function UserRuleListFeature({ communityId }: { communityId: string }) {
-  const { deleteRule, items, pagination, query, setSearch } = useUserFindManyRule({
-    communityId,
-  })
+export function UserRuleListFeature() {
+  const { deleteRule, items, pagination, query, setSearch } = useUserFindManyRule()
 
   return (
     <UiStack>

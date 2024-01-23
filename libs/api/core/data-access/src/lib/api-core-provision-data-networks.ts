@@ -1,4 +1,5 @@
-import { NetworkCluster, NetworkType, Prisma } from '@prisma/client'
+import { NetworkCluster, NetworkTokenType, NetworkType, Prisma } from '@prisma/client'
+import { getCollectionId } from './helpers/get-collection-id'
 
 const heliusApiKey = process.env['HELIUS_API_KEY'] as string
 
@@ -16,88 +17,108 @@ export const provisionNetworks: Prisma.NetworkCreateInput[] = [
     cluster: NetworkCluster.SolanaMainnet,
     type: NetworkType.Solana,
     endpoint: `https://mainnet.helius-rpc.com/?api-key=${heliusApiKey}`,
-    // collections: {
-    //   create: [
-    //     {
-    //       account: 'Gvj3urg4ZQYQ4BRQpA8SeAX6GhuvRbvfB3TVVEKeKBnb',
-    //       name: 'BONKz',
-    //       imageUrl: 'https://arweave.net/yoshlWpmwW6QFMx728x3DsTfh9YZoHUyMaPiSNLXIa0?ext=png',
-    //       metadataUrl: 'https://arweave.net/8S2X-1Jw8eRgeydB2AijnySRpV530KsPGRjgnFepyVo',
-    //       description: 'BONKz is a 15,000 collection, built FOR the community, BY the community.',
-    //       symbol: 'BONKz',
-    //     },
-    //     {
-    //       account: '6mszaj17KSfVqADrQj3o4W3zoLMTykgmV37W4QadCczK',
-    //       name: 'Claynosaurz',
-    //       imageUrl: 'https://nftstorage.link/ipfs/bafybeiese3bgyfewt2r3dxvgups2blc3rwh2utvidirxgxq527mhcv3ydy',
-    //       metadataUrl: 'https://nftstorage.link/ipfs/bafkreihsaaak3rs7ps4plzjwbq6tgpfcbq5wtbldcmvm5z4b7wm57dwrv4',
-    //       description: 'Claynosaurz is a collection of 10,000 3D animated NFTs.',
-    //       symbol: 'DINO',
-    //     },
-    //     {
-    //       account: '5FusHaKEKjfKsmQwXNrhFcFABGGxu7iYCdbvyVSRe3Ri',
-    //       name: 'Deanslist',
-    //       imageUrl: 'https://shdw-drive.genesysgo.net/GQfWBgNh4GUM1Y7nRrx8MFiMoxDLcNDCpsptXYxbozAE/collection.png',
-    //       metadataUrl: 'https://shdw-drive.genesysgo.net/GQfWBgNh4GUM1Y7nRrx8MFiMoxDLcNDCpsptXYxbozAE/collection.json',
-    //       description: 'Service DAO improving the Web3 ecosystem one feedback at a time.',
-    //       symbol: 'DEAN',
-    //     },
-    //     {
-    //       account: 'J1S9H3QjnRtBbbuD4HjPV6RpRhwuk4zKbxsnCHuTgh9w',
-    //       name: 'Mad Lads',
-    //       imageUrl: 'https://madlads-collection.s3.us-west-2.amazonaws.com/_collection.png',
-    //       metadataUrl: 'https://madlads-collection.s3.us-west-2.amazonaws.com/_collection.json',
-    //       description: 'Fock it.',
-    //       symbol: 'MAD',
-    //     },
-    //     {
-    //       account: 'ABFpGsZBHdfsst5HoCdHXfV17eNEP6cQAFqpV3HApUYi',
-    //       name: 'Namaste',
-    //       imageUrl: 'https://nftstorage.link/ipfs/bafybeidxrfwp54ojypresrtrhujs6i7vzgbfn4j3t4fhvtedrvx3vsge3u',
-    //       metadataUrl: 'https://nftstorage.link/ipfs/bafkreid3wbvnuhxdbiwbqaddgsudaysvz77agtsq3cesfjmnktapa34pzm',
-    //       description:
-    //         "Namaste is a declaration of love, a tribute to life, and a reminder that the most precious things in life are free: love, wisdom, and awareness. Solana Sensei's heartfelt messages are captured in 1,111 unique pieces, with whitelist spots handpicked by Solana Sensei himself.",
-    //       symbol: 'LOVE',
-    //     },
-    //     {
-    //       account: 'BuAYoZPVwQw4AfeEpHTx6iGPbQtB27W7tJUjgyLzgiko',
-    //       name: 'Quekz',
-    //       imageUrl: 'https://arweave.net/PodwZoOW65ZAlLPLP0o8iS_r5R_pePVYYk1gkF27HTY',
-    //       metadataUrl: 'https://arweave.net/nv9A1-Jm9knFtZ1tKDO9M0oaNHhvDpEmLtLpomvWx2M',
-    //       description: "it's just a duck, quek.",
-    //       symbol: 'QKZ',
-    //     },
-    //     {
-    //       account: 'SMBtHCCC6RYRutFEPb4gZqeBLUZbMNhRKaMKZZLHi7W',
-    //       name: 'SMB Gen2',
-    //       imageUrl: 'https://arweave.net/lZ5FdIVagNoNvI4QFoHhB6Xyn4oVGLV9xOTW32WBC20',
-    //       metadataUrl: 'https://arweave.net/2-0Ck8lwBTecPVKO2smJJmaZXFVd5VFqq8cd7WXR0BY',
-    //       description:
-    //         'SMB is a collection of 5000 randomly generated 24x24 pixels NFTs on the Solana Blockchain. Each SolanaMonkey is unique and comes with different type and attributes varying in rarity.',
-    //       symbol: 'SMB',
-    //     },
-    //     {
-    //       account: '8Rt3Ayqth4DAiPnW9MDFi63TiQJHmohfTWLMQFHi4KZH',
-    //       name: 'SMB Gen3',
-    //       imageUrl: 'https://nftstorage.link/ipfs/bafkreibtf35tniaqma43kvn5upi2e4qlroid56jxfm3nqtwjldrzaxrgtu',
-    //       metadataUrl: 'https://bafkreic33udc4zn3tcx75qfmnro4u4ybxaxr7gwtapavukzw44jttygrkq.ipfs.nftstorage.link/',
-    //       description:
-    //         'SMB Gen3 is a collection of 15,000 visually stunning pixel art Monke NFTs crafted with love and passion. Express your unique web3 identity and join the thriving MonkeDAO community. Showcase your status as a true builder in web3 and be a part of the revolution with Solana Monke Business.',
-    //       symbol: 'GEN3',
-    //     },
-    //     {
-    //       account: '46pcSL5gmjBrPqGKFaLbbCmR6iVuLJbnQy13hAe7s6CC',
-    //       name: 'Saga genesis token',
-    //       imageUrl: 'https://api.underdog-data.com/imgdata/46pcSL5gmjBrPqGKFaLbbCmR6iVuLJbnQy13hAe7s6CC',
-    //       metadataUrl: 'https://api.underdog-data.com/jsondata/46pcSL5gmjBrPqGKFaLbbCmR6iVuLJbnQy13hAe7s6CC',
-    //       description: ' ',
-    //       symbol: 'SAGAGEN',
-    //     },
-    //   ].map((c) => ({
-    //     ...c,
-    //     id: getCollectionId(NetworkCluster.SolanaMainnet, c.name),
-    //   })),
-    // },
+    tokens: {
+      create: [
+        //     {
+        //       account: 'Gvj3urg4ZQYQ4BRQpA8SeAX6GhuvRbvfB3TVVEKeKBnb',
+        //       name: 'BONKz',
+        //       imageUrl: 'https://arweave.net/yoshlWpmwW6QFMx728x3DsTfh9YZoHUyMaPiSNLXIa0?ext=png',
+        //       metadataUrl: 'https://arweave.net/8S2X-1Jw8eRgeydB2AijnySRpV530KsPGRjgnFepyVo',
+        //       description: 'BONKz is a 15,000 collection, built FOR the community, BY the community.',
+        //       symbol: 'BONKz',
+        //     },
+        //     {
+        //       account: '6mszaj17KSfVqADrQj3o4W3zoLMTykgmV37W4QadCczK',
+        //       name: 'Claynosaurz',
+        //       imageUrl: 'https://nftstorage.link/ipfs/bafybeiese3bgyfewt2r3dxvgups2blc3rwh2utvidirxgxq527mhcv3ydy',
+        //       metadataUrl: 'https://nftstorage.link/ipfs/bafkreihsaaak3rs7ps4plzjwbq6tgpfcbq5wtbldcmvm5z4b7wm57dwrv4',
+        //       description: 'Claynosaurz is a collection of 10,000 3D animated NFTs.',
+        //       symbol: 'DINO',
+        //     },
+        {
+          account: 'Ds52CDgqdWbTWsua1hgT3AuSSy4FNx2Ezge1br3jQ14a',
+          imageUrl: 'https://arweave.net/TWUBda7cjVjugUjlstko7peZ_VOOO9vr1buVZ7eZNtg',
+          metadataUrl: 'https://arweave.net/fyBeR-uJLzOshYZVnLVoY01bIQmAzC6u1wWM3tK-vsI',
+          name: "Dean's List",
+          program: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          symbol: 'DEAN',
+          type: NetworkTokenType.Fungible,
+        },
+        {
+          account: '5FusHaKEKjfKsmQwXNrhFcFABGGxu7iYCdbvyVSRe3Ri',
+          description: 'Service DAO improving the Web3 ecosystem one feedback at a time.',
+          imageUrl: 'https://shdw-drive.genesysgo.net/GQfWBgNh4GUM1Y7nRrx8MFiMoxDLcNDCpsptXYxbozAE/collection.png',
+          metadataUrl: 'https://shdw-drive.genesysgo.net/GQfWBgNh4GUM1Y7nRrx8MFiMoxDLcNDCpsptXYxbozAE/collection.json',
+          name: 'Deanslist',
+          program: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          symbol: 'DEAN',
+          type: NetworkTokenType.NonFungible,
+        },
+        {
+          account: '9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp',
+          imageUrl: 'https://updg8.com/imgdata/9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp',
+          metadataUrl: 'https://updg8.com/jsondata/9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp',
+          name: "Dean's List Business Visa",
+          program: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          symbol: 'DLBV',
+          type: NetworkTokenType.NonFungible,
+        },
+        //     {
+        //       account: 'J1S9H3QjnRtBbbuD4HjPV6RpRhwuk4zKbxsnCHuTgh9w',
+        //       name: 'Mad Lads',
+        //       imageUrl: 'https://madlads-collection.s3.us-west-2.amazonaws.com/_collection.png',
+        //       metadataUrl: 'https://madlads-collection.s3.us-west-2.amazonaws.com/_collection.json',
+        //       description: 'Fock it.',
+        //       symbol: 'MAD',
+        //     },
+        //     {
+        //       account: 'ABFpGsZBHdfsst5HoCdHXfV17eNEP6cQAFqpV3HApUYi',
+        //       name: 'Namaste',
+        //       imageUrl: 'https://nftstorage.link/ipfs/bafybeidxrfwp54ojypresrtrhujs6i7vzgbfn4j3t4fhvtedrvx3vsge3u',
+        //       metadataUrl: 'https://nftstorage.link/ipfs/bafkreid3wbvnuhxdbiwbqaddgsudaysvz77agtsq3cesfjmnktapa34pzm',
+        //       description:
+        //         "Namaste is a declaration of love, a tribute to life, and a reminder that the most precious things in life are free: love, wisdom, and awareness. Solana Sensei's heartfelt messages are captured in 1,111 unique pieces, with whitelist spots handpicked by Solana Sensei himself.",
+        //       symbol: 'LOVE',
+        //     },
+        //     {
+        //       account: 'BuAYoZPVwQw4AfeEpHTx6iGPbQtB27W7tJUjgyLzgiko',
+        //       name: 'Quekz',
+        //       imageUrl: 'https://arweave.net/PodwZoOW65ZAlLPLP0o8iS_r5R_pePVYYk1gkF27HTY',
+        //       metadataUrl: 'https://arweave.net/nv9A1-Jm9knFtZ1tKDO9M0oaNHhvDpEmLtLpomvWx2M',
+        //       description: "it's just a duck, quek.",
+        //       symbol: 'QKZ',
+        //     },
+        //     {
+        //       account: 'SMBtHCCC6RYRutFEPb4gZqeBLUZbMNhRKaMKZZLHi7W',
+        //       name: 'SMB Gen2',
+        //       imageUrl: 'https://arweave.net/lZ5FdIVagNoNvI4QFoHhB6Xyn4oVGLV9xOTW32WBC20',
+        //       metadataUrl: 'https://arweave.net/2-0Ck8lwBTecPVKO2smJJmaZXFVd5VFqq8cd7WXR0BY',
+        //       description:
+        //         'SMB is a collection of 5000 randomly generated 24x24 pixels NFTs on the Solana Blockchain. Each SolanaMonkey is unique and comes with different type and attributes varying in rarity.',
+        //       symbol: 'SMB',
+        //     },
+        //     {
+        //       account: '8Rt3Ayqth4DAiPnW9MDFi63TiQJHmohfTWLMQFHi4KZH',
+        //       name: 'SMB Gen3',
+        //       imageUrl: 'https://nftstorage.link/ipfs/bafkreibtf35tniaqma43kvn5upi2e4qlroid56jxfm3nqtwjldrzaxrgtu',
+        //       metadataUrl: 'https://bafkreic33udc4zn3tcx75qfmnro4u4ybxaxr7gwtapavukzw44jttygrkq.ipfs.nftstorage.link/',
+        //       description:
+        //         'SMB Gen3 is a collection of 15,000 visually stunning pixel art Monke NFTs crafted with love and passion. Express your unique web3 identity and join the thriving MonkeDAO community. Showcase your status as a true builder in web3 and be a part of the revolution with Solana Monke Business.',
+        //       symbol: 'GEN3',
+        //     },
+        //     {
+        //       account: '46pcSL5gmjBrPqGKFaLbbCmR6iVuLJbnQy13hAe7s6CC',
+        //       name: 'Saga genesis token',
+        //       imageUrl: 'https://api.underdog-data.com/imgdata/46pcSL5gmjBrPqGKFaLbbCmR6iVuLJbnQy13hAe7s6CC',
+        //       metadataUrl: 'https://api.underdog-data.com/jsondata/46pcSL5gmjBrPqGKFaLbbCmR6iVuLJbnQy13hAe7s6CC',
+        //       description: ' ',
+        //       symbol: 'SAGAGEN',
+        //     },
+      ].map((c) => ({
+        ...c,
+        id: getCollectionId(NetworkCluster.SolanaMainnet, c.account),
+      })),
+    },
   },
   {
     id: 'solana-local',

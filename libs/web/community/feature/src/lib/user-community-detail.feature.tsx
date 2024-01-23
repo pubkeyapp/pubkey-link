@@ -1,4 +1,4 @@
-import { Group } from '@mantine/core'
+import { Badge, Group } from '@mantine/core'
 import {
   UiBack,
   UiContainer,
@@ -10,7 +10,7 @@ import {
   UiLoader,
   UiStack,
 } from '@pubkey-ui/core'
-import { useUserFindOneCommunity } from '@pubkey-link/web-community-data-access'
+import { UserCommunityProvider, useUserFindOneCommunity } from '@pubkey-link/web-community-data-access'
 import { useParams } from 'react-router-dom'
 import { lazy } from 'react'
 import { UiIcon } from '@pubkey-link/web-ui-core'
@@ -36,41 +36,48 @@ export function UserCommunityDetailFeature() {
     {
       path: 'dashboard',
       label: 'Dashboard',
-      element: <RouteDashboard communityId={communityId} />,
+      element: <RouteDashboard />,
       leftSection: <UiIcon type="dashboard" size={20} />,
     },
     {
       path: 'rules',
       label: 'Rules',
-      element: <UserRuleFeature communityId={communityId} />,
+      element: <UserRuleFeature />,
       leftSection: <UiIcon type="rules" size={20} />,
     },
     {
       path: 'members',
       label: 'Members',
-      element: <UserCommunityMemberFeature communityId={communityId} />,
+      element: <UserCommunityMemberFeature />,
       leftSection: <UiIcon type="users" size={20} />,
     },
     {
       path: 'settings',
       label: 'Settings',
-      element: <RouteSettings communityId={communityId} />,
+      element: <RouteSettings />,
       leftSection: <UiIcon type="settings" size={20} />,
     },
   ]
 
   return (
-    <UiContainer>
-      <UiStack gap="lg">
-        <UiGroup align="start">
-          <Group>
-            <UiBack />
-            <CommunityUiItem community={item} />
-          </Group>
-          <UiDebugModal data={item} />
-        </UiGroup>
-        <UiGridRoutes basePath={`/c/${communityId}`} routes={routes} />
-      </UiStack>
-    </UiContainer>
+    <UserCommunityProvider community={item}>
+      <UiContainer>
+        <UiStack gap="lg">
+          <UiGroup>
+            <Group>
+              <UiBack />
+              <CommunityUiItem community={item} />
+            </Group>
+            <Group>
+              <UiDebugModal data={item} />
+              <Badge variant="light" radius="sm">
+                {item.cluster}
+              </Badge>
+            </Group>
+          </UiGroup>
+          <UiGridRoutes basePath={`/c/${communityId}`} routes={routes} />
+        </UiStack>
+      </UiContainer>
+    </UserCommunityProvider>
   )
 }

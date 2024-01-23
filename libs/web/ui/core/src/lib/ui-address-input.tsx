@@ -14,9 +14,9 @@ export function UiAddressInput({
 }) {
   const form = useForm({
     initialValues: { address },
-    validate: {
-      address: validateSolanaPublicKey,
-    },
+    // validate: {
+    //   address: validateSolanaPublicKey,
+    // },
   })
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export function UiAddressInput({
   )
 }
 
-function validateSolanaPublicKey(value: string) {
+export function validateSolanaPublicKey(value: string) {
   try {
     new PublicKey(value)
   } catch (e) {

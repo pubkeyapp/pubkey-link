@@ -6,5 +6,5 @@ export type NetworkTokenUiAvatarProps = UiAvatarProps & {
 }
 
 export function NetworkTokenUiAvatar({ networkToken, ...props }: NetworkTokenUiAvatarProps) {
-  return <UiAvatar avatarUrl={networkToken?.imageUrl} name={networkToken?.name} {...props} />
+  return <UiAvatar radius="sm" avatarUrl={networkToken?.imageUrl} name={networkToken?.name} {...props} />
 }

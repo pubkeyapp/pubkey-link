@@ -4,9 +4,9 @@ import { UserCommunityMemberUiCreateForm } from '@pubkey-link/web-community-memb
 import { toastError, UiBack, UiCard, UiPage } from '@pubkey-ui/core'
 import { useNavigate } from 'react-router-dom'
 
-export function UserCommunityMemberCreateFeature({ communityId }: { communityId: string }) {
+export function UserCommunityMemberCreateFeature() {
   const navigate = useNavigate()
-  const { createCommunityMember } = useUserFindManyCommunityMember({ communityId })
+  const { createCommunityMember } = useUserFindManyCommunityMember()
 
   async function submit(input: UserCreateCommunityMemberInput) {
     return createCommunityMember(input)

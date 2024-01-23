@@ -35,14 +35,14 @@ export function useUserFindOneRule({ ruleId }: { ruleId: string }) {
   }
 }
 
-export function useTestRule({ ruleId }: { ruleId: string }) {
+export function useValidateRule({ ruleId }: { ruleId: string }) {
   const sdk = useSdk()
 
   return useMutation({
     mutationKey: ['user', 'test-rule', ruleId],
     mutationFn: async (address: string) =>
       sdk
-        .userTestRule({ ruleId, address })
+        .userValidateRule({ ruleId, address })
         .then((res) => res.data?.result)
         .then(async (res) => {
           if (res) {

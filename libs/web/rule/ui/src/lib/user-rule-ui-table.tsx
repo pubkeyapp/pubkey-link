@@ -1,8 +1,9 @@
-import { ActionIcon, Anchor, Badge, Group, ScrollArea } from '@mantine/core'
+import { ActionIcon, Badge, Group, ScrollArea } from '@mantine/core'
 import { Rule } from '@pubkey-link/sdk'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'
+import { RuleUiItem } from './rule-ui-item'
 
 export function UserRuleUiTable({
   deleteRule,
@@ -32,11 +33,7 @@ export function UserRuleUiTable({
         columns={[
           {
             accessor: 'name',
-            render: (item) => (
-              <Anchor component={Link} to={`./${item.id}`} size="sm" fw={500}>
-                {item.name}
-              </Anchor>
-            ),
+            render: (item) => <RuleUiItem rule={item} to={`./${item.id}`} />,
           },
           { accessor: 'description' },
           {

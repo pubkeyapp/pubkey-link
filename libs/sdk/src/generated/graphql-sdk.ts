@@ -170,7 +170,7 @@ export type AppConfig = {
 export type Community = {
   __typename?: 'Community'
   avatarUrl?: Maybe<Scalars['String']['output']>
-  cluster?: Maybe<NetworkCluster>
+  cluster: NetworkCluster
   createdAt?: Maybe<Scalars['DateTime']['output']>
   description?: Maybe<Scalars['String']['output']>
   discordUrl?: Maybe<Scalars['String']['output']>
@@ -293,11 +293,11 @@ export type Mutation = {
   userDeleteIdentity?: Maybe<Scalars['Boolean']['output']>
   userDeleteRule?: Maybe<Scalars['Boolean']['output']>
   userLinkIdentity?: Maybe<Identity>
-  userTestRule?: Maybe<Scalars['JSON']['output']>
   userUpdateCommunity?: Maybe<Community>
   userUpdateCommunityMember?: Maybe<CommunityMember>
   userUpdateRule?: Maybe<Rule>
   userUpdateUser?: Maybe<User>
+  userValidateRule?: Maybe<Array<RuleCondition>>
   userVerifyIdentityChallenge?: Maybe<IdentityChallenge>
 }
 
@@ -431,11 +431,6 @@ export type MutationUserLinkIdentityArgs = {
   input: LinkIdentityInput
 }
 
-export type MutationUserTestRuleArgs = {
-  address: Scalars['String']['input']
-  ruleId: Scalars['String']['input']
-}
-
 export type MutationUserUpdateCommunityArgs = {
   communityId: Scalars['String']['input']
   input: UserUpdateCommunityInput
@@ -455,6 +450,11 @@ export type MutationUserUpdateUserArgs = {
   input: UserUpdateUserInput
 }
 
+export type MutationUserValidateRuleArgs = {
+  address: Scalars['String']['input']
+  ruleId: Scalars['String']['input']
+}
+
 export type MutationUserVerifyIdentityChallengeArgs = {
   input: VerifyIdentityChallengeInput
 }
@@ -471,6 +471,13 @@ export type Network = {
   symbol: Scalars['String']['output']
   type: NetworkType
   updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type NetworkAsset = {
+  __typename?: 'NetworkAsset'
+  accounts: Array<Scalars['String']['output']>
+  amount: Scalars['String']['output']
+  owner: Scalars['String']['output']
 }
 
 export enum NetworkCluster {
@@ -552,6 +559,7 @@ export type Query = {
   userFindManyCommunity: CommunityPaging
   userFindManyCommunityMember: CommunityMemberPaging
   userFindManyIdentity?: Maybe<Array<Identity>>
+  userFindManyNetworkToken: NetworkTokenPaging
   userFindManyRule: RulePaging
   userFindManyUser: UserPaging
   userFindOneCommunity?: Maybe<Community>
@@ -629,6 +637,10 @@ export type QueryUserFindManyIdentityArgs = {
   input: UserFindManyIdentityInput
 }
 
+export type QueryUserFindManyNetworkTokenArgs = {
+  input: UserFindManyNetworkTokenInput
+}
+
 export type QueryUserFindManyRuleArgs = {
   input: UserFindManyRuleInput
 }
@@ -680,20 +692,24 @@ export type Rule = {
 
 export type RuleCondition = {
   __typename?: 'RuleCondition'
-  account: Scalars['String']['output']
+  account?: Maybe<Scalars['String']['output']>
   amount?: Maybe<Scalars['String']['output']>
+  asset?: Maybe<NetworkAsset>
+  config?: Maybe<Scalars['JSON']['output']>
   createdAt?: Maybe<Scalars['DateTime']['output']>
   filters?: Maybe<Scalars['JSON']['output']>
   id: Scalars['String']['output']
-  name: Scalars['String']['output']
-  type?: Maybe<RuleConditionType>
+  token?: Maybe<NetworkToken>
+  tokenId?: Maybe<Scalars['String']['output']>
+  type: RuleConditionType
   updatedAt?: Maybe<Scalars['DateTime']['output']>
+  valid?: Maybe<Scalars['Boolean']['output']>
 }
 
 export enum RuleConditionType {
-  AnybodiesNftAssets = 'AnybodiesNftAssets',
-  SolanaNftAssets = 'SolanaNftAssets',
-  SolanaTokenAmount = 'SolanaTokenAmount',
+  AnybodiesAsset = 'AnybodiesAsset',
+  SolanaFungibleAsset = 'SolanaFungibleAsset',
+  SolanaNonFungibleAsset = 'SolanaNonFungibleAsset',
 }
 
 export type RulePaging = {
@@ -757,6 +773,14 @@ export type UserFindManyCommunityMemberInput = {
 
 export type UserFindManyIdentityInput = {
   username: Scalars['String']['input']
+}
+
+export type UserFindManyNetworkTokenInput = {
+  cluster: NetworkCluster
+  limit?: InputMaybe<Scalars['Int']['input']>
+  page?: InputMaybe<Scalars['Int']['input']>
+  search?: InputMaybe<Scalars['String']['input']>
+  type?: InputMaybe<NetworkTokenType>
 }
 
 export type UserFindManyRuleInput = {
@@ -1204,6 +1228,7 @@ export type CommunityDetailsFragment = {
   twitterUrl?: string | null
   telegramUrl?: string | null
   updatedAt?: Date | null
+  cluster: NetworkCluster
 }
 
 export type AdminFindManyCommunityQueryVariables = Exact<{
@@ -1227,6 +1252,7 @@ export type AdminFindManyCommunityQuery = {
       twitterUrl?: string | null
       telegramUrl?: string | null
       updatedAt?: Date | null
+      cluster: NetworkCluster
     }>
     meta: {
       __typename?: 'PagingMeta'
@@ -1260,6 +1286,7 @@ export type AdminFindOneCommunityQuery = {
     twitterUrl?: string | null
     telegramUrl?: string | null
     updatedAt?: Date | null
+    cluster: NetworkCluster
   } | null
 }
 
@@ -1282,6 +1309,7 @@ export type AdminCreateCommunityMutation = {
     twitterUrl?: string | null
     telegramUrl?: string | null
     updatedAt?: Date | null
+    cluster: NetworkCluster
   } | null
 }
 
@@ -1305,6 +1333,7 @@ export type AdminUpdateCommunityMutation = {
     twitterUrl?: string | null
     telegramUrl?: string | null
     updatedAt?: Date | null
+    cluster: NetworkCluster
   } | null
 }
 
@@ -1335,6 +1364,7 @@ export type UserFindManyCommunityQuery = {
       twitterUrl?: string | null
       telegramUrl?: string | null
       updatedAt?: Date | null
+      cluster: NetworkCluster
     }>
     meta: {
       __typename?: 'PagingMeta'
@@ -1368,6 +1398,7 @@ export type UserFindOneCommunityQuery = {
     twitterUrl?: string | null
     telegramUrl?: string | null
     updatedAt?: Date | null
+    cluster: NetworkCluster
   } | null
 }
 
@@ -1390,6 +1421,7 @@ export type UserCreateCommunityMutation = {
     twitterUrl?: string | null
     telegramUrl?: string | null
     updatedAt?: Date | null
+    cluster: NetworkCluster
   } | null
 }
 
@@ -1413,6 +1445,7 @@ export type UserUpdateCommunityMutation = {
     twitterUrl?: string | null
     telegramUrl?: string | null
     updatedAt?: Date | null
+    cluster: NetworkCluster
   } | null
 }
 
@@ -1831,6 +1864,43 @@ export type AdminDeleteNetworkTokenMutationVariables = Exact<{
 
 export type AdminDeleteNetworkTokenMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
+export type UserFindManyNetworkTokenQueryVariables = Exact<{
+  input: UserFindManyNetworkTokenInput
+}>
+
+export type UserFindManyNetworkTokenQuery = {
+  __typename?: 'Query'
+  paging: {
+    __typename?: 'NetworkTokenPaging'
+    data: Array<{
+      __typename?: 'NetworkToken'
+      id: string
+      createdAt?: Date | null
+      updatedAt?: Date | null
+      cluster: NetworkCluster
+      type: NetworkTokenType
+      account: string
+      program: string
+      name: string
+      symbol?: string | null
+      description?: string | null
+      imageUrl?: string | null
+      metadataUrl?: string | null
+      raw?: any | null
+    }>
+    meta: {
+      __typename?: 'PagingMeta'
+      currentPage: number
+      isFirstPage: boolean
+      isLastPage: boolean
+      nextPage?: number | null
+      pageCount?: number | null
+      previousPage?: number | null
+      totalCount?: number | null
+    }
+  }
+}
+
 export type NetworkDetailsFragment = {
   __typename?: 'Network'
   createdAt?: Date | null
@@ -1961,12 +2031,31 @@ export type RuleDetailsFragment = {
     __typename?: 'RuleCondition'
     createdAt?: Date | null
     id: string
-    name: string
-    type?: RuleConditionType | null
-    account: string
+    type: RuleConditionType
+    account?: string | null
     amount?: string | null
     filters?: any | null
+    config?: any | null
+    tokenId?: string | null
     updatedAt?: Date | null
+    valid?: boolean | null
+    token?: {
+      __typename?: 'NetworkToken'
+      id: string
+      createdAt?: Date | null
+      updatedAt?: Date | null
+      cluster: NetworkCluster
+      type: NetworkTokenType
+      account: string
+      program: string
+      name: string
+      symbol?: string | null
+      description?: string | null
+      imageUrl?: string | null
+      metadataUrl?: string | null
+      raw?: any | null
+    } | null
+    asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
   }> | null
 }
 
@@ -1974,12 +2063,31 @@ export type RuleConditionDetailsFragment = {
   __typename?: 'RuleCondition'
   createdAt?: Date | null
   id: string
-  name: string
-  type?: RuleConditionType | null
-  account: string
+  type: RuleConditionType
+  account?: string | null
   amount?: string | null
   filters?: any | null
+  config?: any | null
+  tokenId?: string | null
   updatedAt?: Date | null
+  valid?: boolean | null
+  token?: {
+    __typename?: 'NetworkToken'
+    id: string
+    createdAt?: Date | null
+    updatedAt?: Date | null
+    cluster: NetworkCluster
+    type: NetworkTokenType
+    account: string
+    program: string
+    name: string
+    symbol?: string | null
+    description?: string | null
+    imageUrl?: string | null
+    metadataUrl?: string | null
+    raw?: any | null
+  } | null
+  asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
 }
 
 export type AdminFindManyRuleQueryVariables = Exact<{
@@ -2002,12 +2110,31 @@ export type AdminFindManyRuleQuery = {
         __typename?: 'RuleCondition'
         createdAt?: Date | null
         id: string
-        name: string
-        type?: RuleConditionType | null
-        account: string
+        type: RuleConditionType
+        account?: string | null
         amount?: string | null
         filters?: any | null
+        config?: any | null
+        tokenId?: string | null
         updatedAt?: Date | null
+        valid?: boolean | null
+        token?: {
+          __typename?: 'NetworkToken'
+          id: string
+          createdAt?: Date | null
+          updatedAt?: Date | null
+          cluster: NetworkCluster
+          type: NetworkTokenType
+          account: string
+          program: string
+          name: string
+          symbol?: string | null
+          description?: string | null
+          imageUrl?: string | null
+          metadataUrl?: string | null
+          raw?: any | null
+        } | null
+        asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
       }> | null
     }>
     meta: {
@@ -2041,12 +2168,31 @@ export type AdminFindOneRuleQuery = {
       __typename?: 'RuleCondition'
       createdAt?: Date | null
       id: string
-      name: string
-      type?: RuleConditionType | null
-      account: string
+      type: RuleConditionType
+      account?: string | null
       amount?: string | null
       filters?: any | null
+      config?: any | null
+      tokenId?: string | null
       updatedAt?: Date | null
+      valid?: boolean | null
+      token?: {
+        __typename?: 'NetworkToken'
+        id: string
+        createdAt?: Date | null
+        updatedAt?: Date | null
+        cluster: NetworkCluster
+        type: NetworkTokenType
+        account: string
+        program: string
+        name: string
+        symbol?: string | null
+        description?: string | null
+        imageUrl?: string | null
+        metadataUrl?: string | null
+        raw?: any | null
+      } | null
+      asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
   } | null
 }
@@ -2069,12 +2215,31 @@ export type AdminCreateRuleMutation = {
       __typename?: 'RuleCondition'
       createdAt?: Date | null
       id: string
-      name: string
-      type?: RuleConditionType | null
-      account: string
+      type: RuleConditionType
+      account?: string | null
       amount?: string | null
       filters?: any | null
+      config?: any | null
+      tokenId?: string | null
       updatedAt?: Date | null
+      valid?: boolean | null
+      token?: {
+        __typename?: 'NetworkToken'
+        id: string
+        createdAt?: Date | null
+        updatedAt?: Date | null
+        cluster: NetworkCluster
+        type: NetworkTokenType
+        account: string
+        program: string
+        name: string
+        symbol?: string | null
+        description?: string | null
+        imageUrl?: string | null
+        metadataUrl?: string | null
+        raw?: any | null
+      } | null
+      asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
   } | null
 }
@@ -2098,12 +2263,31 @@ export type AdminUpdateRuleMutation = {
       __typename?: 'RuleCondition'
       createdAt?: Date | null
       id: string
-      name: string
-      type?: RuleConditionType | null
-      account: string
+      type: RuleConditionType
+      account?: string | null
       amount?: string | null
       filters?: any | null
+      config?: any | null
+      tokenId?: string | null
       updatedAt?: Date | null
+      valid?: boolean | null
+      token?: {
+        __typename?: 'NetworkToken'
+        id: string
+        createdAt?: Date | null
+        updatedAt?: Date | null
+        cluster: NetworkCluster
+        type: NetworkTokenType
+        account: string
+        program: string
+        name: string
+        symbol?: string | null
+        description?: string | null
+        imageUrl?: string | null
+        metadataUrl?: string | null
+        raw?: any | null
+      } | null
+      asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
   } | null
 }
@@ -2134,12 +2318,31 @@ export type UserFindManyRuleQuery = {
         __typename?: 'RuleCondition'
         createdAt?: Date | null
         id: string
-        name: string
-        type?: RuleConditionType | null
-        account: string
+        type: RuleConditionType
+        account?: string | null
         amount?: string | null
         filters?: any | null
+        config?: any | null
+        tokenId?: string | null
         updatedAt?: Date | null
+        valid?: boolean | null
+        token?: {
+          __typename?: 'NetworkToken'
+          id: string
+          createdAt?: Date | null
+          updatedAt?: Date | null
+          cluster: NetworkCluster
+          type: NetworkTokenType
+          account: string
+          program: string
+          name: string
+          symbol?: string | null
+          description?: string | null
+          imageUrl?: string | null
+          metadataUrl?: string | null
+          raw?: any | null
+        } | null
+        asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
       }> | null
     }>
     meta: {
@@ -2173,12 +2376,31 @@ export type UserFindOneRuleQuery = {
       __typename?: 'RuleCondition'
       createdAt?: Date | null
       id: string
-      name: string
-      type?: RuleConditionType | null
-      account: string
+      type: RuleConditionType
+      account?: string | null
       amount?: string | null
       filters?: any | null
+      config?: any | null
+      tokenId?: string | null
       updatedAt?: Date | null
+      valid?: boolean | null
+      token?: {
+        __typename?: 'NetworkToken'
+        id: string
+        createdAt?: Date | null
+        updatedAt?: Date | null
+        cluster: NetworkCluster
+        type: NetworkTokenType
+        account: string
+        program: string
+        name: string
+        symbol?: string | null
+        description?: string | null
+        imageUrl?: string | null
+        metadataUrl?: string | null
+        raw?: any | null
+      } | null
+      asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
   } | null
 }
@@ -2201,12 +2423,31 @@ export type UserCreateRuleMutation = {
       __typename?: 'RuleCondition'
       createdAt?: Date | null
       id: string
-      name: string
-      type?: RuleConditionType | null
-      account: string
+      type: RuleConditionType
+      account?: string | null
       amount?: string | null
       filters?: any | null
+      config?: any | null
+      tokenId?: string | null
       updatedAt?: Date | null
+      valid?: boolean | null
+      token?: {
+        __typename?: 'NetworkToken'
+        id: string
+        createdAt?: Date | null
+        updatedAt?: Date | null
+        cluster: NetworkCluster
+        type: NetworkTokenType
+        account: string
+        program: string
+        name: string
+        symbol?: string | null
+        description?: string | null
+        imageUrl?: string | null
+        metadataUrl?: string | null
+        raw?: any | null
+      } | null
+      asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
   } | null
 }
@@ -2230,12 +2471,31 @@ export type UserUpdateRuleMutation = {
       __typename?: 'RuleCondition'
       createdAt?: Date | null
       id: string
-      name: string
-      type?: RuleConditionType | null
-      account: string
+      type: RuleConditionType
+      account?: string | null
       amount?: string | null
       filters?: any | null
+      config?: any | null
+      tokenId?: string | null
       updatedAt?: Date | null
+      valid?: boolean | null
+      token?: {
+        __typename?: 'NetworkToken'
+        id: string
+        createdAt?: Date | null
+        updatedAt?: Date | null
+        cluster: NetworkCluster
+        type: NetworkTokenType
+        account: string
+        program: string
+        name: string
+        symbol?: string | null
+        description?: string | null
+        imageUrl?: string | null
+        metadataUrl?: string | null
+        raw?: any | null
+      } | null
+      asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
   } | null
 }
@@ -2246,12 +2506,44 @@ export type UserDeleteRuleMutationVariables = Exact<{
 
 export type UserDeleteRuleMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
-export type UserTestRuleMutationVariables = Exact<{
+export type UserValidateRuleMutationVariables = Exact<{
   ruleId: Scalars['String']['input']
   address: Scalars['String']['input']
 }>
 
-export type UserTestRuleMutation = { __typename?: 'Mutation'; result?: any | null }
+export type UserValidateRuleMutation = {
+  __typename?: 'Mutation'
+  result?: Array<{
+    __typename?: 'RuleCondition'
+    createdAt?: Date | null
+    id: string
+    type: RuleConditionType
+    account?: string | null
+    amount?: string | null
+    filters?: any | null
+    config?: any | null
+    tokenId?: string | null
+    updatedAt?: Date | null
+    valid?: boolean | null
+    token?: {
+      __typename?: 'NetworkToken'
+      id: string
+      createdAt?: Date | null
+      updatedAt?: Date | null
+      cluster: NetworkCluster
+      type: NetworkTokenType
+      account: string
+      program: string
+      name: string
+      symbol?: string | null
+      description?: string | null
+      imageUrl?: string | null
+      metadataUrl?: string | null
+      raw?: any | null
+    } | null
+    asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+  }> | null
+}
 
 export type UserDetailsFragment = {
   __typename?: 'User'
@@ -2501,6 +2793,7 @@ export const CommunityDetailsFragmentDoc = gql`
     twitterUrl
     telegramUrl
     updatedAt
+    cluster
   }
 `
 export const AppConfigDetailsFragmentDoc = gql`
@@ -2553,6 +2846,20 @@ export const IdentityChallengeDetailsFragmentDoc = gql`
     verified
   }
 `
+export const NetworkDetailsFragmentDoc = gql`
+  fragment NetworkDetails on Network {
+    createdAt
+    id
+    cluster
+    type
+    name
+    decimals
+    endpoint
+    explorerUrl
+    symbol
+    updatedAt
+  }
+`
 export const NetworkTokenDetailsFragmentDoc = gql`
   fragment NetworkTokenDetails on NetworkToken {
     id
@@ -2570,31 +2877,28 @@ export const NetworkTokenDetailsFragmentDoc = gql`
     raw
   }
 `
-export const NetworkDetailsFragmentDoc = gql`
-  fragment NetworkDetails on Network {
-    createdAt
-    id
-    cluster
-    type
-    name
-    decimals
-    endpoint
-    explorerUrl
-    symbol
-    updatedAt
-  }
-`
 export const RuleConditionDetailsFragmentDoc = gql`
   fragment RuleConditionDetails on RuleCondition {
     createdAt
     id
-    name
     type
     account
     amount
     filters
+    config
+    token {
+      ...NetworkTokenDetails
+    }
+    tokenId
+    asset {
+      owner
+      amount
+      accounts
+    }
     updatedAt
+    valid
   }
+  ${NetworkTokenDetailsFragmentDoc}
 `
 export const RuleDetailsFragmentDoc = gql`
   fragment RuleDetails on Rule {
@@ -2949,6 +3253,20 @@ export const AdminDeleteNetworkTokenDocument = gql`
     deleted: adminDeleteNetworkToken(networkTokenId: $networkTokenId)
   }
 `
+export const UserFindManyNetworkTokenDocument = gql`
+  query userFindManyNetworkToken($input: UserFindManyNetworkTokenInput!) {
+    paging: userFindManyNetworkToken(input: $input) {
+      data {
+        ...NetworkTokenDetails
+      }
+      meta {
+        ...PagingMetaDetails
+      }
+    }
+  }
+  ${NetworkTokenDetailsFragmentDoc}
+  ${PagingMetaDetailsFragmentDoc}
+`
 export const AdminFindManyNetworkDocument = gql`
   query adminFindManyNetwork($input: AdminFindManyNetworkInput!) {
     paging: adminFindManyNetwork(input: $input) {
@@ -3078,10 +3396,13 @@ export const UserDeleteRuleDocument = gql`
     deleted: userDeleteRule(ruleId: $ruleId)
   }
 `
-export const UserTestRuleDocument = gql`
-  mutation userTestRule($ruleId: String!, $address: String!) {
-    result: userTestRule(ruleId: $ruleId, address: $address)
+export const UserValidateRuleDocument = gql`
+  mutation userValidateRule($ruleId: String!, $address: String!) {
+    result: userValidateRule(ruleId: $ruleId, address: $address) {
+      ...RuleConditionDetails
+    }
   }
+  ${RuleConditionDetailsFragmentDoc}
 `
 export const AdminCreateUserDocument = gql`
   mutation adminCreateUser($input: AdminCreateUserInput!) {
@@ -3210,6 +3531,7 @@ const AdminFindOneNetworkTokenDocumentString = print(AdminFindOneNetworkTokenDoc
 const AdminCreateNetworkTokenDocumentString = print(AdminCreateNetworkTokenDocument)
 const AdminUpdateNetworkTokenDocumentString = print(AdminUpdateNetworkTokenDocument)
 const AdminDeleteNetworkTokenDocumentString = print(AdminDeleteNetworkTokenDocument)
+const UserFindManyNetworkTokenDocumentString = print(UserFindManyNetworkTokenDocument)
 const AdminFindManyNetworkDocumentString = print(AdminFindManyNetworkDocument)
 const AdminFindOneNetworkDocumentString = print(AdminFindOneNetworkDocument)
 const AdminCreateNetworkDocumentString = print(AdminCreateNetworkDocument)
@@ -3225,7 +3547,7 @@ const UserFindOneRuleDocumentString = print(UserFindOneRuleDocument)
 const UserCreateRuleDocumentString = print(UserCreateRuleDocument)
 const UserUpdateRuleDocumentString = print(UserUpdateRuleDocument)
 const UserDeleteRuleDocumentString = print(UserDeleteRuleDocument)
-const UserTestRuleDocumentString = print(UserTestRuleDocument)
+const UserValidateRuleDocumentString = print(UserValidateRuleDocument)
 const AdminCreateUserDocumentString = print(AdminCreateUserDocument)
 const AdminDeleteUserDocumentString = print(AdminDeleteUserDocument)
 const AdminFindManyUserDocumentString = print(AdminFindManyUserDocument)
@@ -4064,6 +4386,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
+    userFindManyNetworkToken(
+      variables: UserFindManyNetworkTokenQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserFindManyNetworkTokenQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserFindManyNetworkTokenQuery>(UserFindManyNetworkTokenDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userFindManyNetworkToken',
+        'query',
+        variables,
+      )
+    },
     adminFindManyNetwork(
       variables: AdminFindManyNetworkQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -4379,11 +4722,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
-    userTestRule(
-      variables: UserTestRuleMutationVariables,
+    userValidateRule(
+      variables: UserValidateRuleMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserTestRuleMutation
+      data: UserValidateRuleMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -4391,11 +4734,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserTestRuleMutation>(UserTestRuleDocumentString, variables, {
+          client.rawRequest<UserValidateRuleMutation>(UserValidateRuleDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userTestRule',
+        'userValidateRule',
         'mutation',
         variables,
       )
@@ -4849,6 +5192,16 @@ export function UserFindManyCommunityMemberInputSchema(): z.ZodObject<Properties
 export function UserFindManyIdentityInputSchema(): z.ZodObject<Properties<UserFindManyIdentityInput>> {
   return z.object({
     username: z.string(),
+  })
+}
+
+export function UserFindManyNetworkTokenInputSchema(): z.ZodObject<Properties<UserFindManyNetworkTokenInput>> {
+  return z.object({
+    cluster: NetworkClusterSchema,
+    limit: z.number().nullish(),
+    page: z.number().nullish(),
+    search: z.string().nullish(),
+    type: NetworkTokenTypeSchema.nullish(),
   })
 }
 

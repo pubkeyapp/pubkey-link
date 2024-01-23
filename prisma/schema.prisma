@@ -97,6 +97,7 @@ model NetworkToken {
   description String?
   symbol      String?
   raw         Json?
+  conditions  RuleCondition[]
 
   @@unique([account, cluster])
 }
@@ -116,11 +117,14 @@ model RuleCondition {
   id        String            @id @default(cuid())
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
-  name      String
   type      RuleConditionType
-  account   String
+  account   String?
   amount    String?
+  config    Json?
   filters   Json?
+  name      String
+  token     NetworkToken?     @relation(fields: [tokenId], references: [id])
+  tokenId   String?
   rule      Rule              @relation(fields: [ruleId], references: [id])
   ruleId    String
 }
@@ -171,9 +175,9 @@ enum NetworkType {
 }
 
 enum RuleConditionType {
-  AnybodiesNftAssets
-  SolanaNftAssets
-  SolanaTokenAmount
+  AnybodiesAsset
+  SolanaFungibleAsset
+  SolanaNonFungibleAsset
 }
 
 enum UserRole {

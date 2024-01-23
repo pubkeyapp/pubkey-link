@@ -1,7 +1,8 @@
-import { useUserFindOneCommunity } from '@pubkey-link/web-community-data-access'
+import { useUserCommunity, useUserFindOneCommunity } from '@pubkey-link/web-community-data-access'
 import { UiCard, UiDebug, UiError, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
-export default function UserCommunityDetailDashboardTab({ communityId }: { communityId: string }) {
+export default function UserCommunityDetailDashboardTab() {
+  const { communityId } = useUserCommunity()
   const { item, query } = useUserFindOneCommunity({ communityId })
 
   if (query.isLoading) {

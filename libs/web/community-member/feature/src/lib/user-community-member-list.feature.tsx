@@ -5,9 +5,8 @@ import { UserCommunityMemberUiTable } from '@pubkey-link/web-community-member-ui
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 import { Link } from 'react-router-dom'
 
-export function UserCommunityMemberListFeature({ communityId }: { communityId: string }) {
+export function UserCommunityMemberListFeature() {
   const { deleteCommunityMember, items, pagination, query, setSearch } = useUserFindManyCommunityMember({
-    communityId,
     limit: 12,
   })
 

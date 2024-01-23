@@ -6,5 +6,5 @@ export type RuleUiAvatarProps = UiAvatarProps & {
 }
 
 export function RuleUiAvatar({ rule, ...props }: RuleUiAvatarProps) {
-  return <UiAvatar avatarUrl={undefined} name={rule?.name} {...props} />
+  return <UiAvatar size="md" radius="sm" avatarUrl={undefined} name={rule?.name} {...props} />
 }

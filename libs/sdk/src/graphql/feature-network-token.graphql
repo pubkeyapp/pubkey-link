@@ -46,3 +46,14 @@ mutation adminUpdateNetworkToken($networkTokenId: String!, $input: AdminUpdateNe
 mutation adminDeleteNetworkToken($networkTokenId: String!) {
   deleted: adminDeleteNetworkToken(networkTokenId: $networkTokenId)
 }
+
+query userFindManyNetworkToken($input: UserFindManyNetworkTokenInput!) {
+  paging: userFindManyNetworkToken(input: $input) {
+    data {
+      ...NetworkTokenDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
