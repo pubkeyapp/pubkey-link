@@ -102,6 +102,12 @@ mutation userCreateRule($input: UserCreateRuleInput!) {
   }
 }
 
+mutation userCreateRulePermission($input: UserCreateRulePermissionInput!) {
+  created: userCreateRulePermission(input: $input) {
+    ...RulePermissionDetails
+  }
+}
+
 mutation userUpdateRule($ruleId: String!, $input: UserUpdateRuleInput!) {
   updated: userUpdateRule(ruleId: $ruleId, input: $input) {
     ...RuleDetails
@@ -110,6 +116,10 @@ mutation userUpdateRule($ruleId: String!, $input: UserUpdateRuleInput!) {
 
 mutation userDeleteRule($ruleId: String!) {
   deleted: userDeleteRule(ruleId: $ruleId)
+}
+
+mutation userDeleteRulePermission($rulePermissionId: String!) {
+  deleted: userDeleteRulePermission(rulePermissionId: $rulePermissionId)
 }
 
 mutation userValidateRule($ruleId: String!, $address: String!) {

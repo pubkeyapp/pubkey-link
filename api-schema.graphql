@@ -351,11 +351,13 @@ type Mutation {
   userCreateCommunity(input: UserCreateCommunityInput!): Community
   userCreateCommunityMember(input: UserCreateCommunityMemberInput!): CommunityMember
   userCreateRule(input: UserCreateRuleInput!): Rule
+  userCreateRulePermission(input: UserCreateRulePermissionInput!): RulePermission
   userDeleteBot(botId: String!): Boolean
   userDeleteCommunity(communityId: String!): Boolean
   userDeleteCommunityMember(communityMemberId: String!): Boolean
   userDeleteIdentity(identityId: String!): Boolean
   userDeleteRule(ruleId: String!): Boolean
+  userDeleteRulePermission(rulePermissionId: String!): Boolean
   userLeaveBotServer(botId: String!, serverId: String!): Boolean
   userLinkIdentity(input: LinkIdentityInput!): Identity
   userStartBot(botId: String!): Boolean
@@ -580,6 +582,13 @@ input UserCreateRuleInput {
   communityId: String!
   description: String
   name: String!
+}
+
+input UserCreateRulePermissionInput {
+  botId: String!
+  roleId: String!
+  ruleId: String!
+  serverId: String!
 }
 
 input UserFindManyCommunityInput {

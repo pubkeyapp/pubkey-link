@@ -376,11 +376,13 @@ export type Mutation = {
   userCreateCommunity?: Maybe<Community>
   userCreateCommunityMember?: Maybe<CommunityMember>
   userCreateRule?: Maybe<Rule>
+  userCreateRulePermission?: Maybe<RulePermission>
   userDeleteBot?: Maybe<Scalars['Boolean']['output']>
   userDeleteCommunity?: Maybe<Scalars['Boolean']['output']>
   userDeleteCommunityMember?: Maybe<Scalars['Boolean']['output']>
   userDeleteIdentity?: Maybe<Scalars['Boolean']['output']>
   userDeleteRule?: Maybe<Scalars['Boolean']['output']>
+  userDeleteRulePermission?: Maybe<Scalars['Boolean']['output']>
   userLeaveBotServer?: Maybe<Scalars['Boolean']['output']>
   userLinkIdentity?: Maybe<Identity>
   userStartBot?: Maybe<Scalars['Boolean']['output']>
@@ -521,6 +523,10 @@ export type MutationUserCreateRuleArgs = {
   input: UserCreateRuleInput
 }
 
+export type MutationUserCreateRulePermissionArgs = {
+  input: UserCreateRulePermissionInput
+}
+
 export type MutationUserDeleteBotArgs = {
   botId: Scalars['String']['input']
 }
@@ -539,6 +545,10 @@ export type MutationUserDeleteIdentityArgs = {
 
 export type MutationUserDeleteRuleArgs = {
   ruleId: Scalars['String']['input']
+}
+
+export type MutationUserDeleteRulePermissionArgs = {
+  rulePermissionId: Scalars['String']['input']
 }
 
 export type MutationUserLeaveBotServerArgs = {
@@ -945,6 +955,13 @@ export type UserCreateRuleInput = {
   communityId: Scalars['String']['input']
   description?: InputMaybe<Scalars['String']['input']>
   name: Scalars['String']['input']
+}
+
+export type UserCreateRulePermissionInput = {
+  botId: Scalars['String']['input']
+  roleId: Scalars['String']['input']
+  ruleId: Scalars['String']['input']
+  serverId: Scalars['String']['input']
 }
 
 export type UserFindManyCommunityInput = {
@@ -3581,6 +3598,46 @@ export type UserCreateRuleMutation = {
   } | null
 }
 
+export type UserCreateRulePermissionMutationVariables = Exact<{
+  input: UserCreateRulePermissionInput
+}>
+
+export type UserCreateRulePermissionMutation = {
+  __typename?: 'Mutation'
+  created?: {
+    __typename?: 'RulePermission'
+    createdAt?: Date | null
+    id: string
+    updatedAt?: Date | null
+    botId?: string | null
+    ruleId?: string | null
+    bot?: {
+      __typename?: 'BotPermission'
+      botId?: string | null
+      createdAt?: Date | null
+      id: string
+      roleId?: string | null
+      serverId?: string | null
+      updatedAt?: Date | null
+      role?: {
+        __typename?: 'DiscordRole'
+        id: string
+        name: string
+        managed: boolean
+        color: number
+        position: number
+      } | null
+      server?: {
+        __typename?: 'DiscordServer'
+        id: string
+        name: string
+        icon?: string | null
+        permissions?: Array<string> | null
+      } | null
+    } | null
+  } | null
+}
+
 export type UserUpdateRuleMutationVariables = Exact<{
   ruleId: Scalars['String']['input']
   input: UserUpdateRuleInput
@@ -3667,6 +3724,12 @@ export type UserDeleteRuleMutationVariables = Exact<{
 }>
 
 export type UserDeleteRuleMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
+export type UserDeleteRulePermissionMutationVariables = Exact<{
+  rulePermissionId: Scalars['String']['input']
+}>
+
+export type UserDeleteRulePermissionMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
 export type UserValidateRuleMutationVariables = Exact<{
   ruleId: Scalars['String']['input']
@@ -4784,6 +4847,14 @@ export const UserCreateRuleDocument = gql`
   }
   ${RuleDetailsFragmentDoc}
 `
+export const UserCreateRulePermissionDocument = gql`
+  mutation userCreateRulePermission($input: UserCreateRulePermissionInput!) {
+    created: userCreateRulePermission(input: $input) {
+      ...RulePermissionDetails
+    }
+  }
+  ${RulePermissionDetailsFragmentDoc}
+`
 export const UserUpdateRuleDocument = gql`
   mutation userUpdateRule($ruleId: String!, $input: UserUpdateRuleInput!) {
     updated: userUpdateRule(ruleId: $ruleId, input: $input) {
@@ -4795,6 +4866,11 @@ export const UserUpdateRuleDocument = gql`
 export const UserDeleteRuleDocument = gql`
   mutation userDeleteRule($ruleId: String!) {
     deleted: userDeleteRule(ruleId: $ruleId)
+  }
+`
+export const UserDeleteRulePermissionDocument = gql`
+  mutation userDeleteRulePermission($rulePermissionId: String!) {
+    deleted: userDeleteRulePermission(rulePermissionId: $rulePermissionId)
   }
 `
 export const UserValidateRuleDocument = gql`
@@ -4962,8 +5038,10 @@ const AdminDeleteRuleDocumentString = print(AdminDeleteRuleDocument)
 const UserFindManyRuleDocumentString = print(UserFindManyRuleDocument)
 const UserFindOneRuleDocumentString = print(UserFindOneRuleDocument)
 const UserCreateRuleDocumentString = print(UserCreateRuleDocument)
+const UserCreateRulePermissionDocumentString = print(UserCreateRulePermissionDocument)
 const UserUpdateRuleDocumentString = print(UserUpdateRuleDocument)
 const UserDeleteRuleDocumentString = print(UserDeleteRuleDocument)
+const UserDeleteRulePermissionDocumentString = print(UserDeleteRulePermissionDocument)
 const UserValidateRuleDocumentString = print(UserValidateRuleDocument)
 const AdminCreateUserDocumentString = print(AdminCreateUserDocument)
 const AdminDeleteUserDocumentString = print(AdminDeleteUserDocument)
@@ -6433,6 +6511,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
+    userCreateRulePermission(
+      variables: UserCreateRulePermissionMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserCreateRulePermissionMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserCreateRulePermissionMutation>(UserCreateRulePermissionDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userCreateRulePermission',
+        'mutation',
+        variables,
+      )
+    },
     userUpdateRule(
       variables: UserUpdateRuleMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -6471,6 +6570,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'userDeleteRule',
+        'mutation',
+        variables,
+      )
+    },
+    userDeleteRulePermission(
+      variables: UserDeleteRulePermissionMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserDeleteRulePermissionMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserDeleteRulePermissionMutation>(UserDeleteRulePermissionDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userDeleteRulePermission',
         'mutation',
         variables,
       )
@@ -6960,6 +7080,15 @@ export function UserCreateRuleInputSchema(): z.ZodObject<Properties<UserCreateRu
     communityId: z.string(),
     description: z.string().nullish(),
     name: z.string(),
+  })
+}
+
+export function UserCreateRulePermissionInputSchema(): z.ZodObject<Properties<UserCreateRulePermissionInput>> {
+  return z.object({
+    botId: z.string(),
+    roleId: z.string(),
+    ruleId: z.string(),
+    serverId: z.string(),
   })
 }
 

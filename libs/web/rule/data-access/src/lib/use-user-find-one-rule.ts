@@ -1,4 +1,4 @@
-import { UserUpdateRuleInput } from '@pubkey-link/sdk'
+import { UserCreateRulePermissionInput, UserUpdateRuleInput } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -15,6 +15,38 @@ export function useUserFindOneRule({ ruleId }: { ruleId: string }) {
   return {
     item,
     query,
+    createRulePermission: async (input: UserCreateRulePermissionInput) =>
+      sdk
+        .userCreateRulePermission({ input })
+        .then((res) => res.data)
+        .then(async (res) => {
+          if (res) {
+            toastSuccess('Rule permission created')
+            await query.refetch()
+            return true
+          }
+          toastError('Rule permission not created')
+          return false
+        })
+        .catch((err) => {
+          toastError(err.message)
+          return false
+        }),
+    deleteRulePermission: async (rulePermissionId: string) =>
+      sdk
+        .userDeleteRulePermission({ rulePermissionId })
+        .then(async (res) => {
+          if (res) {
+            toastSuccess('Rule permission deleted')
+            await query.refetch()
+            return true
+          }
+          return false
+        })
+        .catch((err) => {
+          toastError(err.message)
+          return false
+        }),
     updateRule: async (input: UserUpdateRuleInput) =>
       sdk
         .userUpdateRule({ ruleId, input })

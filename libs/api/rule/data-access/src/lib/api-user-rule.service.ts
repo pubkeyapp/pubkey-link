@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
+import { ApiRuleResolverService } from './api-rule-resolver.service'
+import { UserCreateRulePermissionInput } from './dto/user-create-rule-permission.input'
 import { UserCreateRuleInput } from './dto/user-create-rule.input'
 import { UserFindManyRuleInput } from './dto/user-find-many-rule.input'
 import { UserUpdateRuleInput } from './dto/user-update-rule.input'
+import { RuleCondition } from './entity/rule-condition.entity'
 import { RulePaging } from './entity/rule-paging.entity'
 import { getUserRuleWhereInput } from './helpers/get-user-rule-where.input'
-import { ApiRuleResolverService } from './api-rule-resolver.service'
-import { RuleCondition } from './entity/rule-condition.entity'
 
 @Injectable()
 export class ApiUserRuleService {
@@ -15,9 +16,33 @@ export class ApiUserRuleService {
   async createRule(input: UserCreateRuleInput) {
     return this.core.data.rule.create({ data: input })
   }
+  async createRulePermission(input: UserCreateRulePermissionInput) {
+    return this.core.data.rulePermission.create({
+      data: {
+        bot: {
+          connectOrCreate: {
+            where: { botId_serverId_roleId: { botId: input.botId, serverId: input.serverId, roleId: input.roleId } },
+            create: { botId: input.botId, serverId: input.serverId, roleId: input.roleId },
+          },
+        },
+        rule: { connect: { id: input.ruleId } },
+      },
+    })
+  }
 
   async deleteRule(ruleId: string) {
     const deleted = await this.core.data.rule.delete({ where: { id: ruleId } })
+    return !!deleted
+  }
+
+  async deleteRulePermission(rulePermissionId: string) {
+    const found = await this.core.data.rulePermission.findUnique({
+      where: { id: rulePermissionId },
+    })
+    if (!found) {
+      throw new Error('Rule permission not found')
+    }
+    const deleted = await this.core.data.rulePermission.delete({ where: { id: rulePermissionId } })
     return !!deleted
   }
 

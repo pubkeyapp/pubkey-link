@@ -1,6 +1,6 @@
 import { useUserFindOneBot } from '@pubkey-link/web-bot-data-access'
-import { UiDebug, UiError, UiLoader, UiStack } from '@pubkey-ui/core'
 import { UserBotPermissionUiTable } from '@pubkey-link/web-bot-ui'
+import { UiDebug, UiError, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function UserBotDetailPermissionsTab() {
   const { item, query } = useUserFindOneBot()
@@ -14,12 +14,7 @@ export function UserBotDetailPermissionsTab() {
 
   return (
     <UiStack>
-      <UserBotPermissionUiTable
-        permissions={item.permissions ?? []}
-        deleteBotPermission={(permission) => {
-          console.log({ permission })
-        }}
-      />
+      <UserBotPermissionUiTable permissions={item.permissions ?? []} />
       <UiDebug data={item.permissions ?? []} />
     </UiStack>
   )

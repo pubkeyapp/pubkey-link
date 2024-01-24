@@ -1,15 +1,17 @@
+import { UseGuards } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { ApiAuthGraphQLUserGuard } from '@pubkey-link/api-auth-data-access'
 import {
   ApiRuleService,
   Rule,
   RuleCondition,
   RulePaging,
+  RulePermission,
   UserCreateRuleInput,
+  UserCreateRulePermissionInput,
   UserFindManyRuleInput,
   UserUpdateRuleInput,
 } from '@pubkey-link/api-rule-data-access'
-import { ApiAuthGraphQLUserGuard } from '@pubkey-link/api-auth-data-access'
-import { UseGuards } from '@nestjs/common'
 
 @Resolver()
 @UseGuards(ApiAuthGraphQLUserGuard)
@@ -19,6 +21,16 @@ export class ApiUserRuleResolver {
   @Mutation(() => Rule, { nullable: true })
   userCreateRule(@Args('input') input: UserCreateRuleInput) {
     return this.service.user.createRule(input)
+  }
+
+  @Mutation(() => RulePermission, { nullable: true })
+  userCreateRulePermission(@Args('input') input: UserCreateRulePermissionInput) {
+    return this.service.user.createRulePermission(input)
+  }
+
+  @Mutation(() => Boolean, { nullable: true })
+  userDeleteRulePermission(@Args('rulePermissionId') rulePermissionId: string) {
+    return this.service.user.deleteRulePermission(rulePermissionId)
   }
 
   @Mutation(() => Boolean, { nullable: true })
