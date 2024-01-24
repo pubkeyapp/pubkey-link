@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql'
 import { RuleCondition } from './rule-condition.entity'
+import { RulePermission } from './rule-permission.entity'
 
 @ObjectType()
 export class Rule {
@@ -17,4 +18,6 @@ export class Rule {
   description?: string | null
   @Field(() => [RuleCondition], { nullable: true })
   conditions?: RuleCondition[]
+  @Field(() => [RulePermission], { nullable: true })
+  permissions?: RulePermission[]
 }

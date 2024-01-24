@@ -35,7 +35,11 @@ export class ApiUserRuleService {
   async findOneRule(ruleId: string) {
     return this.core.data.rule.findUnique({
       where: { id: ruleId },
-      include: { conditions: { include: { token: true }, orderBy: { name: 'asc' } }, community: true },
+      include: {
+        conditions: { include: { token: true }, orderBy: { name: 'asc' } },
+        community: true,
+        permissions: { include: { bot: true } },
+      },
     })
   }
 

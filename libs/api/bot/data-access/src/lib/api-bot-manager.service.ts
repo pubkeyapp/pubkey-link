@@ -5,7 +5,7 @@ import { createDiscordRestClient, DiscordBot } from '@pubkey-link/api-bot-util'
 import { PermissionsString, User } from 'discord.js'
 import { BotStatus } from './entity/bot-status.enum'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { DiscordServer, DiscordServerRole } from './entity/discord-server.entity'
+import { DiscordRole, DiscordServer } from './entity/discord-server.entity'
 
 @Injectable()
 export class ApiBotManagerService implements OnModuleInit {
@@ -39,14 +39,22 @@ export class ApiBotManagerService implements OnModuleInit {
     return `https://discord.com/developers/applications/${botId}`
   }
 
-  async getBotRoles(botId: string, serverId: string): Promise<DiscordServerRole[]> {
-    return this.ensureBotInstance(botId).getRoles(serverId)
+  async getBotRoles(botId: string, serverId: string): Promise<DiscordRole[]> {
+    const bot = this.getBotInstance(botId)
+    if (!bot) {
+      return []
+    }
+    return bot.getRoles(serverId)
   }
 
   async getBotServers(botId: string): Promise<DiscordServer[]> {
-    const instance = this.ensureBotInstance(botId)
-    const servers = await instance.client?.guilds.fetch()
+    const bot = this.getBotInstance(botId)
 
+    if (!bot) {
+      return []
+    }
+
+    const servers = await bot.client?.guilds.fetch()
     if (!servers) {
       return []
     }
@@ -59,12 +67,23 @@ export class ApiBotManagerService implements OnModuleInit {
     }))
   }
 
-  async getBotServer(botId: string, serverId: string): Promise<DiscordServer> {
-    const instance = this.ensureBotInstance(botId)
-    const server = await instance.client?.guilds.fetch({ guild: serverId })
+  async getBotRole(botId: string, serverId: string, roleId: string): Promise<DiscordRole | undefined> {
+    const bot = this.getBotInstance(botId)
+    if (!bot) {
+      return undefined
+    }
+    return bot.getRole(serverId, roleId)
+  }
+
+  async getBotServer(botId: string, serverId: string): Promise<DiscordServer | undefined> {
+    const bot = this.getBotInstance(botId)
+    if (!bot) {
+      return undefined
+    }
+    const server = await bot.client?.guilds.fetch({ guild: serverId })
 
     if (!server) {
-      throw new Error(`Server ${serverId} not found`)
+      return undefined
     }
 
     return {
@@ -90,7 +109,8 @@ export class ApiBotManagerService implements OnModuleInit {
   }
 
   redirectUrl(botId: string) {
-    return `${this.core.config.apiUrl}/bot/${botId}/callback`
+    return this.core.config.authDiscordStrategyOptions.callbackURL
+    // return `${this.core.config.apiUrl}/bot/${botId}/callback`
   }
 
   async startBot(botId: string) {
@@ -128,12 +148,8 @@ export class ApiBotManagerService implements OnModuleInit {
     return `${this.core.config.webUrl}/bot/${botId}/verification`
   }
 
-  getBotInstance(botId: string, { throwIfNotStarted = true } = {}) {
-    const instance = this.bots.get(botId)
-    if (!instance && throwIfNotStarted) {
-      throw new Error(`Bot ${botId} not started`)
-    }
-    return instance
+  getBotInstance(botId: string): DiscordBot | undefined {
+    return this.bots.get(botId)
   }
 
   ensureBotInstance(botId: string) {

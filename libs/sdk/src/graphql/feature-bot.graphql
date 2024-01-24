@@ -13,6 +13,24 @@ fragment BotDetails on Bot {
   updatedAt
   verificationUrl
   verificationUrlSet
+  permissions {
+    ...BotPermissionDetails
+  }
+}
+
+fragment BotPermissionDetails on BotPermission {
+  botId
+  createdAt
+  id
+  roleId
+  serverId
+  updatedAt
+  role {
+    ...DiscordRoleDetails
+  }
+  server {
+    ...DiscordServerDetails
+  }
 }
 
 fragment DiscordServerDetails on DiscordServer {
@@ -22,7 +40,7 @@ fragment DiscordServerDetails on DiscordServer {
   permissions
 }
 
-fragment DiscordServerRoleDetails on DiscordServerRole {
+fragment DiscordRoleDetails on DiscordRole {
   id
   name
   managed
@@ -66,6 +84,12 @@ mutation adminDeleteBot($botId: String!) {
 query userFindOneBot($communityId: String!) {
   item: userFindOneBot(communityId: $communityId) {
     ...BotDetails
+    permissions {
+      ...BotPermissionDetails
+      rules {
+        ...RuleDetails
+      }
+    }
   }
 }
 
@@ -99,7 +123,7 @@ mutation userLeaveBotServer($botId: String!, $serverId: String!) {
 
 query userGetBotRoles($botId: String!, $serverId: String!) {
   items: userGetBotRoles(botId: $botId, serverId: $serverId) {
-    ...DiscordServerRoleDetails
+    ...DiscordRoleDetails
   }
 }
 
@@ -117,6 +141,6 @@ query userGetBotServer($botId: String!, $serverId: String!) {
 
 query userGetBotRoles($botId: String!, $serverId: String!) {
   items: userGetBotRoles(botId: $botId, serverId: $serverId) {
-    ...DiscordServerRoleDetails
+    ...DiscordRoleDetails
   }
 }

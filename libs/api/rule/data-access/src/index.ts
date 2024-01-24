@@ -11,3 +11,4 @@ export * from './lib/dto/user-update-rule.input'
 
 export * from './lib/entity/rule-condition.entity'
 export * from './lib/entity/rule-condition-type.enum'
+export * from './lib/entity/rule-permission.entity'

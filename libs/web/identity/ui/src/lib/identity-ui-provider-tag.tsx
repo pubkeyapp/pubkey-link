@@ -1,12 +1,16 @@
 import { IdentityProvider } from '@pubkey-link/sdk'
-import { Group, Text } from '@mantine/core'
+import { Group, Text, TextProps } from '@mantine/core'
 import { IdentityUiIcon } from './identity-ui-icon'
 
-export function IdentityUiProviderTag({ provider }: { provider: IdentityProvider }) {
+export function IdentityUiProviderTag({
+  provider,
+  label,
+  ...props
+}: TextProps & { label?: string | null; provider: IdentityProvider }) {
   return (
-    <Text size="sm" c="dimmed" span>
+    <Text size="sm" c="dimmed" span {...props}>
       <Group align="center" gap={2}>
-        <IdentityUiIcon provider={provider} size={16} /> {provider}
+        <IdentityUiIcon provider={provider} size={16} /> {label ?? provider}
       </Group>
     </Text>
   )

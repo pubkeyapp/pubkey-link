@@ -199,6 +199,7 @@ export type Bot = {
   id: Scalars['String']['output']
   inviteUrl: Scalars['String']['output']
   name: Scalars['String']['output']
+  permissions?: Maybe<Array<BotPermission>>
   redirectUrl: Scalars['String']['output']
   redirectUrlSet?: Maybe<Scalars['Boolean']['output']>
   started: Scalars['Boolean']['output']
@@ -212,6 +213,19 @@ export type BotPaging = {
   __typename?: 'BotPaging'
   data: Array<Bot>
   meta: PagingMeta
+}
+
+export type BotPermission = {
+  __typename?: 'BotPermission'
+  botId?: Maybe<Scalars['String']['output']>
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  id: Scalars['String']['output']
+  role?: Maybe<DiscordRole>
+  roleId?: Maybe<Scalars['String']['output']>
+  rules?: Maybe<Array<Rule>>
+  server?: Maybe<DiscordServer>
+  serverId?: Maybe<Scalars['String']['output']>
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
 export enum BotStatus {
@@ -263,21 +277,21 @@ export enum CommunityRole {
   Member = 'Member',
 }
 
+export type DiscordRole = {
+  __typename?: 'DiscordRole'
+  color: Scalars['Int']['output']
+  id: Scalars['String']['output']
+  managed: Scalars['Boolean']['output']
+  name: Scalars['String']['output']
+  position: Scalars['Int']['output']
+}
+
 export type DiscordServer = {
   __typename?: 'DiscordServer'
   icon?: Maybe<Scalars['String']['output']>
   id: Scalars['String']['output']
   name: Scalars['String']['output']
   permissions?: Maybe<Array<Scalars['String']['output']>>
-}
-
-export type DiscordServerRole = {
-  __typename?: 'DiscordServerRole'
-  color: Scalars['Int']['output']
-  id: Scalars['String']['output']
-  managed: Scalars['Boolean']['output']
-  name: Scalars['String']['output']
-  position: Scalars['Int']['output']
 }
 
 export type Identity = {
@@ -688,7 +702,7 @@ export type Query = {
   userFindOneCommunityMember?: Maybe<CommunityMember>
   userFindOneRule?: Maybe<Rule>
   userFindOneUser?: Maybe<User>
-  userGetBotRoles?: Maybe<Array<DiscordServerRole>>
+  userGetBotRoles?: Maybe<Array<DiscordRole>>
   userGetBotServer?: Maybe<DiscordServer>
   userGetBotServers?: Maybe<Array<DiscordServer>>
   userRequestIdentityChallenge?: Maybe<IdentityChallenge>
@@ -843,7 +857,9 @@ export type Rule = {
   description?: Maybe<Scalars['String']['output']>
   id: Scalars['String']['output']
   name: Scalars['String']['output']
+  permissions?: Maybe<Array<RulePermission>>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
+  viewUrl?: Maybe<Scalars['String']['output']>
 }
 
 export type RuleCondition = {
@@ -872,6 +888,17 @@ export type RulePaging = {
   __typename?: 'RulePaging'
   data: Array<Rule>
   meta: PagingMeta
+}
+
+export type RulePermission = {
+  __typename?: 'RulePermission'
+  bot?: Maybe<BotPermission>
+  botId?: Maybe<Scalars['String']['output']>
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  id: Scalars['String']['output']
+  rule?: Maybe<Rule>
+  ruleId?: Maybe<Scalars['String']['output']>
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
 export type User = {
@@ -1099,6 +1126,55 @@ export type BotDetailsFragment = {
   updatedAt?: Date | null
   verificationUrl: string
   verificationUrlSet?: boolean | null
+  permissions?: Array<{
+    __typename?: 'BotPermission'
+    botId?: string | null
+    createdAt?: Date | null
+    id: string
+    roleId?: string | null
+    serverId?: string | null
+    updatedAt?: Date | null
+    role?: {
+      __typename?: 'DiscordRole'
+      id: string
+      name: string
+      managed: boolean
+      color: number
+      position: number
+    } | null
+    server?: {
+      __typename?: 'DiscordServer'
+      id: string
+      name: string
+      icon?: string | null
+      permissions?: Array<string> | null
+    } | null
+  }> | null
+}
+
+export type BotPermissionDetailsFragment = {
+  __typename?: 'BotPermission'
+  botId?: string | null
+  createdAt?: Date | null
+  id: string
+  roleId?: string | null
+  serverId?: string | null
+  updatedAt?: Date | null
+  role?: {
+    __typename?: 'DiscordRole'
+    id: string
+    name: string
+    managed: boolean
+    color: number
+    position: number
+  } | null
+  server?: {
+    __typename?: 'DiscordServer'
+    id: string
+    name: string
+    icon?: string | null
+    permissions?: Array<string> | null
+  } | null
 }
 
 export type DiscordServerDetailsFragment = {
@@ -1109,8 +1185,8 @@ export type DiscordServerDetailsFragment = {
   permissions?: Array<string> | null
 }
 
-export type DiscordServerRoleDetailsFragment = {
-  __typename?: 'DiscordServerRole'
+export type DiscordRoleDetailsFragment = {
+  __typename?: 'DiscordRole'
   id: string
   name: string
   managed: boolean
@@ -1142,6 +1218,30 @@ export type AdminFindManyBotQuery = {
       updatedAt?: Date | null
       verificationUrl: string
       verificationUrlSet?: boolean | null
+      permissions?: Array<{
+        __typename?: 'BotPermission'
+        botId?: string | null
+        createdAt?: Date | null
+        id: string
+        roleId?: string | null
+        serverId?: string | null
+        updatedAt?: Date | null
+        role?: {
+          __typename?: 'DiscordRole'
+          id: string
+          name: string
+          managed: boolean
+          color: number
+          position: number
+        } | null
+        server?: {
+          __typename?: 'DiscordServer'
+          id: string
+          name: string
+          icon?: string | null
+          permissions?: Array<string> | null
+        } | null
+      }> | null
     }>
     meta: {
       __typename?: 'PagingMeta'
@@ -1178,6 +1278,30 @@ export type AdminFindOneBotQuery = {
     updatedAt?: Date | null
     verificationUrl: string
     verificationUrlSet?: boolean | null
+    permissions?: Array<{
+      __typename?: 'BotPermission'
+      botId?: string | null
+      createdAt?: Date | null
+      id: string
+      roleId?: string | null
+      serverId?: string | null
+      updatedAt?: Date | null
+      role?: {
+        __typename?: 'DiscordRole'
+        id: string
+        name: string
+        managed: boolean
+        color: number
+        position: number
+      } | null
+      server?: {
+        __typename?: 'DiscordServer'
+        id: string
+        name: string
+        icon?: string | null
+        permissions?: Array<string> | null
+      } | null
+    }> | null
   } | null
 }
 
@@ -1203,6 +1327,30 @@ export type AdminCreateBotMutation = {
     updatedAt?: Date | null
     verificationUrl: string
     verificationUrlSet?: boolean | null
+    permissions?: Array<{
+      __typename?: 'BotPermission'
+      botId?: string | null
+      createdAt?: Date | null
+      id: string
+      roleId?: string | null
+      serverId?: string | null
+      updatedAt?: Date | null
+      role?: {
+        __typename?: 'DiscordRole'
+        id: string
+        name: string
+        managed: boolean
+        color: number
+        position: number
+      } | null
+      server?: {
+        __typename?: 'DiscordServer'
+        id: string
+        name: string
+        icon?: string | null
+        permissions?: Array<string> | null
+      } | null
+    }> | null
   } | null
 }
 
@@ -1229,6 +1377,30 @@ export type AdminUpdateBotMutation = {
     updatedAt?: Date | null
     verificationUrl: string
     verificationUrlSet?: boolean | null
+    permissions?: Array<{
+      __typename?: 'BotPermission'
+      botId?: string | null
+      createdAt?: Date | null
+      id: string
+      roleId?: string | null
+      serverId?: string | null
+      updatedAt?: Date | null
+      role?: {
+        __typename?: 'DiscordRole'
+        id: string
+        name: string
+        managed: boolean
+        color: number
+        position: number
+      } | null
+      server?: {
+        __typename?: 'DiscordServer'
+        id: string
+        name: string
+        icon?: string | null
+        permissions?: Array<string> | null
+      } | null
+    }> | null
   } | null
 }
 
@@ -1260,6 +1432,102 @@ export type UserFindOneBotQuery = {
     updatedAt?: Date | null
     verificationUrl: string
     verificationUrlSet?: boolean | null
+    permissions?: Array<{
+      __typename?: 'BotPermission'
+      botId?: string | null
+      createdAt?: Date | null
+      id: string
+      roleId?: string | null
+      serverId?: string | null
+      updatedAt?: Date | null
+      rules?: Array<{
+        __typename?: 'Rule'
+        createdAt?: Date | null
+        id: string
+        communityId: string
+        name: string
+        description?: string | null
+        updatedAt?: Date | null
+        viewUrl?: string | null
+        conditions?: Array<{
+          __typename?: 'RuleCondition'
+          createdAt?: Date | null
+          id: string
+          type: RuleConditionType
+          account?: string | null
+          amount?: string | null
+          filters?: any | null
+          config?: any | null
+          tokenId?: string | null
+          updatedAt?: Date | null
+          valid?: boolean | null
+          token?: {
+            __typename?: 'NetworkToken'
+            id: string
+            createdAt?: Date | null
+            updatedAt?: Date | null
+            cluster: NetworkCluster
+            type: NetworkTokenType
+            account: string
+            program: string
+            name: string
+            symbol?: string | null
+            description?: string | null
+            imageUrl?: string | null
+            metadataUrl?: string | null
+            raw?: any | null
+          } | null
+          asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+        }> | null
+        permissions?: Array<{
+          __typename?: 'RulePermission'
+          createdAt?: Date | null
+          id: string
+          updatedAt?: Date | null
+          botId?: string | null
+          ruleId?: string | null
+          bot?: {
+            __typename?: 'BotPermission'
+            botId?: string | null
+            createdAt?: Date | null
+            id: string
+            roleId?: string | null
+            serverId?: string | null
+            updatedAt?: Date | null
+            role?: {
+              __typename?: 'DiscordRole'
+              id: string
+              name: string
+              managed: boolean
+              color: number
+              position: number
+            } | null
+            server?: {
+              __typename?: 'DiscordServer'
+              id: string
+              name: string
+              icon?: string | null
+              permissions?: Array<string> | null
+            } | null
+          } | null
+        }> | null
+      }> | null
+      role?: {
+        __typename?: 'DiscordRole'
+        id: string
+        name: string
+        managed: boolean
+        color: number
+        position: number
+      } | null
+      server?: {
+        __typename?: 'DiscordServer'
+        id: string
+        name: string
+        icon?: string | null
+        permissions?: Array<string> | null
+      } | null
+    }> | null
   } | null
 }
 
@@ -1285,6 +1553,30 @@ export type UserCreateBotMutation = {
     updatedAt?: Date | null
     verificationUrl: string
     verificationUrlSet?: boolean | null
+    permissions?: Array<{
+      __typename?: 'BotPermission'
+      botId?: string | null
+      createdAt?: Date | null
+      id: string
+      roleId?: string | null
+      serverId?: string | null
+      updatedAt?: Date | null
+      role?: {
+        __typename?: 'DiscordRole'
+        id: string
+        name: string
+        managed: boolean
+        color: number
+        position: number
+      } | null
+      server?: {
+        __typename?: 'DiscordServer'
+        id: string
+        name: string
+        icon?: string | null
+        permissions?: Array<string> | null
+      } | null
+    }> | null
   } | null
 }
 
@@ -1311,6 +1603,30 @@ export type UserUpdateBotMutation = {
     updatedAt?: Date | null
     verificationUrl: string
     verificationUrlSet?: boolean | null
+    permissions?: Array<{
+      __typename?: 'BotPermission'
+      botId?: string | null
+      createdAt?: Date | null
+      id: string
+      roleId?: string | null
+      serverId?: string | null
+      updatedAt?: Date | null
+      role?: {
+        __typename?: 'DiscordRole'
+        id: string
+        name: string
+        managed: boolean
+        color: number
+        position: number
+      } | null
+      server?: {
+        __typename?: 'DiscordServer'
+        id: string
+        name: string
+        icon?: string | null
+        permissions?: Array<string> | null
+      } | null
+    }> | null
   } | null
 }
 
@@ -1347,7 +1663,7 @@ export type UserGetBotRolesQueryVariables = Exact<{
 export type UserGetBotRolesQuery = {
   __typename?: 'Query'
   items?: Array<{
-    __typename?: 'DiscordServerRole'
+    __typename?: 'DiscordRole'
     id: string
     name: string
     managed: boolean
@@ -2543,6 +2859,7 @@ export type RuleDetailsFragment = {
   name: string
   description?: string | null
   updatedAt?: Date | null
+  viewUrl?: string | null
   conditions?: Array<{
     __typename?: 'RuleCondition'
     createdAt?: Date | null
@@ -2572,6 +2889,38 @@ export type RuleDetailsFragment = {
       raw?: any | null
     } | null
     asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+  }> | null
+  permissions?: Array<{
+    __typename?: 'RulePermission'
+    createdAt?: Date | null
+    id: string
+    updatedAt?: Date | null
+    botId?: string | null
+    ruleId?: string | null
+    bot?: {
+      __typename?: 'BotPermission'
+      botId?: string | null
+      createdAt?: Date | null
+      id: string
+      roleId?: string | null
+      serverId?: string | null
+      updatedAt?: Date | null
+      role?: {
+        __typename?: 'DiscordRole'
+        id: string
+        name: string
+        managed: boolean
+        color: number
+        position: number
+      } | null
+      server?: {
+        __typename?: 'DiscordServer'
+        id: string
+        name: string
+        icon?: string | null
+        permissions?: Array<string> | null
+      } | null
+    } | null
   }> | null
 }
 
@@ -2606,6 +2955,39 @@ export type RuleConditionDetailsFragment = {
   asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
 }
 
+export type RulePermissionDetailsFragment = {
+  __typename?: 'RulePermission'
+  createdAt?: Date | null
+  id: string
+  updatedAt?: Date | null
+  botId?: string | null
+  ruleId?: string | null
+  bot?: {
+    __typename?: 'BotPermission'
+    botId?: string | null
+    createdAt?: Date | null
+    id: string
+    roleId?: string | null
+    serverId?: string | null
+    updatedAt?: Date | null
+    role?: {
+      __typename?: 'DiscordRole'
+      id: string
+      name: string
+      managed: boolean
+      color: number
+      position: number
+    } | null
+    server?: {
+      __typename?: 'DiscordServer'
+      id: string
+      name: string
+      icon?: string | null
+      permissions?: Array<string> | null
+    } | null
+  } | null
+}
+
 export type AdminFindManyRuleQueryVariables = Exact<{
   input: AdminFindManyRuleInput
 }>
@@ -2622,6 +3004,7 @@ export type AdminFindManyRuleQuery = {
       name: string
       description?: string | null
       updatedAt?: Date | null
+      viewUrl?: string | null
       conditions?: Array<{
         __typename?: 'RuleCondition'
         createdAt?: Date | null
@@ -2651,6 +3034,38 @@ export type AdminFindManyRuleQuery = {
           raw?: any | null
         } | null
         asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      }> | null
+      permissions?: Array<{
+        __typename?: 'RulePermission'
+        createdAt?: Date | null
+        id: string
+        updatedAt?: Date | null
+        botId?: string | null
+        ruleId?: string | null
+        bot?: {
+          __typename?: 'BotPermission'
+          botId?: string | null
+          createdAt?: Date | null
+          id: string
+          roleId?: string | null
+          serverId?: string | null
+          updatedAt?: Date | null
+          role?: {
+            __typename?: 'DiscordRole'
+            id: string
+            name: string
+            managed: boolean
+            color: number
+            position: number
+          } | null
+          server?: {
+            __typename?: 'DiscordServer'
+            id: string
+            name: string
+            icon?: string | null
+            permissions?: Array<string> | null
+          } | null
+        } | null
       }> | null
     }>
     meta: {
@@ -2680,6 +3095,7 @@ export type AdminFindOneRuleQuery = {
     name: string
     description?: string | null
     updatedAt?: Date | null
+    viewUrl?: string | null
     conditions?: Array<{
       __typename?: 'RuleCondition'
       createdAt?: Date | null
@@ -2710,6 +3126,38 @@ export type AdminFindOneRuleQuery = {
       } | null
       asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
+    permissions?: Array<{
+      __typename?: 'RulePermission'
+      createdAt?: Date | null
+      id: string
+      updatedAt?: Date | null
+      botId?: string | null
+      ruleId?: string | null
+      bot?: {
+        __typename?: 'BotPermission'
+        botId?: string | null
+        createdAt?: Date | null
+        id: string
+        roleId?: string | null
+        serverId?: string | null
+        updatedAt?: Date | null
+        role?: {
+          __typename?: 'DiscordRole'
+          id: string
+          name: string
+          managed: boolean
+          color: number
+          position: number
+        } | null
+        server?: {
+          __typename?: 'DiscordServer'
+          id: string
+          name: string
+          icon?: string | null
+          permissions?: Array<string> | null
+        } | null
+      } | null
+    }> | null
   } | null
 }
 
@@ -2727,6 +3175,7 @@ export type AdminCreateRuleMutation = {
     name: string
     description?: string | null
     updatedAt?: Date | null
+    viewUrl?: string | null
     conditions?: Array<{
       __typename?: 'RuleCondition'
       createdAt?: Date | null
@@ -2756,6 +3205,38 @@ export type AdminCreateRuleMutation = {
         raw?: any | null
       } | null
       asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+    }> | null
+    permissions?: Array<{
+      __typename?: 'RulePermission'
+      createdAt?: Date | null
+      id: string
+      updatedAt?: Date | null
+      botId?: string | null
+      ruleId?: string | null
+      bot?: {
+        __typename?: 'BotPermission'
+        botId?: string | null
+        createdAt?: Date | null
+        id: string
+        roleId?: string | null
+        serverId?: string | null
+        updatedAt?: Date | null
+        role?: {
+          __typename?: 'DiscordRole'
+          id: string
+          name: string
+          managed: boolean
+          color: number
+          position: number
+        } | null
+        server?: {
+          __typename?: 'DiscordServer'
+          id: string
+          name: string
+          icon?: string | null
+          permissions?: Array<string> | null
+        } | null
+      } | null
     }> | null
   } | null
 }
@@ -2775,6 +3256,7 @@ export type AdminUpdateRuleMutation = {
     name: string
     description?: string | null
     updatedAt?: Date | null
+    viewUrl?: string | null
     conditions?: Array<{
       __typename?: 'RuleCondition'
       createdAt?: Date | null
@@ -2804,6 +3286,38 @@ export type AdminUpdateRuleMutation = {
         raw?: any | null
       } | null
       asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+    }> | null
+    permissions?: Array<{
+      __typename?: 'RulePermission'
+      createdAt?: Date | null
+      id: string
+      updatedAt?: Date | null
+      botId?: string | null
+      ruleId?: string | null
+      bot?: {
+        __typename?: 'BotPermission'
+        botId?: string | null
+        createdAt?: Date | null
+        id: string
+        roleId?: string | null
+        serverId?: string | null
+        updatedAt?: Date | null
+        role?: {
+          __typename?: 'DiscordRole'
+          id: string
+          name: string
+          managed: boolean
+          color: number
+          position: number
+        } | null
+        server?: {
+          __typename?: 'DiscordServer'
+          id: string
+          name: string
+          icon?: string | null
+          permissions?: Array<string> | null
+        } | null
+      } | null
     }> | null
   } | null
 }
@@ -2830,6 +3344,7 @@ export type UserFindManyRuleQuery = {
       name: string
       description?: string | null
       updatedAt?: Date | null
+      viewUrl?: string | null
       conditions?: Array<{
         __typename?: 'RuleCondition'
         createdAt?: Date | null
@@ -2860,6 +3375,38 @@ export type UserFindManyRuleQuery = {
         } | null
         asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
       }> | null
+      permissions?: Array<{
+        __typename?: 'RulePermission'
+        createdAt?: Date | null
+        id: string
+        updatedAt?: Date | null
+        botId?: string | null
+        ruleId?: string | null
+        bot?: {
+          __typename?: 'BotPermission'
+          botId?: string | null
+          createdAt?: Date | null
+          id: string
+          roleId?: string | null
+          serverId?: string | null
+          updatedAt?: Date | null
+          role?: {
+            __typename?: 'DiscordRole'
+            id: string
+            name: string
+            managed: boolean
+            color: number
+            position: number
+          } | null
+          server?: {
+            __typename?: 'DiscordServer'
+            id: string
+            name: string
+            icon?: string | null
+            permissions?: Array<string> | null
+          } | null
+        } | null
+      }> | null
     }>
     meta: {
       __typename?: 'PagingMeta'
@@ -2888,6 +3435,7 @@ export type UserFindOneRuleQuery = {
     name: string
     description?: string | null
     updatedAt?: Date | null
+    viewUrl?: string | null
     conditions?: Array<{
       __typename?: 'RuleCondition'
       createdAt?: Date | null
@@ -2918,6 +3466,38 @@ export type UserFindOneRuleQuery = {
       } | null
       asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
+    permissions?: Array<{
+      __typename?: 'RulePermission'
+      createdAt?: Date | null
+      id: string
+      updatedAt?: Date | null
+      botId?: string | null
+      ruleId?: string | null
+      bot?: {
+        __typename?: 'BotPermission'
+        botId?: string | null
+        createdAt?: Date | null
+        id: string
+        roleId?: string | null
+        serverId?: string | null
+        updatedAt?: Date | null
+        role?: {
+          __typename?: 'DiscordRole'
+          id: string
+          name: string
+          managed: boolean
+          color: number
+          position: number
+        } | null
+        server?: {
+          __typename?: 'DiscordServer'
+          id: string
+          name: string
+          icon?: string | null
+          permissions?: Array<string> | null
+        } | null
+      } | null
+    }> | null
   } | null
 }
 
@@ -2935,6 +3515,7 @@ export type UserCreateRuleMutation = {
     name: string
     description?: string | null
     updatedAt?: Date | null
+    viewUrl?: string | null
     conditions?: Array<{
       __typename?: 'RuleCondition'
       createdAt?: Date | null
@@ -2964,6 +3545,38 @@ export type UserCreateRuleMutation = {
         raw?: any | null
       } | null
       asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+    }> | null
+    permissions?: Array<{
+      __typename?: 'RulePermission'
+      createdAt?: Date | null
+      id: string
+      updatedAt?: Date | null
+      botId?: string | null
+      ruleId?: string | null
+      bot?: {
+        __typename?: 'BotPermission'
+        botId?: string | null
+        createdAt?: Date | null
+        id: string
+        roleId?: string | null
+        serverId?: string | null
+        updatedAt?: Date | null
+        role?: {
+          __typename?: 'DiscordRole'
+          id: string
+          name: string
+          managed: boolean
+          color: number
+          position: number
+        } | null
+        server?: {
+          __typename?: 'DiscordServer'
+          id: string
+          name: string
+          icon?: string | null
+          permissions?: Array<string> | null
+        } | null
+      } | null
     }> | null
   } | null
 }
@@ -2983,6 +3596,7 @@ export type UserUpdateRuleMutation = {
     name: string
     description?: string | null
     updatedAt?: Date | null
+    viewUrl?: string | null
     conditions?: Array<{
       __typename?: 'RuleCondition'
       createdAt?: Date | null
@@ -3012,6 +3626,38 @@ export type UserUpdateRuleMutation = {
         raw?: any | null
       } | null
       asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+    }> | null
+    permissions?: Array<{
+      __typename?: 'RulePermission'
+      createdAt?: Date | null
+      id: string
+      updatedAt?: Date | null
+      botId?: string | null
+      ruleId?: string | null
+      bot?: {
+        __typename?: 'BotPermission'
+        botId?: string | null
+        createdAt?: Date | null
+        id: string
+        roleId?: string | null
+        serverId?: string | null
+        updatedAt?: Date | null
+        role?: {
+          __typename?: 'DiscordRole'
+          id: string
+          name: string
+          managed: boolean
+          color: number
+          position: number
+        } | null
+        server?: {
+          __typename?: 'DiscordServer'
+          id: string
+          name: string
+          icon?: string | null
+          permissions?: Array<string> | null
+        } | null
+      } | null
     }> | null
   } | null
 }
@@ -3280,6 +3926,41 @@ export type UserUpdateUserMutation = {
   } | null
 }
 
+export const DiscordRoleDetailsFragmentDoc = gql`
+  fragment DiscordRoleDetails on DiscordRole {
+    id
+    name
+    managed
+    color
+    position
+  }
+`
+export const DiscordServerDetailsFragmentDoc = gql`
+  fragment DiscordServerDetails on DiscordServer {
+    id
+    name
+    icon
+    permissions
+  }
+`
+export const BotPermissionDetailsFragmentDoc = gql`
+  fragment BotPermissionDetails on BotPermission {
+    botId
+    createdAt
+    id
+    roleId
+    serverId
+    updatedAt
+    role {
+      ...DiscordRoleDetails
+    }
+    server {
+      ...DiscordServerDetails
+    }
+  }
+  ${DiscordRoleDetailsFragmentDoc}
+  ${DiscordServerDetailsFragmentDoc}
+`
 export const BotDetailsFragmentDoc = gql`
   fragment BotDetails on Bot {
     avatarUrl
@@ -3296,24 +3977,11 @@ export const BotDetailsFragmentDoc = gql`
     updatedAt
     verificationUrl
     verificationUrlSet
+    permissions {
+      ...BotPermissionDetails
+    }
   }
-`
-export const DiscordServerDetailsFragmentDoc = gql`
-  fragment DiscordServerDetails on DiscordServer {
-    id
-    name
-    icon
-    permissions
-  }
-`
-export const DiscordServerRoleDetailsFragmentDoc = gql`
-  fragment DiscordServerRoleDetails on DiscordServerRole {
-    id
-    name
-    managed
-    color
-    position
-  }
+  ${BotPermissionDetailsFragmentDoc}
 `
 export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
@@ -3473,6 +4141,19 @@ export const RuleConditionDetailsFragmentDoc = gql`
   }
   ${NetworkTokenDetailsFragmentDoc}
 `
+export const RulePermissionDetailsFragmentDoc = gql`
+  fragment RulePermissionDetails on RulePermission {
+    createdAt
+    id
+    updatedAt
+    botId
+    ruleId
+    bot {
+      ...BotPermissionDetails
+    }
+  }
+  ${BotPermissionDetailsFragmentDoc}
+`
 export const RuleDetailsFragmentDoc = gql`
   fragment RuleDetails on Rule {
     createdAt
@@ -3483,9 +4164,14 @@ export const RuleDetailsFragmentDoc = gql`
     conditions {
       ...RuleConditionDetails
     }
+    permissions {
+      ...RulePermissionDetails
+    }
     updatedAt
+    viewUrl
   }
   ${RuleConditionDetailsFragmentDoc}
+  ${RulePermissionDetailsFragmentDoc}
 `
 export const UserSummaryFragmentDoc = gql`
   fragment UserSummary on User {
@@ -3574,9 +4260,17 @@ export const UserFindOneBotDocument = gql`
   query userFindOneBot($communityId: String!) {
     item: userFindOneBot(communityId: $communityId) {
       ...BotDetails
+      permissions {
+        ...BotPermissionDetails
+        rules {
+          ...RuleDetails
+        }
+      }
     }
   }
   ${BotDetailsFragmentDoc}
+  ${BotPermissionDetailsFragmentDoc}
+  ${RuleDetailsFragmentDoc}
 `
 export const UserCreateBotDocument = gql`
   mutation userCreateBot($input: UserCreateBotInput!) {
@@ -3617,10 +4311,10 @@ export const UserLeaveBotServerDocument = gql`
 export const UserGetBotRolesDocument = gql`
   query userGetBotRoles($botId: String!, $serverId: String!) {
     items: userGetBotRoles(botId: $botId, serverId: $serverId) {
-      ...DiscordServerRoleDetails
+      ...DiscordRoleDetails
     }
   }
-  ${DiscordServerRoleDetailsFragmentDoc}
+  ${DiscordRoleDetailsFragmentDoc}
 `
 export const UserGetBotServersDocument = gql`
   query userGetBotServers($botId: String!) {

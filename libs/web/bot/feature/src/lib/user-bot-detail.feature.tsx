@@ -17,6 +17,7 @@ import { UserCreateBotInput } from '@pubkey-link/sdk'
 import { BotUiItem, UserBotUiCreateForm } from '@pubkey-link/web-bot-ui'
 import { UserBotDetailServerList } from './user-bot-detail-server-list'
 import { UserBotCommands } from './user-bot-commands'
+import { UserBotDetailPermissionsTab } from './user-bot-detail-permissions.tab'
 
 export function UserBotDetailFeature() {
   const { item, query, deleteBot, createBot } = useUserFindOneBot()
@@ -59,6 +60,11 @@ export function UserBotDetailFeature() {
       {item.started ? (
         <UiTabRoutes
           tabs={[
+            {
+              path: 'permissions',
+              label: 'Permissions',
+              element: <UserBotDetailPermissionsTab />,
+            },
             {
               path: 'servers',
               label: 'Servers',

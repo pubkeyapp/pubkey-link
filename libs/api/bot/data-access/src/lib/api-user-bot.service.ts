@@ -30,15 +30,14 @@ export class ApiUserBotService {
   }
 
   async findOneBot(communityId: string) {
-    console.log(communityId)
-    const bot = await this.core.data.bot.findUnique({ where: { communityId } })
+    const bot = await this.core.data.bot.findUnique({
+      where: { communityId },
+      include: { permissions: { include: { rules: { include: { rule: true } } } } },
+    })
     if (!bot) {
       return null
     }
-    console.log(bot)
-    const instance = this.manager.getBotInstance(bot.id, {
-      throwIfNotStarted: false,
-    })
+    const instance = this.manager.getBotInstance(bot.id)
 
     if (!instance) {
       return bot

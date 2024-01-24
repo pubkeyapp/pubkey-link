@@ -12,7 +12,7 @@ export class DiscordServer {
   permissions?: string[] | null
 }
 @ObjectType()
-export class DiscordServerRole {
+export class DiscordRole {
   @Field()
   id!: string
   @Field()

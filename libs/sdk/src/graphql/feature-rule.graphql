@@ -7,7 +7,11 @@ fragment RuleDetails on Rule {
   conditions {
     ...RuleConditionDetails
   }
+  permissions {
+    ...RulePermissionDetails
+  }
   updatedAt
+  viewUrl
 }
 
 fragment RuleConditionDetails on RuleCondition {
@@ -29,6 +33,17 @@ fragment RuleConditionDetails on RuleCondition {
   }
   updatedAt
   valid
+}
+
+fragment RulePermissionDetails on RulePermission {
+  createdAt
+  id
+  updatedAt
+  botId
+  ruleId
+  bot {
+    ...BotPermissionDetails
+  }
 }
 
 query adminFindManyRule($input: AdminFindManyRuleInput!) {

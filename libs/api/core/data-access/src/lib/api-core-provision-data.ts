@@ -16,6 +16,27 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     name: 'PubKey',
     description: 'Decentralized identities on Solana',
     avatarUrl: 'https://avatars.githubusercontent.com/u/125477168?v=4',
+    bot: {
+      create: {
+        clientId: process.env['PUBKEY_BOT_CLIENT_ID'] ?? '',
+        clientSecret: process.env['PUBKEY_BOT_CLIENT_SECRET'] ?? '',
+        token: process.env['PUBKEY_BOT_TOKEN'] ?? '',
+        avatarUrl:
+          'https://cdn.discordapp.com/avatars/1151220382444044298/2b0c80a7bb6ec8970d4953c5621b7d43.png?size=1024',
+        id: '1151220382444044298',
+        name: 'PubKey Linked Roles',
+        status: 'Active',
+        permissions: {
+          create: [
+            {
+              id: '1083213946078625853-1163196496607457441',
+              serverId: '1083213946078625853',
+              roleId: '1163196496607457441',
+            },
+          ],
+        },
+      },
+    },
     members: {
       create: [
         { user: { connect: { id: 'beeman' } }, role: CommunityRole.Admin },
@@ -23,7 +44,38 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
       ],
     },
     rules: {
-      create: [{ name: 'Mad Lads' }, { name: 'Mc Degens DAO' }, { name: 'The Faceless' }],
+      create: [
+        {
+          id: 'rule-one-of-us',
+          name: 'One of Us',
+          permissions: { create: [{ id: 'perm-one-of-us', botId: '1083213946078625853-1163196496607457441' }] },
+          conditions: {
+            create: [
+              {
+                id: 'cond-deanslist-nft-holder',
+                type: RuleConditionType.SolanaNonFungibleAsset,
+                name: 'Deanslist NFT holder',
+                account: '5FusHaKEKjfKsmQwXNrhFcFABGGxu7iYCdbvyVSRe3Ri',
+                token: {
+                  connect: {
+                    account_cluster: { cluster, account: '5FusHaKEKjfKsmQwXNrhFcFABGGxu7iYCdbvyVSRe3Ri' },
+                  },
+                },
+                amount: '1',
+              },
+              {
+                type: RuleConditionType.AnybodiesAsset,
+                name: 'Deanslist NFT staked in Anybodies Vault',
+                config: { vaultId: 'JiZUwqz0ETakNYOIulut' },
+                amount: '1',
+              },
+            ],
+          },
+        },
+        { name: 'Mad Lads' },
+        { name: 'Mc Degens DAO' },
+        { name: 'The Faceless' },
+      ],
     },
   },
   {

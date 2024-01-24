@@ -6,6 +6,7 @@ import { UserRuleDetailConditionsTab } from './user-rule-detail-conditions.tab'
 import { UserRuleDetailSettingsTab } from './user-rule-detail-settings.tab'
 import { UserRuleDetailValidateTab } from './user-rule-detail-validate.tab'
 import { RuleUiItem } from '@pubkey-link/web-rule-ui'
+import { UserRuleDetailPermissionsTab } from './user-rule-detail-permissions.tab'
 
 export function UserRuleDetailFeature() {
   const { ruleId } = useParams<{ ruleId: string }>() as { ruleId: string }
@@ -32,7 +33,12 @@ export function UserRuleDetailFeature() {
           {
             path: 'conditions',
             label: 'Conditions',
-            element: <UserRuleDetailConditionsTab ruleId={ruleId} />,
+            element: <UserRuleDetailConditionsTab rule={item} />,
+          },
+          {
+            path: 'permissions',
+            label: 'Permissions',
+            element: <UserRuleDetailPermissionsTab rule={item} />,
           },
           {
             path: 'validate',

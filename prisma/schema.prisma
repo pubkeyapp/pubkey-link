@@ -8,17 +8,31 @@ datasource db {
 }
 
 model Bot {
-  id           String    @id @default(cuid())
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  name         String    @unique
+  id           String          @id @default(cuid())
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  name         String          @unique
   avatarUrl    String?
-  status       BotStatus @default(Active)
+  status       BotStatus       @default(Active)
   token        String /// @encrypted
   clientId     String /// @encrypted
   clientSecret String /// @encrypted
-  community    Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
-  communityId  String    @unique
+  community    Community       @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  communityId  String          @unique
+  permissions  BotPermission[]
+}
+
+model BotPermission {
+  id        String           @id @default(cuid())
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  bot       Bot              @relation(fields: [botId], references: [id], onDelete: Cascade)
+  botId     String
+  serverId  String
+  roleId    String
+  rules     RulePermission[]
+
+  @@unique([botId, serverId, roleId])
 }
 
 model Community {
@@ -118,14 +132,15 @@ model NetworkToken {
 }
 
 model Rule {
-  id          String          @id @default(cuid())
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  community   Community       @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  id          String           @id @default(cuid())
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  community   Community        @relation(fields: [communityId], references: [id], onDelete: Cascade)
   communityId String
   name        String
   description String?
   conditions  RuleCondition[]
+  permissions RulePermission[]
 }
 
 model RuleCondition {
@@ -142,6 +157,18 @@ model RuleCondition {
   tokenId   String?
   rule      Rule              @relation(fields: [ruleId], references: [id])
   ruleId    String
+}
+
+model RulePermission {
+  id        String         @id @default(cuid())
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  rule      Rule           @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+  ruleId    String
+  bot       BotPermission? @relation(fields: [botId], references: [id], onDelete: Cascade)
+  botId     String?
+
+  @@unique([ruleId, botId])
 }
 
 model User {

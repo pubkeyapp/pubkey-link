@@ -63,6 +63,10 @@ export class DiscordBot {
     return (roles ?? []) as RESTDiscordRoleConnection[]
   }
 
+  async getRole(serverId: string, roleId: string): Promise<RESTDiscordRole | undefined> {
+    return this.getRoles(serverId).then((roles) => roles.find((role) => role.id === roleId))
+  }
+
   async getRoles(serverId: string): Promise<RESTDiscordRole[]> {
     const server = await this.getServer(serverId)
     const roles = await server?.roles.fetch()

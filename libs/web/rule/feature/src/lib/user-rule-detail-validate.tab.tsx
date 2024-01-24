@@ -1,7 +1,7 @@
 import { Rule, RuleCondition } from '@pubkey-link/sdk'
 import { useValidateRule } from '@pubkey-link/web-rule-data-access'
 import { useCallback, useEffect, useState } from 'react'
-import { UiCard, UiDebug, UiInfo, UiStack } from '@pubkey-ui/core'
+import { UiCard, UiDebug, UiInfo, UiStack, UiWarning } from '@pubkey-ui/core'
 import { UiAddressInput } from '@pubkey-link/web-ui-core'
 import { Button, Group } from '@mantine/core'
 import { useLocalStorage } from '@mantine/hooks'
@@ -44,6 +44,10 @@ export function UserRuleDetailValidateTab({ rule }: { rule: Rule }) {
       addAddress(address)
     }
   }, [address, addresses, addAddress])
+
+  if (!rule.conditions?.length) {
+    return <UiWarning message="Rule needs at least one condition." />
+  }
 
   return (
     <UiCard title="Validate Rule">

@@ -1,8 +1,11 @@
 import { ActionIcon, Anchor, Group, ScrollArea } from '@mantine/core'
-import { Bot } from '@pubkey-link/sdk'
+import { Bot, BotPermission } from '@pubkey-link/sdk'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'
+import { UiStack } from '@pubkey-ui/core'
+import { RuleUiItem } from '@pubkey-link/web-rule-ui'
+import { UiDiscordServerItem } from '@pubkey-link/web-ui-core'
 
 export function UserBotUiTable({
   deleteBot,
@@ -55,6 +58,54 @@ export function UserBotUiTable({
           },
         ]}
         records={bots}
+      />
+    </ScrollArea>
+  )
+}
+
+export function UserBotPermissionUiTable({
+  deleteBotPermission,
+  permissions = [],
+}: {
+  deleteBotPermission: (bot: BotPermission) => void
+  permissions: BotPermission[]
+}) {
+  return (
+    <ScrollArea>
+      <DataTable
+        borderRadius="sm"
+        withTableBorder
+        shadow="xs"
+        columns={[
+          {
+            accessor: 'name',
+            title: 'Server and Role',
+            render: (item) => <UiDiscordServerItem server={item?.server} role={item?.role} />,
+          },
+          {
+            accessor: 'rule',
+            title: 'Rule',
+            render: (item) =>
+              item?.rules?.length ? (
+                <UiStack>
+                  {item?.rules?.map((rule) => (
+                    <RuleUiItem key={rule.id} rule={rule} to={rule.viewUrl} />
+                  ))}
+                </UiStack>
+              ) : null,
+          },
+          {
+            accessor: 'actions',
+            title: 'Actions',
+            textAlign: 'right',
+            render: (item) => (
+              <ActionIcon color="red" variant="light" size="sm" onClick={() => deleteBotPermission(item)}>
+                <IconTrash size={16} />
+              </ActionIcon>
+            ),
+          },
+        ]}
+        records={permissions}
       />
     </ScrollArea>
   )

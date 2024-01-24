@@ -2,8 +2,8 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import {
   ApiBotService,
   Bot,
+  DiscordRole,
   DiscordServer,
-  DiscordServerRole,
   UserCreateBotInput,
   UserUpdateBotInput,
 } from '@pubkey-link/api-bot-data-access'
@@ -45,7 +45,7 @@ export class ApiUserBotResolver {
     return this.service.manager.getBotServer(botId, serverId)
   }
 
-  @Query(() => [DiscordServerRole], { nullable: true })
+  @Query(() => [DiscordRole], { nullable: true })
   userGetBotRoles(@Args('botId') botId: string, @Args('serverId') serverId: string) {
     return this.service.manager.getBotRoles(botId, serverId)
   }

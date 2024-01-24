@@ -2,6 +2,7 @@ import { Field, HideField, ObjectType } from '@nestjs/graphql'
 import { BotStatus } from './bot-status.enum'
 import { GraphQLJSON } from 'graphql-scalars'
 import { BotApplication } from '@pubkey-link/api-bot-util'
+import { BotPermission } from './bot-permission.entity'
 
 @ObjectType()
 export class Bot {
@@ -27,4 +28,6 @@ export class Bot {
   communityId!: string
   @Field(() => GraphQLJSON, { nullable: true })
   application?: BotApplication | null
+  @Field(() => [BotPermission], { nullable: true })
+  permissions?: BotPermission[] | null
 }

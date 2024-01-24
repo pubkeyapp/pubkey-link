@@ -175,6 +175,7 @@ type Bot {
   id: String!
   inviteUrl: String!
   name: String!
+  permissions: [BotPermission!]
   redirectUrl: String!
   redirectUrlSet: Boolean
   started: Boolean!
@@ -187,6 +188,18 @@ type Bot {
 type BotPaging {
   data: [Bot!]!
   meta: PagingMeta!
+}
+
+type BotPermission {
+  botId: String
+  createdAt: DateTime
+  id: String!
+  role: DiscordRole
+  roleId: String
+  rules: [Rule!]
+  server: DiscordServer
+  serverId: String
+  updatedAt: DateTime
 }
 
 enum BotStatus {
@@ -239,19 +252,19 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type DiscordServer {
-  icon: String
-  id: String!
-  name: String!
-  permissions: [String!]
-}
-
-type DiscordServerRole {
+type DiscordRole {
   color: Int!
   id: String!
   managed: Boolean!
   name: String!
   position: Int!
+}
+
+type DiscordServer {
+  icon: String
+  id: String!
+  name: String!
+  permissions: [String!]
 }
 
 type Identity {
@@ -460,7 +473,7 @@ type Query {
   userFindOneCommunityMember(communityMemberId: String!): CommunityMember
   userFindOneRule(ruleId: String!): Rule
   userFindOneUser(username: String!): User
-  userGetBotRoles(botId: String!, serverId: String!): [DiscordServerRole!]
+  userGetBotRoles(botId: String!, serverId: String!): [DiscordRole!]
   userGetBotServer(botId: String!, serverId: String!): DiscordServer
   userGetBotServers(botId: String!): [DiscordServer!]
   userRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
@@ -483,7 +496,9 @@ type Rule {
   description: String
   id: String!
   name: String!
+  permissions: [RulePermission!]
   updatedAt: DateTime
+  viewUrl: String
 }
 
 type RuleCondition {
@@ -510,6 +525,16 @@ enum RuleConditionType {
 type RulePaging {
   data: [Rule!]!
   meta: PagingMeta!
+}
+
+type RulePermission {
+  bot: BotPermission
+  botId: String
+  createdAt: DateTime
+  id: String!
+  rule: Rule
+  ruleId: String
+  updatedAt: DateTime
 }
 
 type User {

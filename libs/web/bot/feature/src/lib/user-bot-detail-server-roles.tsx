@@ -1,7 +1,7 @@
 import { Switch, Table, Text } from '@mantine/core'
 import { useUserGetBotRoles } from '@pubkey-link/web-bot-data-access'
-import { DiscordUiRoleColor } from '@pubkey-link/web-bot-ui'
 import { UiAlert, UiCard, UiDebug, UiLoader, UiStack } from '@pubkey-ui/core'
+import { UiDiscordRoleColor } from '@pubkey-link/web-ui-core'
 
 export function UserBotDetailServerRoles({ botId, serverId }: { botId: string; serverId: string }) {
   const query = useUserGetBotRoles({ botId, serverId })
@@ -32,7 +32,7 @@ export function UserBotDetailServerRoles({ botId, serverId }: { botId: string; s
                 <tr key={item.id}>
                   <td>
                     <Text size="xl">
-                      <DiscordUiRoleColor color={item.color}>{item.name}</DiscordUiRoleColor>
+                      <UiDiscordRoleColor color={item.color}>{item.name}</UiDiscordRoleColor>
                     </Text>
                   </td>
                   <td align="right">

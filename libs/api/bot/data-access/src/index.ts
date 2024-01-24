@@ -9,3 +9,5 @@ export * from './lib/dto/user-create-bot.input'
 export * from './lib/dto/user-update-bot.input'
 export * from './lib/entity/bot-status.enum'
 export * from './lib/entity/discord-server.entity'
+
+export * from './lib/entity/bot-permission.entity'
