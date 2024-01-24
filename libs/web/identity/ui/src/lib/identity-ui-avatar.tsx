@@ -14,8 +14,8 @@ export function IdentityUiAvatar({ item, withTooltip = false }: { item: Identity
       >
         <IconCurrencySolana size={28} />
       </Avatar>
-    ) : item.profile?.avatarUrl ? (
-      <Avatar radius={100} src={item.profile?.avatarUrl} alt={`${item.provider} avatar`} />
+    ) : item.avatarUrl ? (
+      <Avatar radius={100} src={item.avatarUrl} alt={`${item.provider} avatar`} />
     ) : (
       <Avatar radius={100}>{item.profile?.username.substring(0, 1)}</Avatar>
     )

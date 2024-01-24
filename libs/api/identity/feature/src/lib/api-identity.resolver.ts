@@ -4,6 +4,11 @@ import { getIdentityUrl, Identity } from '@pubkey-link/api-identity-data-access'
 
 @Resolver(() => Identity)
 export class ApiIdentityResolver {
+  @ResolveField(() => String, { nullable: true })
+  avatarUrl(@Parent() identity: Identity) {
+    return (identity.profile as { avatarUrl?: string })?.avatarUrl ?? null
+  }
+
   @ResolveField(() => Boolean, { nullable: true })
   expired(@Parent() identity: Identity) {
     if (identity.provider !== IdentityProvider.Discord) return false

@@ -1,11 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import {
-  ApiCoreService,
-  BaseContext,
-  ellipsify,
-  getRequestDetails,
-  slugifyId,
-} from '@pubkey-link/api-core-data-access'
+import { ApiCoreService, BaseContext, ellipsify, getRequestDetails, slugifyId } from '@pubkey-link/api-core-data-access'
 import { RequestIdentityChallengeInput } from './dto/request-identity-challenge.input'
 import { VerifyIdentityChallengeInput } from './dto/verify-identity-challenge-input'
 import { sha256 } from './helpers/sha256'
@@ -21,6 +15,34 @@ export class ApiAnonIdentityService {
     private readonly core: ApiCoreService,
     private readonly solana: ApiSolanaIdentityService,
   ) {}
+
+  findUserByIdentity(provider: IdentityProvider, providerId: string) {
+    console.log('findUserByIdentity', { provider, providerId })
+    return this.core.data.user.findFirst({
+      where: {
+        identities: {
+          some: {
+            provider,
+            providerId,
+          },
+        },
+        status: UserStatus.Active,
+      },
+      select: {
+        avatarUrl: true,
+        developer: true,
+        id: true,
+        name: true,
+        role: true,
+        username: true,
+        status: true,
+        identities: {
+          orderBy: [{ provider: 'asc' }, { providerId: 'asc' }],
+          select: { id: true, name: true, profile: true, provider: true, providerId: true },
+        },
+      },
+    })
+  }
 
   async requestIdentityChallenge(ctx: BaseContext, { provider, providerId }: RequestIdentityChallengeInput) {
     // Make sure we can link the given provider

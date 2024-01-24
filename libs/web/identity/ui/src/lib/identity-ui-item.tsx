@@ -1,36 +1,33 @@
 import { AvatarProps, Group, type GroupProps, Stack, Text } from '@mantine/core'
-import { User } from '@pubkey-link/sdk'
+import { Identity } from '@pubkey-link/sdk'
 import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core'
-import { UserUiAvatar } from './user-ui-avatar'
+import { IdentityUiAvatar } from './identity-ui-avatar'
+import { IdentityUiProviderTag } from './identity-ui-provider-tag'
 
-export function UserUiItem({
+export function IdentityUiItem({
   anchorProps,
   avatarProps,
   groupProps,
-  user,
+  identity,
   to,
 }: {
   anchorProps?: UiAnchorProps
   avatarProps?: Omit<AvatarProps, 'src'>
   groupProps?: GroupProps
-  user?: User
+  identity?: Identity
   to?: string | null
 }) {
-  if (!user) return null
+  if (!identity) return null
 
   return (
     <UiAnchor to={to ?? undefined} underline="never" {...anchorProps}>
       <Group gap="sm" {...groupProps}>
-        <UserUiAvatar user={user} {...avatarProps} />
+        <IdentityUiAvatar item={identity} {...avatarProps} />
         <Stack gap={1}>
           <Text size="lg" fw="bold">
-            {user?.username}
+            {identity?.name}
           </Text>
-          {user.name ? (
-            <Text size="sm" c="dimmed">
-              {user.name}
-            </Text>
-          ) : null}
+          <IdentityUiProviderTag provider={identity.provider} />
         </Stack>
       </Group>
     </UiAnchor>

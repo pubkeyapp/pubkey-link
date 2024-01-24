@@ -8,10 +8,10 @@ import { IdentityProvider } from './identity-provider.enum'
 export class Identity {
   @Field()
   id!: string
-  @Field()
-  createdAt!: Date
-  @Field()
-  updatedAt!: Date
+  @Field({ nullable: true })
+  createdAt?: Date
+  @Field({ nullable: true })
+  updatedAt?: Date
 
   @Field(() => IdentityProvider)
   provider!: IdentityProvider

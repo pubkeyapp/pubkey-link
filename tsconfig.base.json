@@ -75,7 +75,10 @@
       "@pubkey-link/web-ui-core": ["libs/web/ui/core/src/index.ts"],
       "@pubkey-link/web-user-data-access": ["libs/web/user/data-access/src/index.ts"],
       "@pubkey-link/web-user-feature": ["libs/web/user/feature/src/index.ts"],
-      "@pubkey-link/web-user-ui": ["libs/web/user/ui/src/index.ts"]
+      "@pubkey-link/web-user-ui": ["libs/web/user/ui/src/index.ts"],
+      "@pubkey-link/web-verify-data-access": ["libs/web/verify/data-access/src/index.ts"],
+      "@pubkey-link/web-verify-feature": ["libs/web/verify/feature/src/index.ts"],
+      "@pubkey-link/web-verify-ui": ["libs/web/verify/ui/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,3 +1,13 @@
+fragment UserSummary on User {
+  avatarUrl
+  developer
+  id
+  name
+  profileUrl
+  role
+  username
+}
+
 fragment UserDetails on User {
   avatarUrl
   createdAt

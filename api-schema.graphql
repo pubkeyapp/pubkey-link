@@ -255,8 +255,9 @@ type DiscordServerRole {
 }
 
 type Identity {
+  avatarUrl: String
   challenges: [IdentityChallenge!]
-  createdAt: DateTime!
+  createdAt: DateTime
   expired: Boolean
   id: String!
   name: String
@@ -264,7 +265,7 @@ type Identity {
   profile: JSON
   provider: IdentityProvider!
   providerId: String!
-  updatedAt: DateTime!
+  updatedAt: DateTime
   url: String
   verified: Boolean
 }
@@ -443,6 +444,7 @@ type Query {
   adminFindOneNetworkToken(networkTokenId: String!): NetworkToken
   adminFindOneRule(ruleId: String!): Rule
   adminFindOneUser(userId: String!): User
+  anonFindUserByIdentity(provider: IdentityProvider!, providerId: String!): User
   anonRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
   appConfig: AppConfig!
   me: User

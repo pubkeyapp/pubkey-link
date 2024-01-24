@@ -282,8 +282,9 @@ export type DiscordServerRole = {
 
 export type Identity = {
   __typename?: 'Identity'
+  avatarUrl?: Maybe<Scalars['String']['output']>
   challenges?: Maybe<Array<IdentityChallenge>>
-  createdAt: Scalars['DateTime']['output']
+  createdAt?: Maybe<Scalars['DateTime']['output']>
   expired?: Maybe<Scalars['Boolean']['output']>
   id: Scalars['String']['output']
   name?: Maybe<Scalars['String']['output']>
@@ -291,7 +292,7 @@ export type Identity = {
   profile?: Maybe<Scalars['JSON']['output']>
   provider: IdentityProvider
   providerId: Scalars['String']['output']
-  updatedAt: Scalars['DateTime']['output']
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
   url?: Maybe<Scalars['String']['output']>
   verified?: Maybe<Scalars['Boolean']['output']>
 }
@@ -671,6 +672,7 @@ export type Query = {
   adminFindOneNetworkToken?: Maybe<NetworkToken>
   adminFindOneRule?: Maybe<Rule>
   adminFindOneUser?: Maybe<User>
+  anonFindUserByIdentity?: Maybe<User>
   anonRequestIdentityChallenge?: Maybe<IdentityChallenge>
   appConfig: AppConfig
   me?: Maybe<User>
@@ -750,6 +752,11 @@ export type QueryAdminFindOneRuleArgs = {
 
 export type QueryAdminFindOneUserArgs = {
   userId: Scalars['String']['input']
+}
+
+export type QueryAnonFindUserByIdentityArgs = {
+  provider: IdentityProvider
+  providerId: Scalars['String']['input']
 }
 
 export type QueryAnonRequestIdentityChallengeArgs = {
@@ -1965,16 +1972,26 @@ export type AppConfigQuery = {
   }
 }
 
+export type IdentitySummaryFragment = {
+  __typename?: 'Identity'
+  avatarUrl?: string | null
+  id: string
+  name?: string | null
+  provider: IdentityProvider
+  providerId: string
+}
+
 export type IdentityDetailsFragment = {
   __typename?: 'Identity'
-  createdAt: Date
+  avatarUrl?: string | null
+  createdAt?: Date | null
   expired?: boolean | null
   id: string
   name?: string | null
   profile?: any | null
   provider: IdentityProvider
   providerId: string
-  updatedAt: Date
+  updatedAt?: Date | null
   url?: string | null
   verified?: boolean | null
 }
@@ -2001,14 +2018,15 @@ export type AdminFindManyIdentityQuery = {
   __typename?: 'Query'
   items?: Array<{
     __typename?: 'Identity'
-    createdAt: Date
+    avatarUrl?: string | null
+    createdAt?: Date | null
     expired?: boolean | null
     id: string
     name?: string | null
     profile?: any | null
     provider: IdentityProvider
     providerId: string
-    updatedAt: Date
+    updatedAt?: Date | null
     url?: string | null
     verified?: boolean | null
     challenges?: Array<{
@@ -2048,14 +2066,15 @@ export type AdminCreateIdentityMutation = {
   __typename?: 'Mutation'
   created?: {
     __typename?: 'Identity'
-    createdAt: Date
+    avatarUrl?: string | null
+    createdAt?: Date | null
     expired?: boolean | null
     id: string
     name?: string | null
     profile?: any | null
     provider: IdentityProvider
     providerId: string
-    updatedAt: Date
+    updatedAt?: Date | null
     url?: string | null
     verified?: boolean | null
   } | null
@@ -2075,14 +2094,15 @@ export type UserFindManyIdentityQuery = {
   __typename?: 'Query'
   items?: Array<{
     __typename?: 'Identity'
-    createdAt: Date
+    avatarUrl?: string | null
+    createdAt?: Date | null
     expired?: boolean | null
     id: string
     name?: string | null
     profile?: any | null
     provider: IdentityProvider
     providerId: string
-    updatedAt: Date
+    updatedAt?: Date | null
     url?: string | null
     verified?: boolean | null
   }> | null
@@ -2144,14 +2164,15 @@ export type UserLinkIdentityMutation = {
   __typename?: 'Mutation'
   linked?: {
     __typename?: 'Identity'
-    createdAt: Date
+    avatarUrl?: string | null
+    createdAt?: Date | null
     expired?: boolean | null
     id: string
     name?: string | null
     profile?: any | null
     provider: IdentityProvider
     providerId: string
-    updatedAt: Date
+    updatedAt?: Date | null
     url?: string | null
     verified?: boolean | null
   } | null
@@ -2175,6 +2196,33 @@ export type AnonRequestIdentityChallengeQuery = {
     ip: string
     userAgent: string
     verified: boolean
+  } | null
+}
+
+export type AnonFindUserByIdentityQueryVariables = Exact<{
+  provider: IdentityProvider
+  providerId: Scalars['String']['input']
+}>
+
+export type AnonFindUserByIdentityQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'User'
+    avatarUrl?: string | null
+    developer?: boolean | null
+    id: string
+    name?: string | null
+    profileUrl: string
+    role?: UserRole | null
+    username?: string | null
+    identities?: Array<{
+      __typename?: 'Identity'
+      avatarUrl?: string | null
+      id: string
+      name?: string | null
+      provider: IdentityProvider
+      providerId: string
+    }> | null
   } | null
 }
 
@@ -3013,6 +3061,17 @@ export type UserValidateRuleMutation = {
   }> | null
 }
 
+export type UserSummaryFragment = {
+  __typename?: 'User'
+  avatarUrl?: string | null
+  developer?: boolean | null
+  id: string
+  name?: string | null
+  profileUrl: string
+  role?: UserRole | null
+  username?: string | null
+}
+
 export type UserDetailsFragment = {
   __typename?: 'User'
   avatarUrl?: string | null
@@ -3076,14 +3135,15 @@ export type AdminFindManyUserQuery = {
       username?: string | null
       identities?: Array<{
         __typename?: 'Identity'
-        createdAt: Date
+        avatarUrl?: string | null
+        createdAt?: Date | null
         expired?: boolean | null
         id: string
         name?: string | null
         profile?: any | null
         provider: IdentityProvider
         providerId: string
-        updatedAt: Date
+        updatedAt?: Date | null
         url?: string | null
         verified?: boolean | null
       }> | null
@@ -3321,8 +3381,18 @@ export const PagingMetaDetailsFragmentDoc = gql`
     totalCount
   }
 `
+export const IdentitySummaryFragmentDoc = gql`
+  fragment IdentitySummary on Identity {
+    avatarUrl
+    id
+    name
+    provider
+    providerId
+  }
+`
 export const IdentityDetailsFragmentDoc = gql`
   fragment IdentityDetails on Identity {
+    avatarUrl
     createdAt
     expired
     id
@@ -3416,6 +3486,17 @@ export const RuleDetailsFragmentDoc = gql`
     updatedAt
   }
   ${RuleConditionDetailsFragmentDoc}
+`
+export const UserSummaryFragmentDoc = gql`
+  fragment UserSummary on User {
+    avatarUrl
+    developer
+    id
+    name
+    profileUrl
+    role
+    username
+  }
 `
 export const LoginDocument = gql`
   mutation login($input: LoginInput!) {
@@ -3816,6 +3897,18 @@ export const AnonRequestIdentityChallengeDocument = gql`
   }
   ${IdentityChallengeDetailsFragmentDoc}
 `
+export const AnonFindUserByIdentityDocument = gql`
+  query anonFindUserByIdentity($provider: IdentityProvider!, $providerId: String!) {
+    item: anonFindUserByIdentity(provider: $provider, providerId: $providerId) {
+      ...UserSummary
+      identities {
+        ...IdentitySummary
+      }
+    }
+  }
+  ${UserSummaryFragmentDoc}
+  ${IdentitySummaryFragmentDoc}
+`
 export const AnonVerifyIdentityChallengeDocument = gql`
   mutation anonVerifyIdentityChallenge($input: VerifyIdentityChallengeInput!) {
     verified: anonVerifyIdentityChallenge(input: $input) {
@@ -4154,6 +4247,7 @@ const UserRequestIdentityChallengeDocumentString = print(UserRequestIdentityChal
 const UserVerifyIdentityChallengeDocumentString = print(UserVerifyIdentityChallengeDocument)
 const UserLinkIdentityDocumentString = print(UserLinkIdentityDocument)
 const AnonRequestIdentityChallengeDocumentString = print(AnonRequestIdentityChallengeDocument)
+const AnonFindUserByIdentityDocumentString = print(AnonFindUserByIdentityDocument)
 const AnonVerifyIdentityChallengeDocumentString = print(AnonVerifyIdentityChallengeDocument)
 const AdminFindManyNetworkTokenDocumentString = print(AdminFindManyNetworkTokenDocument)
 const AdminFindOneNetworkTokenDocumentString = print(AdminFindOneNetworkTokenDocument)
@@ -5200,6 +5294,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'anonRequestIdentityChallenge',
+        'query',
+        variables,
+      )
+    },
+    anonFindUserByIdentity(
+      variables: AnonFindUserByIdentityQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AnonFindUserByIdentityQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AnonFindUserByIdentityQuery>(AnonFindUserByIdentityDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'anonFindUserByIdentity',
         'query',
         variables,
       )
