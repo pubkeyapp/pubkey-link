@@ -27,7 +27,7 @@ export function UserUserDetailFeature() {
   const isAuthUser = authUser?.id === user.id
 
   return (
-    <UiContainer size="lg">
+    <UiContainer>
       <UiGrid
         sidebar={
           <UserUiProfile

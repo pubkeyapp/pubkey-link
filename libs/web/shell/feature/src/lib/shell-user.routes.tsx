@@ -1,11 +1,11 @@
-import { IconCurrencySolana, IconSettings, IconUsers, IconUsersGroup } from '@tabler/icons-react'
+import { UserCommunityFeature } from '@pubkey-link/web-community-feature'
 import { DashboardFeature } from '@pubkey-link/web-dashboard-feature'
 import { SettingsFeature } from '@pubkey-link/web-settings-feature'
 import { SolanaFeature } from '@pubkey-link/web-solana-feature'
 import { UserFeature } from '@pubkey-link/web-user-feature'
 import { UiDashboardItem } from '@pubkey-ui/core'
-import { RouteObject, useRoutes } from 'react-router-dom'
-import { UserCommunityFeature } from '@pubkey-link/web-community-feature'
+import { IconCurrencySolana, IconSettings, IconUsers, IconUsersGroup } from '@tabler/icons-react'
+import { Navigate, RouteObject, useRoutes } from 'react-router-dom'
 
 const links: UiDashboardItem[] = [
   // User Dashboard Links are added by the web-crud generator
@@ -22,6 +22,7 @@ const routes: RouteObject[] = [
   { path: '/settings/*', element: <SettingsFeature /> },
   { path: '/solana/*', element: <SolanaFeature /> },
   { path: '/u/*', element: <UserFeature /> },
+  { path: '/users', element: <Navigate to="/u" replace /> },
 ]
 
 export default function ShellUserRoutes() {

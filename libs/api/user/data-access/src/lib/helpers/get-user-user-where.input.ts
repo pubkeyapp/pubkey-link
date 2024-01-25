@@ -13,6 +13,7 @@ export function getUserUserWhereInput(input: UserFindManyUserInput): Prisma.User
       { id: { contains: input.search, mode: 'insensitive' } },
       { name: { contains: input.search, mode: 'insensitive' } },
       { username: { contains: input.search, mode: 'insensitive' } },
+      { identities: { some: { providerId: { contains: input.search, mode: 'insensitive' } } } },
     ]
   }
 
