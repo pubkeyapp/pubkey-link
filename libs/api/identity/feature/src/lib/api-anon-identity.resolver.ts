@@ -1,9 +1,8 @@
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql'
-import { BaseContext } from '@pubkey-link/api-core-data-access'
+import { BaseContext, IdentityProvider } from '@pubkey-link/api-core-data-access'
 import {
   ApiIdentityService,
   IdentityChallenge,
-  IdentityProvider,
   RequestIdentityChallengeInput,
   VerifyIdentityChallengeInput,
 } from '@pubkey-link/api-identity-data-access'

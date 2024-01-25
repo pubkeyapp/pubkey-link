@@ -24,6 +24,21 @@ export class ApiAuthStrategyService {
     profile: Prisma.InputJsonValue
     req: ApiAuthRequest
   }) {
+    const canLink = this.core.config.appConfig.authLinkProviders.includes(provider)
+    const canLogin = this.core.config.appConfig.authLoginProviders.includes(provider)
+
+    if (!canLink && !canLogin) {
+      throw new Error(`This ${provider} account cannot be used to login or link.`)
+    }
+
+    if (!canLink && req.user?.id) {
+      throw new Error(`This ${provider} account cannot be used to link.`)
+    }
+
+    if (!canLogin && !req.user?.id) {
+      throw new Error(`This ${provider} account cannot be used to login.`)
+    }
+
     const found = await this.core.findUserByIdentity({
       provider,
       providerId,
@@ -33,7 +48,7 @@ export class ApiAuthStrategyService {
       throw new Error(`This ${provider} account is already linked to another user.`)
     }
 
-    if (found) {
+    if (found && canLogin) {
       await this.core.data.identity.update({
         where: { id: found.id },
         data: { accessToken, refreshToken, verified: true, profile },

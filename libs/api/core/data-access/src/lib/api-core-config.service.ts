@@ -15,14 +15,45 @@ export class ApiCoreConfigService {
   }
 
   get appConfig(): AppConfig {
+    const link: IdentityProvider[] = []
+    const login: IdentityProvider[] = []
+
+    if (this.authDiscordLinkEnabled) {
+      link.push(IdentityProvider.Discord)
+    }
+    if (this.authDiscordLoginEnabled) {
+      login.push(IdentityProvider.Discord)
+    }
+    if (this.authGithubLinkEnabled) {
+      link.push(IdentityProvider.GitHub)
+    }
+    if (this.authGithubLoginEnabled) {
+      login.push(IdentityProvider.GitHub)
+    }
+    if (this.authGoogleLinkEnabled) {
+      link.push(IdentityProvider.Google)
+    }
+    if (this.authGoogleLoginEnabled) {
+      login.push(IdentityProvider.Google)
+    }
+    if (this.authSolanaLinkEnabled) {
+      link.push(IdentityProvider.Solana)
+    }
+    if (this.authSolanaLoginEnabled) {
+      login.push(IdentityProvider.Solana)
+    }
+    if (this.authTwitterLinkEnabled) {
+      link.push(IdentityProvider.Twitter)
+    }
+    if (this.authTwitterLoginEnabled) {
+      login.push(IdentityProvider.Twitter)
+    }
+
     return {
-      authDiscordEnabled: this.authDiscordEnabled,
-      authGithubEnabled: this.authGithubEnabled,
-      authGoogleEnabled: this.authGoogleEnabled,
+      authLinkProviders: link,
+      authLoginProviders: login,
       authPasswordEnabled: this.authPasswordEnabled,
       authRegisterEnabled: this.authRegisterEnabled,
-      authSolanaEnabled: this.authSolanaEnabled,
-      authTwitterEnabled: this.authTwitterEnabled,
     }
   }
 
@@ -38,12 +69,16 @@ export class ApiCoreConfigService {
     return this.service.get<string>('authDiscordClientSecret')
   }
 
-  get authDiscordEnabled(): boolean {
-    return !(
-      !this.authDiscordClientId ||
-      !this.authDiscordClientSecret ||
-      !this.service.get<boolean>('authDiscordEnabled')
-    )
+  get authDiscordSecrets(): boolean {
+    return !(!this.authDiscordClientId || !this.authDiscordClientSecret)
+  }
+
+  get authDiscordLinkEnabled(): boolean {
+    return (this.authDiscordSecrets && this.service.get<boolean>('authDiscordLinkEnabled')) ?? false
+  }
+
+  get authDiscordLoginEnabled(): boolean {
+    return (this.authDiscordSecrets && this.service.get<boolean>('authDiscordLoginEnabled')) ?? false
   }
 
   get authDiscordScope(): string[] {
@@ -86,12 +121,16 @@ export class ApiCoreConfigService {
     }
   }
 
-  get authGithubEnabled(): boolean {
-    return !(
-      !this.authGithubClientId ||
-      !this.authGithubClientSecret ||
-      !this.service.get<boolean>('authGithubEnabled')
-    )
+  get authGithubSecrets(): boolean {
+    return !(!this.authGithubClientId || !this.authGithubClientSecret)
+  }
+
+  get authGithubLinkEnabled(): boolean {
+    return (this.authGithubSecrets && this.service.get<boolean>('authGithubLinkEnabled')) ?? false
+  }
+
+  get authGithubLoginEnabled(): boolean {
+    return (this.authGithubSecrets && this.service.get<boolean>('authGithubLoginEnabled')) ?? false
   }
 
   get authGoogleAdminIds() {
@@ -120,12 +159,16 @@ export class ApiCoreConfigService {
     }
   }
 
-  get authGoogleEnabled(): boolean {
-    return !(
-      !this.authGoogleClientId ||
-      !this.authGoogleClientSecret ||
-      !this.service.get<boolean>('authGoogleEnabled')
-    )
+  get authGoogleSecrets(): boolean {
+    return !(!this.authGoogleClientId || !this.authGoogleClientSecret)
+  }
+
+  get authGoogleLinkEnabled(): boolean {
+    return (this.authGoogleSecrets && this.service.get<boolean>('authGoogleLinkEnabled')) ?? false
+  }
+
+  get authGoogleLoginEnabled(): boolean {
+    return (this.authGoogleSecrets && this.service.get<boolean>('authGoogleLoginEnabled')) ?? false
   }
 
   get authTwitterAdminIds() {
@@ -140,12 +183,16 @@ export class ApiCoreConfigService {
     return this.service.get<string>('authTwitterConsumerSecret')
   }
 
-  get authTwitterEnabled(): boolean {
-    return !(
-      !this.authTwitterConsumerKey ||
-      !this.authTwitterConsumerSecret ||
-      !this.service.get<boolean>('authTwitterEnabled')
-    )
+  get authTwitterSecrets(): boolean {
+    return !(!this.authTwitterConsumerKey || !this.authTwitterConsumerSecret)
+  }
+
+  get authTwitterLinkEnabled(): boolean {
+    return (this.authTwitterSecrets && this.service.get<boolean>('authTwitterLinkEnabled')) ?? false
+  }
+
+  get authTwitterLoginEnabled(): boolean {
+    return (this.authTwitterSecrets && this.service.get<boolean>('authTwitterLoginEnabled')) ?? false
   }
 
   get authPasswordEnabled(): boolean {
@@ -160,8 +207,12 @@ export class ApiCoreConfigService {
     return this.service.get<string[]>('authSolanaAdminIds')
   }
 
-  get authSolanaEnabled(): boolean {
-    return this.service.get<boolean>('authSolanaEnabled') ?? false
+  get authSolanaLinkEnabled(): boolean {
+    return this.service.get<boolean>('authSolanaLinkEnabled') ?? false
+  }
+
+  get authSolanaLoginEnabled(): boolean {
+    return this.service.get<boolean>('authSolanaLoginEnabled') ?? false
   }
 
   get apiUrl(): string {

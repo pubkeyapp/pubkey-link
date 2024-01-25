@@ -180,13 +180,10 @@ export type AdminUpdateUserInput = {
 
 export type AppConfig = {
   __typename?: 'AppConfig'
-  authDiscordEnabled: Scalars['Boolean']['output']
-  authGithubEnabled: Scalars['Boolean']['output']
-  authGoogleEnabled: Scalars['Boolean']['output']
+  authLinkProviders?: Maybe<Array<IdentityProvider>>
+  authLoginProviders?: Maybe<Array<IdentityProvider>>
   authPasswordEnabled: Scalars['Boolean']['output']
   authRegisterEnabled: Scalars['Boolean']['output']
-  authSolanaEnabled: Scalars['Boolean']['output']
-  authTwitterEnabled: Scalars['Boolean']['output']
 }
 
 export type Bot = {
@@ -2270,13 +2267,10 @@ export type UserDeleteCommunityMutation = { __typename?: 'Mutation'; deleted?: b
 
 export type AppConfigDetailsFragment = {
   __typename?: 'AppConfig'
-  authDiscordEnabled: boolean
-  authGithubEnabled: boolean
-  authGoogleEnabled: boolean
+  authLinkProviders?: Array<IdentityProvider> | null
+  authLoginProviders?: Array<IdentityProvider> | null
   authPasswordEnabled: boolean
   authRegisterEnabled: boolean
-  authSolanaEnabled: boolean
-  authTwitterEnabled: boolean
 }
 
 export type PagingMetaDetailsFragment = {
@@ -2300,13 +2294,10 @@ export type AppConfigQuery = {
   __typename?: 'Query'
   config: {
     __typename?: 'AppConfig'
-    authDiscordEnabled: boolean
-    authGithubEnabled: boolean
-    authGoogleEnabled: boolean
+    authLinkProviders?: Array<IdentityProvider> | null
+    authLoginProviders?: Array<IdentityProvider> | null
     authPasswordEnabled: boolean
     authRegisterEnabled: boolean
-    authSolanaEnabled: boolean
-    authTwitterEnabled: boolean
   }
 }
 
@@ -4121,13 +4112,10 @@ export const CommunityDetailsFragmentDoc = gql`
 `
 export const AppConfigDetailsFragmentDoc = gql`
   fragment AppConfigDetails on AppConfig {
-    authDiscordEnabled
-    authGithubEnabled
-    authGoogleEnabled
+    authLinkProviders
+    authLoginProviders
     authPasswordEnabled
     authRegisterEnabled
-    authSolanaEnabled
-    authTwitterEnabled
   }
 `
 export const PagingMetaDetailsFragmentDoc = gql`

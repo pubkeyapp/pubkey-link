@@ -83,6 +83,17 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     name: "Dean's List DAO",
     description: 'A DAO turned Network State',
     avatarUrl: 'https://avatars.githubusercontent.com/u/137821488?v=4',
+    bot: {
+      create: {
+        clientId: process.env['DEANSLIST_BOT_CLIENT_ID'] ?? '',
+        clientSecret: process.env['DEANSLIST_BOT_CLIENT_SECRET'] ?? '',
+        token: process.env['DEANSLIST_BOT_TOKEN'] ?? '',
+        avatarUrl:
+          'https://cdn.discordapp.com/avatars/1138462172092039258/2d9f621e44433c97e171bb40ec122b6f.png?size=1024',
+        id: '1138462172092039258',
+        name: "Dean's List Projects LOCAL",
+      },
+    },
     rules: {
       create: [
         {
@@ -195,6 +206,7 @@ export const provisionUsers: Prisma.UserCreateInput[] = [
     identities: {
       create: [
         //
+        { provider: IdentityProvider.Discord, providerId: '386584531353862154' },
         { provider: IdentityProvider.GitHub, providerId: '36491' },
         ...[
           '3XN71ShwyPNYZ22fV4phQCnyPj6E6EbMLAD5ReLRvdRP',

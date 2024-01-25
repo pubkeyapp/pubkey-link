@@ -1,4 +1,5 @@
 import { Identity, IdentityProvider, type UserFindManyIdentityInput } from '@pubkey-link/sdk'
+import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
@@ -6,6 +7,7 @@ import { useMemo } from 'react'
 
 export function useUserFindManyIdentity({ username }: { username: string }) {
   const sdk = useSdk()
+  const { appConfig } = useAuth()
   const input: UserFindManyIdentityInput = useMemo(() => ({ username }), [username])
   const query = useQuery({
     queryKey: ['user', 'find-many-identity', input],
@@ -28,25 +30,17 @@ export function useUserFindManyIdentity({ username }: { username: string }) {
         return acc
       },
       [
-        { provider: IdentityProvider.Discord, items: [] },
-        { provider: IdentityProvider.GitHub, items: [] },
-        { provider: IdentityProvider.Google, items: [] },
-        { provider: IdentityProvider.Solana, items: [] },
-        { provider: IdentityProvider.Twitter, items: [] },
+        // ...(appConfig?.authLinkProviders
+        //   ?.sort((a, b) => a.toString().localeCompare(b.toString()))
+        //   .map((provider) => ({ provider, items: [] })) ?? []),
       ] as { provider: IdentityProvider; items: Identity[] }[],
     )
   }, [query.data])
 
   const items = query.data?.items ?? []
 
-  const discordIdentity = items.find((x) => x.provider === IdentityProvider.Discord)
-
   return {
-    expiredDiscord: discordIdentity?.expired ?? false,
     grouped,
-    hasDiscord: !!discordIdentity,
-    hasGithub: items.some((x) => x.provider === IdentityProvider.GitHub),
-    hasSolana: items.some((x) => x.provider === IdentityProvider.Solana),
     items,
     query,
     deleteIdentity(identityId: string) {

@@ -24,7 +24,7 @@ export class ApiAuthStrategyDiscordModule {
   private static get enabled(): boolean {
     return (
       // Discord auth needs to be enabled
-      !!process.env['AUTH_DISCORD_ENABLED'] &&
+      (!!process.env['AUTH_DISCORD_LINK_ENABLED'] || !!process.env['AUTH_DISCORD_LOGIN_ENABLED']) &&
       // And we need to have the client ID and secret set
       !!process.env['AUTH_DISCORD_CLIENT_ID'] &&
       !!process.env['AUTH_DISCORD_CLIENT_SECRET']

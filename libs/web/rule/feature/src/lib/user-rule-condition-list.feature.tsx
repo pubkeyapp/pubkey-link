@@ -1,8 +1,8 @@
+import { Accordion, Text } from '@mantine/core'
 import { RuleCondition } from '@pubkey-link/sdk'
-import { UiAnchor, UiCard, UiGroup, UiInfo, UiStack } from '@pubkey-ui/core'
 
 import { RuleConditionUiItem, RuleConditionUiPanel } from '@pubkey-link/web-rule-ui'
-import { Text } from '@mantine/core'
+import { UiAnchor, UiInfo, UiStack } from '@pubkey-ui/core'
 
 export function UserRuleConditionListFeature({ conditions }: { conditions: RuleCondition[] }) {
   return (
@@ -16,18 +16,18 @@ export function UserRuleConditionListFeature({ conditions }: { conditions: RuleC
           </Text>
         }
       />
-      {conditions.map((condition) => (
-        <UiCard
-          key={condition.id}
-          title={
-            <UiGroup>
+      <Accordion multiple variant="separated">
+        {conditions.map((condition) => (
+          <Accordion.Item key={condition.id} value={condition.id}>
+            <Accordion.Control>
               <RuleConditionUiItem condition={condition} />
-            </UiGroup>
-          }
-        >
-          <RuleConditionUiPanel condition={condition} />
-        </UiCard>
-      ))}
+            </Accordion.Control>
+            <Accordion.Panel>
+              <RuleConditionUiPanel condition={condition} />
+            </Accordion.Panel>
+          </Accordion.Item>
+        ))}
+      </Accordion>
     </UiStack>
   )
 }

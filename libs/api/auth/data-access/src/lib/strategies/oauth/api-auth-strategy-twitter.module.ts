@@ -24,7 +24,7 @@ export class ApiAuthStrategyTwitterModule {
   private static get enabled(): boolean {
     return (
       // Twitter auth needs to be enabled
-      !!process.env['AUTH_TWITTER_ENABLED'] &&
+      (!!process.env['AUTH_TWITTER_LINK_ENABLED'] || !!process.env['AUTH_TWITTER_LOGIN_ENABLED']) &&
       // And we need to have the client ID and secret set
       !!process.env['AUTH_TWITTER_CONSUMER_KEY'] &&
       !!process.env['AUTH_TWITTER_CONSUMER_SECRET']

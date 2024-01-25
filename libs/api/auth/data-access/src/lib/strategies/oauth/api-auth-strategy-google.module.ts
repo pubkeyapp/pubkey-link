@@ -24,7 +24,7 @@ export class ApiAuthStrategyGoogleModule {
   private static get enabled(): boolean {
     return (
       // Google auth needs to be enabled
-      !!process.env['AUTH_GOOGLE_ENABLED'] &&
+      (!!process.env['AUTH_GOOGLE_LINK_ENABLED'] || !!process.env['AUTH_GOOGLE_LOGIN_ENABLED']) &&
       // And we need to have the client ID and secret set
       !!process.env['AUTH_GOOGLE_CLIENT_ID'] &&
       !!process.env['AUTH_GOOGLE_CLIENT_SECRET']

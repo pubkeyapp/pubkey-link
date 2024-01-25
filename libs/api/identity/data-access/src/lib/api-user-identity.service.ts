@@ -48,6 +48,12 @@ export class ApiUserIdentityService {
   ) {
     // Make sure we can link the given provider
     this.solana.ensureLinkProvider(provider)
+
+    // Make sure the provider is enabled
+    if (!this.core.config.appConfig.authLinkProviders.includes(provider)) {
+      throw new Error(`Provider ${provider} not enabled for linking`)
+    }
+
     // Make sure the providerId is valid
     this.solana.ensureValidProviderId(provider, providerId)
     // Make sure the identity is owned by the user

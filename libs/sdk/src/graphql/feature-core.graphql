@@ -1,11 +1,8 @@
 fragment AppConfigDetails on AppConfig {
-  authDiscordEnabled
-  authGithubEnabled
-  authGoogleEnabled
+  authLinkProviders
+  authLoginProviders
   authPasswordEnabled
   authRegisterEnabled
-  authSolanaEnabled
-  authTwitterEnabled
 }
 
 fragment PagingMetaDetails on PagingMeta {

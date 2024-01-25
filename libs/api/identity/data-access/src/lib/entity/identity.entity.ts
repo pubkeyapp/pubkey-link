@@ -1,8 +1,8 @@
 import { Field, HideField, ObjectType } from '@nestjs/graphql'
+import { IdentityProvider } from '@pubkey-link/api-core-data-access'
 import { User } from '@pubkey-link/api-user-data-access'
 import { GraphQLJSON } from 'graphql-scalars'
 import { IdentityChallenge } from './identity-challenge.entity'
-import { IdentityProvider } from './identity-provider.enum'
 
 @ObjectType()
 export class Identity {

@@ -94,36 +94,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const authEnabled = useMemo(() => {
     if (!configQuery.data?.config) return false
-    const {
-      authDiscordEnabled,
-      authGithubEnabled,
-      authGoogleEnabled,
-      authPasswordEnabled,
-      authRegisterEnabled,
-      authSolanaEnabled,
-      authTwitterEnabled,
-    } = configQuery.data.config
-    return (
-      authDiscordEnabled ||
-      authGithubEnabled ||
-      authGoogleEnabled ||
-      authRegisterEnabled ||
-      authPasswordEnabled ||
-      authSolanaEnabled ||
-      authTwitterEnabled
-    )
+    const { authLoginProviders, authPasswordEnabled, authRegisterEnabled } = configQuery.data.config
+    return !!authLoginProviders?.length || authRegisterEnabled || authPasswordEnabled
   }, [configQuery.data?.config])
 
   const enabledProviders: IdentityProvider[] = useMemo(
     () =>
       configQuery.data?.config
-        ? ([
-            configQuery.data?.config.authDiscordEnabled && IdentityProvider.Discord,
-            configQuery.data?.config.authGithubEnabled && IdentityProvider.GitHub,
-            configQuery.data?.config.authGoogleEnabled && IdentityProvider.Google,
-            configQuery.data?.config.authSolanaEnabled && IdentityProvider.Solana,
-            configQuery.data?.config.authTwitterEnabled && IdentityProvider.Twitter,
-          ].filter(Boolean) as IdentityProvider[])
+        ? ((configQuery.data?.config.authLoginProviders ?? []).filter(Boolean) as IdentityProvider[])
         : [],
     [configQuery.data?.config],
   )

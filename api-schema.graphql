@@ -157,13 +157,10 @@ input AdminUpdateUserInput {
 }
 
 type AppConfig {
-  authDiscordEnabled: Boolean!
-  authGithubEnabled: Boolean!
-  authGoogleEnabled: Boolean!
+  authLinkProviders: [IdentityProvider!]
+  authLoginProviders: [IdentityProvider!]
   authPasswordEnabled: Boolean!
   authRegisterEnabled: Boolean!
-  authSolanaEnabled: Boolean!
-  authTwitterEnabled: Boolean!
 }
 
 type Bot {

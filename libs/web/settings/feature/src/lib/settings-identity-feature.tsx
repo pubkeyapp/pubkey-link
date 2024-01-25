@@ -1,10 +1,10 @@
 import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { useUserFindManyIdentity } from '@pubkey-link/web-identity-data-access'
-import { IdentityUiGroupList } from '@pubkey-link/web-identity-ui'
+import { IdentityUiGroupList, IdentityUiLinkList } from '@pubkey-link/web-identity-ui'
 import { UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function SettingsIdentityFeature() {
-  const { user } = useAuth()
+  const { user, appConfig } = useAuth()
   const { deleteIdentity, grouped, query } = useUserFindManyIdentity({ username: user?.username as string })
 
   return (
@@ -12,7 +12,10 @@ export function SettingsIdentityFeature() {
       {query.isLoading ? (
         <UiLoader />
       ) : (
-        <IdentityUiGroupList grouped={grouped} deleteIdentity={deleteIdentity} refresh={() => query.refetch()} />
+        <UiStack>
+          <IdentityUiGroupList grouped={grouped} deleteIdentity={deleteIdentity} refresh={() => query.refetch()} />
+          <IdentityUiLinkList providers={appConfig?.authLinkProviders ?? []} refresh={() => query.refetch()} />
+        </UiStack>
       )}
     </UiStack>
   )

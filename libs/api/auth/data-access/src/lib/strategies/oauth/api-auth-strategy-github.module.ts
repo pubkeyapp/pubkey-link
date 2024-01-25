@@ -24,7 +24,7 @@ export class ApiAuthStrategyGithubModule {
   private static get enabled(): boolean {
     return (
       // GitHub auth needs to be enabled
-      !!process.env['AUTH_GITHUB_ENABLED'] &&
+      (!!process.env['AUTH_GITHUB_LINK_ENABLED'] || !!process.env['AUTH_GITHUB_LOGIN_ENABLED']) &&
       // And we need to have the client ID and secret set
       !!process.env['AUTH_GITHUB_CLIENT_ID'] &&
       !!process.env['AUTH_GITHUB_CLIENT_SECRET']

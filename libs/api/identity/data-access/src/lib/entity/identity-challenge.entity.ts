@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql'
-import { IdentityProvider } from './identity-provider.enum'
+import { IdentityProvider } from '@pubkey-link/api-core-data-access'
 
 @ObjectType()
 export class IdentityChallenge {

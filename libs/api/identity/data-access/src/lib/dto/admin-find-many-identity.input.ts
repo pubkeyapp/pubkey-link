@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql'
-import { IdentityProvider } from '../entity/identity-provider.enum'
+import { IdentityProvider } from '@pubkey-link/api-core-data-access'
 
 @InputType()
 export class AdminFindManyIdentityInput {
