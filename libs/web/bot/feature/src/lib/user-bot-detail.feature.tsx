@@ -1,4 +1,7 @@
 import { Button, Group, Paper } from '@mantine/core'
+import { Community, UserCreateBotInput } from '@pubkey-link/sdk'
+import { useUserFindOneBot } from '@pubkey-link/web-bot-data-access'
+import { BotUiItem, UserBotUiCreateForm } from '@pubkey-link/web-bot-ui'
 import {
   toastError,
   UiCard,
@@ -11,16 +14,13 @@ import {
   UiTabRoutes,
   UiWarning,
 } from '@pubkey-ui/core'
-import { useUserFindOneBot } from '@pubkey-link/web-bot-data-access'
-import { UserBotDetailSettingsTab } from './user-bot-detail-settings.tab'
-import { UserCreateBotInput } from '@pubkey-link/sdk'
-import { BotUiItem, UserBotUiCreateForm } from '@pubkey-link/web-bot-ui'
-import { UserBotDetailServerList } from './user-bot-detail-server-list'
 import { UserBotCommands } from './user-bot-commands'
 import { UserBotDetailPermissionsTab } from './user-bot-detail-permissions.tab'
+import { UserBotDetailServerList } from './user-bot-detail-server-list'
+import { UserBotDetailSettingsTab } from './user-bot-detail-settings.tab'
 
-export function UserBotDetailFeature() {
-  const { item, query, deleteBot, createBot } = useUserFindOneBot()
+export function UserBotDetailFeature({ community }: { community: Community }) {
+  const { item, query, deleteBot, createBot } = useUserFindOneBot({ communityId: community.id })
 
   async function submit(input: UserCreateBotInput) {
     return createBot(input)
@@ -63,7 +63,7 @@ export function UserBotDetailFeature() {
             {
               path: 'permissions',
               label: 'Permissions',
-              element: <UserBotDetailPermissionsTab />,
+              element: <UserBotDetailPermissionsTab bot={item} />,
             },
             {
               path: 'servers',
@@ -75,7 +75,7 @@ export function UserBotDetailFeature() {
               label: 'Settings',
               element: (
                 <UiStack>
-                  <UserBotDetailSettingsTab />
+                  <UserBotDetailSettingsTab bot={item} />
                   <UiError
                     variant="outline"
                     title="Danger zone"

@@ -1,16 +1,15 @@
 import { Avatar, Button, Group, Text } from '@mantine/core'
-import { DiscordServer } from '@pubkey-link/sdk'
+import { Bot, DiscordServer } from '@pubkey-link/sdk'
 import { useUserGetBotServer, useUserManageBot } from '@pubkey-link/web-bot-data-access'
 import { UiAlert, UiDebug, UiLoader, UiStack, UiTabRoutes } from '@pubkey-ui/core'
 import { useNavigate, useParams } from 'react-router-dom'
 import { UserBotDetailServerRoles } from './user-bot-detail-server-roles'
 
-export function UserBotDetailServerDetail({ botId }: { botId: string }) {
+export function UserBotDetailServerDetail({ bot }: { bot: Bot }) {
   const { serverId } = useParams() as { serverId: string }
   const navigate = useNavigate()
-  const query = useUserGetBotServer({ botId, serverId })
-  const { leaveServer } = useUserManageBot({ botId })
-
+  const query = useUserGetBotServer({ botId: bot.id, serverId })
+  const { leaveServer } = useUserManageBot({ bot })
   if (query.isLoading) {
     return <UiLoader />
   }
@@ -44,7 +43,7 @@ export function UserBotDetailServerDetail({ botId }: { botId: string }) {
       </Button>
       <UiTabRoutes
         tabs={[
-          { path: 'roles', label: 'Roles', element: <UserBotDetailServerRoles botId={botId} serverId={serverId} /> },
+          { path: 'roles', label: 'Roles', element: <UserBotDetailServerRoles botId={bot.id} serverId={serverId} /> },
           { path: 'debug', label: 'Debug', element: <UiDebug data={item} /> },
         ]}
       />

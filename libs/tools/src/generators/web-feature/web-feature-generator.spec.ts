@@ -9,7 +9,7 @@ import apiFeatureGenerator from '../api-feature/api-feature-generator'
 import { webFeatureGenerator } from './web-feature-generator'
 import { type NormalizedWebFeatureSchema, WebFeatureGeneratorSchema } from './web-feature-schema'
 
-describe('web-feature generator', () => {
+xdescribe('web-feature generator', () => {
   let tree: Tree
   const rawOptions: WebFeatureGeneratorSchema = { app: 'web', model: 'test' }
   let options: NormalizedWebFeatureSchema

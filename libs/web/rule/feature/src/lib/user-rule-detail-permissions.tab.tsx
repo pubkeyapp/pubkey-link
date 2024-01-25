@@ -9,14 +9,17 @@ import { IconPlus, IconTrash } from '@tabler/icons-react'
 import { useMemo, useState } from 'react'
 
 export function UserRuleDetailPermissionsTab({ rule }: { rule: Rule }) {
+  const { query, item } = useUserFindOneBot({ communityId: rule.communityId })
   const { deleteRulePermission } = useUserFindOneRule({ ruleId: rule.id })
   if (!rule.conditions?.length) {
     return <UiWarning message="Rule needs at least one condition." />
   }
-  return (
+  return query.isLoading ? (
+    <UiLoader />
+  ) : item ? (
     <UiStack>
       <UiInfo
-        title="Rule Conditions"
+        title="Rule Permissions"
         message={
           <Group justify="space-between">
             <Text size="sm" span>
@@ -60,11 +63,21 @@ export function UserRuleDetailPermissionsTab({ rule }: { rule: Rule }) {
         <UiWarning message="No permissions found." />
       )}
     </UiStack>
+  ) : (
+    <UiWarning
+      title="No bot configured."
+      message={
+        <Text size="sm" span>
+          In order to grant permissions, you need to configure a{' '}
+          <UiAnchor to={`/c/${rule.communityId}/discord`}>Discord bot</UiAnchor> for this community.
+        </Text>
+      }
+    />
   )
 }
 
 function AddPermissionButton({ rule }: { rule: Rule }) {
-  const { query, item } = useUserFindOneBot()
+  const { query, item } = useUserFindOneBot({ communityId: rule.communityId })
   const { createRulePermission } = useUserFindOneRule({ ruleId: rule.id })
 
   return query.isLoading ? (

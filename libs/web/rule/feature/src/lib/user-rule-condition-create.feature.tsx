@@ -1,15 +1,13 @@
-import { useUserCommunity } from '@pubkey-link/web-community-data-access'
+import { Button, Group, Paper } from '@mantine/core'
+
+import { Community, getEnumOptions, NetworkTokenType, RuleConditionType } from '@pubkey-link/sdk'
 import { useUserFindManyNetworkToken } from '@pubkey-link/web-network-token-data-access'
+import { NetworkTokenUiItem } from '@pubkey-link/web-network-token-ui'
+import { UiDebug, UiInfo, UiStack } from '@pubkey-ui/core'
 import { useMemo, useState } from 'react'
 
-import { getEnumOptions, NetworkTokenType, RuleConditionType } from '@pubkey-link/sdk'
-import { UiDebug, UiInfo, UiStack } from '@pubkey-ui/core'
-import { Button, Group, Paper } from '@mantine/core'
-import { NetworkTokenUiItem } from '@pubkey-link/web-network-token-ui'
-
-export function UserRuleConditionCreateFeature() {
-  const { cluster } = useUserCommunity()
-  const { items } = useUserFindManyNetworkToken({ cluster })
+export function UserRuleConditionCreateFeature({ community }: { community: Community }) {
+  const { items } = useUserFindManyNetworkToken({ cluster: community.cluster })
 
   const [type, setType] = useState<RuleConditionType | null>(null)
 

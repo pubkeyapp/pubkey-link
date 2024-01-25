@@ -1,12 +1,15 @@
 import { Button, Group } from '@mantine/core'
-import { UiSearchField } from '@pubkey-link/web-ui-core'
+import { Community } from '@pubkey-link/sdk'
 import { useUserFindManyRule } from '@pubkey-link/web-rule-data-access'
 import { UserRuleUiTable } from '@pubkey-link/web-rule-ui'
+import { UiSearchField } from '@pubkey-link/web-ui-core'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 import { Link } from 'react-router-dom'
 
-export function UserRuleListFeature() {
-  const { deleteRule, items, pagination, query, setSearch } = useUserFindManyRule()
+export function UserRuleListFeature({ community }: { community: Community }) {
+  const { deleteRule, items, pagination, query, setSearch } = useUserFindManyRule({
+    communityId: community.id,
+  })
 
   return (
     <UiStack>

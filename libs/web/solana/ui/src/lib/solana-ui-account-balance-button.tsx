@@ -38,6 +38,17 @@ function AccountBalanceButton({ address }: { address: PublicKey }) {
         </Menu.Item>
         <Menu.Item
           component={'a'}
+          href={getExplorerUrl(`address/${address}`)
+            .replace('explorer.solana.com', 'solana.fm')
+            .replace('devnet', 'devnet-solana')}
+          leftSection={<IconExternalLink size={16} />}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View on Solana.fm
+        </Menu.Item>
+        <Menu.Item
+          component={'a'}
           href={getExplorerUrl(`address/${address}`)}
           leftSection={<IconExternalLink size={16} />}
           target="_blank"

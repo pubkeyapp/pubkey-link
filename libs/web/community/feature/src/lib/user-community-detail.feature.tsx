@@ -1,4 +1,10 @@
 import { Badge, Group } from '@mantine/core'
+import { UserBotFeature } from '@pubkey-link/web-bot-feature'
+import { useUserFindOneCommunity } from '@pubkey-link/web-community-data-access'
+import { UserCommunityMemberFeature } from '@pubkey-link/web-community-member-feature'
+import { CommunityUiItem } from '@pubkey-link/web-community-ui'
+import { UserRuleFeature } from '@pubkey-link/web-rule-feature'
+import { UiIcon } from '@pubkey-link/web-ui-core'
 import {
   UiBack,
   UiContainer,
@@ -10,15 +16,9 @@ import {
   UiLoader,
   UiStack,
 } from '@pubkey-ui/core'
-import { UserCommunityProvider, useUserFindOneCommunity } from '@pubkey-link/web-community-data-access'
-import { useParams } from 'react-router-dom'
-import { lazy } from 'react'
-import { UiIcon } from '@pubkey-link/web-ui-core'
-import { CommunityUiItem } from '@pubkey-link/web-community-ui'
-import { UserCommunityMemberFeature } from '@pubkey-link/web-community-member-feature'
-import { UserRuleFeature } from '@pubkey-link/web-rule-feature'
-import { UserBotFeature } from '@pubkey-link/web-bot-feature'
 import { IconBrandDiscord } from '@tabler/icons-react'
+import { lazy } from 'react'
+import { useParams } from 'react-router-dom'
 
 const RouteDashboard = lazy(() => import('./user-community-detail-dashboard.tab'))
 const RouteSettings = lazy(() => import('./user-community-detail-settings.tab'))
@@ -38,54 +38,52 @@ export function UserCommunityDetailFeature() {
     {
       path: 'dashboard',
       label: 'Dashboard',
-      element: <RouteDashboard />,
+      element: <RouteDashboard community={item} />,
       leftSection: <UiIcon type="dashboard" size={20} />,
     },
     {
       path: 'discord',
       label: 'Discord',
-      element: <UserBotFeature />,
+      element: <UserBotFeature community={item} />,
       leftSection: <IconBrandDiscord size={20} />,
     },
     {
       path: 'rules',
       label: 'Rules',
-      element: <UserRuleFeature />,
+      element: <UserRuleFeature community={item} />,
       leftSection: <UiIcon type="rules" size={20} />,
     },
     {
       path: 'members',
       label: 'Members',
-      element: <UserCommunityMemberFeature />,
+      element: <UserCommunityMemberFeature community={item} />,
       leftSection: <UiIcon type="users" size={20} />,
     },
     {
       path: 'settings',
       label: 'Settings',
-      element: <RouteSettings />,
+      element: <RouteSettings community={item} />,
       leftSection: <UiIcon type="settings" size={20} />,
     },
   ]
 
   return (
-    <UserCommunityProvider community={item}>
-      <UiContainer>
-        <UiStack gap="lg">
-          <UiGroup>
-            <Group>
-              <UiBack />
-              <CommunityUiItem community={item} />
-            </Group>
-            <Group>
-              <UiDebugModal data={item} />
-              <Badge variant="light" radius="sm">
-                {item.cluster}
-              </Badge>
-            </Group>
-          </UiGroup>
-          <UiGridRoutes basePath={`/c/${communityId}`} routes={routes} />
-        </UiStack>
-      </UiContainer>
-    </UserCommunityProvider>
+    <UiContainer>
+      <UiStack gap="lg">
+        <UiGroup>
+          <Group>
+            <UiBack />
+            <CommunityUiItem community={item} />
+          </Group>
+          <Group>
+            <UiDebugModal data={item} />
+            <Badge variant="light" radius="sm">
+              {item.cluster}
+            </Badge>
+          </Group>
+        </UiGroup>
+        <UiGridRoutes basePath={`/c/${communityId}`} routes={routes} />
+      </UiStack>
+    </UiContainer>
   )
 }

@@ -1,17 +1,20 @@
-import { Injectable, Logger } from '@nestjs/common'
-import { ApiAdminNetworkService } from './api-admin-network.service'
-import { getAnybodiesVaultMap } from '@pubkey-link/api-network-util'
-import { NetworkCluster } from '@prisma/client'
-import { createUmi, publicKey, Umi } from '@metaplex-foundation/umi'
 import { dasApi, DasApiAsset, DasApiAssetList } from '@metaplex-foundation/digital-asset-standard-api'
-import { ApiCoreService } from '@pubkey-link/api-core-data-access'
+import { createUmi, publicKey, Umi } from '@metaplex-foundation/umi'
 import { web3JsRpc } from '@metaplex-foundation/umi-rpc-web3js'
+import { Injectable, Logger } from '@nestjs/common'
+import { NetworkCluster } from '@prisma/client'
+import { ApiCoreService } from '@pubkey-link/api-core-data-access'
+import { getAnybodiesVaultMap } from '@pubkey-link/api-network-util'
+import { getTokenMetadata } from '@solana/spl-token'
+import { AccountInfo, Connection, ParsedAccountData, PublicKey } from '@solana/web3.js'
+import { ApiAdminNetworkService } from './api-admin-network.service'
 import { NetworkAsset } from './entity/network-asset.entity'
 
 @Injectable()
 export class ApiNetworkService {
   private readonly logger = new Logger(ApiNetworkService.name)
-  private networks: Map<NetworkCluster, Umi> = new Map()
+  private readonly connections: Map<NetworkCluster, Connection> = new Map()
+  private readonly umis: Map<NetworkCluster, Umi> = new Map()
   constructor(readonly admin: ApiAdminNetworkService, readonly core: ApiCoreService) {}
 
   async resolveAnybodiesAsset({ owner, vaultId }: { owner: string; vaultId: string }): Promise<NetworkAsset> {
@@ -21,11 +24,16 @@ export class ApiNetworkService {
   }
 
   async getAccountInfo({ cluster, account }: { cluster: NetworkCluster; account: string }) {
-    return this.getNetwork(cluster).then((res) => res.rpc.getAccount(publicKey(account)))
+    return this.getConnection(cluster).then((conn) =>
+      conn.getParsedAccountInfo(new PublicKey(account)).then((res) => res.value as AccountInfo<ParsedAccountData>),
+    )
+  }
+  async getTokenMetadata({ cluster, account }: { cluster: NetworkCluster; account: string }) {
+    return this.getConnection(cluster).then((conn) => getTokenMetadata(conn, new PublicKey(account)).then((res) => res))
   }
 
   async getAsset({ cluster, account }: { cluster: NetworkCluster; account: string }) {
-    return this.getNetwork(cluster).then((res) => res.rpc.getAsset(publicKey(account)))
+    return this.getUmi(cluster).then((res) => res.rpc.getAsset(publicKey(account)))
   }
 
   async resolveSolanaNonFungibleAsset({
@@ -67,7 +75,7 @@ export class ApiNetworkService {
     groups?: string
   }) {
     const tag = `getAllAssetsByOwner(${owner}, ${cluster}, ${groups})`
-    const umi = await this.getNetwork(cluster)
+    const umi = await this.getUmi(cluster)
 
     // Create a response list similar to the one returned by the API
     const list: DasApiAssetList = { total: 0, items: [], limit: 1000, page: 1 }
@@ -96,18 +104,34 @@ export class ApiNetworkService {
     return { ...list, page: page - 1, items }
   }
 
-  private async getNetwork(cluster: NetworkCluster) {
-    if (!this.networks.has(cluster)) {
+  private async getConnection(cluster: NetworkCluster) {
+    if (!this.connections.has(cluster)) {
       const network = await this.core.data.network.findUnique({ where: { cluster } })
       if (!network) {
-        throw new Error(`Network not found for cluster: ${cluster}`)
+        throw new Error(`getConnection: Network not found for cluster: ${cluster}`)
       }
-      this.networks.set(cluster, createUmi().use(web3JsRpc(network.endpoint, 'confirmed')).use(dasApi()))
-      this.logger.verbose(`Network created for cluster: ${cluster}`)
+      this.connections.set(cluster, new Connection(network.endpoint, 'confirmed'))
+      this.logger.verbose(`getConnection: Network created for cluster: ${cluster}`)
     }
-    const umi = this.networks.get(cluster)
+    const umi = this.connections.get(cluster)
     if (!umi) {
-      throw new Error(`Error getting network for cluster: ${cluster}`)
+      throw new Error(`getConnection: Error getting network for cluster: ${cluster}`)
+    }
+    return umi
+  }
+
+  private async getUmi(cluster: NetworkCluster) {
+    if (!this.umis.has(cluster)) {
+      const network = await this.core.data.network.findUnique({ where: { cluster } })
+      if (!network) {
+        throw new Error(`getUmi: Network not found for cluster: ${cluster}`)
+      }
+      this.umis.set(cluster, createUmi().use(web3JsRpc(network.endpoint, 'confirmed')).use(dasApi()))
+      this.logger.verbose(`getUmi: Network created for cluster: ${cluster}`)
+    }
+    const umi = this.umis.get(cluster)
+    if (!umi) {
+      throw new Error(`getUmi: Error getting network for cluster: ${cluster}`)
     }
     return umi
   }

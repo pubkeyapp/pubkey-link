@@ -43,6 +43,12 @@ mutation adminUpdateNetworkToken($networkTokenId: String!, $input: AdminUpdateNe
   }
 }
 
+mutation adminUpdateNetworkTokenMetadata($networkTokenId: String!) {
+  updated: adminUpdateNetworkTokenMetadata(networkTokenId: $networkTokenId) {
+    ...NetworkTokenDetails
+  }
+}
+
 mutation adminDeleteNetworkToken($networkTokenId: String!) {
   deleted: adminDeleteNetworkToken(networkTokenId: $networkTokenId)
 }

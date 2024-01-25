@@ -1,14 +1,15 @@
 import { Group } from '@mantine/core'
-import { UiBack, UiDebugModal, UiError, UiGroup, UiLoader, UiStack, UiTabRoutes } from '@pubkey-ui/core'
+import { Community } from '@pubkey-link/sdk'
 import { useUserFindOneRule } from '@pubkey-link/web-rule-data-access'
+import { RuleUiItem } from '@pubkey-link/web-rule-ui'
+import { UiBack, UiDebugModal, UiError, UiGroup, UiLoader, UiStack, UiTabRoutes } from '@pubkey-ui/core'
 import { useParams } from 'react-router-dom'
 import { UserRuleDetailConditionsTab } from './user-rule-detail-conditions.tab'
+import { UserRuleDetailPermissionsTab } from './user-rule-detail-permissions.tab'
 import { UserRuleDetailSettingsTab } from './user-rule-detail-settings.tab'
 import { UserRuleDetailValidateTab } from './user-rule-detail-validate.tab'
-import { RuleUiItem } from '@pubkey-link/web-rule-ui'
-import { UserRuleDetailPermissionsTab } from './user-rule-detail-permissions.tab'
 
-export function UserRuleDetailFeature() {
+export function UserRuleDetailFeature({ community }: { community: Community }) {
   const { ruleId } = useParams<{ ruleId: string }>() as { ruleId: string }
   const { item, query } = useUserFindOneRule({ ruleId })
 
@@ -33,7 +34,7 @@ export function UserRuleDetailFeature() {
           {
             path: 'conditions',
             label: 'Conditions',
-            element: <UserRuleDetailConditionsTab rule={item} />,
+            element: <UserRuleDetailConditionsTab community={community} rule={item} />,
           },
           {
             path: 'permissions',

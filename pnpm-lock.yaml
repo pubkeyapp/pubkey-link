@@ -101,6 +101,9 @@ dependencies:
   '@solana/spl-token':
     specifier: ^0.3.11
     version: 0.3.11(@solana/web3.js@1.88.0)(fastestsmallesttextencoderdecoder@1.0.22)
+  '@solana/spl-token-metadata':
+    specifier: ^0.1.2
+    version: 0.1.2(@solana/web3.js@1.88.0)(fastestsmallesttextencoderdecoder@1.0.22)
   '@solana/wallet-adapter-base':
     specifier: ^0.9.23
     version: 0.9.23(@solana/web3.js@1.88.0)

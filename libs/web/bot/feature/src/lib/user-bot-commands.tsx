@@ -4,7 +4,7 @@ import { useUserManageBot } from '@pubkey-link/web-bot-data-access'
 import { UiDebugModal } from '@pubkey-ui/core'
 
 export function UserBotCommands({ bot }: { bot: Bot }) {
-  const { startBot, starting, stopBot, stopping } = useUserManageBot({ botId: bot.id })
+  const { startBot, starting, stopBot, stopping } = useUserManageBot({ bot })
 
   return (
     <Group gap="xs">

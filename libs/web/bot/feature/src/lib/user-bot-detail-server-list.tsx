@@ -53,7 +53,7 @@ export function UserBotDetailServerList({ bot }: { bot: Bot }) {
       <Grid.Col span={9}>
         <Routes>
           <Route index element={<UiAlert message={`Select a server`} />} />
-          <Route path=":serverId/*" element={<UserBotDetailServerDetail botId={bot.id} />} />
+          <Route path=":serverId/*" element={<UserBotDetailServerDetail bot={bot} />} />
         </Routes>
       </Grid.Col>
     </Grid>

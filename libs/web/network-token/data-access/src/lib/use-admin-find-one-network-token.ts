@@ -32,5 +32,22 @@ export function useAdminFindOneNetworkToken({ networkTokenId }: { networkTokenId
           toastError(err.message)
           return false
         }),
+    updateNetworkTokenMetadata: async () =>
+      sdk
+        .adminUpdateNetworkTokenMetadata({ networkTokenId })
+        .then((res) => res.data)
+        .then(async (res) => {
+          if (res) {
+            toastSuccess('Network Token metadata updated')
+            await query.refetch()
+            return true
+          }
+          toastError('Network Token metadata not updated')
+          return false
+        })
+        .catch((err) => {
+          toastError(err.message)
+          return false
+        }),
   }
 }

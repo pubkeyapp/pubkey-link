@@ -366,6 +366,7 @@ export type Mutation = {
   adminUpdateCommunityMember?: Maybe<CommunityMember>
   adminUpdateNetwork?: Maybe<Network>
   adminUpdateNetworkToken?: Maybe<NetworkToken>
+  adminUpdateNetworkTokenMetadata?: Maybe<NetworkToken>
   adminUpdateRule?: Maybe<Rule>
   adminUpdateUser?: Maybe<User>
   anonVerifyIdentityChallenge?: Maybe<IdentityChallenge>
@@ -482,6 +483,10 @@ export type MutationAdminUpdateNetworkArgs = {
 
 export type MutationAdminUpdateNetworkTokenArgs = {
   input: AdminUpdateNetworkTokenInput
+  networkTokenId: Scalars['String']['input']
+}
+
+export type MutationAdminUpdateNetworkTokenMetadataArgs = {
   networkTokenId: Scalars['String']['input']
 }
 
@@ -2707,6 +2712,30 @@ export type AdminUpdateNetworkTokenMutation = {
   } | null
 }
 
+export type AdminUpdateNetworkTokenMetadataMutationVariables = Exact<{
+  networkTokenId: Scalars['String']['input']
+}>
+
+export type AdminUpdateNetworkTokenMetadataMutation = {
+  __typename?: 'Mutation'
+  updated?: {
+    __typename?: 'NetworkToken'
+    id: string
+    createdAt?: Date | null
+    updatedAt?: Date | null
+    cluster: NetworkCluster
+    type: NetworkTokenType
+    account: string
+    program: string
+    name: string
+    symbol?: string | null
+    description?: string | null
+    imageUrl?: string | null
+    metadataUrl?: string | null
+    raw?: any | null
+  } | null
+}
+
 export type AdminDeleteNetworkTokenMutationVariables = Exact<{
   networkTokenId: Scalars['String']['input']
 }>
@@ -4712,6 +4741,14 @@ export const AdminUpdateNetworkTokenDocument = gql`
   }
   ${NetworkTokenDetailsFragmentDoc}
 `
+export const AdminUpdateNetworkTokenMetadataDocument = gql`
+  mutation adminUpdateNetworkTokenMetadata($networkTokenId: String!) {
+    updated: adminUpdateNetworkTokenMetadata(networkTokenId: $networkTokenId) {
+      ...NetworkTokenDetails
+    }
+  }
+  ${NetworkTokenDetailsFragmentDoc}
+`
 export const AdminDeleteNetworkTokenDocument = gql`
   mutation adminDeleteNetworkToken($networkTokenId: String!) {
     deleted: adminDeleteNetworkToken(networkTokenId: $networkTokenId)
@@ -5023,6 +5060,7 @@ const AdminFindManyNetworkTokenDocumentString = print(AdminFindManyNetworkTokenD
 const AdminFindOneNetworkTokenDocumentString = print(AdminFindOneNetworkTokenDocument)
 const AdminCreateNetworkTokenDocumentString = print(AdminCreateNetworkTokenDocument)
 const AdminUpdateNetworkTokenDocumentString = print(AdminUpdateNetworkTokenDocument)
+const AdminUpdateNetworkTokenMetadataDocumentString = print(AdminUpdateNetworkTokenMetadataDocument)
 const AdminDeleteNetworkTokenDocumentString = print(AdminDeleteNetworkTokenDocument)
 const UserFindManyNetworkTokenDocumentString = print(UserFindManyNetworkTokenDocument)
 const AdminFindManyNetworkDocumentString = print(AdminFindManyNetworkDocument)
@@ -6192,6 +6230,28 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'adminUpdateNetworkToken',
+        'mutation',
+        variables,
+      )
+    },
+    adminUpdateNetworkTokenMetadata(
+      variables: AdminUpdateNetworkTokenMetadataMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminUpdateNetworkTokenMetadataMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminUpdateNetworkTokenMetadataMutation>(
+            AdminUpdateNetworkTokenMetadataDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'adminUpdateNetworkTokenMetadata',
         'mutation',
         variables,
       )

@@ -1,9 +1,9 @@
-import { useUserCommunity, useUserFindOneCommunity } from '@pubkey-link/web-community-data-access'
+import { Community } from '@pubkey-link/sdk'
+import { useUserFindOneCommunity } from '@pubkey-link/web-community-data-access'
 import { UiCard, UiDebug, UiError, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
-export default function UserCommunityDetailDashboardTab() {
-  const { communityId } = useUserCommunity()
-  const { item, query } = useUserFindOneCommunity({ communityId })
+export default function UserCommunityDetailDashboardTab({ community }: { community: Community }) {
+  const { item, query } = useUserFindOneCommunity({ communityId: community.id })
 
   if (query.isLoading) {
     return <UiLoader />

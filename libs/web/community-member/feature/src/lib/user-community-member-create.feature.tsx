@@ -1,12 +1,12 @@
-import { UserCreateCommunityMemberInput } from '@pubkey-link/sdk'
+import { Community, UserCreateCommunityMemberInput } from '@pubkey-link/sdk'
 import { useUserFindManyCommunityMember } from '@pubkey-link/web-community-member-data-access'
 import { UserCommunityMemberUiCreateForm } from '@pubkey-link/web-community-member-ui'
 import { toastError, UiBack, UiCard, UiPage } from '@pubkey-ui/core'
 import { useNavigate } from 'react-router-dom'
 
-export function UserCommunityMemberCreateFeature() {
+export function UserCommunityMemberCreateFeature({ community }: { community: Community }) {
   const navigate = useNavigate()
-  const { createCommunityMember } = useUserFindManyCommunityMember()
+  const { createCommunityMember } = useUserFindManyCommunityMember({ communityId: community.id })
 
   async function submit(input: UserCreateCommunityMemberInput) {
     return createCommunityMember(input)

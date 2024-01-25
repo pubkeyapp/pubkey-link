@@ -1,10 +1,10 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 
 import { createDiscordRestClient, DiscordBot } from '@pubkey-link/api-bot-util'
+import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 
 import { PermissionsString, User } from 'discord.js'
 import { BotStatus } from './entity/bot-status.enum'
-import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { DiscordRole, DiscordServer } from './entity/discord-server.entity'
 
 @Injectable()
@@ -109,7 +109,7 @@ export class ApiBotManagerService implements OnModuleInit {
   }
 
   redirectUrl(botId: string) {
-    return this.core.config.authDiscordStrategyOptions.callbackURL
+    return this.core.config.authDiscordStrategyOptions.callbackURL + `?botId=${botId}`
     // return `${this.core.config.apiUrl}/bot/${botId}/callback`
   }
 

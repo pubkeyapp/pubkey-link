@@ -38,8 +38,14 @@ export function UiIconAvatar({
   const firstLetter = name?.charAt(0) ?? '?'
 
   const content = (
-    <Avatar radius={100} color={getColorByIndex(getRandomInt(name ?? ''))} alt={`${name} avatar`} {...props}>
-      {Icon ? <Icon size={24} /> : firstLetter?.toUpperCase()}
+    <Avatar
+      radius={100}
+      color={getColorByIndex(getRandomInt(name ?? ''))}
+      alt={`${name} avatar`}
+      styles={{ placeholder: { fontSize: 24 } }}
+      {...props}
+    >
+      {Icon ? <Icon size={28} /> : firstLetter?.toUpperCase()}
     </Avatar>
   )
 

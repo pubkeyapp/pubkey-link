@@ -341,6 +341,7 @@ type Mutation {
   adminUpdateCommunityMember(communityMemberId: String!, input: AdminUpdateCommunityMemberInput!): CommunityMember
   adminUpdateNetwork(input: AdminUpdateNetworkInput!, networkId: String!): Network
   adminUpdateNetworkToken(input: AdminUpdateNetworkTokenInput!, networkTokenId: String!): NetworkToken
+  adminUpdateNetworkTokenMetadata(networkTokenId: String!): NetworkToken
   adminUpdateRule(input: AdminUpdateRuleInput!, ruleId: String!): Rule
   adminUpdateUser(input: AdminUpdateUserInput!, userId: String!): User
   anonVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge

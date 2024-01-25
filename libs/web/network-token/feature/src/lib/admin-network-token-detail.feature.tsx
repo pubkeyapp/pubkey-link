@@ -1,14 +1,14 @@
-import { Group } from '@mantine/core'
-import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoutes } from '@pubkey-ui/core'
+import { Button, Group } from '@mantine/core'
 import { useAdminFindOneNetworkToken } from '@pubkey-link/web-network-token-data-access'
+import { NetworkTokenUiItem } from '@pubkey-link/web-network-token-ui'
+import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoutes } from '@pubkey-ui/core'
 import { useParams } from 'react-router-dom'
 import { AdminNetworkTokenDetailOverviewTab } from './admin-network-token-detail-overview.tab'
 import { AdminNetworkTokenDetailSettingsTab } from './admin-network-token-detail-settings.tab'
-import { NetworkTokenUiItem } from '@pubkey-link/web-network-token-ui'
 
 export function AdminNetworkTokenDetailFeature() {
   const { networkTokenId } = useParams<{ networkTokenId: string }>() as { networkTokenId: string }
-  const { item, query } = useAdminFindOneNetworkToken({ networkTokenId })
+  const { item, query, updateNetworkTokenMetadata } = useAdminFindOneNetworkToken({ networkTokenId })
 
   if (query.isLoading) {
     return <UiLoader />
@@ -24,6 +24,9 @@ export function AdminNetworkTokenDetailFeature() {
       rightAction={
         <Group>
           <UiDebugModal data={item} />
+          <Button variant="light" onClick={updateNetworkTokenMetadata}>
+            Update
+          </Button>
         </Group>
       }
     >

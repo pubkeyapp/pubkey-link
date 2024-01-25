@@ -61,6 +61,7 @@
     "@pubkeyapp/solana-verify-wallet": "^1.3.3",
     "@pubkeyapp/wallet-adapter-mantine-ui": "^2.3.0",
     "@solana/spl-token": "^0.3.11",
+    "@solana/spl-token-metadata": "^0.1.2",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-phantom": "^0.9.24",
     "@solana/wallet-adapter-react": "^0.15.35",

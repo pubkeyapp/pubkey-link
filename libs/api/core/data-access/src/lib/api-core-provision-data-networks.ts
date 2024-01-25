@@ -10,6 +10,19 @@ export const provisionNetworks: Prisma.NetworkCreateInput[] = [
     cluster: NetworkCluster.SolanaDevnet,
     type: NetworkType.Solana,
     endpoint: `https://devnet.helius-rpc.com/?api-key=${heliusApiKey}`,
+    tokens: {
+      create: [
+        {
+          account: 'USDpAd229q7g9iByF8L8wvcpHLvymCswqHhryBfYbLg',
+          program: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+          name: 'USDp',
+          symbol: 'USDp',
+          imageUrl: 'https://raw.githubusercontent.com/pubkeyapp/pubkey-usdp/main/assets/usdp-logo.png',
+          metadataUrl: 'https://raw.githubusercontent.com/pubkeyapp/pubkey-usdp/main/assets/usdp-metadata.json',
+          type: NetworkTokenType.Fungible,
+        },
+      ],
+    },
   },
   {
     id: 'solana-mainnet',

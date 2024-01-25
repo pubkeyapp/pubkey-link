@@ -1,9 +1,13 @@
 import { Group, Text, TextProps } from '@mantine/core'
 import { RuleCondition } from '@pubkey-link/sdk'
-import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core'
-import { getRuleConditionIconType, RuleConditionUiTypeTitle } from './rule-condition-ui-type-title'
-import { RuleConditionUiTypePopover } from './rule-condition-ui-type-popover'
 import { UiIconAvatar } from '@pubkey-link/web-ui-core'
+import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core'
+import { RuleConditionUiTypePopover } from './rule-condition-ui-type-popover'
+import {
+  getRuleConditionColor,
+  getRuleConditionIconType,
+  RuleConditionUiTypeTitle,
+} from './rule-condition-ui-type-title'
 
 export function RuleConditionUiItem({
   anchorProps,
@@ -32,5 +36,12 @@ export function RuleConditionUiItem({
 }
 
 export function RuleConditionUiAvatar({ item }: { item?: RuleCondition | null }) {
-  return <UiIconAvatar icon={getRuleConditionIconType(item?.type)} name={item?.type} size="md" />
+  return (
+    <UiIconAvatar
+      icon={getRuleConditionIconType(item?.type)}
+      name={item?.type}
+      size="md"
+      color={getRuleConditionColor(item?.type)}
+    />
+  )
 }

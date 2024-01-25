@@ -1,14 +1,13 @@
-import { Resolver } from '@nestjs/graphql'
-import { ApiNetworkTokenService } from '@pubkey-link/api-network-token-data-access'
-import { ApiAuthGraphQLAdminGuard } from '@pubkey-link/api-auth-data-access'
-import { Mutation, Query, Args } from '@nestjs/graphql'
 import { UseGuards } from '@nestjs/common'
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { ApiAuthGraphQLAdminGuard } from '@pubkey-link/api-auth-data-access'
 import {
   AdminCreateNetworkTokenInput,
   AdminFindManyNetworkTokenInput,
+  AdminUpdateNetworkTokenInput,
+  ApiNetworkTokenService,
   NetworkToken,
   NetworkTokenPaging,
-  AdminUpdateNetworkTokenInput,
 } from '@pubkey-link/api-network-token-data-access'
 
 @Resolver()
@@ -42,5 +41,10 @@ export class ApiAdminNetworkTokenResolver {
     @Args('input') input: AdminUpdateNetworkTokenInput,
   ) {
     return this.service.admin.updateNetworkToken(networkTokenId, input)
+  }
+
+  @Mutation(() => NetworkToken, { nullable: true })
+  adminUpdateNetworkTokenMetadata(@Args('networkTokenId') networkTokenId: string) {
+    return this.service.admin.updateNetworkTokenMetadata(networkTokenId)
   }
 }
