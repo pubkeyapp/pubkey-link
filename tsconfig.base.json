@@ -18,6 +18,8 @@
       "@pubkey-link/anchor": ["libs/anchor/src/index.ts"],
       "@pubkey-link/api-auth-data-access": ["libs/api/auth/data-access/src/index.ts"],
       "@pubkey-link/api-auth-feature": ["libs/api/auth/feature/src/index.ts"],
+      "@pubkey-link/api-backup-data-access": ["libs/api/backup/data-access/src/index.ts"],
+      "@pubkey-link/api-backup-feature": ["libs/api/backup/feature/src/index.ts"],
       "@pubkey-link/api-bot-data-access": ["libs/api/bot/data-access/src/index.ts"],
       "@pubkey-link/api-bot-feature": ["libs/api/bot/feature/src/index.ts"],
       "@pubkey-link/api-bot-util": ["libs/api/bot/util/src/index.ts"],

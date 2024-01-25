@@ -1,0 +1,23 @@
+mutation adminCreateBackup {
+  created: adminCreateBackup
+}
+
+mutation adminDeleteBackup($name: String!) {
+  deleted: adminDeleteBackup(name: $name)
+}
+
+mutation adminFetchBackup($url: String!) {
+  fetched: adminFetchBackup(url: $url)
+}
+
+query adminGetBackup($name: String!) {
+  item: adminGetBackup(name: $name)
+}
+
+query adminGetBackups {
+  items: adminGetBackups
+}
+
+mutation adminRestoreBackup($name: String!) {
+  restored: adminRestoreBackup(name: $name)
+}

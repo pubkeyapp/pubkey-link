@@ -342,6 +342,7 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation'
+  adminCreateBackup: Scalars['Boolean']['output']
   adminCreateBot?: Maybe<Bot>
   adminCreateCommunity?: Maybe<Community>
   adminCreateCommunityMember?: Maybe<CommunityMember>
@@ -350,6 +351,7 @@ export type Mutation = {
   adminCreateNetworkToken?: Maybe<NetworkToken>
   adminCreateRule?: Maybe<Rule>
   adminCreateUser?: Maybe<User>
+  adminDeleteBackup: Scalars['Boolean']['output']
   adminDeleteBot?: Maybe<Scalars['Boolean']['output']>
   adminDeleteCommunity?: Maybe<Scalars['Boolean']['output']>
   adminDeleteCommunityMember?: Maybe<Scalars['Boolean']['output']>
@@ -358,6 +360,8 @@ export type Mutation = {
   adminDeleteNetworkToken?: Maybe<Scalars['Boolean']['output']>
   adminDeleteRule?: Maybe<Scalars['Boolean']['output']>
   adminDeleteUser?: Maybe<Scalars['Boolean']['output']>
+  adminFetchBackup: Scalars['Boolean']['output']
+  adminRestoreBackup: Scalars['Boolean']['output']
   adminUpdateBot?: Maybe<Bot>
   adminUpdateCommunity?: Maybe<Community>
   adminUpdateCommunityMember?: Maybe<CommunityMember>
@@ -426,6 +430,10 @@ export type MutationAdminCreateUserArgs = {
   input: AdminCreateUserInput
 }
 
+export type MutationAdminDeleteBackupArgs = {
+  name: Scalars['String']['input']
+}
+
 export type MutationAdminDeleteBotArgs = {
   botId: Scalars['String']['input']
 }
@@ -456,6 +464,14 @@ export type MutationAdminDeleteRuleArgs = {
 
 export type MutationAdminDeleteUserArgs = {
   userId: Scalars['String']['input']
+}
+
+export type MutationAdminFetchBackupArgs = {
+  url: Scalars['String']['input']
+}
+
+export type MutationAdminRestoreBackupArgs = {
+  name: Scalars['String']['input']
 }
 
 export type MutationAdminUpdateBotArgs = {
@@ -698,6 +714,8 @@ export type Query = {
   adminFindOneNetworkToken?: Maybe<NetworkToken>
   adminFindOneRule?: Maybe<Rule>
   adminFindOneUser?: Maybe<User>
+  adminGetBackup?: Maybe<Scalars['JSON']['output']>
+  adminGetBackups: Array<Scalars['String']['output']>
   anonFindUserByIdentity?: Maybe<User>
   anonRequestIdentityChallenge?: Maybe<IdentityChallenge>
   appConfig: AppConfig
@@ -778,6 +796,10 @@ export type QueryAdminFindOneRuleArgs = {
 
 export type QueryAdminFindOneUserArgs = {
   userId: Scalars['String']['input']
+}
+
+export type QueryAdminGetBackupArgs = {
+  name: Scalars['String']['input']
 }
 
 export type QueryAnonFindUserByIdentityArgs = {
@@ -1128,6 +1150,38 @@ export type MeQuery = {
     username?: string | null
   } | null
 }
+
+export type AdminCreateBackupMutationVariables = Exact<{ [key: string]: never }>
+
+export type AdminCreateBackupMutation = { __typename?: 'Mutation'; created: boolean }
+
+export type AdminDeleteBackupMutationVariables = Exact<{
+  name: Scalars['String']['input']
+}>
+
+export type AdminDeleteBackupMutation = { __typename?: 'Mutation'; deleted: boolean }
+
+export type AdminFetchBackupMutationVariables = Exact<{
+  url: Scalars['String']['input']
+}>
+
+export type AdminFetchBackupMutation = { __typename?: 'Mutation'; fetched: boolean }
+
+export type AdminGetBackupQueryVariables = Exact<{
+  name: Scalars['String']['input']
+}>
+
+export type AdminGetBackupQuery = { __typename?: 'Query'; item?: any | null }
+
+export type AdminGetBackupsQueryVariables = Exact<{ [key: string]: never }>
+
+export type AdminGetBackupsQuery = { __typename?: 'Query'; items: Array<string> }
+
+export type AdminRestoreBackupMutationVariables = Exact<{
+  name: Scalars['String']['input']
+}>
+
+export type AdminRestoreBackupMutation = { __typename?: 'Mutation'; restored: boolean }
 
 export type BotDetailsFragment = {
   __typename?: 'Bot'
@@ -4293,6 +4347,36 @@ export const MeDocument = gql`
   }
   ${UserDetailsFragmentDoc}
 `
+export const AdminCreateBackupDocument = gql`
+  mutation adminCreateBackup {
+    created: adminCreateBackup
+  }
+`
+export const AdminDeleteBackupDocument = gql`
+  mutation adminDeleteBackup($name: String!) {
+    deleted: adminDeleteBackup(name: $name)
+  }
+`
+export const AdminFetchBackupDocument = gql`
+  mutation adminFetchBackup($url: String!) {
+    fetched: adminFetchBackup(url: $url)
+  }
+`
+export const AdminGetBackupDocument = gql`
+  query adminGetBackup($name: String!) {
+    item: adminGetBackup(name: $name)
+  }
+`
+export const AdminGetBackupsDocument = gql`
+  query adminGetBackups {
+    items: adminGetBackups
+  }
+`
+export const AdminRestoreBackupDocument = gql`
+  mutation adminRestoreBackup($name: String!) {
+    restored: adminRestoreBackup(name: $name)
+  }
+`
 export const AdminFindManyBotDocument = gql`
   query adminFindManyBot($input: AdminFindManyBotInput!) {
     paging: adminFindManyBot(input: $input) {
@@ -4996,6 +5080,12 @@ const LoginDocumentString = print(LoginDocument)
 const LogoutDocumentString = print(LogoutDocument)
 const RegisterDocumentString = print(RegisterDocument)
 const MeDocumentString = print(MeDocument)
+const AdminCreateBackupDocumentString = print(AdminCreateBackupDocument)
+const AdminDeleteBackupDocumentString = print(AdminDeleteBackupDocument)
+const AdminFetchBackupDocumentString = print(AdminFetchBackupDocument)
+const AdminGetBackupDocumentString = print(AdminGetBackupDocument)
+const AdminGetBackupsDocumentString = print(AdminGetBackupsDocument)
+const AdminRestoreBackupDocumentString = print(AdminRestoreBackupDocument)
 const AdminFindManyBotDocumentString = print(AdminFindManyBotDocument)
 const AdminFindOneBotDocumentString = print(AdminFindOneBotDocument)
 const AdminCreateBotDocumentString = print(AdminCreateBotDocument)
@@ -5139,6 +5229,132 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
           client.rawRequest<MeQuery>(MeDocumentString, variables, { ...requestHeaders, ...wrappedRequestHeaders }),
         'me',
         'query',
+        variables,
+      )
+    },
+    adminCreateBackup(
+      variables?: AdminCreateBackupMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminCreateBackupMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminCreateBackupMutation>(AdminCreateBackupDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminCreateBackup',
+        'mutation',
+        variables,
+      )
+    },
+    adminDeleteBackup(
+      variables: AdminDeleteBackupMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminDeleteBackupMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminDeleteBackupMutation>(AdminDeleteBackupDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminDeleteBackup',
+        'mutation',
+        variables,
+      )
+    },
+    adminFetchBackup(
+      variables: AdminFetchBackupMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFetchBackupMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFetchBackupMutation>(AdminFetchBackupDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFetchBackup',
+        'mutation',
+        variables,
+      )
+    },
+    adminGetBackup(
+      variables: AdminGetBackupQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminGetBackupQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminGetBackupQuery>(AdminGetBackupDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminGetBackup',
+        'query',
+        variables,
+      )
+    },
+    adminGetBackups(
+      variables?: AdminGetBackupsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminGetBackupsQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminGetBackupsQuery>(AdminGetBackupsDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminGetBackups',
+        'query',
+        variables,
+      )
+    },
+    adminRestoreBackup(
+      variables: AdminRestoreBackupMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminRestoreBackupMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminRestoreBackupMutation>(AdminRestoreBackupDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminRestoreBackup',
+        'mutation',
         variables,
       )
     },

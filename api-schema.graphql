@@ -317,6 +317,7 @@ input LoginInput {
 }
 
 type Mutation {
+  adminCreateBackup: Boolean!
   adminCreateBot(input: AdminCreateBotInput!): Bot
   adminCreateCommunity(input: AdminCreateCommunityInput!): Community
   adminCreateCommunityMember(input: AdminCreateCommunityMemberInput!): CommunityMember
@@ -325,6 +326,7 @@ type Mutation {
   adminCreateNetworkToken(input: AdminCreateNetworkTokenInput!): NetworkToken
   adminCreateRule(input: AdminCreateRuleInput!): Rule
   adminCreateUser(input: AdminCreateUserInput!): User
+  adminDeleteBackup(name: String!): Boolean!
   adminDeleteBot(botId: String!): Boolean
   adminDeleteCommunity(communityId: String!): Boolean
   adminDeleteCommunityMember(communityMemberId: String!): Boolean
@@ -333,6 +335,8 @@ type Mutation {
   adminDeleteNetworkToken(networkTokenId: String!): Boolean
   adminDeleteRule(ruleId: String!): Boolean
   adminDeleteUser(userId: String!): Boolean
+  adminFetchBackup(url: String!): Boolean!
+  adminRestoreBackup(name: String!): Boolean!
   adminUpdateBot(botId: String!, input: AdminUpdateBotInput!): Bot
   adminUpdateCommunity(communityId: String!, input: AdminUpdateCommunityInput!): Community
   adminUpdateCommunityMember(communityMemberId: String!, input: AdminUpdateCommunityMemberInput!): CommunityMember
@@ -457,6 +461,8 @@ type Query {
   adminFindOneNetworkToken(networkTokenId: String!): NetworkToken
   adminFindOneRule(ruleId: String!): Rule
   adminFindOneUser(userId: String!): User
+  adminGetBackup(name: String!): JSON
+  adminGetBackups: [String!]!
   anonFindUserByIdentity(provider: IdentityProvider!, providerId: String!): User
   anonRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
   appConfig: AppConfig!
