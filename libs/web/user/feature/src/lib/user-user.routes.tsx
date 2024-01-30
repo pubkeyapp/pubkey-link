@@ -8,7 +8,7 @@ export default function UserUserRoutes() {
   const { user } = useAuth()
 
   if (!user?.username) {
-    return <UiWarning message="User not found" />
+    return <UiWarning message="User not found." />
   }
 
   return (

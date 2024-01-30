@@ -1,8 +1,8 @@
-import { RuleConditionType } from '@pubkey-link/sdk'
-import { useDisclosure } from '@mantine/hooks'
 import { ActionIcon, Popover } from '@mantine/core'
+import { useDisclosure } from '@mantine/hooks'
+import { RuleConditionType } from '@pubkey-link/sdk'
+import { IconInfoCircle } from '@tabler/icons-react'
 import { RuleConditionUiInfo } from './rule-condition-ui-info'
-import { IconQuestionMark } from '@tabler/icons-react'
 
 export function RuleConditionUiTypePopover({ type }: { type: RuleConditionType }) {
   const [opened, { close, open }] = useDisclosure(false)
@@ -17,11 +17,11 @@ export function RuleConditionUiTypePopover({ type }: { type: RuleConditionType }
           variant="light"
           aria-label="Show condition info"
         >
-          <IconQuestionMark />
+          <IconInfoCircle />
         </ActionIcon>
       </Popover.Target>
-      <Popover.Dropdown style={{ pointerEvents: 'none' }} w={300} p={0}>
-        <RuleConditionUiInfo type={type} />
+      <Popover.Dropdown style={{ pointerEvents: 'none' }} w={360} p={0}>
+        <RuleConditionUiInfo bg="inherit" type={type} />
       </Popover.Dropdown>
     </Popover>
   )

@@ -3,15 +3,15 @@ import { UiSelectEnumOption } from '@pubkey-link/web-ui-core'
 
 export function AdminUserUiSelectStatus({
   value,
-  onChange,
+  setValue,
 }: {
   value: UserStatus | undefined
-  onChange: (value: UserStatus | undefined) => void
+  setValue: (value: UserStatus | undefined) => void
 }) {
   return (
     <UiSelectEnumOption<UserStatus>
       value={value}
-      onChange={onChange}
+      setValue={setValue}
       options={[{ value: '', label: 'Filter by status' }, ...getEnumOptions(UserStatus)]}
     />
   )

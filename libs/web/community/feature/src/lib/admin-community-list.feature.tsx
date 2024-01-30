@@ -43,7 +43,7 @@ export function AdminCommunityListFeature() {
           onPageChange={(page) => void pagination.setPage(page)}
         />
       ) : (
-        <UiInfo message="No communities found" />
+        <UiInfo message="No communities found." />
       )}
     </UiPage>
   )

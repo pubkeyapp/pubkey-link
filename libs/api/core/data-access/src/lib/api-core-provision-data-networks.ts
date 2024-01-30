@@ -1,4 +1,5 @@
 import { NetworkCluster, NetworkTokenType, NetworkType, Prisma } from '@prisma/client'
+import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { getCollectionId } from './helpers/get-collection-id'
 
 const heliusApiKey = process.env['HELIUS_API_KEY'] as string
@@ -14,7 +15,7 @@ export const provisionNetworks: Prisma.NetworkCreateInput[] = [
       create: [
         {
           account: 'USDpAd229q7g9iByF8L8wvcpHLvymCswqHhryBfYbLg',
-          program: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
+          program: TOKEN_2022_PROGRAM_ID.toString(),
           name: 'USDp',
           symbol: 'USDp',
           imageUrl: 'https://raw.githubusercontent.com/pubkeyapp/pubkey-usdp/main/assets/usdp-logo.png',
@@ -49,11 +50,38 @@ export const provisionNetworks: Prisma.NetworkCreateInput[] = [
         //       symbol: 'DINO',
         //     },
         {
+          type: NetworkTokenType.Fungible,
+          account: 'FLUXBmPhT3Fd1EDVFdg46YREqHBeNypn1h4EbnTzWERX',
+          program: TOKEN_2022_PROGRAM_ID.toString(),
+          name: 'FluxBot',
+          symbol: 'FLUXB',
+          description: 'FluxBot - #1 Solana Telegram Bot',
+          imageUrl: 'https://assets.coingecko.com/coins/images/33018/large/fluxbot.jpeg?1700193761',
+          metadataUrl: 'https://bafkreido4e5mbufltt4yva6cpzxsep5pmjjd7jx7kuwzm5vlkor45hm5s4.ipfs.nftstorage.link/',
+        },
+        {
+          type: NetworkTokenType.Fungible,
+          account: 'CKfatsPMUf8SkiURsDXs7eK6GWb4Jsd6UDbs7twMCWxo',
+          program: TOKEN_2022_PROGRAM_ID.toString(),
+          name: 'BonkEarn',
+          symbol: 'BERN',
+          imageUrl: 'https://assets.coingecko.com/coins/images/32946/large/bonkearn.jpeg?1699927347',
+          metadataUrl: 'https://api.npoint.io/6276c0cc3ab046e9b770',
+        },
+        {
+          account: 'MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey',
+          imageUrl: 'https://assets.coingecko.com/coins/images/18867/large/MNDE.png?1696518327',
+          name: 'Marinade',
+          program: TOKEN_PROGRAM_ID.toString(),
+          symbol: 'MNDE',
+          type: NetworkTokenType.Fungible,
+        },
+        {
           account: 'Ds52CDgqdWbTWsua1hgT3AuSSy4FNx2Ezge1br3jQ14a',
           imageUrl: 'https://arweave.net/TWUBda7cjVjugUjlstko7peZ_VOOO9vr1buVZ7eZNtg',
           metadataUrl: 'https://arweave.net/fyBeR-uJLzOshYZVnLVoY01bIQmAzC6u1wWM3tK-vsI',
           name: "Dean's List",
-          program: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          program: TOKEN_PROGRAM_ID.toString(),
           symbol: 'DEAN',
           type: NetworkTokenType.Fungible,
         },
@@ -63,7 +91,7 @@ export const provisionNetworks: Prisma.NetworkCreateInput[] = [
           imageUrl: 'https://shdw-drive.genesysgo.net/GQfWBgNh4GUM1Y7nRrx8MFiMoxDLcNDCpsptXYxbozAE/collection.png',
           metadataUrl: 'https://shdw-drive.genesysgo.net/GQfWBgNh4GUM1Y7nRrx8MFiMoxDLcNDCpsptXYxbozAE/collection.json',
           name: 'Deanslist',
-          program: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          program: TOKEN_PROGRAM_ID.toString(),
           symbol: 'DEAN',
           type: NetworkTokenType.NonFungible,
         },
@@ -72,7 +100,7 @@ export const provisionNetworks: Prisma.NetworkCreateInput[] = [
           imageUrl: 'https://updg8.com/imgdata/9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp',
           metadataUrl: 'https://updg8.com/jsondata/9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp',
           name: "Dean's List Business Visa",
-          program: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          program: TOKEN_PROGRAM_ID.toString(),
           symbol: 'DLBV',
           type: NetworkTokenType.NonFungible,
         },

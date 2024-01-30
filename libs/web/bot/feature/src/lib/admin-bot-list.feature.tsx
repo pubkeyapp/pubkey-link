@@ -43,7 +43,7 @@ export function AdminBotListFeature() {
           onPageChange={(page) => void pagination.setPage(page)}
         />
       ) : (
-        <UiInfo message="No bots found" />
+        <UiInfo message="No bots found." />
       )}
     </UiPage>
   )

@@ -1,6 +1,7 @@
 export * from './lib/admin-rule-ui-create-form'
 export * from './lib/admin-rule-ui-table'
 export * from './lib/admin-rule-ui-update-form'
+export * from './lib/rule-condition-ui-create-wizard'
 export * from './lib/rule-condition-ui-info'
 export * from './lib/rule-condition-ui-item'
 export * from './lib/rule-condition-ui-panel'

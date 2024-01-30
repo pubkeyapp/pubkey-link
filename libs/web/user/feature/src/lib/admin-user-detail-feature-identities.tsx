@@ -14,7 +14,7 @@ export function AdminUserDetailFeatureIdentities({ userId }: { userId: string })
       {items?.length ? (
         <AdminIdentityUiTable identities={items ?? []} deleteIdentity={deleteIdentity} />
       ) : (
-        <UiInfo message="No identities found" />
+        <UiInfo message="No identities found." />
       )}
       <Group justify="right">
         <Button

@@ -1,11 +1,16 @@
+import { Button } from '@mantine/core'
 import { AdminCreateNetworkTokenInput, NetworkCluster } from '@pubkey-link/sdk'
+import { useUserGetTokenMetadata } from '@pubkey-link/web-network-data-access'
 import { useAdminFindManyNetworkToken } from '@pubkey-link/web-network-token-data-access'
-import { AdminNetworkTokenUiCreateForm } from '@pubkey-link/web-network-token-ui'
-import { toastError, UiBack, UiCard, UiPage } from '@pubkey-ui/core'
+import { NetworkTokenUiItem } from '@pubkey-link/web-network-token-ui'
+import { UiAddressInput } from '@pubkey-link/web-ui-core'
+import { toastError, UiBack, UiCard, UiError, UiGroup, UiLoader, UiPage, UiStack } from '@pubkey-ui/core'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export function AdminNetworkTokenCreateFeature({ cluster }: { cluster: NetworkCluster }) {
   const navigate = useNavigate()
+  const [account, setAccount] = useState<string>('')
   const { createNetworkToken } = useAdminFindManyNetworkToken({ cluster })
 
   async function submit(input: AdminCreateNetworkTokenInput) {
@@ -14,6 +19,7 @@ export function AdminNetworkTokenCreateFeature({ cluster }: { cluster: NetworkCl
         if (res) {
           navigate(`../${res?.id}`)
         }
+        setAccount('')
       })
       .then(() => true)
       .catch((err) => {
@@ -25,8 +31,42 @@ export function AdminNetworkTokenCreateFeature({ cluster }: { cluster: NetworkCl
   return (
     <UiPage leftAction={<UiBack />} title="Create NetworkToken">
       <UiCard>
-        <AdminNetworkTokenUiCreateForm submit={submit} />
+        <UiStack>
+          <UiAddressInput address={account} setAddress={setAccount} />
+          {account ? (
+            <AdminNetworkTokenUiTokenMetadata
+              cluster={cluster}
+              account={account}
+              onClick={() => submit({ cluster, account })}
+            />
+          ) : null}
+        </UiStack>
       </UiCard>
     </UiPage>
+  )
+}
+
+function AdminNetworkTokenUiTokenMetadata({
+  account,
+  cluster,
+  onClick,
+}: {
+  account: string
+  cluster: NetworkCluster
+  onClick: () => void
+}) {
+  const query = useUserGetTokenMetadata({ account, cluster })
+
+  return query.isLoading ? (
+    <UiLoader />
+  ) : query.isError ? (
+    <UiError message={query.error.message} />
+  ) : query.data ? (
+    <UiGroup>
+      <NetworkTokenUiItem networkToken={query.data.result} />
+      <Button onClick={onClick}>Add Token</Button>
+    </UiGroup>
+  ) : (
+    <UiError message="No data" />
   )
 }

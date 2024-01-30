@@ -48,7 +48,7 @@ export function SolanaUiAccountTokens({ address }: { address: PublicKey }) {
           <div>
             {query.data.length === 0 ? (
               <UiInfo
-                title="No token accounts found"
+                title="No token accounts found."
                 message="Token accounts will appear here when you send or receive tokens."
               />
             ) : (

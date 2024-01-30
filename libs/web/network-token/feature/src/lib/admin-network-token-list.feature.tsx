@@ -38,7 +38,7 @@ export function AdminNetworkTokenListFeature({ cluster }: { cluster: NetworkClus
           onPageChange={(page) => void pagination.setPage(page)}
         />
       ) : (
-        <UiInfo message="No tokens found" />
+        <UiInfo message="No tokens found." />
       )}
     </UiStack>
   )

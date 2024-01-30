@@ -25,8 +25,8 @@ export function AdminUserListFeature() {
     >
       <Group>
         <UiSearchField placeholder="Search user" setSearch={setSearch} />
-        <AdminUserUiSelectRole value={role} onChange={setRole} />
-        <AdminUserUiSelectStatus value={status} onChange={setStatus} />
+        <AdminUserUiSelectRole value={role} setValue={setRole} />
+        <AdminUserUiSelectStatus value={status} setValue={setStatus} />
         <UiPageLimit limit={pagination.limit} setLimit={pagination.setLimit} setPage={pagination.setPage} />
       </Group>
 
@@ -45,7 +45,7 @@ export function AdminUserListFeature() {
           onPageChange={(page) => void pagination.setPage(page)}
         />
       ) : (
-        <UiInfo message="User not found" />
+        <UiInfo message="User not found." />
       )}
     </UiPage>
   )

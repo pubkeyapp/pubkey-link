@@ -182,6 +182,17 @@ type Bot {
   verificationUrlSet: Boolean
 }
 
+type BotMember {
+  botId: String!
+  createdAt: DateTime
+  id: String!
+  identity: Identity
+  identityProvider: IdentityProvider!
+  serverId: String!
+  updatedAt: DateTime
+  userId: String!
+}
+
 type BotPaging {
   data: [Bot!]!
   meta: PagingMeta!
@@ -364,6 +375,7 @@ type Mutation {
   userLinkIdentity(input: LinkIdentityInput!): Identity
   userStartBot(botId: String!): Boolean
   userStopBot(botId: String!): Boolean
+  userSyncBotServer(botId: String!, serverId: String!): Boolean
   userUpdateBot(botId: String!, input: UserUpdateBotInput!): Bot
   userUpdateCommunity(communityId: String!, input: UserUpdateCommunityInput!): Community
   userUpdateCommunityMember(communityMemberId: String!, input: UserUpdateCommunityMemberInput!): CommunityMember
@@ -479,9 +491,12 @@ type Query {
   userFindOneCommunityMember(communityMemberId: String!): CommunityMember
   userFindOneRule(ruleId: String!): Rule
   userFindOneUser(username: String!): User
+  userGetBotMembers(botId: String!, serverId: String!): [BotMember!]
   userGetBotRoles(botId: String!, serverId: String!): [DiscordRole!]
   userGetBotServer(botId: String!, serverId: String!): DiscordServer
   userGetBotServers(botId: String!): [DiscordServer!]
+  userGetTokenAccounts(account: String!, cluster: NetworkCluster!): JSON
+  userGetTokenMetadata(account: String!, cluster: NetworkCluster!): JSON
   userRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
 }
 

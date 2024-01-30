@@ -1,6 +1,6 @@
 import { REST } from '@discordjs/rest'
 import { Logger } from '@nestjs/common'
-import { Client } from 'discord.js'
+import { Client, Guild, GuildMember } from 'discord.js'
 import { createDiscordClient } from './discord/client'
 
 export interface RESTDiscordRoleConnection {
@@ -16,6 +16,12 @@ export interface RESTDiscordRole {
   color: number
   managed: boolean
   position: number
+}
+
+export interface RESTDiscordMember {
+  id: string
+  providerId: string
+  username: string
 }
 
 export class DiscordBot {
@@ -55,6 +61,56 @@ export class DiscordBot {
 
   async getApplication() {
     return (await this.rest?.get(`/applications/${this.config.botId}`)) as BotApplication
+  }
+
+  async getDiscordServerMembers(guildId: string) {
+    const guild = await this.getServer(guildId)
+    if (!guild) {
+      throw new Error(`Could not fetch guild with id ${guildId}`)
+    }
+
+    const members = await this.getEachMember(guild)
+    return members.map((member) => member)
+  }
+
+  private async getEachMember(guild: Guild): Promise<GuildMember[]> {
+    const limit = 1000
+    const result: GuildMember[] = []
+    let after: string | undefined
+    let batches = 0
+    let count = 0
+    let done = false
+
+    while (!done) {
+      const members = await guild.members.list({ limit, after })
+
+      if (members.size === 0) {
+        done = true
+        break
+      }
+
+      batches++
+      result.push(...members.values())
+      after = members.last()?.id
+      count += members.size
+    }
+
+    this.logger.verbose(`In ${guild.name}, I found ${count} members in ${batches} batches`)
+
+    return result
+  }
+
+  async getMembers(serverId: string): Promise<RESTDiscordMember[]> {
+    const server = await this.getServer(serverId)
+    const members = await server?.members.fetch()
+    const summary =
+      members?.map((members) => ({
+        id: members.id,
+        providerId: members.user.id,
+        username: members.user.username,
+      })) ?? []
+
+    return summary.sort((a, b) => b.username.localeCompare(a.username))
   }
 
   async getRoleConnections(): Promise<RESTDiscordRoleConnection[]> {

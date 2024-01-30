@@ -1,5 +1,5 @@
 import { Group, Text, TextProps } from '@mantine/core'
-import { RuleCondition } from '@pubkey-link/sdk'
+import { RuleCondition, RuleConditionType } from '@pubkey-link/sdk'
 import { UiIconAvatar } from '@pubkey-link/web-ui-core'
 import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core'
 import { RuleConditionUiTypePopover } from './rule-condition-ui-type-popover'
@@ -25,7 +25,7 @@ export function RuleConditionUiItem({
   return (
     <UiAnchor to={to ?? undefined} underline="never" {...anchorProps}>
       <Group>
-        <RuleConditionUiAvatar item={condition} />
+        <RuleConditionUiAvatar type={condition.type} />
         <Text size="lg" fw={500} {...textProps}>
           <RuleConditionUiTypeTitle type={condition.type} />
         </Text>
@@ -35,13 +35,8 @@ export function RuleConditionUiItem({
   )
 }
 
-export function RuleConditionUiAvatar({ item }: { item?: RuleCondition | null }) {
+export function RuleConditionUiAvatar({ type }: { type?: RuleConditionType | null }) {
   return (
-    <UiIconAvatar
-      icon={getRuleConditionIconType(item?.type)}
-      name={item?.type}
-      size="md"
-      color={getRuleConditionColor(item?.type)}
-    />
+    <UiIconAvatar icon={getRuleConditionIconType(type)} name={type} size="md" color={getRuleConditionColor(type)} />
   )
 }

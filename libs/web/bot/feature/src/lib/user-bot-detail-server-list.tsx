@@ -59,17 +59,3 @@ export function UserBotDetailServerList({ bot }: { bot: Bot }) {
     </Grid>
   )
 }
-
-// export function WebAdminBotDetailServersTab({ botId }: { botId: string }) {
-//   const { bot } = useAdminFindOneBot({ botId })
-//
-//   return bot ? (
-//     bot?.started ? (
-//       <WebAdminUiBotServers bot={bot} />
-//     ) : (
-//       <UiAlert message="Bot not started." />
-//     )
-//   ) : (
-//     <UiAlert message="Bot not found." />
-//   )
-// }

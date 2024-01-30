@@ -14,7 +14,7 @@ export default function SettingsFeature() {
   }
 
   if (!user) {
-    return <UiWarning message="User not found" />
+    return <UiWarning message="User not found." />
   }
 
   return (

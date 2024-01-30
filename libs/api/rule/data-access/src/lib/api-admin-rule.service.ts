@@ -24,13 +24,21 @@ export class ApiAdminRuleService {
       .paginate({
         orderBy: { createdAt: 'desc' },
         where: getAdminRuleWhereInput(input),
+        include: { conditions: { include: { token: true } } },
       })
       .withPages({ limit: input.limit, page: input.page })
       .then(([data, meta]) => ({ data, meta }))
   }
 
   async findOneRule(ruleId: string) {
-    return this.core.data.rule.findUnique({ where: { id: ruleId } })
+    return this.core.data.rule.findUnique({
+      where: { id: ruleId },
+      include: {
+        conditions: { include: { token: true }, orderBy: { name: 'asc' } },
+        community: true,
+        permissions: { include: { bot: true } },
+      },
+    })
   }
 
   async updateRule(ruleId: string, input: AdminUpdateRuleInput) {

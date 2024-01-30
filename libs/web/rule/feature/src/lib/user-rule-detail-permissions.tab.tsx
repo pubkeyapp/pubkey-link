@@ -90,7 +90,18 @@ function AddPermissionButton({ rule }: { rule: Rule }) {
       onClick={() =>
         modals.open({
           title: 'Add Permission',
-          children: <AddPermissionForm botId={item.id} rule={rule} create={createRulePermission} />,
+          children: (
+            <AddPermissionForm
+              botId={item.id}
+              rule={rule}
+              create={(input) =>
+                createRulePermission(input).then((res) => {
+                  modals.closeAll()
+                  return res
+                })
+              }
+            />
+          ),
         })
       }
     >

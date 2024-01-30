@@ -18,6 +18,22 @@ fragment BotDetails on Bot {
   }
 }
 
+fragment BotMemberDetails on BotMember {
+  id
+  createdAt
+  updatedAt
+  botId
+  userId
+  serverId
+  identity {
+    ...IdentityDetails
+    owner {
+      ...UserDetails
+    }
+  }
+  identityProvider
+}
+
 fragment BotPermissionDetails on BotPermission {
   botId
   createdAt
@@ -119,6 +135,16 @@ mutation userStopBot($botId: String!) {
 
 mutation userLeaveBotServer($botId: String!, $serverId: String!) {
   left: userLeaveBotServer(botId: $botId, serverId: $serverId)
+}
+
+mutation userSyncBotServer($botId: String!, $serverId: String!) {
+  synced: userSyncBotServer(botId: $botId, serverId: $serverId)
+}
+
+query userGetBotMembers($botId: String!, $serverId: String!) {
+  items: userGetBotMembers(botId: $botId, serverId: $serverId) {
+    ...BotMemberDetails
+  }
 }
 
 query userGetBotRoles($botId: String!, $serverId: String!) {

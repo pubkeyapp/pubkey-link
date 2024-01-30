@@ -21,7 +21,7 @@ export function UserUserDetailFeature() {
   }
 
   if (!user) {
-    return <UiWarning message="User not found" />
+    return <UiWarning message="User not found." />
   }
 
   const isAuthUser = authUser?.id === user.id

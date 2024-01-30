@@ -43,7 +43,7 @@ export function AdminRuleListFeature({ communityId }: { communityId: string }) {
           onPageChange={(page) => void pagination.setPage(page)}
         />
       ) : (
-        <UiInfo message="No rules found" />
+        <UiInfo message="No rules found." />
       )}
     </UiPage>
   )

@@ -43,3 +43,11 @@ mutation adminUpdateNetwork($networkId: String!, $input: AdminUpdateNetworkInput
 mutation adminDeleteNetwork($networkId: String!) {
   deleted: adminDeleteNetwork(networkId: $networkId)
 }
+
+query userGetTokenMetadata($cluster: NetworkCluster!, $account: String!) {
+  result: userGetTokenMetadata(cluster: $cluster, account: $account)
+}
+
+query userGetTokenAccounts($cluster: NetworkCluster!, $account: String!) {
+  result: userGetTokenAccounts(cluster: $cluster, account: $account)
+}

@@ -20,6 +20,22 @@ model Bot {
   community    Community       @relation(fields: [communityId], references: [id], onDelete: Cascade)
   communityId  String          @unique
   permissions  BotPermission[]
+  members      BotMember[]
+}
+
+model BotMember {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  bot       Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  botId     String
+  userId    String
+  serverId  String
+
+  identity         Identity         @relation(fields: [identityProvider, userId], references: [provider, providerId], onDelete: Cascade)
+  identityProvider IdentityProvider @default(Discord)
+
+  @@unique([botId, userId, serverId])
 }
 
 model BotPermission {
@@ -82,6 +98,7 @@ model Identity {
   owner        User                @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId      String
   challenges   IdentityChallenge[]
+  bots         BotMember[]
 
   @@unique([provider, providerId])
 }

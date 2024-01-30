@@ -14,9 +14,16 @@ export function UiAddressInput({
 }) {
   const form = useForm({
     initialValues: { address },
-    // validate: {
-    //   address: validateSolanaPublicKey,
-    // },
+    validate: {
+      address: validateSolanaPublicKey,
+    },
+    onValuesChange: (values) => {
+      if (values.address !== address) {
+        setTimeout(() => {
+          setAddress(values.address)
+        }, 0)
+      }
+    },
   })
 
   useEffect(() => {

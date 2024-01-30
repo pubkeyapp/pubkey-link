@@ -43,7 +43,7 @@ export function AdminNetworkListFeature() {
           onPageChange={(page) => void pagination.setPage(page)}
         />
       ) : (
-        <UiInfo message="No networks found" />
+        <UiInfo message="No networks found." />
       )}
     </UiPage>
   )

@@ -67,6 +67,7 @@
     "@solana/wallet-adapter-react": "^0.15.35",
     "@solana/wallet-adapter-solflare": "^0.6.28",
     "@solana/web3.js": "^1.88.0",
+    "@solflare-wallet/utl-sdk": "^1.4.0",
     "@swc/helpers": "0.5.3",
     "@tabler/icons-react": "^2.45.0",
     "@tanstack/react-query": "^5.17.9",

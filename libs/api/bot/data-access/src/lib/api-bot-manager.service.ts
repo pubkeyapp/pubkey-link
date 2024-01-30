@@ -1,7 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 
 import { createDiscordRestClient, DiscordBot } from '@pubkey-link/api-bot-util'
-import { ApiCoreService } from '@pubkey-link/api-core-data-access'
+import { ApiCoreService, IdentityProvider } from '@pubkey-link/api-core-data-access'
 
 import { PermissionsString, User } from 'discord.js'
 import { BotStatus } from './entity/bot-status.enum'
@@ -96,7 +96,8 @@ export class ApiBotManagerService implements OnModuleInit {
   inviteUrl(botId: string) {
     const url = new URL('https://discord.com/api/oauth2/authorize')
     url.searchParams.append('client_id', botId)
-    url.searchParams.append('permissions', '268437504')
+    url.searchParams.append('permissions', '268435456')
+    // url.searchParams.append('permissions', '268437504')
     url.searchParams.append('scope', ' bot role_connections.write')
     url.searchParams.append('redirect_uri', this.redirectUrl(botId))
     url.searchParams.append('response_type', 'code')
@@ -158,6 +159,84 @@ export class ApiBotManagerService implements OnModuleInit {
       throw new Error(`Bot ${botId} not started`)
     }
     return instance
+  }
+
+  async syncBotServer(botId: string, serverId: string) {
+    const bot = this.ensureBotInstance(botId)
+    if (!bot) {
+      console.log(`Can't find bot.`, botId, serverId)
+      return false
+    }
+    this.logger.verbose(`Fetching members... ${botId} ${serverId}`)
+
+    const [discordIdentityIds, botMemberIds] = await Promise.all([
+      this.getDiscordIdentityIds(),
+      this.getBotMemberIds(botId, serverId),
+    ])
+    const members = await bot.getDiscordServerMembers(serverId)
+
+    this.logger.verbose(`Found ${members.length} members to process`)
+    const filtered = members
+      // We only want to process members that have a discord identity
+      .filter((member) => discordIdentityIds.includes(member.id))
+      // We don't want to process members that are already in the database
+      .filter((member) => !botMemberIds.includes(member.id))
+
+    const toBeDeleted = botMemberIds.filter((id) => !members.find((member) => member.id === id))
+
+    if (toBeDeleted.length) {
+      this.logger.warn(`Found ${toBeDeleted.length} members to delete`)
+      this.logger.warn(`TODO: DELETE MEMBERS`)
+    }
+
+    this.logger.verbose(`Found ${filtered.length} members to process (filtered)`)
+    let linkedCount = 0
+    for (const member of filtered) {
+      const userId = member.id
+      // const identityProviderId = discordIdentityIds.includes(member.id) ? member.id : undefined
+      const created = await this.core.data.botMember.upsert({
+        where: { botId_userId_serverId: { botId, userId, serverId } },
+        update: {},
+        create: {
+          botId,
+          serverId,
+          userId,
+        },
+      })
+      this.logger.verbose(
+        `${botId} ${serverId} Processed member ${created.id} ${member.user.username} (linked: ${!!member.id})`,
+      )
+      if (member.id) {
+        linkedCount++
+      }
+    }
+    this.logger.verbose(
+      `Found ${members.length} members to process (filtered ${filtered.length}) (linked ${linkedCount})`,
+    )
+    return true
+  }
+
+  private async getBotMemberIds(botId: string, serverId: string) {
+    return this.core.data.botMember
+      .findMany({ where: { botId, serverId } })
+      .then((items) => items.map(({ userId }) => userId))
+  }
+
+  private async getDiscordIdentityIds() {
+    return this.core.data.identity
+      .findMany({ where: { provider: IdentityProvider.Discord } })
+      .then((items) => items.map((item) => item.providerId))
+  }
+
+  async getBotMembers(botId: string, serverId: string) {
+    return this.core.data.botMember.findMany({
+      where: {
+        botId,
+        serverId,
+      },
+      include: { identity: { include: { owner: true } } },
+      orderBy: { identity: { owner: { username: 'asc' } } },
+    })
   }
 }
 

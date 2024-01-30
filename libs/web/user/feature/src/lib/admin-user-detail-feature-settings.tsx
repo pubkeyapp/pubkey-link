@@ -9,7 +9,7 @@ export function AdminUserDetailFeatureSettings({ userId }: { userId: string }) {
   }
 
   if (!item) {
-    return <UiError message="User not found" />
+    return <UiError message="User not found." />
   }
 
   return (

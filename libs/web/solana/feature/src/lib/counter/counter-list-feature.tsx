@@ -45,7 +45,7 @@ export function CounterListFeature() {
               </CounterProgramAccountProvider>
             ))
           ) : (
-            <UiInfo title="No accounts found" message="Create an account to get started." />
+            <UiInfo title="No accounts found." message="Create an account to get started." />
           )}
         </SimpleGrid>
       )}

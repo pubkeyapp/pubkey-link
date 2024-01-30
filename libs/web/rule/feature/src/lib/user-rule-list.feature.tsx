@@ -36,7 +36,7 @@ export function UserRuleListFeature({ community }: { community: Community }) {
           onPageChange={(page) => void pagination.setPage(page)}
         />
       ) : (
-        <UiInfo message="No rules found" />
+        <UiInfo message="No rules found." />
       )}
     </UiStack>
   )

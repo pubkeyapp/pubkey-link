@@ -1,19 +1,21 @@
-import { Select } from '@mantine/core'
+import { Select, SelectProps } from '@mantine/core'
 
 export function UiSelectEnumOption<T>({
   value,
-  onChange,
+  setValue,
   options,
-}: {
+  ...props
+}: Omit<SelectProps, 'onChange'> & {
   value: T | undefined
-  onChange: (value: T | undefined) => void
+  setValue: (value: T | undefined) => void
   options: { value: string; label: string }[]
 }) {
   return (
     <Select
       value={value?.toString() ?? ''}
-      onChange={(value) => onChange(value === '' ? undefined : (value as T))}
+      onChange={(value) => setValue(value === '' ? undefined : (value as T))}
       data={options}
+      {...props}
     />
   )
 }

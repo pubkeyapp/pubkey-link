@@ -19,7 +19,7 @@ export function SolanaUiAccountBalanceCheck({ address }: { address: PublicKey })
           root: { display: 'flex', justifyContent: 'center' },
           title: { justifyContent: 'center' },
         }}
-        title="Account not found"
+        title="Account not found."
         icon={<IconUserOff size={24} />}
         message={
           <Group justify="center">

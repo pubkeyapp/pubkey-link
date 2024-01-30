@@ -3,15 +3,15 @@ import { UiSelectEnumOption } from '@pubkey-link/web-ui-core'
 
 export function AdminUserUiSelectRole({
   value,
-  onChange,
+  setValue,
 }: {
   value: UserRole | undefined
-  onChange: (role: UserRole | undefined) => void
+  setValue: (role: UserRole | undefined) => void
 }) {
   return (
     <UiSelectEnumOption<UserRole>
       value={value}
-      onChange={onChange}
+      setValue={setValue}
       options={[{ value: '', label: 'Filter by role' }, ...getEnumOptions(UserRole)]}
     />
   )

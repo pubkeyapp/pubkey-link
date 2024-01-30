@@ -40,7 +40,7 @@ export function UserCommunityListFeature() {
           setPage={pagination.setPage}
         />
       ) : (
-        <UiInfo message="No communities found" />
+        <UiInfo message="No communities found." />
       )}
     </UiPage>
   )

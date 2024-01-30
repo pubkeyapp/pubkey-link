@@ -1,14 +1,15 @@
+import { UseGuards } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { ApiAuthGraphQLUserGuard } from '@pubkey-link/api-auth-data-access'
 import {
   ApiBotService,
   Bot,
+  BotMember,
   DiscordRole,
   DiscordServer,
   UserCreateBotInput,
   UserUpdateBotInput,
 } from '@pubkey-link/api-bot-data-access'
-import { ApiAuthGraphQLUserGuard } from '@pubkey-link/api-auth-data-access'
-import { UseGuards } from '@nestjs/common'
 
 @Resolver()
 @UseGuards(ApiAuthGraphQLUserGuard)
@@ -50,9 +51,19 @@ export class ApiUserBotResolver {
     return this.service.manager.getBotRoles(botId, serverId)
   }
 
+  @Query(() => [BotMember], { nullable: true })
+  userGetBotMembers(@Args('botId') botId: string, @Args('serverId') serverId: string) {
+    return this.service.manager.getBotMembers(botId, serverId)
+  }
+
   @Mutation(() => Boolean, { nullable: true })
   userLeaveBotServer(@Args('botId') botId: string, @Args('serverId') serverId: string) {
     return this.service.manager.leaveBotServer(botId, serverId)
+  }
+
+  @Mutation(() => Boolean, { nullable: true })
+  userSyncBotServer(@Args('botId') botId: string, @Args('serverId') serverId: string) {
+    return this.service.manager.syncBotServer(botId, serverId)
   }
 
   @Mutation(() => Boolean, { nullable: true })

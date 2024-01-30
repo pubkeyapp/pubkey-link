@@ -28,7 +28,7 @@ export function UserUserListFeature() {
           setPage={pagination.setPage}
         />
       ) : (
-        <UiInfo message="User not found" />
+        <UiInfo message="User not found." />
       )}
     </UiPage>
   )

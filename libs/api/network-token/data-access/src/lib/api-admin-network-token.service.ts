@@ -66,31 +66,7 @@ export class ApiAdminNetworkTokenService implements OnModuleInit {
       throw new Error(`Network token ${networkTokenId} not found`)
     }
 
-    const [asset, metadata] = await Promise.all([
-      this.network.getAsset({ cluster: token.cluster, account: token.account }),
-      this.network.getTokenMetadata({ cluster: token.cluster, account: token.account }),
-    ])
-
-    if (!asset || !metadata) {
-      throw new Error(`Asset or metadata for ${token.account} not found on cluster ${token.cluster}`)
-    }
-
-    const imageUrl = await fetch(metadata.uri)
-      .then((res) => res.json())
-      .then((res) => res.image)
-      .catch((err) => {
-        this.logger.warn(`Failed to fetch image for ${metadata.uri}`, err)
-        return asset.content.files?.length ? asset.content.files[0].uri : null
-      })
-
-    const data: Prisma.NetworkTokenUpdateInput = {
-      name: metadata.name ?? asset.content.metadata.name,
-      imageUrl,
-      metadataUrl: metadata.uri ?? asset.content.json_uri,
-      description: asset.content.metadata.description,
-      symbol: metadata.symbol ?? asset.content.metadata.symbol,
-      raw: { asset, metadata } as unknown as Prisma.InputJsonValue,
-    }
+    const data: Prisma.NetworkTokenUpdateInput = await this.network.getAllTokenMetadata(token)
     this.logger.verbose(`updateNetworkTokenMetadata`, JSON.stringify(data, null, 2))
     return this.core.data.networkToken.update({
       where: { id: networkTokenId },
@@ -101,6 +77,7 @@ export class ApiAdminNetworkTokenService implements OnModuleInit {
 
 export function getNetworkTokenType(int: DasApiAsset['interface'] | string) {
   switch (int) {
+    case 'spl-token':
     case 'spl-token-2022':
     case 'FungibleAsset':
     case 'FungibleToken':
@@ -110,6 +87,7 @@ export function getNetworkTokenType(int: DasApiAsset['interface'] | string) {
     case 'V2_NFT':
       return NetworkTokenType.NonFungible
     default:
+      console.log(`getNetworkTokenType: Unknown interface: ${int}`)
       return NetworkTokenType.Unknown
   }
 }

@@ -2,11 +2,13 @@ import { dasApi, DasApiAsset, DasApiAssetList } from '@metaplex-foundation/digit
 import { createUmi, publicKey, Umi } from '@metaplex-foundation/umi'
 import { web3JsRpc } from '@metaplex-foundation/umi-rpc-web3js'
 import { Injectable, Logger } from '@nestjs/common'
-import { NetworkCluster } from '@prisma/client'
+import { NetworkCluster, Prisma } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { getAnybodiesVaultMap } from '@pubkey-link/api-network-util'
-import { getTokenMetadata } from '@solana/spl-token'
+import { getTokenMetadata, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { TokenMetadata } from '@solana/spl-token-metadata'
 import { AccountInfo, Connection, ParsedAccountData, PublicKey } from '@solana/web3.js'
+import { ChainId, Client, Token } from '@solflare-wallet/utl-sdk'
 import { ApiAdminNetworkService } from './api-admin-network.service'
 import { NetworkAsset } from './entity/network-asset.entity'
 
@@ -15,6 +17,7 @@ export class ApiNetworkService {
   private readonly logger = new Logger(ApiNetworkService.name)
   private readonly connections: Map<NetworkCluster, Connection> = new Map()
   private readonly umis: Map<NetworkCluster, Umi> = new Map()
+  private readonly tokenList: Map<NetworkCluster, Client> = new Map()
   constructor(readonly admin: ApiAdminNetworkService, readonly core: ApiCoreService) {}
 
   async resolveAnybodiesAsset({ owner, vaultId }: { owner: string; vaultId: string }): Promise<NetworkAsset> {
@@ -29,8 +32,93 @@ export class ApiNetworkService {
     )
   }
   async getTokenMetadata({ cluster, account }: { cluster: NetworkCluster; account: string }) {
-    return this.getConnection(cluster).then((conn) => getTokenMetadata(conn, new PublicKey(account)).then((res) => res))
+    return this.getConnection(cluster).then((conn) =>
+      getTokenMetadata(conn, new PublicKey(account)).then((res) => (res ? (res as TokenMetadata) : null)),
+    )
   }
+
+  async getAllTokenMetadata({ cluster, account }: { cluster: NetworkCluster; account: string }) {
+    const asset = await this.getAsset({ cluster: cluster, account: account })
+
+    let metadata: TokenMetadata | null = null
+    try {
+      metadata = await this.getTokenMetadata({ cluster: cluster, account: account })
+    } catch (e) {
+      this.logger.verbose(`Failed to fetch token metadata for ${account}`)
+    }
+
+    let tokenList: Token | null = null
+    try {
+      tokenList = await this.getTokenList(cluster).then((res) => res.fetchMint(new PublicKey(account)))
+    } catch (e) {
+      this.logger.verbose(`Failed to fetch token list for ${account}`)
+    }
+
+    if (!asset && !metadata && !tokenList) {
+      throw new Error(`Asset or metadata for ${account} not found on cluster ${cluster}`)
+    }
+
+    const imageUrl = metadata?.uri
+      ? await fetch(metadata?.uri)
+          .then((res) => res.json())
+          .then((res) => res.image)
+          .catch((err) => {
+            this.logger.warn(`Failed to fetch image for ${metadata?.uri}`, err)
+            return asset.content.files?.length ? asset.content.files[0].uri : null
+          })
+      : null
+
+    return {
+      name: metadata?.name ?? asset?.content?.metadata?.name ?? tokenList?.name,
+      imageUrl: imageUrl ?? tokenList?.logoURI,
+      metadataUrl: metadata?.uri ?? asset.content.json_uri,
+      description: asset.content.metadata.description,
+      symbol: metadata?.symbol ?? asset?.content?.metadata?.symbol ?? tokenList?.symbol,
+      raw: { asset, metadata } as unknown as Prisma.InputJsonValue,
+    }
+  }
+
+  async getTokenAccounts({ cluster, account }: { cluster: NetworkCluster; account: string }) {
+    const address = new PublicKey(account)
+    return this.getConnection(cluster).then((conn) =>
+      Promise.all([
+        conn.getTokenAccountsByOwner(address, { programId: TOKEN_PROGRAM_ID }).then((res) => res.value ?? []),
+        conn.getTokenAccountsByOwner(address, { programId: TOKEN_2022_PROGRAM_ID }).then((res) => res.value ?? []),
+      ])
+        .then(([tokenAccounts, token2022Accounts]) => [...tokenAccounts, ...token2022Accounts])
+        .then((accounts) =>
+          accounts
+            .map((account) => ({
+              account: account.pubkey.toBase58(),
+              programId: account.account.owner.toBase58(),
+            }))
+            .sort((a, b) => a.account.localeCompare(b.account)),
+        )
+        .then((sorted) =>
+          sorted.reduce(
+            (acc, curr) => ({
+              ...acc,
+              [curr.programId]: [...(acc[curr.programId] || []), curr.account],
+            }),
+            {} as Record<string, string[]>,
+          ),
+        ),
+    )
+  }
+
+  //  "7j67eWNT9R6iGkg1MP6oHntv9Vo4zSwCeKY9GZTPo79w",
+  //       "8C2NHZPDb4C7t5n3SZHXRjcfCQVAYAN9ynqgk47MrEs",
+  //       "AgcALrgjGhjmEWGEuvwkJk8Ti9BKSYdG2ZEpsaZaBUQV",
+  //       "CMCVKpGc3yAmSGXTuyYHcFesRhArSGhrWwuTc7q3wEX1"
+  //
+  // "9ojN19VvToGRvS9fDhDKqrmCvyY2V7yYYTSB714DcUde",
+  // "9YgGKJhKsNZNJCbTgkycuXJLK2Wcc23bbETpyKY9FFeD",
+  // "AaFdz1NKXKuNZJLbfMP3YAfSVT8ricq7uYKUoaS5pyko"
+  //     "2gsip17gKrakhCfkK3EFQpYRA5fK8uYBdqJjXdju4ffW",
+  //       "6DyjGURjGg8i32pFJDRMgCUDVrN5jWGPHvHFdDbkAXMx",
+  //       "FCC35WtadGHRuyC2ExJBNy2WJrCWRiRDwt7bUdcEUn5v",
+  //       "FnwwSj7ybiUrmQ2Eui9REC4Up1ygXNdT6oHNrP2LxVuR",
+  //       "GRHQ1uoFfY7ek5YPpUX3LunTTwoV7C3rbKUPNfHyw3vH"
 
   async getAsset({ cluster, account }: { cluster: NetworkCluster; account: string }) {
     return this.getUmi(cluster).then((res) => res.rpc.getAsset(publicKey(account)))
@@ -41,9 +129,9 @@ export class ApiNetworkService {
     cluster,
     owner,
   }: {
-    owner: string
-    cluster: NetworkCluster
     account: string
+    cluster: NetworkCluster
+    owner: string
   }) {
     return this.getAllAssetsByOwner({ owner, cluster, groups: account })
       .then((assets) => assets.items?.map((item) => item.id?.toString()) ?? [])
@@ -113,11 +201,35 @@ export class ApiNetworkService {
       this.connections.set(cluster, new Connection(network.endpoint, 'confirmed'))
       this.logger.verbose(`getConnection: Network created for cluster: ${cluster}`)
     }
-    const umi = this.connections.get(cluster)
-    if (!umi) {
+    const connection = this.connections.get(cluster)
+    if (!connection) {
       throw new Error(`getConnection: Error getting network for cluster: ${cluster}`)
     }
-    return umi
+    return connection
+  }
+
+  private async getTokenList(cluster: NetworkCluster) {
+    if (!this.tokenList.has(cluster)) {
+      const connection = await this.getConnection(cluster)
+      const chainId = getChainId(cluster)
+      this.tokenList.set(
+        cluster,
+        new Client({
+          connection,
+          chainId,
+          apiUrl: 'https://token-list-api.solana.cloud',
+          cdnUrl: 'https://cdn.jsdelivr.net/gh/solflare-wallet/token-list/solana-tokenlist.json',
+          metaplexTimeout: 2000,
+          timeout: 2000,
+        }),
+      )
+      this.logger.verbose(`getConnection: Network created for cluster: ${cluster}`)
+    }
+    const connection = this.tokenList.get(cluster)
+    if (!connection) {
+      throw new Error(`getConnection: Error getting network for cluster: ${cluster}`)
+    }
+    return connection
   }
 
   private async getUmi(cluster: NetworkCluster) {
@@ -151,4 +263,17 @@ export function findAssetGroupValue(asset: DasApiAsset) {
  */
 export function findAssetsByGroup(items: DasApiAsset[], groups?: string) {
   return items.filter((item) => !groups || groups.split(',').includes(findAssetGroupValue(item) ?? ''))
+}
+
+function getChainId(cluster: NetworkCluster): ChainId {
+  switch (cluster) {
+    case NetworkCluster.SolanaMainnet:
+      return ChainId.MAINNET
+    case NetworkCluster.SolanaDevnet:
+      return ChainId.DEVNET
+    case NetworkCluster.SolanaTestnet:
+      return ChainId.TESTNET
+    default:
+      throw new Error(`getChainId: ChainId not found for cluster: ${cluster}`)
+  }
 }

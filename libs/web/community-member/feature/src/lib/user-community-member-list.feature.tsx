@@ -46,7 +46,7 @@ export function UserCommunityMemberListFeature({ community }: { community: Commu
         //   setLimit={pagination.setLimit}
         //   setPage={pagination.setPage}
         // />
-        <UiInfo message="No members found" />
+        <UiInfo message="No members found." />
       )}
     </UiStack>
   )

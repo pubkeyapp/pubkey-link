@@ -43,7 +43,7 @@ export function AdminCommunityMemberListFeature({ communityId }: { communityId: 
           onPageChange={(page) => void pagination.setPage(page)}
         />
       ) : (
-        <UiInfo message="No members found" />
+        <UiInfo message="No members found." />
       )}
     </UiPage>
   )

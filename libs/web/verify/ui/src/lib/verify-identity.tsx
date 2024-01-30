@@ -39,7 +39,7 @@ export function VerifyIdentity({
           <UiDebugModal data={item} />
         </UiStack>
       ) : (
-        <UiWarning title="Not found" message={`No user found with ${provider} ${providerId}`} />
+        <UiWarning title="Not found." message={`No user found with ${provider} ${providerId}`} />
       )}
     </UiCard>
   )

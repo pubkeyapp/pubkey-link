@@ -22,7 +22,7 @@ export class ApiAdminCommunityService {
   async findManyCommunity(input: AdminFindManyCommunityInput): Promise<CommunityPaging> {
     return this.core.data.community
       .paginate({
-        orderBy: { createdAt: 'desc' },
+        orderBy: { name: 'asc' },
         where: getAdminCommunityWhereInput(input),
       })
       .withPages({ limit: input.limit, page: input.page })

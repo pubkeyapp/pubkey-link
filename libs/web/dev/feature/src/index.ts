@@ -1,3 +1,3 @@
 import { lazy } from 'react'
 
-export const DevAdminRoutes = lazy(() => import('./lib/dev-admin-routes'))
+export const DevAdminRoutes = lazy(() => import('./lib/dev.routes'))

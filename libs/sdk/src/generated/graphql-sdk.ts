@@ -206,6 +206,18 @@ export type Bot = {
   verificationUrlSet?: Maybe<Scalars['Boolean']['output']>
 }
 
+export type BotMember = {
+  __typename?: 'BotMember'
+  botId: Scalars['String']['output']
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  id: Scalars['String']['output']
+  identity?: Maybe<Identity>
+  identityProvider: IdentityProvider
+  serverId: Scalars['String']['output']
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+  userId: Scalars['String']['output']
+}
+
 export type BotPaging = {
   __typename?: 'BotPaging'
   data: Array<Bot>
@@ -389,6 +401,7 @@ export type Mutation = {
   userLinkIdentity?: Maybe<Identity>
   userStartBot?: Maybe<Scalars['Boolean']['output']>
   userStopBot?: Maybe<Scalars['Boolean']['output']>
+  userSyncBotServer?: Maybe<Scalars['Boolean']['output']>
   userUpdateBot?: Maybe<Bot>
   userUpdateCommunity?: Maybe<Community>
   userUpdateCommunityMember?: Maybe<CommunityMember>
@@ -586,6 +599,11 @@ export type MutationUserStopBotArgs = {
   botId: Scalars['String']['input']
 }
 
+export type MutationUserSyncBotServerArgs = {
+  botId: Scalars['String']['input']
+  serverId: Scalars['String']['input']
+}
+
 export type MutationUserUpdateBotArgs = {
   botId: Scalars['String']['input']
   input: UserUpdateBotInput
@@ -732,9 +750,12 @@ export type Query = {
   userFindOneCommunityMember?: Maybe<CommunityMember>
   userFindOneRule?: Maybe<Rule>
   userFindOneUser?: Maybe<User>
+  userGetBotMembers?: Maybe<Array<BotMember>>
   userGetBotRoles?: Maybe<Array<DiscordRole>>
   userGetBotServer?: Maybe<DiscordServer>
   userGetBotServers?: Maybe<Array<DiscordServer>>
+  userGetTokenAccounts?: Maybe<Scalars['JSON']['output']>
+  userGetTokenMetadata?: Maybe<Scalars['JSON']['output']>
   userRequestIdentityChallenge?: Maybe<IdentityChallenge>
 }
 
@@ -855,6 +876,11 @@ export type QueryUserFindOneUserArgs = {
   username: Scalars['String']['input']
 }
 
+export type QueryUserGetBotMembersArgs = {
+  botId: Scalars['String']['input']
+  serverId: Scalars['String']['input']
+}
+
 export type QueryUserGetBotRolesArgs = {
   botId: Scalars['String']['input']
   serverId: Scalars['String']['input']
@@ -867,6 +893,16 @@ export type QueryUserGetBotServerArgs = {
 
 export type QueryUserGetBotServersArgs = {
   botId: Scalars['String']['input']
+}
+
+export type QueryUserGetTokenAccountsArgs = {
+  account: Scalars['String']['input']
+  cluster: NetworkCluster
+}
+
+export type QueryUserGetTokenMetadataArgs = {
+  account: Scalars['String']['input']
+  cluster: NetworkCluster
 }
 
 export type QueryUserRequestIdentityChallengeArgs = {
@@ -1223,6 +1259,44 @@ export type BotDetailsFragment = {
       permissions?: Array<string> | null
     } | null
   }> | null
+}
+
+export type BotMemberDetailsFragment = {
+  __typename?: 'BotMember'
+  id: string
+  createdAt?: Date | null
+  updatedAt?: Date | null
+  botId: string
+  userId: string
+  serverId: string
+  identityProvider: IdentityProvider
+  identity?: {
+    __typename?: 'Identity'
+    avatarUrl?: string | null
+    createdAt?: Date | null
+    expired?: boolean | null
+    id: string
+    name?: string | null
+    profile?: any | null
+    provider: IdentityProvider
+    providerId: string
+    updatedAt?: Date | null
+    url?: string | null
+    verified?: boolean | null
+    owner?: {
+      __typename?: 'User'
+      avatarUrl?: string | null
+      createdAt?: Date | null
+      developer?: boolean | null
+      id: string
+      name?: string | null
+      profileUrl: string
+      role?: UserRole | null
+      status?: UserStatus | null
+      updatedAt?: Date | null
+      username?: string | null
+    } | null
+  } | null
 }
 
 export type BotPermissionDetailsFragment = {
@@ -1727,6 +1801,59 @@ export type UserLeaveBotServerMutationVariables = Exact<{
 }>
 
 export type UserLeaveBotServerMutation = { __typename?: 'Mutation'; left?: boolean | null }
+
+export type UserSyncBotServerMutationVariables = Exact<{
+  botId: Scalars['String']['input']
+  serverId: Scalars['String']['input']
+}>
+
+export type UserSyncBotServerMutation = { __typename?: 'Mutation'; synced?: boolean | null }
+
+export type UserGetBotMembersQueryVariables = Exact<{
+  botId: Scalars['String']['input']
+  serverId: Scalars['String']['input']
+}>
+
+export type UserGetBotMembersQuery = {
+  __typename?: 'Query'
+  items?: Array<{
+    __typename?: 'BotMember'
+    id: string
+    createdAt?: Date | null
+    updatedAt?: Date | null
+    botId: string
+    userId: string
+    serverId: string
+    identityProvider: IdentityProvider
+    identity?: {
+      __typename?: 'Identity'
+      avatarUrl?: string | null
+      createdAt?: Date | null
+      expired?: boolean | null
+      id: string
+      name?: string | null
+      profile?: any | null
+      provider: IdentityProvider
+      providerId: string
+      updatedAt?: Date | null
+      url?: string | null
+      verified?: boolean | null
+      owner?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
+    } | null
+  }> | null
+}
 
 export type UserGetBotRolesQueryVariables = Exact<{
   botId: Scalars['String']['input']
@@ -2942,6 +3069,20 @@ export type AdminDeleteNetworkMutationVariables = Exact<{
 
 export type AdminDeleteNetworkMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
+export type UserGetTokenMetadataQueryVariables = Exact<{
+  cluster: NetworkCluster
+  account: Scalars['String']['input']
+}>
+
+export type UserGetTokenMetadataQuery = { __typename?: 'Query'; result?: any | null }
+
+export type UserGetTokenAccountsQueryVariables = Exact<{
+  cluster: NetworkCluster
+  account: Scalars['String']['input']
+}>
+
+export type UserGetTokenAccountsQuery = { __typename?: 'Query'; result?: any | null }
+
 export type RuleDetailsFragment = {
   __typename?: 'Rule'
   createdAt?: Date | null
@@ -4120,6 +4261,21 @@ export const BotDetailsFragmentDoc = gql`
   }
   ${BotPermissionDetailsFragmentDoc}
 `
+export const IdentityDetailsFragmentDoc = gql`
+  fragment IdentityDetails on Identity {
+    avatarUrl
+    createdAt
+    expired
+    id
+    name
+    profile
+    provider
+    providerId
+    updatedAt
+    url
+    verified
+  }
+`
 export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
     avatarUrl
@@ -4133,6 +4289,25 @@ export const UserDetailsFragmentDoc = gql`
     updatedAt
     username
   }
+`
+export const BotMemberDetailsFragmentDoc = gql`
+  fragment BotMemberDetails on BotMember {
+    id
+    createdAt
+    updatedAt
+    botId
+    userId
+    serverId
+    identity {
+      ...IdentityDetails
+      owner {
+        ...UserDetails
+      }
+    }
+    identityProvider
+  }
+  ${IdentityDetailsFragmentDoc}
+  ${UserDetailsFragmentDoc}
 `
 export const CommunityMemberDetailsFragmentDoc = gql`
   fragment CommunityMemberDetails on CommunityMember {
@@ -4190,21 +4365,6 @@ export const IdentitySummaryFragmentDoc = gql`
     name
     provider
     providerId
-  }
-`
-export const IdentityDetailsFragmentDoc = gql`
-  fragment IdentityDetails on Identity {
-    avatarUrl
-    createdAt
-    expired
-    id
-    name
-    profile
-    provider
-    providerId
-    updatedAt
-    url
-    verified
   }
 `
 export const IdentityChallengeDetailsFragmentDoc = gql`
@@ -4471,6 +4631,19 @@ export const UserLeaveBotServerDocument = gql`
   mutation userLeaveBotServer($botId: String!, $serverId: String!) {
     left: userLeaveBotServer(botId: $botId, serverId: $serverId)
   }
+`
+export const UserSyncBotServerDocument = gql`
+  mutation userSyncBotServer($botId: String!, $serverId: String!) {
+    synced: userSyncBotServer(botId: $botId, serverId: $serverId)
+  }
+`
+export const UserGetBotMembersDocument = gql`
+  query userGetBotMembers($botId: String!, $serverId: String!) {
+    items: userGetBotMembers(botId: $botId, serverId: $serverId) {
+      ...BotMemberDetails
+    }
+  }
+  ${BotMemberDetailsFragmentDoc}
 `
 export const UserGetBotRolesDocument = gql`
   query userGetBotRoles($botId: String!, $serverId: String!) {
@@ -4883,6 +5056,16 @@ export const AdminDeleteNetworkDocument = gql`
     deleted: adminDeleteNetwork(networkId: $networkId)
   }
 `
+export const UserGetTokenMetadataDocument = gql`
+  query userGetTokenMetadata($cluster: NetworkCluster!, $account: String!) {
+    result: userGetTokenMetadata(cluster: $cluster, account: $account)
+  }
+`
+export const UserGetTokenAccountsDocument = gql`
+  query userGetTokenAccounts($cluster: NetworkCluster!, $account: String!) {
+    result: userGetTokenAccounts(cluster: $cluster, account: $account)
+  }
+`
 export const AdminFindManyRuleDocument = gql`
   query adminFindManyRule($input: AdminFindManyRuleInput!) {
     paging: adminFindManyRule(input: $input) {
@@ -5098,6 +5281,8 @@ const UserDeleteBotDocumentString = print(UserDeleteBotDocument)
 const UserStartBotDocumentString = print(UserStartBotDocument)
 const UserStopBotDocumentString = print(UserStopBotDocument)
 const UserLeaveBotServerDocumentString = print(UserLeaveBotServerDocument)
+const UserSyncBotServerDocumentString = print(UserSyncBotServerDocument)
+const UserGetBotMembersDocumentString = print(UserGetBotMembersDocument)
 const UserGetBotRolesDocumentString = print(UserGetBotRolesDocument)
 const UserGetBotServersDocumentString = print(UserGetBotServersDocument)
 const UserGetBotServerDocumentString = print(UserGetBotServerDocument)
@@ -5146,6 +5331,8 @@ const AdminFindOneNetworkDocumentString = print(AdminFindOneNetworkDocument)
 const AdminCreateNetworkDocumentString = print(AdminCreateNetworkDocument)
 const AdminUpdateNetworkDocumentString = print(AdminUpdateNetworkDocument)
 const AdminDeleteNetworkDocumentString = print(AdminDeleteNetworkDocument)
+const UserGetTokenMetadataDocumentString = print(UserGetTokenMetadataDocument)
+const UserGetTokenAccountsDocumentString = print(UserGetTokenAccountsDocument)
 const AdminFindManyRuleDocumentString = print(AdminFindManyRuleDocument)
 const AdminFindOneRuleDocumentString = print(AdminFindOneRuleDocument)
 const AdminCreateRuleDocumentString = print(AdminCreateRuleDocument)
@@ -5607,6 +5794,48 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
           }),
         'userLeaveBotServer',
         'mutation',
+        variables,
+      )
+    },
+    userSyncBotServer(
+      variables: UserSyncBotServerMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserSyncBotServerMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserSyncBotServerMutation>(UserSyncBotServerDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userSyncBotServer',
+        'mutation',
+        variables,
+      )
+    },
+    userGetBotMembers(
+      variables: UserGetBotMembersQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserGetBotMembersQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserGetBotMembersQuery>(UserGetBotMembersDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userGetBotMembers',
+        'query',
         variables,
       )
     },
@@ -6604,6 +6833,48 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
           }),
         'adminDeleteNetwork',
         'mutation',
+        variables,
+      )
+    },
+    userGetTokenMetadata(
+      variables: UserGetTokenMetadataQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserGetTokenMetadataQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserGetTokenMetadataQuery>(UserGetTokenMetadataDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userGetTokenMetadata',
+        'query',
+        variables,
+      )
+    },
+    userGetTokenAccounts(
+      variables: UserGetTokenAccountsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserGetTokenAccountsQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserGetTokenAccountsQuery>(UserGetTokenAccountsDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userGetTokenAccounts',
+        'query',
         variables,
       )
     },

@@ -14,7 +14,7 @@ export function AdminUserDetailFeature() {
     return <UiLoader />
   }
   if (!item) {
-    return <UiError message="User not found" />
+    return <UiError message="User not found." />
   }
 
   return (
