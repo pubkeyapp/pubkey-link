@@ -123,22 +123,31 @@ export class ApiBackupService {
   async restoreBackup(name: string) {
     const backup = await this.readBackupFile(name)
 
-    const userIds = await this.core.data.user
-      .findMany({ select: { id: true } })
-      .then((users) => users.map((user) => user.id))
+    const [usernames, userIds] = await Promise.all([
+      this.core.data.user.findMany({ select: { username: true } }).then((users) => users.map((user) => user.username)),
+      this.core.data.user.findMany({ select: { id: true } }).then((users) => users.map((user) => user.id)),
+    ])
 
-    const toCreate = backup.data.users.filter((user: { id: string }) => !userIds.includes(user.id))
+    const toCreate = backup.data.users.filter((user: { id: string; username: string }) => {
+      return !userIds.includes(user.id) && !usernames.includes(user.username)
+    })
     if (!toCreate.length) {
       this.logger.verbose(`No new users to create`)
       return true
     }
     for (const user of toCreate) {
       const { identities, ...userData } = user
-      const newUser = await this.core.data.user.create({
-        data: { ...userData, identities: { create: identities } },
-      })
+      try {
+        const newUser = await this.core.data.user.create({
+          data: { ...userData, identities: { create: identities } },
+        })
 
-      this.logger.verbose(`Created user ${newUser.username} with id ${newUser.id} and ${identities.length} identities`)
+        this.logger.verbose(
+          `Created user ${newUser.username} with id ${newUser.id} and ${identities.length} identities`,
+        )
+      } catch (error) {
+        this.logger.error(`Failed to create user ${user.username}: ${error}`)
+      }
     }
     return true
   }

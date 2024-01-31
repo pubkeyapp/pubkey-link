@@ -4,7 +4,7 @@ import { NetworkCluster } from '@pubkey-link/api-network-data-access'
 @InputType()
 export class UserCreateCommunityInput {
   @Field(() => NetworkCluster)
-  cluster: NetworkCluster
+  cluster!: NetworkCluster
   @Field()
   name!: string
   @Field({ nullable: true })

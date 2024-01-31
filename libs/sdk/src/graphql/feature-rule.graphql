@@ -142,3 +142,7 @@ mutation userValidateRule($ruleId: String!, $address: String!) {
     ...RuleConditionDetails
   }
 }
+
+mutation userValidateRules($communityId: String!) {
+  result: userValidateRules(communityId: $communityId)
+}

@@ -4,16 +4,27 @@ import { web3JsRpc } from '@metaplex-foundation/umi-rpc-web3js'
 import { Injectable, Logger } from '@nestjs/common'
 import { NetworkCluster, Prisma } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { getAnybodiesVaultMap } from '@pubkey-link/api-network-util'
+import { AnybodiesVaultSnapshot, getAnybodiesVaultMap, getAnybodiesVaultSnapshot } from '@pubkey-link/api-network-util'
 import { getTokenMetadata, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { TokenMetadata } from '@solana/spl-token-metadata'
 import { AccountInfo, Connection, ParsedAccountData, PublicKey } from '@solana/web3.js'
 import { ChainId, Client, Token } from '@solflare-wallet/utl-sdk'
+import { LRUCache } from 'lru-cache'
 import { ApiAdminNetworkService } from './api-admin-network.service'
 import { NetworkAsset } from './entity/network-asset.entity'
 
 @Injectable()
 export class ApiNetworkService {
+  private readonly cacheAnybodiesVaults = new LRUCache<string, AnybodiesVaultSnapshot>({
+    max: 1000,
+    ttl: 1000 * 60 * 60, // 1 hour
+  })
+
+  private readonly solanaNetworkAssetsCache = new LRUCache<string, NetworkAsset[]>({
+    max: 1000,
+    ttl: 1000 * 60 * 60, // 1 hour
+  })
+
   private readonly logger = new Logger(ApiNetworkService.name)
   private readonly connections: Map<NetworkCluster, Connection> = new Map()
   private readonly umis: Map<NetworkCluster, Umi> = new Map()
@@ -24,6 +35,27 @@ export class ApiNetworkService {
     return getAnybodiesVaultMap({ vaultId })
       .then((map) => map.find((item) => item.owner === owner)?.accounts ?? [])
       .then((accounts) => ({ owner, accounts, amount: `${accounts.length}` }))
+  }
+
+  async resolveAnybodiesAssets({ owners, vaultId }: { owners: string[]; vaultId: string }): Promise<NetworkAsset[]> {
+    const snapshot: AnybodiesVaultSnapshot = await this.getCachedAnybodiesVaultSnapshot({ vaultId }).then((snapshot) =>
+      snapshot.filter((item) => owners.includes(item.owner)),
+    )
+
+    const ownerMap: Record<string, NetworkAsset> = snapshot.reduce((acc, curr) => {
+      const asset = acc[curr.owner] ?? { owner: curr.owner, accounts: [], amount: '0' }
+      return {
+        ...acc,
+        [curr.owner]: {
+          ...asset,
+          accounts: [...asset.accounts, curr.account],
+          amount: `${asset.accounts.length + 1}`,
+          group: `vault:${vaultId}`,
+        },
+      }
+    }, {} as Record<string, NetworkAsset>)
+
+    return Object.values(ownerMap)
   }
 
   async getAccountInfo({ cluster, account }: { cluster: NetworkCluster; account: string }) {
@@ -106,51 +138,152 @@ export class ApiNetworkService {
     )
   }
 
-  //  "7j67eWNT9R6iGkg1MP6oHntv9Vo4zSwCeKY9GZTPo79w",
-  //       "8C2NHZPDb4C7t5n3SZHXRjcfCQVAYAN9ynqgk47MrEs",
-  //       "AgcALrgjGhjmEWGEuvwkJk8Ti9BKSYdG2ZEpsaZaBUQV",
-  //       "CMCVKpGc3yAmSGXTuyYHcFesRhArSGhrWwuTc7q3wEX1"
-  //
-  // "9ojN19VvToGRvS9fDhDKqrmCvyY2V7yYYTSB714DcUde",
-  // "9YgGKJhKsNZNJCbTgkycuXJLK2Wcc23bbETpyKY9FFeD",
-  // "AaFdz1NKXKuNZJLbfMP3YAfSVT8ricq7uYKUoaS5pyko"
-  //     "2gsip17gKrakhCfkK3EFQpYRA5fK8uYBdqJjXdju4ffW",
-  //       "6DyjGURjGg8i32pFJDRMgCUDVrN5jWGPHvHFdDbkAXMx",
-  //       "FCC35WtadGHRuyC2ExJBNy2WJrCWRiRDwt7bUdcEUn5v",
-  //       "FnwwSj7ybiUrmQ2Eui9REC4Up1ygXNdT6oHNrP2LxVuR",
-  //       "GRHQ1uoFfY7ek5YPpUX3LunTTwoV7C3rbKUPNfHyw3vH"
-
   async getAsset({ cluster, account }: { cluster: NetworkCluster; account: string }) {
     return this.getUmi(cluster).then((res) => res.rpc.getAsset(publicKey(account)))
   }
 
-  async resolveSolanaNonFungibleAsset({
-    account,
+  async resolveSolanaNonFungibleAssetXX({
+    groups,
     cluster,
     owner,
   }: {
-    account: string
+    groups: string[]
     cluster: NetworkCluster
     owner: string
-  }) {
-    return this.getAllAssetsByOwner({ owner, cluster, groups: account })
+  }): Promise<NetworkAsset> {
+    return this.getAllAssetsByOwner({ owner, cluster, groups })
       .then((assets) => assets.items?.map((item) => item.id?.toString()) ?? [])
       .then((accounts) => ({ owner, accounts, amount: `${accounts.length}` }))
   }
 
-  async resolveSolanaFungibleAsset({
-    account,
+  async resolveSolanaFungibleAssetsForOwner({
+    cluster,
+    mint,
+    program,
+    owner,
+  }: {
+    cluster: NetworkCluster
+    owner: string
+    program: string
+    mint: string
+  }): Promise<NetworkAsset[]> {
+    return this.getConnection(cluster)
+      .then((conn) =>
+        conn.getParsedTokenAccountsByOwner(new PublicKey(owner), {
+          mint: new PublicKey(mint),
+          programId: new PublicKey(program),
+        }),
+      )
+      .then((res) => {
+        const assets: NetworkAsset[] = []
+        const accounts = res.value ?? []
+
+        for (const account of accounts) {
+          const asset: NetworkAsset = {
+            group: mint,
+            owner,
+            accounts: [account.pubkey.toBase58()],
+            amount: account.account.data.parsed.info.tokenAmount.uiAmount,
+          }
+          assets.push(asset)
+        }
+
+        return assets
+      })
+  }
+
+  async resolveSolanaFungibleAssetsForOwners({
+    cluster,
+    mint,
+    program,
+    owners,
+  }: {
+    cluster: NetworkCluster
+    owners: string[]
+    program: string
+    mint: string
+  }) {
+    this.logger.verbose(`resolveSolanaFungibleAssetsForOwners: ${owners.length} owners`)
+    const results: NetworkAsset[] = []
+
+    for (const owner of owners) {
+      const cacheKey = `solanaFungibleAssets:${cluster}:${owner}:${mint}:${program}`
+
+      if (!this.solanaNetworkAssetsCache.has(cacheKey)) {
+        const res: NetworkAsset[] = await this.resolveSolanaFungibleAssetsForOwner({ owner, cluster, mint, program })
+        this.solanaNetworkAssetsCache.set(cacheKey, res)
+        this.logger.verbose(`resolveSolanaFungibleAssetsForOwners: Cache miss for ${cacheKey}`)
+      }
+      const found = this.solanaNetworkAssetsCache.get(cacheKey)
+      if (found) {
+        results.push(...found)
+      }
+    }
+    return results
+  }
+
+  async resolveSolanaNonFungibleAssetsForOwner({
+    groups,
     cluster,
     owner,
   }: {
-    owner: string
+    groups: string[]
     cluster: NetworkCluster
-    account: string
-  }) {
-    console.log('getSolanaTokenAmount', { cluster, account, owner })
-    const accounts: string[] = []
+    owner: string
+  }): Promise<NetworkAsset[]> {
+    return this.getAllAssetsByOwner({ owner, cluster, groups }).then((assets) => {
+      const res: NetworkAsset[] = []
 
-    return { owner, accounts, amount: `${accounts.length}` }
+      const map = assets.items?.reduce((acc, curr) => {
+        const group = findAssetGroupValue(curr) ?? ''
+        const id = curr.id?.toString() ?? ''
+        return {
+          ...acc,
+          [group]: [...(acc[group] ?? []), id],
+        }
+      }, {} as Record<string, string[]>)
+
+      // For each group, create an asset
+      for (const group of Object.keys(map)) {
+        const accounts = map[group]
+        if (!accounts.length) {
+          console.log(`No accounts in ${group} for ${owner}`)
+          continue
+        }
+        res.push({ owner, accounts, amount: `${map[group].length}`, group })
+      }
+
+      return res
+    })
+    // .then((accounts) => ({ owner, accounts, amount: `${accounts.length}` }))
+  }
+
+  async resolveSolanaNonFungibleAssetsForOwners({
+    groups,
+    cluster,
+    owners,
+  }: {
+    groups: string[]
+    cluster: NetworkCluster
+    owners: string[]
+  }): Promise<NetworkAsset[]> {
+    this.logger.verbose(`resolveSolanaNonFungibleAssets: ${owners.length} owners, ${groups.length} groups`)
+    const results: NetworkAsset[] = []
+
+    for (const owner of owners) {
+      const cacheKey = `solanaNonFungibleAssets:${cluster}:${owner}:${groups.join(',')}`
+
+      if (!this.solanaNetworkAssetsCache.has(cacheKey)) {
+        const res: NetworkAsset[] = await this.resolveSolanaNonFungibleAssetsForOwner({ owner, cluster, groups })
+        this.solanaNetworkAssetsCache.set(cacheKey, res)
+        this.logger.verbose(`resolveSolanaNonFungibleAssets: Cache miss for ${cacheKey}`)
+      }
+      const found = this.solanaNetworkAssetsCache.get(cacheKey)
+      if (found) {
+        results.push(...found)
+      }
+    }
+    return results
   }
 
   private async getAllAssetsByOwner({
@@ -160,9 +293,9 @@ export class ApiNetworkService {
   }: {
     owner: string
     cluster: NetworkCluster
-    groups?: string
+    groups: string[]
   }) {
-    const tag = `getAllAssetsByOwner(${owner}, ${cluster}, ${groups})`
+    const tag = `getAllAssetsByOwner(${owner}, ${cluster}, ${groups.join(',')})`
     const umi = await this.getUmi(cluster)
 
     // Create a response list similar to the one returned by the API
@@ -177,12 +310,12 @@ export class ApiNetworkService {
         page,
       })
       this.logger.verbose(`${tag} - page ${page} - ${assets.items.length} assets`)
-      if (assets.items.length === 0) {
-        break
-      }
       list.items.push(...assets.items)
       list.total += assets.total
       page++
+      if (assets.items.length === 0 || assets.items.length < list.limit) {
+        break
+      }
     }
 
     // Filter the assets by group
@@ -247,6 +380,15 @@ export class ApiNetworkService {
     }
     return umi
   }
+
+  private async getCachedAnybodiesVaultSnapshot({ vaultId }: { vaultId: string }): Promise<AnybodiesVaultSnapshot> {
+    if (!this.cacheAnybodiesVaults.has(vaultId)) {
+      this.logger.verbose(`getCachedAnybodiesVaultSnapshot: Cache miss for vaultId: ${vaultId}`)
+      const assets = await getAnybodiesVaultSnapshot({ vaultId })
+      this.cacheAnybodiesVaults.set(vaultId, assets)
+    }
+    return this.cacheAnybodiesVaults.get(vaultId) ?? []
+  }
 }
 /**
  * Find the collection group value for the asset
@@ -259,10 +401,10 @@ export function findAssetGroupValue(asset: DasApiAsset) {
 /**
  * Filter assets by optional list of collections (comma separated)
  * @param items DasApiAsset[] List of assets to filter
- * @param groups string Optional list of groups (comma separated)
+ * @param groups string[] Optional list of groups
  */
-export function findAssetsByGroup(items: DasApiAsset[], groups?: string) {
-  return items.filter((item) => !groups || groups.split(',').includes(findAssetGroupValue(item) ?? ''))
+export function findAssetsByGroup(items: DasApiAsset[], groups: string[]) {
+  return items.filter((item) => groups?.length === 0 || groups.includes(findAssetGroupValue(item) ?? ''))
 }
 
 function getChainId(cluster: NetworkCluster): ChainId {

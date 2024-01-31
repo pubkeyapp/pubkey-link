@@ -385,6 +385,7 @@ type Mutation {
   userUpdateRuleCondition(input: UserUpdateRuleConditionInput!, ruleConditionId: String!): RuleCondition
   userUpdateUser(input: UserUpdateUserInput!): User
   userValidateRule(address: String!, ruleId: String!): [RuleCondition!]
+  userValidateRules(communityId: String!): JSON
   userVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
 }
 
@@ -404,6 +405,7 @@ type Network {
 type NetworkAsset {
   accounts: [String!]!
   amount: String!
+  group: String
   owner: String!
 }
 

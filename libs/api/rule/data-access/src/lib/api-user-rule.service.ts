@@ -124,4 +124,8 @@ export class ApiUserRuleService {
 
     return this.resolver.resolve(rule.community.cluster, rule.conditions, address)
   }
+
+  async validateRules(userId: string, communityId: string) {
+    return this.resolver.validateRules(userId, communityId)
+  }
 }

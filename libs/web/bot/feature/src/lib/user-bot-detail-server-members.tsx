@@ -1,4 +1,4 @@
-import { Button, Group, Table } from '@mantine/core'
+import { Button, Group, Table, Text } from '@mantine/core'
 import { Bot } from '@pubkey-link/sdk'
 import { useUserGetBotMembers, useUserManageBot } from '@pubkey-link/web-bot-data-access'
 import { UserUiItem } from '@pubkey-link/web-user-ui'
@@ -24,6 +24,9 @@ export function UserBotDetailServerMembers({ bot, serverId }: { bot: Bot; server
                 <Table.Th>Name</Table.Th>
                 <Table.Th align={'right'}>
                   <Group justify="end">
+                    <Text c="dimmed" size="xs">
+                      {items.length} members
+                    </Text>
                     <Button
                       loading={query.isLoading}
                       size="xs"

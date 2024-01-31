@@ -411,6 +411,7 @@ export type Mutation = {
   userUpdateRuleCondition?: Maybe<RuleCondition>
   userUpdateUser?: Maybe<User>
   userValidateRule?: Maybe<Array<RuleCondition>>
+  userValidateRules?: Maybe<Scalars['JSON']['output']>
   userVerifyIdentityChallenge?: Maybe<IdentityChallenge>
 }
 
@@ -649,6 +650,10 @@ export type MutationUserValidateRuleArgs = {
   ruleId: Scalars['String']['input']
 }
 
+export type MutationUserValidateRulesArgs = {
+  communityId: Scalars['String']['input']
+}
+
 export type MutationUserVerifyIdentityChallengeArgs = {
   input: VerifyIdentityChallengeInput
 }
@@ -671,6 +676,7 @@ export type NetworkAsset = {
   __typename?: 'NetworkAsset'
   accounts: Array<Scalars['String']['output']>
   amount: Scalars['String']['output']
+  group?: Maybe<Scalars['String']['output']>
   owner: Scalars['String']['output']
 }
 
@@ -4102,6 +4108,12 @@ export type UserValidateRuleMutation = {
   }> | null
 }
 
+export type UserValidateRulesMutationVariables = Exact<{
+  communityId: Scalars['String']['input']
+}>
+
+export type UserValidateRulesMutation = { __typename?: 'Mutation'; result?: any | null }
+
 export type UserSummaryFragment = {
   __typename?: 'User'
   avatarUrl?: string | null
@@ -5311,6 +5323,11 @@ export const UserValidateRuleDocument = gql`
   }
   ${RuleConditionDetailsFragmentDoc}
 `
+export const UserValidateRulesDocument = gql`
+  mutation userValidateRules($communityId: String!) {
+    result: userValidateRules(communityId: $communityId)
+  }
+`
 export const AdminCreateUserDocument = gql`
   mutation adminCreateUser($input: AdminCreateUserInput!) {
     created: adminCreateUser(input: $input) {
@@ -5487,6 +5504,7 @@ const UserDeleteRuleDocumentString = print(UserDeleteRuleDocument)
 const UserDeleteRuleConditionDocumentString = print(UserDeleteRuleConditionDocument)
 const UserDeleteRulePermissionDocumentString = print(UserDeleteRulePermissionDocument)
 const UserValidateRuleDocumentString = print(UserValidateRuleDocument)
+const UserValidateRulesDocumentString = print(UserValidateRulesDocument)
 const AdminCreateUserDocumentString = print(AdminCreateUserDocument)
 const AdminDeleteUserDocumentString = print(AdminDeleteUserDocument)
 const AdminFindManyUserDocumentString = print(AdminFindManyUserDocument)
@@ -7351,6 +7369,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'userValidateRule',
+        'mutation',
+        variables,
+      )
+    },
+    userValidateRules(
+      variables: UserValidateRulesMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserValidateRulesMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserValidateRulesMutation>(UserValidateRulesDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userValidateRules',
         'mutation',
         variables,
       )

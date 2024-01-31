@@ -72,16 +72,27 @@ model Community {
 }
 
 model CommunityMember {
-  id          String        @id @default(cuid())
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id          String                @id @default(cuid())
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
   role        CommunityRole
-  community   Community     @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  community   Community             @relation(fields: [communityId], references: [id], onDelete: Cascade)
   communityId String
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
+  rules       CommunityMemberRule[]
 
   @@unique([communityId, userId])
+}
+
+model CommunityMemberRule {
+  id        String          @id @default(cuid())
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  member    CommunityMember @relation(fields: [memberId], references: [id])
+  memberId  String
+  rule      Rule            @relation(fields: [ruleId], references: [id])
+  ruleId    String
 }
 
 model Identity {
@@ -149,15 +160,16 @@ model NetworkToken {
 }
 
 model Rule {
-  id          String           @id @default(cuid())
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  community   Community        @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  id          String                @id @default(cuid())
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  community   Community             @relation(fields: [communityId], references: [id], onDelete: Cascade)
   communityId String
   name        String
   description String?
   conditions  RuleCondition[]
   permissions RulePermission[]
+  members     CommunityMemberRule[]
 }
 
 model RuleCondition {

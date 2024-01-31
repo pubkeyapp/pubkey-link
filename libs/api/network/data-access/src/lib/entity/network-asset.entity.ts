@@ -6,6 +6,8 @@ export class NetworkAsset {
   accounts!: string[]
   @Field()
   amount!: string
+  @Field({ nullable: true })
+  group?: string
   @Field()
   owner!: string
 }

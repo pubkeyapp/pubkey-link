@@ -1,10 +1,10 @@
-import { Rule, RuleCondition } from '@pubkey-link/sdk'
-import { useValidateRule } from '@pubkey-link/web-rule-data-access'
-import { useCallback, useEffect, useState } from 'react'
-import { UiCard, UiDebug, UiInfo, UiStack, UiWarning } from '@pubkey-ui/core'
-import { UiAddressInput } from '@pubkey-link/web-ui-core'
 import { Button, Group } from '@mantine/core'
 import { useLocalStorage } from '@mantine/hooks'
+import { Rule, RuleCondition } from '@pubkey-link/sdk'
+import { useUserValidateRule } from '@pubkey-link/web-rule-data-access'
+import { UiAddressInput } from '@pubkey-link/web-ui-core'
+import { UiCard, UiDebug, UiInfo, UiStack, UiWarning } from '@pubkey-ui/core'
+import { useCallback, useEffect, useState } from 'react'
 
 export function useRecentAddress() {
   const [addresses, setAddresses] = useLocalStorage<string[]>({
@@ -26,7 +26,7 @@ export function useRecentAddress() {
 
 export function UserRuleDetailValidateTab({ rule }: { rule: Rule }) {
   const { addAddress, addresses } = useRecentAddress()
-  const validate = useValidateRule({ ruleId: rule.id })
+  const validate = useUserValidateRule({ ruleId: rule.id })
   const [address, setAddress] = useState('')
   const [result, setResult] = useState<RuleCondition[] | undefined>()
 

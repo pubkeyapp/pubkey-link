@@ -1,6 +1,6 @@
 import { UseGuards } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
-import { ApiAuthGraphQLUserGuard } from '@pubkey-link/api-auth-data-access'
+import { ApiAuthGraphQLUserGuard, CtxUserId } from '@pubkey-link/api-auth-data-access'
 import {
   ApiRuleService,
   Rule,
@@ -14,6 +14,7 @@ import {
   UserUpdateRuleConditionInput,
   UserUpdateRuleInput,
 } from '@pubkey-link/api-rule-data-access'
+import { GraphQLJSON } from 'graphql-scalars'
 
 @Resolver()
 @UseGuards(ApiAuthGraphQLUserGuard)
@@ -63,6 +64,11 @@ export class ApiUserRuleResolver {
   @Mutation(() => [RuleCondition], { nullable: true })
   userValidateRule(@Args('ruleId') ruleId: string, @Args('address') address: string) {
     return this.service.user.validateRule(ruleId, address)
+  }
+
+  @Mutation(() => GraphQLJSON, { nullable: true })
+  userValidateRules(@CtxUserId() userId: string, @Args('communityId') communityId: string) {
+    return this.service.user.validateRules(userId, communityId)
   }
 
   @Mutation(() => Rule, { nullable: true })
