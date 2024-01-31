@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { ApiRuleResolverService } from './api-rule-resolver.service'
+import { UserCreateRuleConditionInput } from './dto/user-create-rule-condition.input'
 import { UserCreateRulePermissionInput } from './dto/user-create-rule-permission.input'
 import { UserCreateRuleInput } from './dto/user-create-rule.input'
 import { UserFindManyRuleInput } from './dto/user-find-many-rule.input'
+import { UserUpdateRuleConditionInput } from './dto/user-update-rule-condition-input'
 import { UserUpdateRuleInput } from './dto/user-update-rule.input'
 import { RuleCondition } from './entity/rule-condition.entity'
 import { RulePaging } from './entity/rule-paging.entity'
@@ -16,6 +18,22 @@ export class ApiUserRuleService {
   async createRule(input: UserCreateRuleInput) {
     return this.core.data.rule.create({ data: input })
   }
+
+  async createRuleCondition(input: UserCreateRuleConditionInput) {
+    return this.core.data.ruleCondition.create({
+      data: {
+        account: input.account,
+        amount: input.amount,
+        config: input.config ?? undefined,
+        filters: input.filters ?? undefined,
+        name: input.type.toString(),
+        rule: { connect: { id: input.ruleId } },
+        token: input.tokenId ? { connect: { id: input.tokenId } } : undefined,
+        type: input.type,
+      },
+    })
+  }
+
   async createRulePermission(input: UserCreateRulePermissionInput) {
     return this.core.data.rulePermission.create({
       data: {
@@ -32,6 +50,17 @@ export class ApiUserRuleService {
 
   async deleteRule(ruleId: string) {
     const deleted = await this.core.data.rule.delete({ where: { id: ruleId } })
+    return !!deleted
+  }
+
+  async deleteRuleCondition(ruleConditionId: string) {
+    const found = await this.core.data.ruleCondition.findUnique({
+      where: { id: ruleConditionId },
+    })
+    if (!found) {
+      throw new Error('Rule permission not found')
+    }
+    const deleted = await this.core.data.ruleCondition.delete({ where: { id: ruleConditionId } })
     return !!deleted
   }
 
@@ -70,6 +99,17 @@ export class ApiUserRuleService {
 
   async updateRule(ruleId: string, input: UserUpdateRuleInput) {
     return this.core.data.rule.update({ where: { id: ruleId }, data: input })
+  }
+
+  async updateRuleCondition(ruleConditionId: string, input: UserUpdateRuleConditionInput) {
+    return this.core.data.ruleCondition.update({
+      where: { id: ruleConditionId },
+      data: {
+        ...input,
+        config: input.config ?? undefined,
+        filters: input.filters ?? undefined,
+      },
+    })
   }
 
   async validateRule(ruleId: string, address: string): Promise<RuleCondition[]> {

@@ -390,12 +390,14 @@ export type Mutation = {
   userCreateCommunity?: Maybe<Community>
   userCreateCommunityMember?: Maybe<CommunityMember>
   userCreateRule?: Maybe<Rule>
+  userCreateRuleCondition?: Maybe<RuleCondition>
   userCreateRulePermission?: Maybe<RulePermission>
   userDeleteBot?: Maybe<Scalars['Boolean']['output']>
   userDeleteCommunity?: Maybe<Scalars['Boolean']['output']>
   userDeleteCommunityMember?: Maybe<Scalars['Boolean']['output']>
   userDeleteIdentity?: Maybe<Scalars['Boolean']['output']>
   userDeleteRule?: Maybe<Scalars['Boolean']['output']>
+  userDeleteRuleCondition?: Maybe<Scalars['Boolean']['output']>
   userDeleteRulePermission?: Maybe<Scalars['Boolean']['output']>
   userLeaveBotServer?: Maybe<Scalars['Boolean']['output']>
   userLinkIdentity?: Maybe<Identity>
@@ -406,6 +408,7 @@ export type Mutation = {
   userUpdateCommunity?: Maybe<Community>
   userUpdateCommunityMember?: Maybe<CommunityMember>
   userUpdateRule?: Maybe<Rule>
+  userUpdateRuleCondition?: Maybe<RuleCondition>
   userUpdateUser?: Maybe<User>
   userValidateRule?: Maybe<Array<RuleCondition>>
   userVerifyIdentityChallenge?: Maybe<IdentityChallenge>
@@ -554,6 +557,10 @@ export type MutationUserCreateRuleArgs = {
   input: UserCreateRuleInput
 }
 
+export type MutationUserCreateRuleConditionArgs = {
+  input: UserCreateRuleConditionInput
+}
+
 export type MutationUserCreateRulePermissionArgs = {
   input: UserCreateRulePermissionInput
 }
@@ -576,6 +583,10 @@ export type MutationUserDeleteIdentityArgs = {
 
 export type MutationUserDeleteRuleArgs = {
   ruleId: Scalars['String']['input']
+}
+
+export type MutationUserDeleteRuleConditionArgs = {
+  ruleConditionId: Scalars['String']['input']
 }
 
 export type MutationUserDeleteRulePermissionArgs = {
@@ -622,6 +633,11 @@ export type MutationUserUpdateCommunityMemberArgs = {
 export type MutationUserUpdateRuleArgs = {
   input: UserUpdateRuleInput
   ruleId: Scalars['String']['input']
+}
+
+export type MutationUserUpdateRuleConditionArgs = {
+  input: UserUpdateRuleConditionInput
+  ruleConditionId: Scalars['String']['input']
 }
 
 export type MutationUserUpdateUserArgs = {
@@ -1011,6 +1027,16 @@ export type UserCreateCommunityMemberInput = {
   userId: Scalars['String']['input']
 }
 
+export type UserCreateRuleConditionInput = {
+  account?: InputMaybe<Scalars['String']['input']>
+  amount?: InputMaybe<Scalars['String']['input']>
+  config?: InputMaybe<Scalars['JSON']['input']>
+  filters?: InputMaybe<Scalars['JSON']['input']>
+  ruleId: Scalars['String']['input']
+  tokenId?: InputMaybe<Scalars['String']['input']>
+  type: RuleConditionType
+}
+
 export type UserCreateRuleInput = {
   communityId: Scalars['String']['input']
   description?: InputMaybe<Scalars['String']['input']>
@@ -1101,6 +1127,14 @@ export type UserUpdateCommunityInput = {
 
 export type UserUpdateCommunityMemberInput = {
   role: CommunityRole
+}
+
+export type UserUpdateRuleConditionInput = {
+  account?: InputMaybe<Scalars['String']['input']>
+  amount?: InputMaybe<Scalars['String']['input']>
+  config?: InputMaybe<Scalars['JSON']['input']>
+  filters?: InputMaybe<Scalars['JSON']['input']>
+  tokenId?: InputMaybe<Scalars['String']['input']>
 }
 
 export type UserUpdateRuleInput = {
@@ -3813,6 +3847,44 @@ export type UserCreateRuleMutation = {
   } | null
 }
 
+export type UserCreateRuleConditionMutationVariables = Exact<{
+  input: UserCreateRuleConditionInput
+}>
+
+export type UserCreateRuleConditionMutation = {
+  __typename?: 'Mutation'
+  created?: {
+    __typename?: 'RuleCondition'
+    createdAt?: Date | null
+    id: string
+    type: RuleConditionType
+    account?: string | null
+    amount?: string | null
+    filters?: any | null
+    config?: any | null
+    tokenId?: string | null
+    updatedAt?: Date | null
+    valid?: boolean | null
+    token?: {
+      __typename?: 'NetworkToken'
+      id: string
+      createdAt?: Date | null
+      updatedAt?: Date | null
+      cluster: NetworkCluster
+      type: NetworkTokenType
+      account: string
+      program: string
+      name: string
+      symbol?: string | null
+      description?: string | null
+      imageUrl?: string | null
+      metadataUrl?: string | null
+      raw?: any | null
+    } | null
+    asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+  } | null
+}
+
 export type UserCreateRulePermissionMutationVariables = Exact<{
   input: UserCreateRulePermissionInput
 }>
@@ -3934,11 +4006,56 @@ export type UserUpdateRuleMutation = {
   } | null
 }
 
+export type UserUpdateRuleConditionMutationVariables = Exact<{
+  ruleConditionId: Scalars['String']['input']
+  input: UserUpdateRuleConditionInput
+}>
+
+export type UserUpdateRuleConditionMutation = {
+  __typename?: 'Mutation'
+  updated?: {
+    __typename?: 'RuleCondition'
+    createdAt?: Date | null
+    id: string
+    type: RuleConditionType
+    account?: string | null
+    amount?: string | null
+    filters?: any | null
+    config?: any | null
+    tokenId?: string | null
+    updatedAt?: Date | null
+    valid?: boolean | null
+    token?: {
+      __typename?: 'NetworkToken'
+      id: string
+      createdAt?: Date | null
+      updatedAt?: Date | null
+      cluster: NetworkCluster
+      type: NetworkTokenType
+      account: string
+      program: string
+      name: string
+      symbol?: string | null
+      description?: string | null
+      imageUrl?: string | null
+      metadataUrl?: string | null
+      raw?: any | null
+    } | null
+    asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+  } | null
+}
+
 export type UserDeleteRuleMutationVariables = Exact<{
   ruleId: Scalars['String']['input']
 }>
 
 export type UserDeleteRuleMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
+export type UserDeleteRuleConditionMutationVariables = Exact<{
+  ruleConditionId: Scalars['String']['input']
+}>
+
+export type UserDeleteRuleConditionMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
 export type UserDeleteRulePermissionMutationVariables = Exact<{
   rulePermissionId: Scalars['String']['input']
@@ -5139,6 +5256,14 @@ export const UserCreateRuleDocument = gql`
   }
   ${RuleDetailsFragmentDoc}
 `
+export const UserCreateRuleConditionDocument = gql`
+  mutation userCreateRuleCondition($input: UserCreateRuleConditionInput!) {
+    created: userCreateRuleCondition(input: $input) {
+      ...RuleConditionDetails
+    }
+  }
+  ${RuleConditionDetailsFragmentDoc}
+`
 export const UserCreateRulePermissionDocument = gql`
   mutation userCreateRulePermission($input: UserCreateRulePermissionInput!) {
     created: userCreateRulePermission(input: $input) {
@@ -5155,9 +5280,22 @@ export const UserUpdateRuleDocument = gql`
   }
   ${RuleDetailsFragmentDoc}
 `
+export const UserUpdateRuleConditionDocument = gql`
+  mutation userUpdateRuleCondition($ruleConditionId: String!, $input: UserUpdateRuleConditionInput!) {
+    updated: userUpdateRuleCondition(ruleConditionId: $ruleConditionId, input: $input) {
+      ...RuleConditionDetails
+    }
+  }
+  ${RuleConditionDetailsFragmentDoc}
+`
 export const UserDeleteRuleDocument = gql`
   mutation userDeleteRule($ruleId: String!) {
     deleted: userDeleteRule(ruleId: $ruleId)
+  }
+`
+export const UserDeleteRuleConditionDocument = gql`
+  mutation userDeleteRuleCondition($ruleConditionId: String!) {
+    deleted: userDeleteRuleCondition(ruleConditionId: $ruleConditionId)
   }
 `
 export const UserDeleteRulePermissionDocument = gql`
@@ -5341,9 +5479,12 @@ const AdminDeleteRuleDocumentString = print(AdminDeleteRuleDocument)
 const UserFindManyRuleDocumentString = print(UserFindManyRuleDocument)
 const UserFindOneRuleDocumentString = print(UserFindOneRuleDocument)
 const UserCreateRuleDocumentString = print(UserCreateRuleDocument)
+const UserCreateRuleConditionDocumentString = print(UserCreateRuleConditionDocument)
 const UserCreateRulePermissionDocumentString = print(UserCreateRulePermissionDocument)
 const UserUpdateRuleDocumentString = print(UserUpdateRuleDocument)
+const UserUpdateRuleConditionDocumentString = print(UserUpdateRuleConditionDocument)
 const UserDeleteRuleDocumentString = print(UserDeleteRuleDocument)
+const UserDeleteRuleConditionDocumentString = print(UserDeleteRuleConditionDocument)
 const UserDeleteRulePermissionDocumentString = print(UserDeleteRulePermissionDocument)
 const UserValidateRuleDocumentString = print(UserValidateRuleDocument)
 const AdminCreateUserDocumentString = print(AdminCreateUserDocument)
@@ -7046,6 +7187,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
+    userCreateRuleCondition(
+      variables: UserCreateRuleConditionMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserCreateRuleConditionMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserCreateRuleConditionMutation>(UserCreateRuleConditionDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userCreateRuleCondition',
+        'mutation',
+        variables,
+      )
+    },
     userCreateRulePermission(
       variables: UserCreateRulePermissionMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -7088,6 +7250,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
+    userUpdateRuleCondition(
+      variables: UserUpdateRuleConditionMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserUpdateRuleConditionMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserUpdateRuleConditionMutation>(UserUpdateRuleConditionDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userUpdateRuleCondition',
+        'mutation',
+        variables,
+      )
+    },
     userDeleteRule(
       variables: UserDeleteRuleMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -7105,6 +7288,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'userDeleteRule',
+        'mutation',
+        variables,
+      )
+    },
+    userDeleteRuleCondition(
+      variables: UserDeleteRuleConditionMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserDeleteRuleConditionMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserDeleteRuleConditionMutation>(UserDeleteRuleConditionDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userDeleteRuleCondition',
         'mutation',
         variables,
       )
@@ -7610,6 +7814,18 @@ export function UserCreateCommunityMemberInputSchema(): z.ZodObject<Properties<U
   })
 }
 
+export function UserCreateRuleConditionInputSchema(): z.ZodObject<Properties<UserCreateRuleConditionInput>> {
+  return z.object({
+    account: z.string().nullish(),
+    amount: z.string().nullish(),
+    config: definedNonNullAnySchema.nullish(),
+    filters: definedNonNullAnySchema.nullish(),
+    ruleId: z.string(),
+    tokenId: z.string().nullish(),
+    type: RuleConditionTypeSchema,
+  })
+}
+
 export function UserCreateRuleInputSchema(): z.ZodObject<Properties<UserCreateRuleInput>> {
   return z.object({
     communityId: z.string(),
@@ -7704,6 +7920,16 @@ export function UserUpdateCommunityInputSchema(): z.ZodObject<Properties<UserUpd
 export function UserUpdateCommunityMemberInputSchema(): z.ZodObject<Properties<UserUpdateCommunityMemberInput>> {
   return z.object({
     role: CommunityRoleSchema,
+  })
+}
+
+export function UserUpdateRuleConditionInputSchema(): z.ZodObject<Properties<UserUpdateRuleConditionInput>> {
+  return z.object({
+    account: z.string().nullish(),
+    amount: z.string().nullish(),
+    config: definedNonNullAnySchema.nullish(),
+    filters: definedNonNullAnySchema.nullish(),
+    tokenId: z.string().nullish(),
   })
 }
 

@@ -364,12 +364,14 @@ type Mutation {
   userCreateCommunity(input: UserCreateCommunityInput!): Community
   userCreateCommunityMember(input: UserCreateCommunityMemberInput!): CommunityMember
   userCreateRule(input: UserCreateRuleInput!): Rule
+  userCreateRuleCondition(input: UserCreateRuleConditionInput!): RuleCondition
   userCreateRulePermission(input: UserCreateRulePermissionInput!): RulePermission
   userDeleteBot(botId: String!): Boolean
   userDeleteCommunity(communityId: String!): Boolean
   userDeleteCommunityMember(communityMemberId: String!): Boolean
   userDeleteIdentity(identityId: String!): Boolean
   userDeleteRule(ruleId: String!): Boolean
+  userDeleteRuleCondition(ruleConditionId: String!): Boolean
   userDeleteRulePermission(rulePermissionId: String!): Boolean
   userLeaveBotServer(botId: String!, serverId: String!): Boolean
   userLinkIdentity(input: LinkIdentityInput!): Identity
@@ -380,6 +382,7 @@ type Mutation {
   userUpdateCommunity(communityId: String!, input: UserUpdateCommunityInput!): Community
   userUpdateCommunityMember(communityMemberId: String!, input: UserUpdateCommunityMemberInput!): CommunityMember
   userUpdateRule(input: UserUpdateRuleInput!, ruleId: String!): Rule
+  userUpdateRuleCondition(input: UserUpdateRuleConditionInput!, ruleConditionId: String!): RuleCondition
   userUpdateUser(input: UserUpdateUserInput!): User
   userValidateRule(address: String!, ruleId: String!): [RuleCondition!]
   userVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
@@ -597,6 +600,16 @@ input UserCreateCommunityMemberInput {
   userId: String!
 }
 
+input UserCreateRuleConditionInput {
+  account: String
+  amount: String
+  config: JSON
+  filters: JSON
+  ruleId: String!
+  tokenId: String
+  type: RuleConditionType!
+}
+
 input UserCreateRuleInput {
   communityId: String!
   description: String
@@ -686,6 +699,14 @@ input UserUpdateCommunityInput {
 
 input UserUpdateCommunityMemberInput {
   role: CommunityRole!
+}
+
+input UserUpdateRuleConditionInput {
+  account: String
+  amount: String
+  config: JSON
+  filters: JSON
+  tokenId: String
 }
 
 input UserUpdateRuleInput {

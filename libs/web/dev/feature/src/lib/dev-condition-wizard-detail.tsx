@@ -3,7 +3,7 @@ import { Community, NetworkToken, Rule } from '@pubkey-link/sdk'
 import { useAdminFindOneCommunity } from '@pubkey-link/web-community-data-access'
 import { CommunityUiItem } from '@pubkey-link/web-community-ui'
 import { useAdminFindManyNetworkToken } from '@pubkey-link/web-network-token-data-access'
-import { useAdminFindManyRule } from '@pubkey-link/web-rule-data-access'
+import { useAdminFindManyRule, useUserFindOneRule } from '@pubkey-link/web-rule-data-access'
 import {
   RuleConditionUiCreateWizard,
   RuleConditionUiItem,
@@ -71,8 +71,11 @@ export function DevConditionWizardDetailGrid({ community, rules }: { community: 
 
 function RuleDetails({ community, rules, tokens }: { community: Community; rules: Rule[]; tokens: NetworkToken[] }) {
   const { ruleId } = useParams() as { ruleId: string }
+  const { item: rule, query } = useUserFindOneRule({ ruleId })
 
-  const rule = rules.find((rule) => rule.id === ruleId)
+  if (query.isLoading) {
+    return <UiLoader />
+  }
 
   if (!rule) {
     return <UiError message={`Rule ${ruleId} not found`} />
@@ -89,7 +92,7 @@ function RuleDetails({ community, rules, tokens }: { community: Community; rules
           {rule.conditions.map((condition) => (
             <Accordion.Item key={condition.id} value={condition.id}>
               <Accordion.Control>
-                <RuleConditionUiItem condition={condition} />
+                <RuleConditionUiItem type={condition.type} />
               </Accordion.Control>
               <Accordion.Panel>
                 <RuleConditionUiPanel condition={condition} />

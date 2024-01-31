@@ -1,4 +1,4 @@
-import { UserCreateRulePermissionInput, UserUpdateRuleInput } from '@pubkey-link/sdk'
+import { UserCreateRuleConditionInput, UserCreateRulePermissionInput, UserUpdateRuleInput } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -15,6 +15,23 @@ export function useUserFindOneRule({ ruleId }: { ruleId: string }) {
   return {
     item,
     query,
+    createRuleCondition: async (input: UserCreateRuleConditionInput) =>
+      sdk
+        .userCreateRuleCondition({ input })
+        .then((res) => res.data)
+        .then(async (res) => {
+          if (res) {
+            toastSuccess('Rule condition created')
+            await query.refetch()
+            return true
+          }
+          toastError('Rule condition not created')
+          return false
+        })
+        .catch((err) => {
+          toastError(err.message)
+          return false
+        }),
     createRulePermission: async (input: UserCreateRulePermissionInput) =>
       sdk
         .userCreateRulePermission({ input })
@@ -26,6 +43,21 @@ export function useUserFindOneRule({ ruleId }: { ruleId: string }) {
             return true
           }
           toastError('Rule permission not created')
+          return false
+        })
+        .catch((err) => {
+          toastError(err.message)
+          return false
+        }),
+    deleteRuleCondition: async (ruleConditionId: string) =>
+      sdk
+        .userDeleteRuleCondition({ ruleConditionId })
+        .then(async (res) => {
+          if (res) {
+            toastSuccess('Rule condition deleted')
+            await query.refetch()
+            return true
+          }
           return false
         })
         .catch((err) => {

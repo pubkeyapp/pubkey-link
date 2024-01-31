@@ -1,26 +1,32 @@
-import { Accordion, Text } from '@mantine/core'
-import { RuleCondition } from '@pubkey-link/sdk'
+import { Accordion, Button, Group, Text } from '@mantine/core'
+import { modals } from '@mantine/modals'
+import { Community, NetworkToken, Rule } from '@pubkey-link/sdk'
 
-import { RuleConditionUiItem, RuleConditionUiPanel } from '@pubkey-link/web-rule-ui'
+import { RuleConditionUiCreateWizard, RuleConditionUiItem, RuleConditionUiPanel } from '@pubkey-link/web-rule-ui'
 import { UiAnchor, UiInfo, UiStack } from '@pubkey-ui/core'
+import { IconPlus } from '@tabler/icons-react'
 
-export function UserRuleConditionListFeature({ conditions }: { conditions: RuleCondition[] }) {
+export function UserRuleConditionListFeature(props: { rule: Rule; community: Community; tokens: NetworkToken[] }) {
+  const conditions = props.rule.conditions ?? []
   return (
     <UiStack>
       <UiInfo
         title="Rule Conditions"
         message={
-          <Text size="sm">
-            The following conditions must be satisfied to receive{' '}
-            <UiAnchor to={'../permissions'}>these permissions</UiAnchor>.
-          </Text>
+          <Group justify="space-between">
+            <Text size="sm">
+              The following conditions must be satisfied to receive{' '}
+              <UiAnchor to={'../permissions'}>these permissions</UiAnchor>.
+            </Text>
+            <AddConditionButton {...props} />
+          </Group>
         }
       />
       <Accordion multiple variant="separated">
-        {conditions.map((condition) => (
+        {conditions?.map((condition) => (
           <Accordion.Item key={condition.id} value={condition.id}>
             <Accordion.Control>
-              <RuleConditionUiItem condition={condition} />
+              <RuleConditionUiItem type={condition.type} />
             </Accordion.Control>
             <Accordion.Panel>
               <RuleConditionUiPanel condition={condition} />
@@ -29,5 +35,23 @@ export function UserRuleConditionListFeature({ conditions }: { conditions: RuleC
         ))}
       </Accordion>
     </UiStack>
+  )
+}
+function AddConditionButton(props: { rule: Rule; community: Community; tokens: NetworkToken[] }) {
+  return (
+    <Button
+      size="xs"
+      variant="light"
+      leftSection={<IconPlus size={28} />}
+      onClick={() =>
+        modals.open({
+          title: 'Add Condition',
+          size: 'xl',
+          children: <RuleConditionUiCreateWizard {...props} />,
+        })
+      }
+    >
+      Add Condition
+    </Button>
   )
 }

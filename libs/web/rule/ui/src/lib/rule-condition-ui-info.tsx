@@ -1,23 +1,15 @@
-import { RuleConditionType } from '@pubkey-link/sdk'
+import {
+  getRuleConditionTypeDescription,
+  getRuleConditionTypeTitle,
+  isRuleConditionType,
+  RuleConditionType,
+} from '@pubkey-link/resolvers'
+
 import { UiAlertProps, UiInfo, UiWarning } from '@pubkey-ui/core'
 
-import { getRuleConditionTypeDescription, RuleConditionUiTypeTitle } from './rule-condition-ui-type-title'
-
 export function RuleConditionUiInfo({ type, ...props }: Omit<UiAlertProps, 'message'> & { type: RuleConditionType }) {
-  if (
-    [
-      RuleConditionType.AnybodiesAsset,
-      RuleConditionType.SolanaNonFungibleAsset,
-      RuleConditionType.SolanaFungibleAsset,
-    ].includes(type)
-  ) {
-    return (
-      <UiInfo
-        title={<RuleConditionUiTypeTitle type={type} />}
-        message={getRuleConditionTypeDescription(type)}
-        {...props}
-      />
-    )
+  if (isRuleConditionType(type)) {
+    return <UiInfo title={getRuleConditionTypeTitle(type)} message={getRuleConditionTypeDescription(type)} {...props} />
   }
 
   return <UiWarning message={`Unknown condition type: ${type}`} />

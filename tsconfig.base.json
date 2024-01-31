@@ -40,6 +40,7 @@
       "@pubkey-link/api-rule-feature": ["libs/api/rule/feature/src/index.ts"],
       "@pubkey-link/api-user-data-access": ["libs/api/user/data-access/src/index.ts"],
       "@pubkey-link/api-user-feature": ["libs/api/user/feature/src/index.ts"],
+      "@pubkey-link/resolvers": ["packages/resolvers/src/index.ts"],
       "@pubkey-link/sdk": ["libs/sdk/src/index.ts"],
       "@pubkey-link/tools": ["libs/tools/src/index.ts"],
       "@pubkey-link/web-auth-data-access": ["libs/web/auth/data-access/src/index.ts"],

@@ -7,9 +7,11 @@ import {
   RuleCondition,
   RulePaging,
   RulePermission,
+  UserCreateRuleConditionInput,
   UserCreateRuleInput,
   UserCreateRulePermissionInput,
   UserFindManyRuleInput,
+  UserUpdateRuleConditionInput,
   UserUpdateRuleInput,
 } from '@pubkey-link/api-rule-data-access'
 
@@ -23,9 +25,19 @@ export class ApiUserRuleResolver {
     return this.service.user.createRule(input)
   }
 
+  @Mutation(() => RuleCondition, { nullable: true })
+  userCreateRuleCondition(@Args('input') input: UserCreateRuleConditionInput) {
+    return this.service.user.createRuleCondition(input)
+  }
+
   @Mutation(() => RulePermission, { nullable: true })
   userCreateRulePermission(@Args('input') input: UserCreateRulePermissionInput) {
     return this.service.user.createRulePermission(input)
+  }
+
+  @Mutation(() => Boolean, { nullable: true })
+  userDeleteRuleCondition(@Args('ruleConditionId') ruleConditionId: string) {
+    return this.service.user.deleteRuleCondition(ruleConditionId)
   }
 
   @Mutation(() => Boolean, { nullable: true })
@@ -56,5 +68,13 @@ export class ApiUserRuleResolver {
   @Mutation(() => Rule, { nullable: true })
   userUpdateRule(@Args('ruleId') ruleId: string, @Args('input') input: UserUpdateRuleInput) {
     return this.service.user.updateRule(ruleId, input)
+  }
+
+  @Mutation(() => RuleCondition, { nullable: true })
+  userUpdateRuleCondition(
+    @Args('ruleConditionId') ruleConditionId: string,
+    @Args('input') input: UserUpdateRuleConditionInput,
+  ) {
+    return this.service.user.updateRuleCondition(ruleConditionId, input)
   }
 }
