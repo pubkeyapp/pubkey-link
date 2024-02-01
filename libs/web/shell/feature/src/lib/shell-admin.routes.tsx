@@ -1,12 +1,11 @@
-import { IconSettings } from '@tabler/icons-react'
-import { IconNetwork, IconUsers, IconUsersGroup } from '@tabler/icons-react'
+import { AdminBotFeature } from '@pubkey-link/web-bot-feature'
+import { AdminCommunityFeature } from '@pubkey-link/web-community-feature'
 import { DevAdminRoutes } from '@pubkey-link/web-dev-feature'
+import { AdminNetworkFeature } from '@pubkey-link/web-network-feature'
 import { AdminUserFeature } from '@pubkey-link/web-user-feature'
 import { UiContainer, UiDashboardGrid, UiDashboardItem, UiNotFound } from '@pubkey-ui/core'
+import { IconNetwork, IconSettings, IconUsers, IconUsersGroup } from '@tabler/icons-react'
 import { Navigate, RouteObject, useRoutes } from 'react-router-dom'
-import { AdminCommunityFeature } from '@pubkey-link/web-community-feature'
-import { AdminNetworkFeature } from '@pubkey-link/web-network-feature'
-import { AdminBotFeature } from '@pubkey-link/web-bot-feature'
 
 const links: UiDashboardItem[] = [
   // Admin Dashboard Links are added by the web-crud generator

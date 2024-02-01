@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { IdentityProvider, NetworkCluster, NetworkToken, RuleConditionType, UserStatus } from '@prisma/client'
+import { IdentityProvider, NetworkCluster, NetworkToken, Prisma, RuleConditionType, UserStatus } from '@prisma/client'
 import { ApiCommunityService } from '@pubkey-link/api-community-data-access'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkService, NetworkAsset } from '@pubkey-link/api-network-data-access'
@@ -63,9 +63,10 @@ export class ApiRuleResolverService {
   // }
 
   async validateRules(userId: string, communityId: string) {
-    await this.community.ensureCommunityAdmin(userId, communityId)
+    const community = await this.community.ensureCommunityAdmin(userId, communityId)
 
     const startedAt = Date.now()
+    await this.core.logInfo(communityId, `Validating rules for community ${communityId}`)
 
     // We get the conditions for this community and the contexts for all users
     const [conditions, contexts] = await Promise.all([
@@ -89,6 +90,9 @@ export class ApiRuleResolverService {
       contexts: filteredContexts,
     }
     console.log(`Validating ${conditions.length} rules for community ${communityId}`)
+    await this.core.logInfo(communityId, `Validated ${conditions.length} rules for community ${communityId}`, {
+      data: result as unknown as Prisma.InputJsonValue,
+    })
     return Promise.resolve(result)
   }
 

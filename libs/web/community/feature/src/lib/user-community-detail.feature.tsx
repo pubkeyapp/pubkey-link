@@ -3,6 +3,7 @@ import { UserBotFeature } from '@pubkey-link/web-bot-feature'
 import { useUserFindOneCommunity } from '@pubkey-link/web-community-data-access'
 import { UserCommunityMemberFeature } from '@pubkey-link/web-community-member-feature'
 import { CommunityUiItem } from '@pubkey-link/web-community-ui'
+import { UserLogFeature } from '@pubkey-link/web-log-feature'
 import { UserRuleFeature } from '@pubkey-link/web-rule-feature'
 import { UiIcon } from '@pubkey-link/web-ui-core'
 import {
@@ -58,6 +59,12 @@ export function UserCommunityDetailFeature() {
       label: 'Members',
       element: <UserCommunityMemberFeature community={item} />,
       leftSection: <UiIcon type="users" size={20} />,
+    },
+    {
+      label: 'Logs',
+      path: 'logs',
+      element: <UserLogFeature communityId={item.id} />,
+      leftSection: <UiIcon type="logs" size={20} />,
     },
     {
       path: 'settings',

@@ -1,0 +1,58 @@
+fragment LogDetails on Log {
+  createdAt
+  id
+  message
+  level
+  relatedId
+  relatedType
+  communityId
+  identityProvider
+  identityProviderId
+  botId
+  userId
+  ruleId
+  updatedAt
+  data
+}
+
+query userFindManyLog($input: UserFindManyLogInput!) {
+  paging: userFindManyLog(input: $input) {
+    data {
+      ...LogDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query userFindOneLog($logId: String!) {
+  item: userFindOneLog(logId: $logId) {
+    ...LogDetails
+  }
+}
+
+mutation userDeleteLog($logId: String!) {
+  deleted: userDeleteLog(logId: $logId)
+}
+
+query adminFindManyLog($input: AdminFindManyLogInput!) {
+  paging: adminFindManyLog(input: $input) {
+    data {
+      ...LogDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query adminFindOneLog($logId: String!) {
+  item: adminFindOneLog(logId: $logId) {
+    ...LogDetails
+  }
+}
+
+mutation adminDeleteLog($logId: String!) {
+  deleted: adminDeleteLog(logId: $logId)
+}

@@ -81,6 +81,21 @@ input AdminFindManyIdentityInput {
   provider: IdentityProvider
 }
 
+input AdminFindManyLogInput {
+  botId: String
+  communityId: String!
+  identityProvider: IdentityProvider
+  identityProviderId: String
+  level: LogLevel
+  limit: Int = 10
+  page: Int = 1
+  relatedId: String
+  relatedType: LogRelatedType
+  ruleId: String
+  search: String
+  userId: String
+}
+
 input AdminFindManyNetworkInput {
   limit: Int = 10
   page: Int = 1
@@ -322,6 +337,42 @@ input LinkIdentityInput {
   providerId: String!
 }
 
+type Log {
+  botId: String
+  communityId: String!
+  createdAt: DateTime
+  data: JSON
+  id: String!
+  identityProvider: IdentityProvider
+  identityProviderId: String
+  level: LogLevel!
+  message: String!
+  relatedId: String
+  relatedType: LogRelatedType
+  ruleId: String
+  updatedAt: DateTime
+  userId: String
+}
+
+enum LogLevel {
+  Error
+  Info
+  Warning
+}
+
+type LogPaging {
+  data: [Log!]!
+  meta: PagingMeta!
+}
+
+enum LogRelatedType {
+  Bot
+  Community
+  Identity
+  Rule
+  User
+}
+
 input LoginInput {
   password: String!
   username: String!
@@ -342,6 +393,7 @@ type Mutation {
   adminDeleteCommunity(communityId: String!): Boolean
   adminDeleteCommunityMember(communityMemberId: String!): Boolean
   adminDeleteIdentity(identityId: String!): Boolean
+  adminDeleteLog(logId: String!): Boolean
   adminDeleteNetwork(networkId: String!): Boolean
   adminDeleteNetworkToken(networkTokenId: String!): Boolean
   adminDeleteRule(ruleId: String!): Boolean
@@ -370,6 +422,7 @@ type Mutation {
   userDeleteCommunity(communityId: String!): Boolean
   userDeleteCommunityMember(communityMemberId: String!): Boolean
   userDeleteIdentity(identityId: String!): Boolean
+  userDeleteLog(logId: String!): Boolean
   userDeleteRule(ruleId: String!): Boolean
   userDeleteRuleCondition(ruleConditionId: String!): Boolean
   userDeleteRulePermission(rulePermissionId: String!): Boolean
@@ -467,6 +520,7 @@ type Query {
   adminFindManyCommunity(input: AdminFindManyCommunityInput!): CommunityPaging!
   adminFindManyCommunityMember(input: AdminFindManyCommunityMemberInput!): CommunityMemberPaging!
   adminFindManyIdentity(input: AdminFindManyIdentityInput!): [Identity!]
+  adminFindManyLog(input: AdminFindManyLogInput!): LogPaging!
   adminFindManyNetwork(input: AdminFindManyNetworkInput!): NetworkPaging!
   adminFindManyNetworkToken(input: AdminFindManyNetworkTokenInput!): NetworkTokenPaging!
   adminFindManyRule(input: AdminFindManyRuleInput!): RulePaging!
@@ -474,6 +528,7 @@ type Query {
   adminFindOneBot(botId: String!): Bot
   adminFindOneCommunity(communityId: String!): Community
   adminFindOneCommunityMember(communityMemberId: String!): CommunityMember
+  adminFindOneLog(logId: String!): Log
   adminFindOneNetwork(networkId: String!): Network
   adminFindOneNetworkToken(networkTokenId: String!): NetworkToken
   adminFindOneRule(ruleId: String!): Rule
@@ -488,12 +543,14 @@ type Query {
   userFindManyCommunity(input: UserFindManyCommunityInput!): CommunityPaging!
   userFindManyCommunityMember(input: UserFindManyCommunityMemberInput!): CommunityMemberPaging!
   userFindManyIdentity(input: UserFindManyIdentityInput!): [Identity!]
+  userFindManyLog(input: UserFindManyLogInput!): LogPaging!
   userFindManyNetworkToken(input: UserFindManyNetworkTokenInput!): NetworkTokenPaging!
   userFindManyRule(input: UserFindManyRuleInput!): RulePaging!
   userFindManyUser(input: UserFindManyUserInput!): UserPaging!
   userFindOneBot(communityId: String!): Bot
   userFindOneCommunity(communityId: String!): Community
   userFindOneCommunityMember(communityMemberId: String!): CommunityMember
+  userFindOneLog(logId: String!): Log
   userFindOneRule(ruleId: String!): Rule
   userFindOneUser(username: String!): User
   userGetBotMembers(botId: String!, serverId: String!): [BotMember!]
@@ -641,6 +698,21 @@ input UserFindManyCommunityMemberInput {
 
 input UserFindManyIdentityInput {
   username: String!
+}
+
+input UserFindManyLogInput {
+  botId: String
+  communityId: String!
+  identityProvider: IdentityProvider
+  identityProviderId: String
+  level: LogLevel
+  limit: Int = 10
+  page: Int = 1
+  relatedId: String
+  relatedType: LogRelatedType
+  ruleId: String
+  search: String
+  userId: String
 }
 
 input UserFindManyNetworkTokenInput {

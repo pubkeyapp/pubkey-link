@@ -21,6 +21,7 @@ model Bot {
   communityId  String          @unique
   permissions  BotPermission[]
   members      BotMember[]
+  logs         Log[]
 }
 
 model BotMember {
@@ -67,6 +68,7 @@ model Community {
   rules       Rule[]
   cluster     NetworkCluster
   bot         Bot?
+  logs        Log[]
 
   @@unique([name])
 }
@@ -110,6 +112,7 @@ model Identity {
   ownerId      String
   challenges   IdentityChallenge[]
   bots         BotMember[]
+  logs         Log[]
 
   @@unique([provider, providerId])
 }
@@ -126,6 +129,42 @@ model IdentityChallenge {
   identity   Identity         @relation(fields: [provider, providerId], references: [provider, providerId], onDelete: Cascade)
   provider   IdentityProvider
   providerId String
+}
+
+model Log {
+  id                 String            @id @default(cuid())
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  message            String
+  data               Json?
+  level              LogLevel
+  relatedId          String?
+  relatedType        LogRelatedType?
+  community          Community         @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  communityId        String
+  identity           Identity?         @relation(fields: [identityProvider, identityProviderId], references: [provider, providerId], onDelete: Cascade)
+  identityProvider   IdentityProvider?
+  identityProviderId String?
+  bot                Bot?              @relation(fields: [botId], references: [id], onDelete: Cascade)
+  botId              String?
+  user               User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String?
+  rule               Rule?             @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+  ruleId             String?
+}
+
+enum LogLevel {
+  Info
+  Warning
+  Error
+}
+
+enum LogRelatedType {
+  Bot
+  Community
+  Identity
+  Rule
+  User
 }
 
 model Network {
@@ -170,6 +209,7 @@ model Rule {
   conditions  RuleCondition[]
   permissions RulePermission[]
   members     CommunityMemberRule[]
+  logs        Log[]
 }
 
 model RuleCondition {
@@ -213,6 +253,7 @@ model User {
   username    String            @unique
   communities CommunityMember[]
   identities  Identity[]
+  logs        Log[]
 }
 
 enum BotStatus {

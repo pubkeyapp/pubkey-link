@@ -103,6 +103,21 @@ export type AdminFindManyIdentityInput = {
   provider?: InputMaybe<IdentityProvider>
 }
 
+export type AdminFindManyLogInput = {
+  botId?: InputMaybe<Scalars['String']['input']>
+  communityId: Scalars['String']['input']
+  identityProvider?: InputMaybe<IdentityProvider>
+  identityProviderId?: InputMaybe<Scalars['String']['input']>
+  level?: InputMaybe<LogLevel>
+  limit?: InputMaybe<Scalars['Int']['input']>
+  page?: InputMaybe<Scalars['Int']['input']>
+  relatedId?: InputMaybe<Scalars['String']['input']>
+  relatedType?: InputMaybe<LogRelatedType>
+  ruleId?: InputMaybe<Scalars['String']['input']>
+  search?: InputMaybe<Scalars['String']['input']>
+  userId?: InputMaybe<Scalars['String']['input']>
+}
+
 export type AdminFindManyNetworkInput = {
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
@@ -347,6 +362,44 @@ export type LinkIdentityInput = {
   providerId: Scalars['String']['input']
 }
 
+export type Log = {
+  __typename?: 'Log'
+  botId?: Maybe<Scalars['String']['output']>
+  communityId: Scalars['String']['output']
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  data?: Maybe<Scalars['JSON']['output']>
+  id: Scalars['String']['output']
+  identityProvider?: Maybe<IdentityProvider>
+  identityProviderId?: Maybe<Scalars['String']['output']>
+  level: LogLevel
+  message: Scalars['String']['output']
+  relatedId?: Maybe<Scalars['String']['output']>
+  relatedType?: Maybe<LogRelatedType>
+  ruleId?: Maybe<Scalars['String']['output']>
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+  userId?: Maybe<Scalars['String']['output']>
+}
+
+export enum LogLevel {
+  Error = 'Error',
+  Info = 'Info',
+  Warning = 'Warning',
+}
+
+export type LogPaging = {
+  __typename?: 'LogPaging'
+  data: Array<Log>
+  meta: PagingMeta
+}
+
+export enum LogRelatedType {
+  Bot = 'Bot',
+  Community = 'Community',
+  Identity = 'Identity',
+  Rule = 'Rule',
+  User = 'User',
+}
+
 export type LoginInput = {
   password: Scalars['String']['input']
   username: Scalars['String']['input']
@@ -368,6 +421,7 @@ export type Mutation = {
   adminDeleteCommunity?: Maybe<Scalars['Boolean']['output']>
   adminDeleteCommunityMember?: Maybe<Scalars['Boolean']['output']>
   adminDeleteIdentity?: Maybe<Scalars['Boolean']['output']>
+  adminDeleteLog?: Maybe<Scalars['Boolean']['output']>
   adminDeleteNetwork?: Maybe<Scalars['Boolean']['output']>
   adminDeleteNetworkToken?: Maybe<Scalars['Boolean']['output']>
   adminDeleteRule?: Maybe<Scalars['Boolean']['output']>
@@ -396,6 +450,7 @@ export type Mutation = {
   userDeleteCommunity?: Maybe<Scalars['Boolean']['output']>
   userDeleteCommunityMember?: Maybe<Scalars['Boolean']['output']>
   userDeleteIdentity?: Maybe<Scalars['Boolean']['output']>
+  userDeleteLog?: Maybe<Scalars['Boolean']['output']>
   userDeleteRule?: Maybe<Scalars['Boolean']['output']>
   userDeleteRuleCondition?: Maybe<Scalars['Boolean']['output']>
   userDeleteRulePermission?: Maybe<Scalars['Boolean']['output']>
@@ -465,6 +520,10 @@ export type MutationAdminDeleteCommunityMemberArgs = {
 
 export type MutationAdminDeleteIdentityArgs = {
   identityId: Scalars['String']['input']
+}
+
+export type MutationAdminDeleteLogArgs = {
+  logId: Scalars['String']['input']
 }
 
 export type MutationAdminDeleteNetworkArgs = {
@@ -580,6 +639,10 @@ export type MutationUserDeleteCommunityMemberArgs = {
 
 export type MutationUserDeleteIdentityArgs = {
   identityId: Scalars['String']['input']
+}
+
+export type MutationUserDeleteLogArgs = {
+  logId: Scalars['String']['input']
 }
 
 export type MutationUserDeleteRuleArgs = {
@@ -743,6 +806,7 @@ export type Query = {
   adminFindManyCommunity: CommunityPaging
   adminFindManyCommunityMember: CommunityMemberPaging
   adminFindManyIdentity?: Maybe<Array<Identity>>
+  adminFindManyLog: LogPaging
   adminFindManyNetwork: NetworkPaging
   adminFindManyNetworkToken: NetworkTokenPaging
   adminFindManyRule: RulePaging
@@ -750,6 +814,7 @@ export type Query = {
   adminFindOneBot?: Maybe<Bot>
   adminFindOneCommunity?: Maybe<Community>
   adminFindOneCommunityMember?: Maybe<CommunityMember>
+  adminFindOneLog?: Maybe<Log>
   adminFindOneNetwork?: Maybe<Network>
   adminFindOneNetworkToken?: Maybe<NetworkToken>
   adminFindOneRule?: Maybe<Rule>
@@ -764,12 +829,14 @@ export type Query = {
   userFindManyCommunity: CommunityPaging
   userFindManyCommunityMember: CommunityMemberPaging
   userFindManyIdentity?: Maybe<Array<Identity>>
+  userFindManyLog: LogPaging
   userFindManyNetworkToken: NetworkTokenPaging
   userFindManyRule: RulePaging
   userFindManyUser: UserPaging
   userFindOneBot?: Maybe<Bot>
   userFindOneCommunity?: Maybe<Community>
   userFindOneCommunityMember?: Maybe<CommunityMember>
+  userFindOneLog?: Maybe<Log>
   userFindOneRule?: Maybe<Rule>
   userFindOneUser?: Maybe<User>
   userGetBotMembers?: Maybe<Array<BotMember>>
@@ -795,6 +862,10 @@ export type QueryAdminFindManyCommunityMemberArgs = {
 
 export type QueryAdminFindManyIdentityArgs = {
   input: AdminFindManyIdentityInput
+}
+
+export type QueryAdminFindManyLogArgs = {
+  input: AdminFindManyLogInput
 }
 
 export type QueryAdminFindManyNetworkArgs = {
@@ -823,6 +894,10 @@ export type QueryAdminFindOneCommunityArgs = {
 
 export type QueryAdminFindOneCommunityMemberArgs = {
   communityMemberId: Scalars['String']['input']
+}
+
+export type QueryAdminFindOneLogArgs = {
+  logId: Scalars['String']['input']
 }
 
 export type QueryAdminFindOneNetworkArgs = {
@@ -866,6 +941,10 @@ export type QueryUserFindManyIdentityArgs = {
   input: UserFindManyIdentityInput
 }
 
+export type QueryUserFindManyLogArgs = {
+  input: UserFindManyLogInput
+}
+
 export type QueryUserFindManyNetworkTokenArgs = {
   input: UserFindManyNetworkTokenInput
 }
@@ -888,6 +967,10 @@ export type QueryUserFindOneCommunityArgs = {
 
 export type QueryUserFindOneCommunityMemberArgs = {
   communityMemberId: Scalars['String']['input']
+}
+
+export type QueryUserFindOneLogArgs = {
+  logId: Scalars['String']['input']
 }
 
 export type QueryUserFindOneRuleArgs = {
@@ -1072,6 +1155,21 @@ export type UserFindManyCommunityMemberInput = {
 
 export type UserFindManyIdentityInput = {
   username: Scalars['String']['input']
+}
+
+export type UserFindManyLogInput = {
+  botId?: InputMaybe<Scalars['String']['input']>
+  communityId: Scalars['String']['input']
+  identityProvider?: InputMaybe<IdentityProvider>
+  identityProviderId?: InputMaybe<Scalars['String']['input']>
+  level?: InputMaybe<LogLevel>
+  limit?: InputMaybe<Scalars['Int']['input']>
+  page?: InputMaybe<Scalars['Int']['input']>
+  relatedId?: InputMaybe<Scalars['String']['input']>
+  relatedType?: InputMaybe<LogRelatedType>
+  ruleId?: InputMaybe<Scalars['String']['input']>
+  search?: InputMaybe<Scalars['String']['input']>
+  userId?: InputMaybe<Scalars['String']['input']>
 }
 
 export type UserFindManyNetworkTokenInput = {
@@ -2797,6 +2895,162 @@ export type AnonVerifyIdentityChallengeMutation = {
   } | null
 }
 
+export type LogDetailsFragment = {
+  __typename?: 'Log'
+  createdAt?: Date | null
+  id: string
+  message: string
+  level: LogLevel
+  relatedId?: string | null
+  relatedType?: LogRelatedType | null
+  communityId: string
+  identityProvider?: IdentityProvider | null
+  identityProviderId?: string | null
+  botId?: string | null
+  userId?: string | null
+  ruleId?: string | null
+  updatedAt?: Date | null
+  data?: any | null
+}
+
+export type UserFindManyLogQueryVariables = Exact<{
+  input: UserFindManyLogInput
+}>
+
+export type UserFindManyLogQuery = {
+  __typename?: 'Query'
+  paging: {
+    __typename?: 'LogPaging'
+    data: Array<{
+      __typename?: 'Log'
+      createdAt?: Date | null
+      id: string
+      message: string
+      level: LogLevel
+      relatedId?: string | null
+      relatedType?: LogRelatedType | null
+      communityId: string
+      identityProvider?: IdentityProvider | null
+      identityProviderId?: string | null
+      botId?: string | null
+      userId?: string | null
+      ruleId?: string | null
+      updatedAt?: Date | null
+      data?: any | null
+    }>
+    meta: {
+      __typename?: 'PagingMeta'
+      currentPage: number
+      isFirstPage: boolean
+      isLastPage: boolean
+      nextPage?: number | null
+      pageCount?: number | null
+      previousPage?: number | null
+      totalCount?: number | null
+    }
+  }
+}
+
+export type UserFindOneLogQueryVariables = Exact<{
+  logId: Scalars['String']['input']
+}>
+
+export type UserFindOneLogQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'Log'
+    createdAt?: Date | null
+    id: string
+    message: string
+    level: LogLevel
+    relatedId?: string | null
+    relatedType?: LogRelatedType | null
+    communityId: string
+    identityProvider?: IdentityProvider | null
+    identityProviderId?: string | null
+    botId?: string | null
+    userId?: string | null
+    ruleId?: string | null
+    updatedAt?: Date | null
+    data?: any | null
+  } | null
+}
+
+export type UserDeleteLogMutationVariables = Exact<{
+  logId: Scalars['String']['input']
+}>
+
+export type UserDeleteLogMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
+export type AdminFindManyLogQueryVariables = Exact<{
+  input: AdminFindManyLogInput
+}>
+
+export type AdminFindManyLogQuery = {
+  __typename?: 'Query'
+  paging: {
+    __typename?: 'LogPaging'
+    data: Array<{
+      __typename?: 'Log'
+      createdAt?: Date | null
+      id: string
+      message: string
+      level: LogLevel
+      relatedId?: string | null
+      relatedType?: LogRelatedType | null
+      communityId: string
+      identityProvider?: IdentityProvider | null
+      identityProviderId?: string | null
+      botId?: string | null
+      userId?: string | null
+      ruleId?: string | null
+      updatedAt?: Date | null
+      data?: any | null
+    }>
+    meta: {
+      __typename?: 'PagingMeta'
+      currentPage: number
+      isFirstPage: boolean
+      isLastPage: boolean
+      nextPage?: number | null
+      pageCount?: number | null
+      previousPage?: number | null
+      totalCount?: number | null
+    }
+  }
+}
+
+export type AdminFindOneLogQueryVariables = Exact<{
+  logId: Scalars['String']['input']
+}>
+
+export type AdminFindOneLogQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'Log'
+    createdAt?: Date | null
+    id: string
+    message: string
+    level: LogLevel
+    relatedId?: string | null
+    relatedType?: LogRelatedType | null
+    communityId: string
+    identityProvider?: IdentityProvider | null
+    identityProviderId?: string | null
+    botId?: string | null
+    userId?: string | null
+    ruleId?: string | null
+    updatedAt?: Date | null
+    data?: any | null
+  } | null
+}
+
+export type AdminDeleteLogMutationVariables = Exact<{
+  logId: Scalars['String']['input']
+}>
+
+export type AdminDeleteLogMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
 export type NetworkTokenDetailsFragment = {
   __typename?: 'NetworkToken'
   id: string
@@ -4510,6 +4764,24 @@ export const IdentityChallengeDetailsFragmentDoc = gql`
     verified
   }
 `
+export const LogDetailsFragmentDoc = gql`
+  fragment LogDetails on Log {
+    createdAt
+    id
+    message
+    level
+    relatedId
+    relatedType
+    communityId
+    identityProvider
+    identityProviderId
+    botId
+    userId
+    ruleId
+    updatedAt
+    data
+  }
+`
 export const NetworkDetailsFragmentDoc = gql`
   fragment NetworkDetails on Network {
     createdAt
@@ -5077,6 +5349,60 @@ export const AnonVerifyIdentityChallengeDocument = gql`
   }
   ${IdentityChallengeDetailsFragmentDoc}
 `
+export const UserFindManyLogDocument = gql`
+  query userFindManyLog($input: UserFindManyLogInput!) {
+    paging: userFindManyLog(input: $input) {
+      data {
+        ...LogDetails
+      }
+      meta {
+        ...PagingMetaDetails
+      }
+    }
+  }
+  ${LogDetailsFragmentDoc}
+  ${PagingMetaDetailsFragmentDoc}
+`
+export const UserFindOneLogDocument = gql`
+  query userFindOneLog($logId: String!) {
+    item: userFindOneLog(logId: $logId) {
+      ...LogDetails
+    }
+  }
+  ${LogDetailsFragmentDoc}
+`
+export const UserDeleteLogDocument = gql`
+  mutation userDeleteLog($logId: String!) {
+    deleted: userDeleteLog(logId: $logId)
+  }
+`
+export const AdminFindManyLogDocument = gql`
+  query adminFindManyLog($input: AdminFindManyLogInput!) {
+    paging: adminFindManyLog(input: $input) {
+      data {
+        ...LogDetails
+      }
+      meta {
+        ...PagingMetaDetails
+      }
+    }
+  }
+  ${LogDetailsFragmentDoc}
+  ${PagingMetaDetailsFragmentDoc}
+`
+export const AdminFindOneLogDocument = gql`
+  query adminFindOneLog($logId: String!) {
+    item: adminFindOneLog(logId: $logId) {
+      ...LogDetails
+    }
+  }
+  ${LogDetailsFragmentDoc}
+`
+export const AdminDeleteLogDocument = gql`
+  mutation adminDeleteLog($logId: String!) {
+    deleted: adminDeleteLog(logId: $logId)
+  }
+`
 export const AdminFindManyNetworkTokenDocument = gql`
   query adminFindManyNetworkToken($input: AdminFindManyNetworkTokenInput!) {
     paging: adminFindManyNetworkToken(input: $input) {
@@ -5474,6 +5800,12 @@ const UserLinkIdentityDocumentString = print(UserLinkIdentityDocument)
 const AnonRequestIdentityChallengeDocumentString = print(AnonRequestIdentityChallengeDocument)
 const AnonFindUserByIdentityDocumentString = print(AnonFindUserByIdentityDocument)
 const AnonVerifyIdentityChallengeDocumentString = print(AnonVerifyIdentityChallengeDocument)
+const UserFindManyLogDocumentString = print(UserFindManyLogDocument)
+const UserFindOneLogDocumentString = print(UserFindOneLogDocument)
+const UserDeleteLogDocumentString = print(UserDeleteLogDocument)
+const AdminFindManyLogDocumentString = print(AdminFindManyLogDocument)
+const AdminFindOneLogDocumentString = print(AdminFindOneLogDocument)
+const AdminDeleteLogDocumentString = print(AdminDeleteLogDocument)
 const AdminFindManyNetworkTokenDocumentString = print(AdminFindManyNetworkTokenDocument)
 const AdminFindOneNetworkTokenDocumentString = print(AdminFindOneNetworkTokenDocument)
 const AdminCreateNetworkTokenDocumentString = print(AdminCreateNetworkTokenDocument)
@@ -6742,6 +7074,132 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
+    userFindManyLog(
+      variables: UserFindManyLogQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserFindManyLogQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserFindManyLogQuery>(UserFindManyLogDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userFindManyLog',
+        'query',
+        variables,
+      )
+    },
+    userFindOneLog(
+      variables: UserFindOneLogQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserFindOneLogQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserFindOneLogQuery>(UserFindOneLogDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userFindOneLog',
+        'query',
+        variables,
+      )
+    },
+    userDeleteLog(
+      variables: UserDeleteLogMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserDeleteLogMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserDeleteLogMutation>(UserDeleteLogDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userDeleteLog',
+        'mutation',
+        variables,
+      )
+    },
+    adminFindManyLog(
+      variables: AdminFindManyLogQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindManyLogQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindManyLogQuery>(AdminFindManyLogDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindManyLog',
+        'query',
+        variables,
+      )
+    },
+    adminFindOneLog(
+      variables: AdminFindOneLogQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindOneLogQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindOneLogQuery>(AdminFindOneLogDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindOneLog',
+        'query',
+        variables,
+      )
+    },
+    adminDeleteLog(
+      variables: AdminDeleteLogMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminDeleteLogMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminDeleteLogMutation>(AdminDeleteLogDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminDeleteLog',
+        'mutation',
+        variables,
+      )
+    },
     adminFindManyNetworkToken(
       variables: AdminFindManyNetworkTokenQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -7582,6 +8040,10 @@ export const CommunityRoleSchema = z.nativeEnum(CommunityRole)
 
 export const IdentityProviderSchema = z.nativeEnum(IdentityProvider)
 
+export const LogLevelSchema = z.nativeEnum(LogLevel)
+
+export const LogRelatedTypeSchema = z.nativeEnum(LogRelatedType)
+
 export const NetworkClusterSchema = z.nativeEnum(NetworkCluster)
 
 export const NetworkTokenTypeSchema = z.nativeEnum(NetworkTokenType)
@@ -7694,6 +8156,23 @@ export function AdminFindManyIdentityInputSchema(): z.ZodObject<Properties<Admin
   return z.object({
     ownerId: z.string().nullish(),
     provider: IdentityProviderSchema.nullish(),
+  })
+}
+
+export function AdminFindManyLogInputSchema(): z.ZodObject<Properties<AdminFindManyLogInput>> {
+  return z.object({
+    botId: z.string().nullish(),
+    communityId: z.string(),
+    identityProvider: IdentityProviderSchema.nullish(),
+    identityProviderId: z.string().nullish(),
+    level: LogLevelSchema.nullish(),
+    limit: z.number().nullish(),
+    page: z.number().nullish(),
+    relatedId: z.string().nullish(),
+    relatedType: LogRelatedTypeSchema.nullish(),
+    ruleId: z.string().nullish(),
+    search: z.string().nullish(),
+    userId: z.string().nullish(),
   })
 }
 
@@ -7903,6 +8382,23 @@ export function UserFindManyCommunityMemberInputSchema(): z.ZodObject<Properties
 export function UserFindManyIdentityInputSchema(): z.ZodObject<Properties<UserFindManyIdentityInput>> {
   return z.object({
     username: z.string(),
+  })
+}
+
+export function UserFindManyLogInputSchema(): z.ZodObject<Properties<UserFindManyLogInput>> {
+  return z.object({
+    botId: z.string().nullish(),
+    communityId: z.string(),
+    identityProvider: IdentityProviderSchema.nullish(),
+    identityProviderId: z.string().nullish(),
+    level: LogLevelSchema.nullish(),
+    limit: z.number().nullish(),
+    page: z.number().nullish(),
+    relatedId: z.string().nullish(),
+    relatedType: LogRelatedTypeSchema.nullish(),
+    ruleId: z.string().nullish(),
+    search: z.string().nullish(),
+    userId: z.string().nullish(),
   })
 }
 
