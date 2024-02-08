@@ -11,7 +11,7 @@
     "build:api": "nx build api",
     "build:sdk": "graphql-codegen --config codegen.ts",
     "build:web": "nx build web",
-    "dev:api": "nx serve api",
+    "dev:api": "nx run api:serve:development",
     "dev:sdk": "pnpm build:sdk --watch",
     "dev:services": "docker compose up",
     "dev:services:stop": "docker compose down",

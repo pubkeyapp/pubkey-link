@@ -24,6 +24,11 @@ export class ApiUserUserResolver {
     return this.service.user.findOneUser(username)
   }
 
+  @Query(() => User, { nullable: true })
+  userFindOneUserById(@Args('userId') userId: string) {
+    return this.service.user.findOneUserId(userId)
+  }
+
   @Mutation(() => User, { nullable: true })
   userUpdateUser(@CtxUser() user: User, @Args('input') input: UserUpdateUserInput) {
     return this.service.user.updateUser(user.id as string, input)

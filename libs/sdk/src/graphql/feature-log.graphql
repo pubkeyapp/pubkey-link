@@ -13,6 +13,18 @@ fragment LogDetails on Log {
   ruleId
   updatedAt
   data
+  bot {
+    ...BotDetails
+  }
+  identity {
+    ...IdentityDetails
+  }
+  rule {
+    ...RuleDetails
+  }
+  user {
+    ...UserDetails
+  }
 }
 
 query userFindManyLog($input: UserFindManyLogInput!) {

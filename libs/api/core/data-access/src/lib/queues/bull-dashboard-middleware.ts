@@ -7,7 +7,7 @@ export class BullDashboardMiddleware implements NestMiddleware {
   private readonly encodedCreds = Buffer.from(this.envCreds).toString('base64')
 
   constructor() {
-    Logger.verbose(`BullDashboardMiddleware: ${this.envCreds}`)
+    Logger.verbose(`BullDashboard: log in using ${this.envCreds} at /api/queues `)
   }
   use(req: Request, res: Response, next: NextFunction) {
     const reqCreds = req.get('authorization')?.split('Basic ')?.[1] ?? null

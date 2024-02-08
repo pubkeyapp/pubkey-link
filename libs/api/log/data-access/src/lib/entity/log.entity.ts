@@ -1,5 +1,5 @@
-import { Field, ObjectType } from '@nestjs/graphql'
-import { Prisma } from '@prisma/client'
+import { Field, HideField, ObjectType } from '@nestjs/graphql'
+import { Bot, Identity, Prisma, Rule, User } from '@prisma/client'
 import { IdentityProvider } from '@pubkey-link/api-core-data-access'
 import { GraphQLJSON } from 'graphql-scalars'
 import { LogLevel } from './log-level.enum'
@@ -29,10 +29,18 @@ export class Log {
   identityProvider?: IdentityProvider | null
   @Field({ nullable: true })
   identityProviderId?: string | null
+  @HideField()
+  identity?: Identity | null
   @Field({ nullable: true })
   botId?: string | null
+  @HideField()
+  bot?: Bot | null
   @Field({ nullable: true })
   userId?: string | null
+  @HideField()
+  user?: User | null
   @Field({ nullable: true })
   ruleId?: string | null
+  @HideField()
+  rule?: Rule | null
 }

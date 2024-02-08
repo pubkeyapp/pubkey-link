@@ -2,7 +2,8 @@ import { Table } from '@mantine/core'
 import { ReactNode } from 'react'
 
 export type FactType = [ReactNode, ReactNode] | undefined
-export type FactTableProps = { items: FactType[] }
+export type FactTypes = FactType[]
+export type FactTableProps = { items: FactTypes }
 
 export function UiKeyValueTable({ items }: FactTableProps) {
   const filtered = items.filter(Boolean) as [ReactNode, ReactNode][]

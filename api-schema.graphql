@@ -298,6 +298,7 @@ type Identity {
   id: String!
   name: String
   owner: User
+  ownerId: String
   profile: JSON
   provider: IdentityProvider!
   providerId: String!
@@ -338,19 +339,23 @@ input LinkIdentityInput {
 }
 
 type Log {
+  bot: Bot
   botId: String
   communityId: String!
   createdAt: DateTime
   data: JSON
   id: String!
+  identity: Identity
   identityProvider: IdentityProvider
   identityProviderId: String
   level: LogLevel!
   message: String!
   relatedId: String
   relatedType: LogRelatedType
+  rule: Rule
   ruleId: String
   updatedAt: DateTime
+  user: User
   userId: String
 }
 
@@ -553,6 +558,7 @@ type Query {
   userFindOneLog(logId: String!): Log
   userFindOneRule(ruleId: String!): Rule
   userFindOneUser(username: String!): User
+  userFindOneUserById(userId: String!): User
   userGetBotMembers(botId: String!, serverId: String!): [BotMember!]
   userGetBotRoles(botId: String!, serverId: String!): [DiscordRole!]
   userGetBotServer(botId: String!, serverId: String!): DiscordServer

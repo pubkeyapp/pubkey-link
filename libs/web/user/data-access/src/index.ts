@@ -1,5 +1,6 @@
 export * from './lib/use-admin-find-many-user'
 export * from './lib/use-admin-find-one-user'
 export * from './lib/use-user-find-many-user'
+export * from './lib/use-user-find-one-user-by-id'
 export * from './lib/use-user-fine-one-user'
 export * from './lib/use-user-profile'

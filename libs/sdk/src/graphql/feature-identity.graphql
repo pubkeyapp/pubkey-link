@@ -12,6 +12,7 @@ fragment IdentityDetails on Identity {
   expired
   id
   name
+  ownerId
   profile
   provider
   providerId

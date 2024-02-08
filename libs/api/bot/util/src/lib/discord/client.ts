@@ -4,7 +4,7 @@ import { Client, GatewayIntentBits } from 'discord.js'
 export function createDiscordClient(token: string): Promise<Client> {
   return new Promise((resolve, reject) => {
     const client = new Client({
-      intents: [GatewayIntentBits.Guilds],
+      intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
     })
     client.once('ready', () => resolve(client))
     client.login(token).catch((e) => {

@@ -74,6 +74,12 @@ query userFindOneUser($username: String!) {
   }
 }
 
+query userFindOneUserById($userId: String!) {
+  item: userFindOneUserById(userId: $userId) {
+    ...UserDetails
+  }
+}
+
 mutation userUpdateUser($input: UserUpdateUserInput!) {
   updated: userUpdateUser(input: $input) {
     ...UserDetails

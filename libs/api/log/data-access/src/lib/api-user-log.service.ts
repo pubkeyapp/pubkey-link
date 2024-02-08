@@ -24,6 +24,9 @@ export class ApiUserLogService {
   }
 
   async findOneLog(logId: string) {
-    return this.core.data.log.findUnique({ where: { id: logId } })
+    return this.core.data.log.findUnique({
+      where: { id: logId },
+      include: { bot: true, identity: true, rule: true, user: true },
+    })
   }
 }

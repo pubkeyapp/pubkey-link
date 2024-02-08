@@ -25,6 +25,8 @@ export class Identity {
   verified?: boolean
   @Field(() => User, { nullable: true })
   owner?: User
+  @Field({ nullable: true })
+  ownerId?: string
   @Field(() => [IdentityChallenge], { nullable: true })
   challenges?: IdentityChallenge[]
   @HideField()

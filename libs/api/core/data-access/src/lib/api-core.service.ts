@@ -83,5 +83,7 @@ export interface CoreLogInput {
   level: LogLevel
   relatedId?: string | null
   relatedType?: LogRelatedType | null
+  identityProvider?: IdentityProvider | null
+  identityProviderId?: string | null
   userId?: string | null
 }

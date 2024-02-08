@@ -32,4 +32,13 @@ export class ApiUserUserService {
     }
     return found
   }
+
+  async findOneUserId(userId: string) {
+    const found = await this.core.data.user.findUnique({ where: { id: userId } })
+
+    if (!found) {
+      throw new Error(`User with id ${userId} not found`)
+    }
+    return found
+  }
 }

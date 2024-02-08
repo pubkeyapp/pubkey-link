@@ -53,7 +53,7 @@ export class ApiUserBotResolver {
 
   @Query(() => [BotMember], { nullable: true })
   userGetBotMembers(@Args('botId') botId: string, @Args('serverId') serverId: string) {
-    return this.service.manager.getBotMembers(botId, serverId)
+    return this.service.member.getBotMembers(botId, serverId)
   }
 
   @Mutation(() => Boolean, { nullable: true })

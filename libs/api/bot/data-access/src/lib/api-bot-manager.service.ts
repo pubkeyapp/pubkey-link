@@ -1,9 +1,10 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 
 import { createDiscordRestClient, DiscordBot } from '@pubkey-link/api-bot-util'
-import { ApiCoreService, IdentityProvider } from '@pubkey-link/api-core-data-access'
+import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 
 import { PermissionsString, User } from 'discord.js'
+import { ApiBotMemberService } from './api-bot-member.service'
 import { BotStatus } from './entity/bot-status.enum'
 import { DiscordRole, DiscordServer } from './entity/discord-server.entity'
 
@@ -11,7 +12,8 @@ import { DiscordRole, DiscordServer } from './entity/discord-server.entity'
 export class ApiBotManagerService implements OnModuleInit {
   private readonly logger = new Logger(ApiBotManagerService.name)
   private readonly bots = new Map<string, DiscordBot>()
-  constructor(private readonly core: ApiCoreService) {}
+
+  constructor(private readonly core: ApiCoreService, private readonly botMember: ApiBotMemberService) {}
 
   async onModuleInit() {
     const bots = await this.core.data.bot.findMany({ where: { status: BotStatus.Active } })
@@ -125,6 +127,7 @@ export class ApiBotManagerService implements OnModuleInit {
 
     const instance = new DiscordBot({ botId, token: bot.token })
     await instance.start()
+    await this.botMember.setupListeners(bot, instance)
     this.bots.set(bot.id, instance)
 
     return true
@@ -167,11 +170,16 @@ export class ApiBotManagerService implements OnModuleInit {
       console.log(`Can't find bot.`, botId, serverId)
       return false
     }
+    const community = await this.core.data.community.findFirst({ where: { bot: { id: botId } } })
+    if (!community) {
+      console.log(`Can't find community.`, botId, serverId)
+      return false
+    }
     this.logger.verbose(`Fetching members... ${botId} ${serverId}`)
 
     const [discordIdentityIds, botMemberIds] = await Promise.all([
-      this.getDiscordIdentityIds(),
-      this.getBotMemberIds(botId, serverId),
+      this.botMember.getDiscordIdentityIds(),
+      this.botMember.getBotMemberIds(botId, serverId),
     ])
     const members = await bot.getDiscordServerMembers(serverId)
 
@@ -194,15 +202,19 @@ export class ApiBotManagerService implements OnModuleInit {
     for (const member of filtered) {
       const userId = member.id
       // const identityProviderId = discordIdentityIds.includes(member.id) ? member.id : undefined
-      const created = await this.core.data.botMember.upsert({
-        where: { botId_userId_serverId: { botId, userId, serverId } },
-        update: {},
-        create: {
+      const created = await this.botMember.upsert({ botId, communityId: community.id, serverId, userId })
+      if (!created) {
+        this.logger.warn(`Failed to create bot member ${botId} ${serverId} ${userId}`)
+        continue
+      }
+
+      await this.core.logInfo(
+        community.id,
+        `Bot ${bot.client?.user?.username} added member ${member.user.username} to server ${serverId}`,
+        {
           botId,
-          serverId,
-          userId,
         },
-      })
+      )
       this.logger.verbose(
         `${botId} ${serverId} Processed member ${created.id} ${member.user.username} (linked: ${!!member.id})`,
       )
@@ -214,29 +226,6 @@ export class ApiBotManagerService implements OnModuleInit {
       `Found ${members.length} members to process (filtered ${filtered.length}) (linked ${linkedCount})`,
     )
     return true
-  }
-
-  private async getBotMemberIds(botId: string, serverId: string) {
-    return this.core.data.botMember
-      .findMany({ where: { botId, serverId } })
-      .then((items) => items.map(({ userId }) => userId))
-  }
-
-  private async getDiscordIdentityIds() {
-    return this.core.data.identity
-      .findMany({ where: { provider: IdentityProvider.Discord } })
-      .then((items) => items.map((item) => item.providerId))
-  }
-
-  async getBotMembers(botId: string, serverId: string) {
-    return this.core.data.botMember.findMany({
-      where: {
-        botId,
-        serverId,
-      },
-      include: { identity: { include: { owner: true } } },
-      orderBy: { identity: { owner: { username: 'asc' } } },
-    })
   }
 }
 
