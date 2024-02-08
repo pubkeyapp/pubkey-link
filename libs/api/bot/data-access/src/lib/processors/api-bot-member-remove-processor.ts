@@ -1,4 +1,4 @@
-import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq'
+import { Processor, WorkerHost } from '@nestjs/bullmq'
 import { Logger } from '@nestjs/common'
 import { BotMember } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
@@ -40,10 +40,5 @@ export class ApiBotMemberRemoveProcessor extends WorkerHost {
       )
       return undefined
     }
-  }
-
-  @OnWorkerEvent('completed')
-  onCompleted(job: Job<ApiBotMemberRemovePayload, unknown, string>) {
-    this.logger.verbose('completed:', { id: job.id })
   }
 }

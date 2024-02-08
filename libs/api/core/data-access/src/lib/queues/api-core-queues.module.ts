@@ -16,7 +16,7 @@ const logoUrl = 'https://avatars.githubusercontent.com/u/125477168?v=4'
         connection: config.redisOptions,
         defaultJobOptions: {
           removeOnFail: { age: 24 * 3600 },
-          removeOnComplete: true,
+          removeOnComplete: { age: 24 * 3600 },
           keepLogs: 1000,
         },
       }),

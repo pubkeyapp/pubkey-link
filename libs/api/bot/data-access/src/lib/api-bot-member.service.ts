@@ -1,6 +1,6 @@
 import { InjectQueue } from '@nestjs/bullmq'
 import { Injectable, Logger } from '@nestjs/common'
-import { Bot } from '@prisma/client'
+import { Bot, CommunityRole } from '@prisma/client'
 
 import { DiscordBot } from '@pubkey-link/api-bot-util'
 import { ApiCoreService, IdentityProvider } from '@pubkey-link/api-core-data-access'
@@ -56,6 +56,7 @@ export class ApiBotMemberService {
         where: { botId_userId_serverId: { botId, userId, serverId } },
         update: { botId, serverId, userId },
         create: { botId, serverId, userId },
+        include: { bot: { select: { id: true, communityId: true } }, identity: { select: { ownerId: true } } },
       })
       .then(async (created) => {
         await this.core.logInfo(communityId, `Added ${userId} to ${serverId}`, {
@@ -63,6 +64,16 @@ export class ApiBotMemberService {
           identityProvider: IdentityProvider.Discord,
           identityProviderId: userId,
         })
+        await this.core.data.communityMember.upsert({
+          where: { communityId_userId: { communityId: created.bot.communityId, userId: created.identity.ownerId } },
+          create: {
+            communityId: created.bot.communityId,
+            userId: created.identity.ownerId,
+            role: CommunityRole.Member,
+          },
+          update: { communityId: created.bot.communityId, userId: created.identity.ownerId },
+        })
+
         return created
       })
   }
@@ -78,13 +89,33 @@ export class ApiBotMemberService {
     userId: string
   }) {
     return this.core.data.botMember
-      .delete({ where: { botId_userId_serverId: { botId, userId, serverId } } })
-      .then((deleted) => {
-        this.core.logInfo(communityId, `Removed ${userId} from ${serverId}`, {
+      .delete({
+        where: { botId_userId_serverId: { botId, userId, serverId } },
+        include: { bot: true, identity: { select: { ownerId: true } } },
+      })
+      .then(async (deleted) => {
+        await this.core.logInfo(communityId, `Removed ${userId} from ${serverId}`, {
           botId,
           identityProvider: IdentityProvider.Discord,
           identityProviderId: userId,
         })
+        const botMembers = await this.core.data.botMember.findMany({ where: { botId, userId } })
+        if (!botMembers.length) {
+          await this.core.data.communityMember
+            .delete({
+              where: {
+                communityId_userId: { communityId: deleted.bot.communityId, userId: deleted.identity.ownerId },
+              },
+            })
+            .then((res) => {
+              this.core.logInfo(communityId, `Removed ${res.userId} from ${res.communityId}`, {
+                botId,
+                identityProvider: IdentityProvider.Discord,
+                identityProviderId: userId,
+                userId: res.userId,
+              })
+            })
+        }
         return deleted
       })
   }
@@ -112,10 +143,10 @@ export class ApiBotMemberService {
     })
   }
 
-  private async scheduleAddMember(bot: Bot, serverId: string, userId: string) {
+  async scheduleAddMember(bot: Bot, serverId: string, userId: string) {
     const jobId = `${bot.id}-${serverId}-${userId}`
     await this.botMemberAddQueue
-      .add('member-add', { botId: bot.id, communityId: bot.communityId, serverId, userId }, { jobId })
+      .add('member-add', { botId: bot.id, communityId: bot.communityId, serverId, userId })
       .then((res) => {
         this.logger.verbose(`scheduleAddMember queued: ${res.id}`)
       })
@@ -123,10 +154,10 @@ export class ApiBotMemberService {
         this.logger.error(`scheduleAddMember error: ${jobId}: ${err}`)
       })
   }
-  private async scheduleRemoveMember(bot: Bot, serverId: string, userId: string) {
+  async scheduleRemoveMember(bot: Bot, serverId: string, userId: string) {
     const jobId = `${bot.id}-${serverId}-${userId}`
     await this.botMemberRemoveQueue
-      .add('member-remove', { botId: bot.id, communityId: bot.communityId, serverId, userId }, { jobId })
+      .add('member-remove', { botId: bot.id, communityId: bot.communityId, serverId, userId })
       .then((res) => {
         this.logger.verbose(`scheduleRemoveMember queued: ${res.id}`)
       })

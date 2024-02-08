@@ -170,8 +170,11 @@ export class ApiBotManagerService implements OnModuleInit {
       console.log(`Can't find bot.`, botId, serverId)
       return false
     }
-    const community = await this.core.data.community.findFirst({ where: { bot: { id: botId } } })
-    if (!community) {
+    const community = await this.core.data.community.findFirst({
+      where: { bot: { id: botId } },
+      include: { bot: true },
+    })
+    if (!community?.bot) {
       console.log(`Can't find community.`, botId, serverId)
       return false
     }
@@ -201,23 +204,9 @@ export class ApiBotManagerService implements OnModuleInit {
     let linkedCount = 0
     for (const member of filtered) {
       const userId = member.id
-      // const identityProviderId = discordIdentityIds.includes(member.id) ? member.id : undefined
-      const created = await this.botMember.upsert({ botId, communityId: community.id, serverId, userId })
-      if (!created) {
-        this.logger.warn(`Failed to create bot member ${botId} ${serverId} ${userId}`)
-        continue
-      }
+      await this.botMember.scheduleAddMember(community.bot, serverId, userId)
 
-      await this.core.logInfo(
-        community.id,
-        `Bot ${bot.client?.user?.username} added member ${member.user.username} to server ${serverId}`,
-        {
-          botId,
-        },
-      )
-      this.logger.verbose(
-        `${botId} ${serverId} Processed member ${created.id} ${member.user.username} (linked: ${!!member.id})`,
-      )
+      this.logger.verbose(`${botId} ${serverId} Processed ${member.user.username} (linked: ${!!member.id})`)
       if (member.id) {
         linkedCount++
       }
