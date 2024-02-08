@@ -66,6 +66,7 @@ export interface ApiCoreConfig {
   host: string
   jwtSecret: string
   port: number
+  redisUrl: string
   sessionSecret: string
   webUrl: string
 }
@@ -109,6 +110,7 @@ export function configuration(): ApiCoreConfig {
     host: process.env['HOST'] as string,
     jwtSecret: process.env['JWT_SECRET'] as string,
     port: parseInt(process.env['PORT'] as string, 10) || 3000,
+    redisUrl: process.env['REDIS_URL'] as string,
     sessionSecret: process.env['SESSION_SECRET'] as string,
     webUrl: WEB_URL,
   }

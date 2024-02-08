@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { CommunityRole, IdentityProvider, LogLevel, Prisma } from '@prisma/client'
 import { LogRelatedType } from '@pubkey-link/sdk'
-import { ApiCoreConfigService } from './api-core-config.service'
 import { ApiCorePrismaClient, prismaClient } from './api-core-prisma-client'
+import { ApiCoreConfigService } from './config/api-core-config.service'
 import { slugifyId } from './helpers/slugify-id'
 
 @Injectable()
@@ -78,8 +78,10 @@ export class ApiCoreService {
 }
 
 export interface CoreLogInput {
+  botId?: string | null
   data?: Prisma.InputJsonValue
   level: LogLevel
   relatedId?: string | null
   relatedType?: LogRelatedType | null
+  userId?: string | null
 }

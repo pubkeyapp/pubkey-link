@@ -18,6 +18,10 @@ export class ApiNetworkService {
   private readonly cacheAnybodiesVaults = new LRUCache<string, AnybodiesVaultSnapshot>({
     max: 1000,
     ttl: 1000 * 60 * 60, // 1 hour
+    fetchMethod: async (vaultId) => {
+      this.logger.verbose(`cacheAnybodiesVaults: Cache miss for ${vaultId}`)
+      return getAnybodiesVaultSnapshot({ vaultId })
+    },
   })
 
   private readonly solanaNetworkAssetsCache = new LRUCache<string, NetworkAsset[]>({
@@ -255,7 +259,6 @@ export class ApiNetworkService {
 
       return res
     })
-    // .then((accounts) => ({ owner, accounts, amount: `${accounts.length}` }))
   }
 
   async resolveSolanaNonFungibleAssetsForOwners({
@@ -382,12 +385,8 @@ export class ApiNetworkService {
   }
 
   private async getCachedAnybodiesVaultSnapshot({ vaultId }: { vaultId: string }): Promise<AnybodiesVaultSnapshot> {
-    if (!this.cacheAnybodiesVaults.has(vaultId)) {
-      this.logger.verbose(`getCachedAnybodiesVaultSnapshot: Cache miss for vaultId: ${vaultId}`)
-      const assets = await getAnybodiesVaultSnapshot({ vaultId })
-      this.cacheAnybodiesVaults.set(vaultId, assets)
-    }
-    return this.cacheAnybodiesVaults.get(vaultId) ?? []
+    const result = await this.cacheAnybodiesVaults.fetch(vaultId)
+    return result ?? []
   }
 }
 /**

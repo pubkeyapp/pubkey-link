@@ -1,9 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { IdentityProvider } from '@prisma/client'
+import { RedisOptions } from 'bullmq'
 import { CookieOptions } from 'express-serve-static-core'
-import { ApiCoreConfig } from './config/configuration'
-import { AppConfig } from './entity/app-config.entity'
+import { AppConfig } from '../entity/app-config.entity'
+import { ApiCoreConfig } from './configuration'
 
 @Injectable()
 export class ApiCoreConfigService {
@@ -282,7 +283,33 @@ export class ApiCoreConfigService {
   }
 
   get prefix() {
-    return 'api'
+    return '/api'
+  }
+
+  get redisOptions(): RedisOptions {
+    // Parse the Redis URL to get the host, port, and password, etc.
+    const parsed = new URL(this.redisUrl)
+
+    // The URL class encodes the password if it contains special characters, so we need to decode it.
+    // https://nodejs.org/dist/latest-v18.x/docs/api/url.html#urlpassword
+    // This caused an issue because Azure Cache for Redis generates passwords that end with an equals sign.
+    const password = parsed.password ? decodeURIComponent(parsed.password) : undefined
+
+    return {
+      host: parsed.hostname,
+      port: Number(parsed.port),
+      password: password,
+      username: parsed.username,
+      tls: parsed.protocol?.startsWith('rediss')
+        ? {
+            rejectUnauthorized: false,
+          }
+        : undefined,
+    }
+  }
+
+  get redisUrl() {
+    return this.service.get('redisUrl')
   }
 
   get sessionSecret() {
