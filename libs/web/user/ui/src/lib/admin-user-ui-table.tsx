@@ -1,6 +1,6 @@
 import { ActionIcon, Group, ScrollArea } from '@mantine/core'
 import { User } from '@pubkey-link/sdk'
-import { IdentityUiAvatarGroup } from '@pubkey-link/web-identity-ui'
+import { IdentityUiAvatarGroup } from '@pubkey-link/web-ui-core'
 import { IconPencil, IconTrash, IconUser } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'

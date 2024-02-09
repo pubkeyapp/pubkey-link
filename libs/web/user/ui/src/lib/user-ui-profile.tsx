@@ -1,8 +1,9 @@
-import { Group, Paper, PaperProps, Text, useMantineTheme } from '@mantine/core'
+import { Group, Paper, PaperProps, Stack, Text, useMantineTheme } from '@mantine/core'
 import { User } from '@pubkey-link/sdk'
-import { useUiColorScheme } from '@pubkey-ui/core'
+import { UiGroup, useUiColorScheme } from '@pubkey-ui/core'
 
 import { ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import { UserUiAvatar } from './user-ui-avatar'
 
 export function UserUiProfile({
@@ -26,18 +27,24 @@ export function UserUiProfile({
       }}
       {...props}
     >
-      <UserUiAvatar user={user} size={120} radius={120} mx="auto" />
-      <Text ta="center" fz="lg" fw={500} mt="md">
-        {user.username}
-      </Text>
-      <Text ta="center" c="dimmed" fz="sm">
-        {user.name}
-      </Text>
-      {action ? (
-        <Group justify="center" mt="sm">
-          {action}
+      <UiGroup align="start">
+        <Group align="center">
+          <UserUiAvatar user={user} size="xl" radius={100} />
+          <Stack gap={0}>
+            <Text component={Link} to={user.profileUrl} fz="lg" fw={500}>
+              {user.username}
+            </Text>
+            <Text c="dimmed" fz="sm">
+              {user.name}
+            </Text>
+            {action ? (
+              <Group justify="center" mt="sm">
+                {action}
+              </Group>
+            ) : null}
+          </Stack>
         </Group>
-      ) : null}
+      </UiGroup>
     </Paper>
   )
 }

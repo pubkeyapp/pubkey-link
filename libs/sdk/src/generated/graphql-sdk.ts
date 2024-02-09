@@ -113,6 +113,14 @@ export type AdminFindManyLogInput = {
   userId?: InputMaybe<Scalars['String']['input']>
 }
 
+export type AdminFindManyNetworkAssetInput = {
+  cluster: NetworkCluster
+  limit?: InputMaybe<Scalars['Int']['input']>
+  page?: InputMaybe<Scalars['Int']['input']>
+  search?: InputMaybe<Scalars['String']['input']>
+  type?: InputMaybe<NetworkTokenType>
+}
+
 export type AdminFindManyNetworkInput = {
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
@@ -422,6 +430,7 @@ export type Mutation = {
   adminDeleteIdentity?: Maybe<Scalars['Boolean']['output']>
   adminDeleteLog?: Maybe<Scalars['Boolean']['output']>
   adminDeleteNetwork?: Maybe<Scalars['Boolean']['output']>
+  adminDeleteNetworkAsset?: Maybe<Scalars['Boolean']['output']>
   adminDeleteNetworkToken?: Maybe<Scalars['Boolean']['output']>
   adminDeleteRule?: Maybe<Scalars['Boolean']['output']>
   adminDeleteUser?: Maybe<Scalars['Boolean']['output']>
@@ -453,6 +462,7 @@ export type Mutation = {
   userDeleteRulePermission?: Maybe<Scalars['Boolean']['output']>
   userLeaveBotServer?: Maybe<Scalars['Boolean']['output']>
   userLinkIdentity?: Maybe<Identity>
+  userRefreshIdentity?: Maybe<Scalars['Boolean']['output']>
   userStartBot?: Maybe<Scalars['Boolean']['output']>
   userStopBot?: Maybe<Scalars['Boolean']['output']>
   userSyncBotServer?: Maybe<Scalars['Boolean']['output']>
@@ -521,6 +531,10 @@ export type MutationAdminDeleteLogArgs = {
 
 export type MutationAdminDeleteNetworkArgs = {
   networkId: Scalars['String']['input']
+}
+
+export type MutationAdminDeleteNetworkAssetArgs = {
+  networkAssetId: Scalars['String']['input']
 }
 
 export type MutationAdminDeleteNetworkTokenArgs = {
@@ -651,6 +665,10 @@ export type MutationUserLinkIdentityArgs = {
   input: LinkIdentityInput
 }
 
+export type MutationUserRefreshIdentityArgs = {
+  identityId: Scalars['String']['input']
+}
+
 export type MutationUserStartBotArgs = {
   botId: Scalars['String']['input']
 }
@@ -722,10 +740,29 @@ export type Network = {
 
 export type NetworkAsset = {
   __typename?: 'NetworkAsset'
-  accounts: Array<Scalars['String']['output']>
-  amount: Scalars['String']['output']
+  account: Scalars['String']['output']
+  attributes?: Maybe<Scalars['JSON']['output']>
+  balance?: Maybe<Scalars['String']['output']>
+  cluster: NetworkCluster
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  decimals: Scalars['Int']['output']
   group?: Maybe<Scalars['String']['output']>
+  id: Scalars['String']['output']
+  imageUrl?: Maybe<Scalars['String']['output']>
+  metadata?: Maybe<Scalars['JSON']['output']>
+  mint: Scalars['String']['output']
+  name: Scalars['String']['output']
   owner: Scalars['String']['output']
+  program?: Maybe<Scalars['String']['output']>
+  symbol?: Maybe<Scalars['String']['output']>
+  type: NetworkTokenType
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type NetworkAssetPaging = {
+  __typename?: 'NetworkAssetPaging'
+  data: Array<NetworkAsset>
+  meta: PagingMeta
 }
 
 export enum NetworkCluster {
@@ -793,6 +830,7 @@ export type Query = {
   adminFindManyIdentity?: Maybe<Array<Identity>>
   adminFindManyLog: LogPaging
   adminFindManyNetwork: NetworkPaging
+  adminFindManyNetworkAsset: NetworkAssetPaging
   adminFindManyNetworkToken: NetworkTokenPaging
   adminFindManyRule: RulePaging
   adminFindManyUser: UserPaging
@@ -801,6 +839,7 @@ export type Query = {
   adminFindOneCommunityMember?: Maybe<CommunityMember>
   adminFindOneLog?: Maybe<Log>
   adminFindOneNetwork?: Maybe<Network>
+  adminFindOneNetworkAsset?: Maybe<NetworkAsset>
   adminFindOneNetworkToken?: Maybe<NetworkToken>
   adminFindOneRule?: Maybe<Rule>
   adminFindOneUser?: Maybe<User>
@@ -815,13 +854,16 @@ export type Query = {
   userFindManyCommunityMember: CommunityMemberPaging
   userFindManyIdentity?: Maybe<Array<Identity>>
   userFindManyLog: LogPaging
+  userFindManyNetworkAsset: NetworkAssetPaging
   userFindManyNetworkToken: NetworkTokenPaging
   userFindManyRule: RulePaging
   userFindManyUser: UserPaging
   userFindOneBot?: Maybe<Bot>
   userFindOneCommunity?: Maybe<Community>
   userFindOneCommunityMember?: Maybe<CommunityMember>
+  userFindOneIdentity?: Maybe<Identity>
   userFindOneLog?: Maybe<Log>
+  userFindOneNetworkAsset?: Maybe<NetworkAsset>
   userFindOneRule?: Maybe<Rule>
   userFindOneUser?: Maybe<User>
   userFindOneUserById?: Maybe<User>
@@ -858,6 +900,10 @@ export type QueryAdminFindManyNetworkArgs = {
   input: AdminFindManyNetworkInput
 }
 
+export type QueryAdminFindManyNetworkAssetArgs = {
+  input: AdminFindManyNetworkAssetInput
+}
+
 export type QueryAdminFindManyNetworkTokenArgs = {
   input: AdminFindManyNetworkTokenInput
 }
@@ -888,6 +934,10 @@ export type QueryAdminFindOneLogArgs = {
 
 export type QueryAdminFindOneNetworkArgs = {
   networkId: Scalars['String']['input']
+}
+
+export type QueryAdminFindOneNetworkAssetArgs = {
+  networkAssetId: Scalars['String']['input']
 }
 
 export type QueryAdminFindOneNetworkTokenArgs = {
@@ -931,6 +981,10 @@ export type QueryUserFindManyLogArgs = {
   input: UserFindManyLogInput
 }
 
+export type QueryUserFindManyNetworkAssetArgs = {
+  input: UserFindManyNetworkAssetInput
+}
+
 export type QueryUserFindManyNetworkTokenArgs = {
   input: UserFindManyNetworkTokenInput
 }
@@ -955,8 +1009,18 @@ export type QueryUserFindOneCommunityMemberArgs = {
   communityMemberId: Scalars['String']['input']
 }
 
+export type QueryUserFindOneIdentityArgs = {
+  provider: IdentityProvider
+  providerId: Scalars['String']['input']
+}
+
 export type QueryUserFindOneLogArgs = {
   logId: Scalars['String']['input']
+}
+
+export type QueryUserFindOneNetworkAssetArgs = {
+  account: Scalars['String']['input']
+  cluster: NetworkCluster
 }
 
 export type QueryUserFindOneRuleArgs = {
@@ -1031,7 +1095,7 @@ export type RuleCondition = {
   __typename?: 'RuleCondition'
   account?: Maybe<Scalars['String']['output']>
   amount?: Maybe<Scalars['String']['output']>
-  asset?: Maybe<NetworkAsset>
+  asset?: Maybe<SolanaNetworkAsset>
   config?: Maybe<Scalars['JSON']['output']>
   createdAt?: Maybe<Scalars['DateTime']['output']>
   filters?: Maybe<Scalars['JSON']['output']>
@@ -1064,6 +1128,14 @@ export type RulePermission = {
   rule?: Maybe<Rule>
   ruleId?: Maybe<Scalars['String']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type SolanaNetworkAsset = {
+  __typename?: 'SolanaNetworkAsset'
+  accounts: Array<Scalars['String']['output']>
+  amount: Scalars['String']['output']
+  group?: Maybe<Scalars['String']['output']>
+  owner: Scalars['String']['output']
 }
 
 export type User = {
@@ -1154,6 +1226,15 @@ export type UserFindManyLogInput = {
   ruleId?: InputMaybe<Scalars['String']['input']>
   search?: InputMaybe<Scalars['String']['input']>
   userId?: InputMaybe<Scalars['String']['input']>
+}
+
+export type UserFindManyNetworkAssetInput = {
+  cluster: NetworkCluster
+  limit?: InputMaybe<Scalars['Int']['input']>
+  page?: InputMaybe<Scalars['Int']['input']>
+  search?: InputMaybe<Scalars['String']['input']>
+  type?: InputMaybe<NetworkTokenType>
+  username: Scalars['String']['input']
 }
 
 export type UserFindManyNetworkTokenInput = {
@@ -1747,7 +1828,7 @@ export type UserFindOneBotQuery = {
             metadataUrl?: string | null
             raw?: any | null
           } | null
-          asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+          asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
         }> | null
         permissions?: Array<{
           __typename?: 'RulePermission'
@@ -2686,11 +2767,54 @@ export type UserFindManyIdentityQuery = {
   }> | null
 }
 
+export type UserFindOneIdentityQueryVariables = Exact<{
+  provider: IdentityProvider
+  providerId: Scalars['String']['input']
+}>
+
+export type UserFindOneIdentityQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'Identity'
+    avatarUrl?: string | null
+    createdAt?: Date | null
+    expired?: boolean | null
+    id: string
+    name?: string | null
+    ownerId?: string | null
+    profile?: any | null
+    provider: IdentityProvider
+    providerId: string
+    updatedAt?: Date | null
+    url?: string | null
+    verified?: boolean | null
+    owner?: {
+      __typename?: 'User'
+      avatarUrl?: string | null
+      createdAt?: Date | null
+      developer?: boolean | null
+      id: string
+      name?: string | null
+      profileUrl: string
+      role?: UserRole | null
+      status?: UserStatus | null
+      updatedAt?: Date | null
+      username?: string | null
+    } | null
+  } | null
+}
+
 export type UserDeleteIdentityMutationVariables = Exact<{
   identityId: Scalars['String']['input']
 }>
 
 export type UserDeleteIdentityMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
+export type UserRefreshIdentityMutationVariables = Exact<{
+  identityId: Scalars['String']['input']
+}>
+
+export type UserRefreshIdentityMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
 export type UserRequestIdentityChallengeQueryVariables = Exact<{
   input: RequestIdentityChallengeInput
@@ -2935,7 +3059,7 @@ export type LogDetailsFragment = {
         metadataUrl?: string | null
         raw?: any | null
       } | null
-      asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
     permissions?: Array<{
       __typename?: 'RulePermission'
@@ -3102,7 +3226,7 @@ export type UserFindManyLogQuery = {
             metadataUrl?: string | null
             raw?: any | null
           } | null
-          asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+          asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
         }> | null
         permissions?: Array<{
           __typename?: 'RulePermission'
@@ -3279,7 +3403,7 @@ export type UserFindOneLogQuery = {
           metadataUrl?: string | null
           raw?: any | null
         } | null
-        asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
       }> | null
       permissions?: Array<{
         __typename?: 'RulePermission'
@@ -3447,7 +3571,7 @@ export type AdminFindManyLogQuery = {
             metadataUrl?: string | null
             raw?: any | null
           } | null
-          asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+          asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
         }> | null
         permissions?: Array<{
           __typename?: 'RulePermission'
@@ -3624,7 +3748,7 @@ export type AdminFindOneLogQuery = {
           metadataUrl?: string | null
           raw?: any | null
         } | null
-        asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
       }> | null
       permissions?: Array<{
         __typename?: 'RulePermission'
@@ -3680,6 +3804,172 @@ export type AdminDeleteLogMutationVariables = Exact<{
 }>
 
 export type AdminDeleteLogMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
+export type NetworkAssetDetailsFragment = {
+  __typename?: 'NetworkAsset'
+  id: string
+  createdAt?: Date | null
+  updatedAt?: Date | null
+  type: NetworkTokenType
+  cluster: NetworkCluster
+  account: string
+  balance?: string | null
+  name: string
+  symbol?: string | null
+  program?: string | null
+  decimals: number
+  mint: string
+  owner: string
+  group?: string | null
+  imageUrl?: string | null
+  metadata?: any | null
+  attributes?: any | null
+}
+
+export type UserFindManyNetworkAssetQueryVariables = Exact<{
+  input: UserFindManyNetworkAssetInput
+}>
+
+export type UserFindManyNetworkAssetQuery = {
+  __typename?: 'Query'
+  paging: {
+    __typename?: 'NetworkAssetPaging'
+    data: Array<{
+      __typename?: 'NetworkAsset'
+      id: string
+      createdAt?: Date | null
+      updatedAt?: Date | null
+      type: NetworkTokenType
+      cluster: NetworkCluster
+      account: string
+      balance?: string | null
+      name: string
+      symbol?: string | null
+      program?: string | null
+      decimals: number
+      mint: string
+      owner: string
+      group?: string | null
+      imageUrl?: string | null
+      metadata?: any | null
+      attributes?: any | null
+    }>
+    meta: {
+      __typename?: 'PagingMeta'
+      currentPage: number
+      isFirstPage: boolean
+      isLastPage: boolean
+      nextPage?: number | null
+      pageCount?: number | null
+      previousPage?: number | null
+      totalCount?: number | null
+    }
+  }
+}
+
+export type UserFindOneNetworkAssetQueryVariables = Exact<{
+  account: Scalars['String']['input']
+  cluster: NetworkCluster
+}>
+
+export type UserFindOneNetworkAssetQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'NetworkAsset'
+    id: string
+    createdAt?: Date | null
+    updatedAt?: Date | null
+    type: NetworkTokenType
+    cluster: NetworkCluster
+    account: string
+    balance?: string | null
+    name: string
+    symbol?: string | null
+    program?: string | null
+    decimals: number
+    mint: string
+    owner: string
+    group?: string | null
+    imageUrl?: string | null
+    metadata?: any | null
+    attributes?: any | null
+  } | null
+}
+
+export type AdminFindManyNetworkAssetQueryVariables = Exact<{
+  input: AdminFindManyNetworkAssetInput
+}>
+
+export type AdminFindManyNetworkAssetQuery = {
+  __typename?: 'Query'
+  paging: {
+    __typename?: 'NetworkAssetPaging'
+    data: Array<{
+      __typename?: 'NetworkAsset'
+      id: string
+      createdAt?: Date | null
+      updatedAt?: Date | null
+      type: NetworkTokenType
+      cluster: NetworkCluster
+      account: string
+      balance?: string | null
+      name: string
+      symbol?: string | null
+      program?: string | null
+      decimals: number
+      mint: string
+      owner: string
+      group?: string | null
+      imageUrl?: string | null
+      metadata?: any | null
+      attributes?: any | null
+    }>
+    meta: {
+      __typename?: 'PagingMeta'
+      currentPage: number
+      isFirstPage: boolean
+      isLastPage: boolean
+      nextPage?: number | null
+      pageCount?: number | null
+      previousPage?: number | null
+      totalCount?: number | null
+    }
+  }
+}
+
+export type AdminFindOneNetworkAssetQueryVariables = Exact<{
+  networkAssetId: Scalars['String']['input']
+}>
+
+export type AdminFindOneNetworkAssetQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'NetworkAsset'
+    id: string
+    createdAt?: Date | null
+    updatedAt?: Date | null
+    type: NetworkTokenType
+    cluster: NetworkCluster
+    account: string
+    balance?: string | null
+    name: string
+    symbol?: string | null
+    program?: string | null
+    decimals: number
+    mint: string
+    owner: string
+    group?: string | null
+    imageUrl?: string | null
+    metadata?: any | null
+    attributes?: any | null
+  } | null
+}
+
+export type AdminDeleteNetworkAssetMutationVariables = Exact<{
+  networkAssetId: Scalars['String']['input']
+}>
+
+export type AdminDeleteNetworkAssetMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
 export type NetworkTokenDetailsFragment = {
   __typename?: 'NetworkToken'
@@ -4044,7 +4334,7 @@ export type RuleDetailsFragment = {
       metadataUrl?: string | null
       raw?: any | null
     } | null
-    asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+    asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
   }> | null
   permissions?: Array<{
     __typename?: 'RulePermission'
@@ -4108,7 +4398,7 @@ export type RuleConditionDetailsFragment = {
     metadataUrl?: string | null
     raw?: any | null
   } | null
-  asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+  asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
 }
 
 export type RulePermissionDetailsFragment = {
@@ -4189,7 +4479,7 @@ export type AdminFindManyRuleQuery = {
           metadataUrl?: string | null
           raw?: any | null
         } | null
-        asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
       }> | null
       permissions?: Array<{
         __typename?: 'RulePermission'
@@ -4280,7 +4570,7 @@ export type AdminFindOneRuleQuery = {
         metadataUrl?: string | null
         raw?: any | null
       } | null
-      asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
     permissions?: Array<{
       __typename?: 'RulePermission'
@@ -4360,7 +4650,7 @@ export type AdminCreateRuleMutation = {
         metadataUrl?: string | null
         raw?: any | null
       } | null
-      asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
     permissions?: Array<{
       __typename?: 'RulePermission'
@@ -4441,7 +4731,7 @@ export type AdminUpdateRuleMutation = {
         metadataUrl?: string | null
         raw?: any | null
       } | null
-      asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
     permissions?: Array<{
       __typename?: 'RulePermission'
@@ -4529,7 +4819,7 @@ export type UserFindManyRuleQuery = {
           metadataUrl?: string | null
           raw?: any | null
         } | null
-        asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
       }> | null
       permissions?: Array<{
         __typename?: 'RulePermission'
@@ -4620,7 +4910,7 @@ export type UserFindOneRuleQuery = {
         metadataUrl?: string | null
         raw?: any | null
       } | null
-      asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
     permissions?: Array<{
       __typename?: 'RulePermission'
@@ -4700,7 +4990,7 @@ export type UserCreateRuleMutation = {
         metadataUrl?: string | null
         raw?: any | null
       } | null
-      asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
     permissions?: Array<{
       __typename?: 'RulePermission'
@@ -4771,7 +5061,7 @@ export type UserCreateRuleConditionMutation = {
       metadataUrl?: string | null
       raw?: any | null
     } | null
-    asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+    asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
   } | null
 }
 
@@ -4859,7 +5149,7 @@ export type UserUpdateRuleMutation = {
         metadataUrl?: string | null
         raw?: any | null
       } | null
-      asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
     permissions?: Array<{
       __typename?: 'RulePermission'
@@ -4931,7 +5221,7 @@ export type UserUpdateRuleConditionMutation = {
       metadataUrl?: string | null
       raw?: any | null
     } | null
-    asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+    asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
   } | null
 }
 
@@ -4988,7 +5278,7 @@ export type UserValidateRuleMutation = {
       metadataUrl?: string | null
       raw?: any | null
     } | null
-    asset?: { __typename?: 'NetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+    asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
   }> | null
 }
 
@@ -5523,6 +5813,27 @@ export const LogDetailsFragmentDoc = gql`
   ${RuleDetailsFragmentDoc}
   ${UserDetailsFragmentDoc}
 `
+export const NetworkAssetDetailsFragmentDoc = gql`
+  fragment NetworkAssetDetails on NetworkAsset {
+    id
+    createdAt
+    updatedAt
+    type
+    cluster
+    account
+    balance
+    name
+    symbol
+    program
+    decimals
+    mint
+    owner
+    group
+    imageUrl
+    metadata
+    attributes
+  }
+`
 export const NetworkDetailsFragmentDoc = gql`
   fragment NetworkDetails on Network {
     createdAt
@@ -5945,9 +6256,26 @@ export const UserFindManyIdentityDocument = gql`
   }
   ${IdentityDetailsFragmentDoc}
 `
+export const UserFindOneIdentityDocument = gql`
+  query userFindOneIdentity($provider: IdentityProvider!, $providerId: String!) {
+    item: userFindOneIdentity(provider: $provider, providerId: $providerId) {
+      ...IdentityDetails
+      owner {
+        ...UserDetails
+      }
+    }
+  }
+  ${IdentityDetailsFragmentDoc}
+  ${UserDetailsFragmentDoc}
+`
 export const UserDeleteIdentityDocument = gql`
   mutation userDeleteIdentity($identityId: String!) {
     deleted: userDeleteIdentity(identityId: $identityId)
+  }
+`
+export const UserRefreshIdentityDocument = gql`
+  mutation userRefreshIdentity($identityId: String!) {
+    deleted: userRefreshIdentity(identityId: $identityId)
   }
 `
 export const UserRequestIdentityChallengeDocument = gql`
@@ -6049,6 +6377,55 @@ export const AdminFindOneLogDocument = gql`
 export const AdminDeleteLogDocument = gql`
   mutation adminDeleteLog($logId: String!) {
     deleted: adminDeleteLog(logId: $logId)
+  }
+`
+export const UserFindManyNetworkAssetDocument = gql`
+  query userFindManyNetworkAsset($input: UserFindManyNetworkAssetInput!) {
+    paging: userFindManyNetworkAsset(input: $input) {
+      data {
+        ...NetworkAssetDetails
+      }
+      meta {
+        ...PagingMetaDetails
+      }
+    }
+  }
+  ${NetworkAssetDetailsFragmentDoc}
+  ${PagingMetaDetailsFragmentDoc}
+`
+export const UserFindOneNetworkAssetDocument = gql`
+  query userFindOneNetworkAsset($account: String!, $cluster: NetworkCluster!) {
+    item: userFindOneNetworkAsset(account: $account, cluster: $cluster) {
+      ...NetworkAssetDetails
+    }
+  }
+  ${NetworkAssetDetailsFragmentDoc}
+`
+export const AdminFindManyNetworkAssetDocument = gql`
+  query adminFindManyNetworkAsset($input: AdminFindManyNetworkAssetInput!) {
+    paging: adminFindManyNetworkAsset(input: $input) {
+      data {
+        ...NetworkAssetDetails
+      }
+      meta {
+        ...PagingMetaDetails
+      }
+    }
+  }
+  ${NetworkAssetDetailsFragmentDoc}
+  ${PagingMetaDetailsFragmentDoc}
+`
+export const AdminFindOneNetworkAssetDocument = gql`
+  query adminFindOneNetworkAsset($networkAssetId: String!) {
+    item: adminFindOneNetworkAsset(networkAssetId: $networkAssetId) {
+      ...NetworkAssetDetails
+    }
+  }
+  ${NetworkAssetDetailsFragmentDoc}
+`
+export const AdminDeleteNetworkAssetDocument = gql`
+  mutation adminDeleteNetworkAsset($networkAssetId: String!) {
+    deleted: adminDeleteNetworkAsset(networkAssetId: $networkAssetId)
   }
 `
 export const AdminFindManyNetworkTokenDocument = gql`
@@ -6447,7 +6824,9 @@ const AdminFindManyIdentityDocumentString = print(AdminFindManyIdentityDocument)
 const AdminCreateIdentityDocumentString = print(AdminCreateIdentityDocument)
 const AdminDeleteIdentityDocumentString = print(AdminDeleteIdentityDocument)
 const UserFindManyIdentityDocumentString = print(UserFindManyIdentityDocument)
+const UserFindOneIdentityDocumentString = print(UserFindOneIdentityDocument)
 const UserDeleteIdentityDocumentString = print(UserDeleteIdentityDocument)
+const UserRefreshIdentityDocumentString = print(UserRefreshIdentityDocument)
 const UserRequestIdentityChallengeDocumentString = print(UserRequestIdentityChallengeDocument)
 const UserVerifyIdentityChallengeDocumentString = print(UserVerifyIdentityChallengeDocument)
 const UserLinkIdentityDocumentString = print(UserLinkIdentityDocument)
@@ -6459,6 +6838,11 @@ const UserFindOneLogDocumentString = print(UserFindOneLogDocument)
 const AdminFindManyLogDocumentString = print(AdminFindManyLogDocument)
 const AdminFindOneLogDocumentString = print(AdminFindOneLogDocument)
 const AdminDeleteLogDocumentString = print(AdminDeleteLogDocument)
+const UserFindManyNetworkAssetDocumentString = print(UserFindManyNetworkAssetDocument)
+const UserFindOneNetworkAssetDocumentString = print(UserFindOneNetworkAssetDocument)
+const AdminFindManyNetworkAssetDocumentString = print(AdminFindManyNetworkAssetDocument)
+const AdminFindOneNetworkAssetDocumentString = print(AdminFindOneNetworkAssetDocument)
+const AdminDeleteNetworkAssetDocumentString = print(AdminDeleteNetworkAssetDocument)
 const AdminFindManyNetworkTokenDocumentString = print(AdminFindManyNetworkTokenDocument)
 const AdminFindOneNetworkTokenDocumentString = print(AdminFindOneNetworkTokenDocument)
 const AdminCreateNetworkTokenDocumentString = print(AdminCreateNetworkTokenDocument)
@@ -7539,6 +7923,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
+    userFindOneIdentity(
+      variables: UserFindOneIdentityQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserFindOneIdentityQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserFindOneIdentityQuery>(UserFindOneIdentityDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userFindOneIdentity',
+        'query',
+        variables,
+      )
+    },
     userDeleteIdentity(
       variables: UserDeleteIdentityMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -7556,6 +7961,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'userDeleteIdentity',
+        'mutation',
+        variables,
+      )
+    },
+    userRefreshIdentity(
+      variables: UserRefreshIdentityMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserRefreshIdentityMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserRefreshIdentityMutation>(UserRefreshIdentityDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userRefreshIdentity',
         'mutation',
         variables,
       )
@@ -7787,6 +8213,111 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'adminDeleteLog',
+        'mutation',
+        variables,
+      )
+    },
+    userFindManyNetworkAsset(
+      variables: UserFindManyNetworkAssetQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserFindManyNetworkAssetQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserFindManyNetworkAssetQuery>(UserFindManyNetworkAssetDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userFindManyNetworkAsset',
+        'query',
+        variables,
+      )
+    },
+    userFindOneNetworkAsset(
+      variables: UserFindOneNetworkAssetQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserFindOneNetworkAssetQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserFindOneNetworkAssetQuery>(UserFindOneNetworkAssetDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userFindOneNetworkAsset',
+        'query',
+        variables,
+      )
+    },
+    adminFindManyNetworkAsset(
+      variables: AdminFindManyNetworkAssetQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindManyNetworkAssetQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindManyNetworkAssetQuery>(AdminFindManyNetworkAssetDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindManyNetworkAsset',
+        'query',
+        variables,
+      )
+    },
+    adminFindOneNetworkAsset(
+      variables: AdminFindOneNetworkAssetQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindOneNetworkAssetQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindOneNetworkAssetQuery>(AdminFindOneNetworkAssetDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindOneNetworkAsset',
+        'query',
+        variables,
+      )
+    },
+    adminDeleteNetworkAsset(
+      variables: AdminDeleteNetworkAssetMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminDeleteNetworkAssetMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminDeleteNetworkAssetMutation>(AdminDeleteNetworkAssetDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminDeleteNetworkAsset',
         'mutation',
         variables,
       )
@@ -8781,6 +9312,16 @@ export function AdminFindManyLogInputSchema(): z.ZodObject<Properties<AdminFindM
   })
 }
 
+export function AdminFindManyNetworkAssetInputSchema(): z.ZodObject<Properties<AdminFindManyNetworkAssetInput>> {
+  return z.object({
+    cluster: NetworkClusterSchema,
+    limit: z.number().nullish(),
+    page: z.number().nullish(),
+    search: z.string().nullish(),
+    type: NetworkTokenTypeSchema.nullish(),
+  })
+}
+
 export function AdminFindManyNetworkInputSchema(): z.ZodObject<Properties<AdminFindManyNetworkInput>> {
   return z.object({
     limit: z.number().nullish(),
@@ -8996,6 +9537,17 @@ export function UserFindManyLogInputSchema(): z.ZodObject<Properties<UserFindMan
     ruleId: z.string().nullish(),
     search: z.string().nullish(),
     userId: z.string().nullish(),
+  })
+}
+
+export function UserFindManyNetworkAssetInputSchema(): z.ZodObject<Properties<UserFindManyNetworkAssetInput>> {
+  return z.object({
+    cluster: NetworkClusterSchema,
+    limit: z.number().nullish(),
+    page: z.number().nullish(),
+    search: z.string().nullish(),
+    type: NetworkTokenTypeSchema.nullish(),
+    username: z.string(),
   })
 }
 

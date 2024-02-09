@@ -43,8 +43,9 @@ export class ApiBotMemberService {
       providerId: userId,
     })
     if (!identity) {
-      await this.core.logError(communityId, `User ${userId} joined ${serverId} but identity not found`, {
+      await this.core.logError(`User ${userId} joined ${serverId} but identity not found`, {
         botId,
+        communityId,
         identityProvider: IdentityProvider.Discord,
         identityProviderId: userId,
       })
@@ -59,8 +60,9 @@ export class ApiBotMemberService {
         include: { bot: { select: { id: true, communityId: true } }, identity: { select: { ownerId: true } } },
       })
       .then(async (created) => {
-        await this.core.logInfo(communityId, `Added ${userId} to ${serverId}`, {
+        await this.core.logInfo(`Added ${userId} to ${serverId}`, {
           botId,
+          communityId,
           identityProvider: IdentityProvider.Discord,
           identityProviderId: userId,
         })
@@ -94,8 +96,9 @@ export class ApiBotMemberService {
         include: { bot: true, identity: { select: { ownerId: true } } },
       })
       .then(async (deleted) => {
-        await this.core.logInfo(communityId, `Removed ${userId} from ${serverId}`, {
+        await this.core.logInfo(`Removed ${userId} from ${serverId}`, {
           botId,
+          communityId,
           identityProvider: IdentityProvider.Discord,
           identityProviderId: userId,
         })
@@ -108,8 +111,9 @@ export class ApiBotMemberService {
               },
             })
             .then((res) => {
-              this.core.logInfo(communityId, `Removed ${res.userId} from ${res.communityId}`, {
+              this.core.logInfo(`Removed ${res.userId} from ${res.communityId}`, {
                 botId,
+                communityId,
                 identityProvider: IdentityProvider.Discord,
                 identityProviderId: userId,
                 userId: res.userId,

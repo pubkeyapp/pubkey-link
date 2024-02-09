@@ -1,9 +1,10 @@
-import { Badge, Group } from '@mantine/core'
+import { Group } from '@mantine/core'
 import { UserBotFeature } from '@pubkey-link/web-bot-feature'
 import { useUserFindOneCommunity } from '@pubkey-link/web-community-data-access'
 import { UserCommunityMemberFeature } from '@pubkey-link/web-community-member-feature'
 import { CommunityUiItem } from '@pubkey-link/web-community-ui'
 import { UserLogFeature } from '@pubkey-link/web-log-feature'
+import { NetworkUiClusterBadge } from '@pubkey-link/web-network-ui'
 import { UserRuleFeature } from '@pubkey-link/web-rule-feature'
 import { UiIcon } from '@pubkey-link/web-ui-core'
 import {
@@ -84,9 +85,7 @@ export function UserCommunityDetailFeature() {
           </Group>
           <Group>
             <UiDebugModal data={item} />
-            <Badge variant="light" radius="sm">
-              {item.cluster}
-            </Badge>
+            <NetworkUiClusterBadge cluster={item.cluster} />
           </Group>
         </UiGroup>
         <UiGridRoutes basePath={`/c/${communityId}`} routes={routes} />

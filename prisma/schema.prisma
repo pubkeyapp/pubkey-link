@@ -140,31 +140,19 @@ model Log {
   level              LogLevel
   relatedId          String?
   relatedType        LogRelatedType?
-  community          Community         @relation(fields: [communityId], references: [id], onDelete: Cascade)
-  communityId        String
+  community          Community?        @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  communityId        String?
   identity           Identity?         @relation(fields: [identityProvider, identityProviderId], references: [provider, providerId], onDelete: Cascade)
   identityProvider   IdentityProvider?
   identityProviderId String?
   bot                Bot?              @relation(fields: [botId], references: [id], onDelete: Cascade)
   botId              String?
+  networkAsset       NetworkAsset?     @relation(fields: [networkAssetId], references: [id], onDelete: Cascade)
+  networkAssetId     String?
   user               User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId             String?
   rule               Rule?             @relation(fields: [ruleId], references: [id], onDelete: Cascade)
   ruleId             String?
-}
-
-enum LogLevel {
-  Info
-  Warning
-  Error
-}
-
-enum LogRelatedType {
-  Bot
-  Community
-  Identity
-  Rule
-  User
 }
 
 model Network {
@@ -175,7 +163,33 @@ model Network {
   type      NetworkType
   name      String         @unique
   endpoint  String
+  assets    NetworkAsset[]
   tokens    NetworkToken[]
+}
+
+model NetworkAsset {
+  id         String           @id @default(cuid())
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  network    Network          @relation(fields: [cluster], references: [cluster])
+  cluster    NetworkCluster
+  type       NetworkTokenType
+  account    String
+  group      String?
+  name       String
+  symbol     String?
+  balance    String?
+  decimals   Int
+  mint       String
+  owner      String
+  program    String?
+  imageUrl   String?
+  metadata   Json?
+  attributes Json?
+  logs       Log[]
+
+  @@unique([account, cluster])
+  @@index([cluster, owner, type])
 }
 
 model NetworkToken {
@@ -272,6 +286,20 @@ enum IdentityProvider {
   Google
   Solana
   Twitter
+}
+
+enum LogLevel {
+  Info
+  Warning
+  Error
+}
+
+enum LogRelatedType {
+  Bot
+  Community
+  Identity
+  Rule
+  User
 }
 
 enum NetworkCluster {

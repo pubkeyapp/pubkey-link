@@ -14,7 +14,7 @@ export default function UserUserRoutes() {
   return (
     <Routes>
       <Route index element={<UserUserListFeature />} />
-      <Route path=":username" element={<UserUserDetailFeature />} />
+      <Route path=":username/*" element={<UserUserDetailFeature />} />
     </Routes>
   )
 }

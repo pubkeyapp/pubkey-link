@@ -91,6 +91,14 @@ input AdminFindManyLogInput {
   userId: String
 }
 
+input AdminFindManyNetworkAssetInput {
+  cluster: NetworkCluster!
+  limit: Int = 10
+  page: Int = 1
+  search: String
+  type: NetworkTokenType
+}
+
 input AdminFindManyNetworkInput {
   limit: Int = 10
   page: Int = 1
@@ -394,6 +402,7 @@ type Mutation {
   adminDeleteIdentity(identityId: String!): Boolean
   adminDeleteLog(logId: String!): Boolean
   adminDeleteNetwork(networkId: String!): Boolean
+  adminDeleteNetworkAsset(networkAssetId: String!): Boolean
   adminDeleteNetworkToken(networkTokenId: String!): Boolean
   adminDeleteRule(ruleId: String!): Boolean
   adminDeleteUser(userId: String!): Boolean
@@ -425,6 +434,7 @@ type Mutation {
   userDeleteRulePermission(rulePermissionId: String!): Boolean
   userLeaveBotServer(botId: String!, serverId: String!): Boolean
   userLinkIdentity(input: LinkIdentityInput!): Identity
+  userRefreshIdentity(identityId: String!): Boolean
   userStartBot(botId: String!): Boolean
   userStopBot(botId: String!): Boolean
   userSyncBotServer(botId: String!, serverId: String!): Boolean
@@ -453,10 +463,28 @@ type Network {
 }
 
 type NetworkAsset {
-  accounts: [String!]!
-  amount: String!
+  account: String!
+  attributes: JSON
+  balance: String
+  cluster: NetworkCluster!
+  createdAt: DateTime
+  decimals: Int!
   group: String
+  id: String!
+  imageUrl: String
+  metadata: JSON
+  mint: String!
+  name: String!
   owner: String!
+  program: String
+  symbol: String
+  type: NetworkTokenType!
+  updatedAt: DateTime
+}
+
+type NetworkAssetPaging {
+  data: [NetworkAsset!]!
+  meta: PagingMeta!
 }
 
 enum NetworkCluster {
@@ -519,6 +547,7 @@ type Query {
   adminFindManyIdentity(input: AdminFindManyIdentityInput!): [Identity!]
   adminFindManyLog(input: AdminFindManyLogInput!): LogPaging!
   adminFindManyNetwork(input: AdminFindManyNetworkInput!): NetworkPaging!
+  adminFindManyNetworkAsset(input: AdminFindManyNetworkAssetInput!): NetworkAssetPaging!
   adminFindManyNetworkToken(input: AdminFindManyNetworkTokenInput!): NetworkTokenPaging!
   adminFindManyRule(input: AdminFindManyRuleInput!): RulePaging!
   adminFindManyUser(input: AdminFindManyUserInput!): UserPaging!
@@ -527,6 +556,7 @@ type Query {
   adminFindOneCommunityMember(communityMemberId: String!): CommunityMember
   adminFindOneLog(logId: String!): Log
   adminFindOneNetwork(networkId: String!): Network
+  adminFindOneNetworkAsset(networkAssetId: String!): NetworkAsset
   adminFindOneNetworkToken(networkTokenId: String!): NetworkToken
   adminFindOneRule(ruleId: String!): Rule
   adminFindOneUser(userId: String!): User
@@ -541,13 +571,16 @@ type Query {
   userFindManyCommunityMember(input: UserFindManyCommunityMemberInput!): CommunityMemberPaging!
   userFindManyIdentity(input: UserFindManyIdentityInput!): [Identity!]
   userFindManyLog(input: UserFindManyLogInput!): LogPaging!
+  userFindManyNetworkAsset(input: UserFindManyNetworkAssetInput!): NetworkAssetPaging!
   userFindManyNetworkToken(input: UserFindManyNetworkTokenInput!): NetworkTokenPaging!
   userFindManyRule(input: UserFindManyRuleInput!): RulePaging!
   userFindManyUser(input: UserFindManyUserInput!): UserPaging!
   userFindOneBot(communityId: String!): Bot
   userFindOneCommunity(communityId: String!): Community
   userFindOneCommunityMember(communityMemberId: String!): CommunityMember
+  userFindOneIdentity(provider: IdentityProvider!, providerId: String!): Identity
   userFindOneLog(logId: String!): Log
+  userFindOneNetworkAsset(account: String!, cluster: NetworkCluster!): NetworkAsset
   userFindOneRule(ruleId: String!): Rule
   userFindOneUser(username: String!): User
   userFindOneUserById(userId: String!): User
@@ -585,7 +618,7 @@ type Rule {
 type RuleCondition {
   account: String
   amount: String
-  asset: NetworkAsset
+  asset: SolanaNetworkAsset
   config: JSON
   createdAt: DateTime
   filters: JSON
@@ -616,6 +649,13 @@ type RulePermission {
   rule: Rule
   ruleId: String
   updatedAt: DateTime
+}
+
+type SolanaNetworkAsset {
+  accounts: [String!]!
+  amount: String!
+  group: String
+  owner: String!
 }
 
 type User {
@@ -705,6 +745,15 @@ input UserFindManyLogInput {
   ruleId: String
   search: String
   userId: String
+}
+
+input UserFindManyNetworkAssetInput {
+  cluster: NetworkCluster!
+  limit: Int = 10
+  page: Int = 1
+  search: String
+  type: NetworkTokenType
+  username: String!
 }
 
 input UserFindManyNetworkTokenInput {

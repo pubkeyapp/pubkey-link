@@ -1,0 +1,57 @@
+fragment NetworkAssetDetails on NetworkAsset {
+  id
+  createdAt
+  updatedAt
+  type
+  cluster
+  account
+  balance
+  name
+  symbol
+  program
+  decimals
+  mint
+  owner
+  group
+  imageUrl
+  metadata
+  attributes
+}
+
+query userFindManyNetworkAsset($input: UserFindManyNetworkAssetInput!) {
+  paging: userFindManyNetworkAsset(input: $input) {
+    data {
+      ...NetworkAssetDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query userFindOneNetworkAsset($account: String!, $cluster: NetworkCluster!) {
+  item: userFindOneNetworkAsset(account: $account, cluster: $cluster) {
+    ...NetworkAssetDetails
+  }
+}
+
+query adminFindManyNetworkAsset($input: AdminFindManyNetworkAssetInput!) {
+  paging: adminFindManyNetworkAsset(input: $input) {
+    data {
+      ...NetworkAssetDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query adminFindOneNetworkAsset($networkAssetId: String!) {
+  item: adminFindOneNetworkAsset(networkAssetId: $networkAssetId) {
+    ...NetworkAssetDetails
+  }
+}
+
+mutation adminDeleteNetworkAsset($networkAssetId: String!) {
+  deleted: adminDeleteNetworkAsset(networkAssetId: $networkAssetId)
+}

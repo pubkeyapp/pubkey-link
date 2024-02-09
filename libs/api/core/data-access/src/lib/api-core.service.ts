@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { CommunityRole, IdentityProvider, LogLevel, Prisma, UserRole } from '@prisma/client'
-import { LogRelatedType } from '@pubkey-link/sdk'
+import { CommunityRole, IdentityProvider, LogLevel, LogRelatedType, Prisma, UserRole } from '@prisma/client'
 import { ApiCorePrismaClient, prismaClient } from './api-core-prisma-client'
 import { ApiCoreConfigService } from './config/api-core-config.service'
 import { slugifyId } from './helpers/slugify-id'
@@ -81,6 +80,15 @@ export class ApiCoreService {
     })
   }
 
+  async getSolanaIdentities({ username }: { username: string }): Promise<string[]> {
+    return this.data.identity
+      .findMany({
+        where: { provider: IdentityProvider.Solana, owner: { username } },
+        select: { providerId: true },
+      })
+      .then((identities) => identities.map((identity) => identity.providerId))
+  }
+
   async findUserByIdentity({ provider, providerId }: { provider: IdentityProvider; providerId: string }) {
     return this.data.identity.findUnique({
       where: { provider_providerId: { provider, providerId } },
@@ -102,19 +110,19 @@ export class ApiCoreService {
     return this.findUsername(newUsername)
   }
 
-  private async log(communityId: string, message: string, input: CoreLogInput) {
-    return this.data.log.create({ data: { ...input, message, communityId } })
+  private async log(message: string, input: CoreLogInput) {
+    return this.data.log.create({ data: { ...input, message } })
   }
-  async logError(communityId: string, message: string, input?: Omit<CoreLogInput, 'level'>) {
-    return this.log(communityId, message, { ...input, level: LogLevel.Error })
-  }
-
-  async logInfo(communityId: string, message: string, input?: Omit<CoreLogInput, 'level'>) {
-    return this.log(communityId, message, { ...input, level: LogLevel.Info })
+  async logError(message: string, input?: Omit<CoreLogInput, 'level'>) {
+    return this.log(message, { ...input, level: LogLevel.Error })
   }
 
-  async logWarning(communityId: string, message: string, input?: Omit<CoreLogInput, 'level'>) {
-    return this.log(communityId, message, { ...input, level: LogLevel.Warning })
+  async logInfo(message: string, input?: Omit<CoreLogInput, 'level'>) {
+    return this.log(message, { ...input, level: LogLevel.Info })
+  }
+
+  async logWarning(message: string, input?: Omit<CoreLogInput, 'level'>) {
+    return this.log(message, { ...input, level: LogLevel.Warning })
   }
 
   uptime() {
@@ -124,6 +132,7 @@ export class ApiCoreService {
 
 export interface CoreLogInput {
   botId?: string | null
+  communityId?: string | null
   data?: Prisma.InputJsonValue
   level: LogLevel
   relatedId?: string | null

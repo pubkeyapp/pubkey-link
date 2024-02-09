@@ -1,5 +1,6 @@
 import { UserCommunityFeature } from '@pubkey-link/web-community-feature'
 import { DashboardFeature } from '@pubkey-link/web-dashboard-feature'
+import { UserNetworkAssetDetailFeature } from '@pubkey-link/web-network-asset-feature'
 import { SettingsFeature } from '@pubkey-link/web-settings-feature'
 import { SolanaFeature } from '@pubkey-link/web-solana-feature'
 import { UserFeature } from '@pubkey-link/web-user-feature'
@@ -17,6 +18,7 @@ const links: UiDashboardItem[] = [
 
 const routes: RouteObject[] = [
   // User Dashboard Routes are added by the web-crud generator
+  { path: '/assets/:cluster/:account', element: <UserNetworkAssetDetailFeature /> },
   { path: '/c/*', element: <UserCommunityFeature /> },
   { path: '/dashboard', element: <DashboardFeature links={links} /> },
   { path: '/settings/*', element: <SettingsFeature /> },

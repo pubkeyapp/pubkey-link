@@ -2,7 +2,7 @@ import { dasApi, DasApiAsset, DasApiAssetList } from '@metaplex-foundation/digit
 import { createUmi, publicKey, Umi } from '@metaplex-foundation/umi'
 import { web3JsRpc } from '@metaplex-foundation/umi-rpc-web3js'
 import { Injectable, Logger } from '@nestjs/common'
-import { NetworkCluster, Prisma } from '@prisma/client'
+import { NetworkCluster, NetworkToken, NetworkTokenType, Prisma } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { AnybodiesVaultSnapshot, getAnybodiesVaultMap, getAnybodiesVaultSnapshot } from '@pubkey-link/api-network-util'
 import { getTokenMetadata, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
@@ -11,7 +11,7 @@ import { AccountInfo, Connection, ParsedAccountData, PublicKey } from '@solana/w
 import { ChainId, Client, Token } from '@solflare-wallet/utl-sdk'
 import { LRUCache } from 'lru-cache'
 import { ApiAdminNetworkService } from './api-admin-network.service'
-import { NetworkAsset } from './entity/network-asset.entity'
+import { SolanaNetworkAsset } from './entity/solana-network-asset.entity'
 
 @Injectable()
 export class ApiNetworkService {
@@ -24,7 +24,7 @@ export class ApiNetworkService {
     },
   })
 
-  private readonly solanaNetworkAssetsCache = new LRUCache<string, NetworkAsset[]>({
+  private readonly solanaNetworkAssetsCache = new LRUCache<string, SolanaNetworkAsset[]>({
     max: 1000,
     ttl: 1000 * 60 * 60, // 1 hour
   })
@@ -35,18 +35,24 @@ export class ApiNetworkService {
   private readonly tokenList: Map<NetworkCluster, Client> = new Map()
   constructor(readonly admin: ApiAdminNetworkService, readonly core: ApiCoreService) {}
 
-  async resolveAnybodiesAsset({ owner, vaultId }: { owner: string; vaultId: string }): Promise<NetworkAsset> {
+  async resolveAnybodiesAsset({ owner, vaultId }: { owner: string; vaultId: string }): Promise<SolanaNetworkAsset> {
     return getAnybodiesVaultMap({ vaultId })
       .then((map) => map.find((item) => item.owner === owner)?.accounts ?? [])
       .then((accounts) => ({ owner, accounts, amount: `${accounts.length}` }))
   }
 
-  async resolveAnybodiesAssets({ owners, vaultId }: { owners: string[]; vaultId: string }): Promise<NetworkAsset[]> {
+  async resolveAnybodiesAssets({
+    owners,
+    vaultId,
+  }: {
+    owners: string[]
+    vaultId: string
+  }): Promise<SolanaNetworkAsset[]> {
     const snapshot: AnybodiesVaultSnapshot = await this.getCachedAnybodiesVaultSnapshot({ vaultId }).then((snapshot) =>
       snapshot.filter((item) => owners.includes(item.owner)),
     )
 
-    const ownerMap: Record<string, NetworkAsset> = snapshot.reduce((acc, curr) => {
+    const ownerMap: Record<string, SolanaNetworkAsset> = snapshot.reduce((acc, curr) => {
       const asset = acc[curr.owner] ?? { owner: curr.owner, accounts: [], amount: '0' }
       return {
         ...acc,
@@ -57,7 +63,7 @@ export class ApiNetworkService {
           group: `vault:${vaultId}`,
         },
       }
-    }, {} as Record<string, NetworkAsset>)
+    }, {} as Record<string, SolanaNetworkAsset>)
 
     return Object.values(ownerMap)
   }
@@ -154,7 +160,7 @@ export class ApiNetworkService {
     groups: string[]
     cluster: NetworkCluster
     owner: string
-  }): Promise<NetworkAsset> {
+  }): Promise<SolanaNetworkAsset> {
     return this.getAllAssetsByOwner({ owner, cluster, groups })
       .then((assets) => assets.items?.map((item) => item.id?.toString()) ?? [])
       .then((accounts) => ({ owner, accounts, amount: `${accounts.length}` }))
@@ -170,7 +176,7 @@ export class ApiNetworkService {
     owner: string
     program: string
     mint: string
-  }): Promise<NetworkAsset[]> {
+  }): Promise<SolanaNetworkAsset[]> {
     return this.getConnection(cluster)
       .then((conn) =>
         conn.getParsedTokenAccountsByOwner(new PublicKey(owner), {
@@ -179,11 +185,11 @@ export class ApiNetworkService {
         }),
       )
       .then((res) => {
-        const assets: NetworkAsset[] = []
+        const assets: SolanaNetworkAsset[] = []
         const accounts = res.value ?? []
 
         for (const account of accounts) {
-          const asset: NetworkAsset = {
+          const asset: SolanaNetworkAsset = {
             group: mint,
             owner,
             accounts: [account.pubkey.toBase58()],
@@ -194,6 +200,53 @@ export class ApiNetworkService {
 
         return assets
       })
+  }
+
+  async resolveSolanaFungibleAssets({
+    cluster,
+    tokens,
+    owner,
+  }: {
+    cluster: NetworkCluster
+    owner: string
+    tokens: NetworkToken[]
+  }): Promise<Prisma.NetworkAssetCreateInput[]> {
+    const address = new PublicKey(owner)
+    const mints = tokens.map((token) => token.account)
+    const tokenMap = tokens.reduce(
+      (acc, curr) => ({ ...acc, [curr.account]: curr }),
+      {} as Record<string, NetworkToken>,
+    )
+    return this.getConnection(cluster).then((conn) =>
+      Promise.all([
+        conn.getParsedTokenAccountsByOwner(address, { programId: TOKEN_PROGRAM_ID }).then((res) => res.value ?? []),
+        conn
+          .getParsedTokenAccountsByOwner(address, { programId: TOKEN_2022_PROGRAM_ID })
+          .then((res) => res.value ?? []),
+      ]).then(([tokenAccounts, token2022Accounts]) =>
+        [...tokenAccounts, ...token2022Accounts]
+          .filter((account) => mints.includes(account.account.data.parsed.info.mint.toString()))
+          .map((account) => {
+            const balance = account.account.data.parsed.info.tokenAmount.uiAmount?.toString() ?? '0'
+            const mint = account.account.data.parsed.info.mint
+            const program = account.account.owner.toBase58()
+            return {
+              account: account.pubkey.toString(),
+              network: { connect: { cluster } },
+              name: tokenMap[mint.toString()]?.name ?? '',
+              symbol: tokenMap[mint.toString()]?.symbol ?? '',
+              imageUrl: tokenMap[mint.toString()]?.imageUrl ?? undefined,
+              owner,
+              type: NetworkTokenType.Fungible,
+              balance,
+              group: mint,
+              decimals: 0,
+              mint,
+              program,
+            }
+          }),
+      ),
+    )
   }
 
   async resolveSolanaFungibleAssetsForOwners({
@@ -208,13 +261,18 @@ export class ApiNetworkService {
     mint: string
   }) {
     this.logger.verbose(`resolveSolanaFungibleAssetsForOwners: ${owners.length} owners`)
-    const results: NetworkAsset[] = []
+    const results: SolanaNetworkAsset[] = []
 
     for (const owner of owners) {
       const cacheKey = `solanaFungibleAssets:${cluster}:${owner}:${mint}:${program}`
 
       if (!this.solanaNetworkAssetsCache.has(cacheKey)) {
-        const res: NetworkAsset[] = await this.resolveSolanaFungibleAssetsForOwner({ owner, cluster, mint, program })
+        const res: SolanaNetworkAsset[] = await this.resolveSolanaFungibleAssetsForOwner({
+          owner,
+          cluster,
+          mint,
+          program,
+        })
         this.solanaNetworkAssetsCache.set(cacheKey, res)
         this.logger.verbose(`resolveSolanaFungibleAssetsForOwners: Cache miss for ${cacheKey}`)
       }
@@ -234,9 +292,9 @@ export class ApiNetworkService {
     groups: string[]
     cluster: NetworkCluster
     owner: string
-  }): Promise<NetworkAsset[]> {
+  }): Promise<SolanaNetworkAsset[]> {
     return this.getAllAssetsByOwner({ owner, cluster, groups }).then((assets) => {
-      const res: NetworkAsset[] = []
+      const res: SolanaNetworkAsset[] = []
 
       const map = assets.items?.reduce((acc, curr) => {
         const group = findAssetGroupValue(curr) ?? ''
@@ -269,15 +327,15 @@ export class ApiNetworkService {
     groups: string[]
     cluster: NetworkCluster
     owners: string[]
-  }): Promise<NetworkAsset[]> {
+  }): Promise<SolanaNetworkAsset[]> {
     this.logger.verbose(`resolveSolanaNonFungibleAssets: ${owners.length} owners, ${groups.length} groups`)
-    const results: NetworkAsset[] = []
+    const results: SolanaNetworkAsset[] = []
 
     for (const owner of owners) {
       const cacheKey = `solanaNonFungibleAssets:${cluster}:${owner}:${groups.join(',')}`
 
       if (!this.solanaNetworkAssetsCache.has(cacheKey)) {
-        const res: NetworkAsset[] = await this.resolveSolanaNonFungibleAssetsForOwner({ owner, cluster, groups })
+        const res: SolanaNetworkAsset[] = await this.resolveSolanaNonFungibleAssetsForOwner({ owner, cluster, groups })
         this.solanaNetworkAssetsCache.set(cacheKey, res)
         this.logger.verbose(`resolveSolanaNonFungibleAssets: Cache miss for ${cacheKey}`)
       }
@@ -289,14 +347,14 @@ export class ApiNetworkService {
     return results
   }
 
-  private async getAllAssetsByOwner({
+  async getAllAssetsByOwner({
     owner,
     cluster,
-    groups,
+    groups = [],
   }: {
     owner: string
     cluster: NetworkCluster
-    groups: string[]
+    groups?: string[]
   }) {
     const tag = `getAllAssetsByOwner(${owner}, ${cluster}, ${groups.join(',')})`
     const umi = await this.getUmi(cluster)
@@ -311,6 +369,7 @@ export class ApiNetworkService {
         owner: publicKey(owner),
         limit: list.limit,
         page,
+        sortBy: { sortBy: 'updated', sortDirection: 'desc' },
       })
       this.logger.verbose(`${tag} - page ${page} - ${assets.items.length} assets`)
       list.items.push(...assets.items)

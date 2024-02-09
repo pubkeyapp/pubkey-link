@@ -1,9 +1,9 @@
 import { Field, ObjectType } from '@nestjs/graphql'
-import { GraphQLJSON } from 'graphql-scalars'
 import { Prisma } from '@prisma/client'
-import { RuleConditionType } from './rule-condition-type.enum'
+import { SolanaNetworkAsset } from '@pubkey-link/api-network-data-access'
 import { NetworkToken } from '@pubkey-link/api-network-token-data-access'
-import { NetworkAsset } from '@pubkey-link/api-network-data-access'
+import { GraphQLJSON } from 'graphql-scalars'
+import { RuleConditionType } from './rule-condition-type.enum'
 
 @ObjectType()
 export class RuleCondition {
@@ -27,8 +27,8 @@ export class RuleCondition {
   token?: NetworkToken | null
   @Field({ nullable: true })
   tokenId?: string | null
-  @Field(() => NetworkAsset, { nullable: true })
-  asset?: NetworkAsset | null
+  @Field(() => SolanaNetworkAsset, { nullable: true })
+  asset?: SolanaNetworkAsset | null
   @Field({ nullable: true })
   valid?: boolean | null
 }

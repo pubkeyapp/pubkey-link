@@ -61,9 +61,21 @@ query userFindManyIdentity($input: UserFindManyIdentityInput!) {
     ...IdentityDetails
   }
 }
+query userFindOneIdentity($provider: IdentityProvider!, $providerId: String!) {
+  item: userFindOneIdentity(provider: $provider, providerId: $providerId) {
+    ...IdentityDetails
+    owner {
+      ...UserDetails
+    }
+  }
+}
 
 mutation userDeleteIdentity($identityId: String!) {
   deleted: userDeleteIdentity(identityId: $identityId)
+}
+
+mutation userRefreshIdentity($identityId: String!) {
+  deleted: userRefreshIdentity(identityId: $identityId)
 }
 
 query userRequestIdentityChallenge($input: RequestIdentityChallengeInput!) {

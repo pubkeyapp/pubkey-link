@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Identity as PrismaIdentity } from '@prisma/client'
+import { Identity as PrismaIdentity, IdentityProvider } from '@prisma/client'
 import { ApiCoreService, BaseContext, getRequestDetails } from '@pubkey-link/api-core-data-access'
+import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-access'
 import { verifySignature } from '@pubkeyapp/solana-verify-wallet'
 import { ApiSolanaIdentityService } from './api-solana-identity.service'
 import { LinkIdentityInput } from './dto/link-identity-input'
@@ -12,7 +13,11 @@ import { sha256 } from './helpers/sha256'
 @Injectable()
 export class ApiUserIdentityService {
   private readonly logger = new Logger(ApiUserIdentityService.name)
-  constructor(private readonly core: ApiCoreService, private readonly solana: ApiSolanaIdentityService) {}
+  constructor(
+    private readonly core: ApiCoreService,
+    private readonly solana: ApiSolanaIdentityService,
+    private readonly networkAsset: ApiNetworkAssetService,
+  ) {}
 
   async deleteIdentity(userId: string, identityId: string): Promise<boolean> {
     const found = await this.core.data.identity.findFirst({
@@ -30,6 +35,19 @@ export class ApiUserIdentityService {
       throw new Error(`Identity ${identityId} not deleted`)
     }
     return true
+  }
+
+  async refreshIdentity(userId: string, identityId: string) {
+    const identity = await this.core.data.identity.findFirst({
+      where: { id: identityId, ownerId: userId },
+    })
+    if (!identity) {
+      throw new Error(`Identity ${identityId} not found`)
+    }
+    if (identity.provider !== IdentityProvider.Solana) {
+      throw new Error(`Identity ${identityId} not supported`)
+    }
+    return this.networkAsset.sync.sync(identity)
   }
 
   async findManyIdentity(input: UserFindManyIdentityInput): Promise<PrismaIdentity[]> {
@@ -153,5 +171,12 @@ export class ApiUserIdentityService {
       },
     })
     return created
+  }
+
+  findOneIdentity(provider: IdentityProvider, providerId: string) {
+    return this.core.data.identity.findUnique({
+      where: { provider_providerId: { provider, providerId } },
+      include: { owner: true },
+    })
   }
 }

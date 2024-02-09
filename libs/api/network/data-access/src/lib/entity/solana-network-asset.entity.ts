@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql'
 
 @ObjectType()
-export class NetworkAsset {
+export class SolanaNetworkAsset {
   @Field(() => [String])
   accounts!: string[]
   @Field()

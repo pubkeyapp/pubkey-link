@@ -25,19 +25,17 @@ export class ApiBotMemberRemoveProcessor extends WorkerHost {
     const removed = await this.member.remove(job.data)
     if (removed) {
       await job.log(`Added ${job.data.userId} to ${job.data.serverId} by bot ${job.data.botId}`)
-      await this.core.logInfo(
-        job.data.communityId,
-        `Added ${job.data.userId} to ${job.data.serverId} by bot ${job.data.botId}`,
-        { botId: job.data.botId },
-      )
+      await this.core.logInfo(`Added ${job.data.userId} to ${job.data.serverId} by bot ${job.data.botId}`, {
+        botId: job.data.botId,
+        communityId: job.data.communityId,
+      })
       return removed
     } else {
       await job.log(`Failed to add ${job.data.userId} to ${job.data.serverId} by bot ${job.data.botId}`)
-      await this.core.logError(
-        job.data.communityId,
-        `Failed to add ${job.data.userId} to ${job.data.serverId} by bot ${job.data.botId}`,
-        { botId: job.data.botId },
-      )
+      await this.core.logError(`Failed to add ${job.data.userId} to ${job.data.serverId} by bot ${job.data.botId}`, {
+        botId: job.data.botId,
+        communityId: job.data.communityId,
+      })
       return undefined
     }
   }

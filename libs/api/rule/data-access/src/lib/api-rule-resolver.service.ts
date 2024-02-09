@@ -1,13 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { IdentityProvider, NetworkCluster, NetworkToken, Prisma, RuleConditionType, UserStatus } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { ApiNetworkService, NetworkAsset } from '@pubkey-link/api-network-data-access'
+import { ApiNetworkService, SolanaNetworkAsset } from '@pubkey-link/api-network-data-access'
 import { LRUCache } from 'lru-cache'
 import { RuleCondition } from './entity/rule-condition.entity'
 
 @Injectable()
 export class ApiRuleResolverService {
-  private readonly cacheAnybodiesVaults = new LRUCache<string, NetworkAsset[]>({
+  private readonly cacheAnybodiesVaults = new LRUCache<string, SolanaNetworkAsset[]>({
     max: 1000,
     ttl: 1000 * 60 * 60, // 1 hour
   })
@@ -60,7 +60,7 @@ export class ApiRuleResolverService {
     const community = await this.core.ensureCommunityAdmin({ communityId, userId })
 
     const startedAt = Date.now()
-    await this.core.logInfo(communityId, `Validating rules for community ${communityId}`)
+    await this.core.logInfo(`Validating rules for community ${communityId}`, { communityId })
 
     // We get the conditions for this community and the contexts for all users
     const [conditions, contexts] = await Promise.all([
@@ -84,7 +84,8 @@ export class ApiRuleResolverService {
       contexts: filteredContexts,
     }
     console.log(`Validating ${conditions.length} rules for community ${communityId}`)
-    await this.core.logInfo(communityId, `Validated ${conditions.length} rules for community ${communityId}`, {
+    await this.core.logInfo(`Validated ${conditions.length} rules for community ${communityId}`, {
+      communityId,
       data: result as unknown as Prisma.InputJsonValue,
     })
     return Promise.resolve(result)
@@ -311,12 +312,12 @@ export class ApiRuleResolverService {
   }
 }
 
-type ContextAssetMap = Record<RuleConditionType, NetworkAsset[]>
+type ContextAssetMap = Record<RuleConditionType, SolanaNetworkAsset[]>
 function createContextAssetMap(): ContextAssetMap {
   return Object.values(RuleConditionType).reduce((acc, type) => {
     acc[type] = []
     return acc
-  }, {} as Record<RuleConditionType, NetworkAsset[]>)
+  }, {} as Record<RuleConditionType, SolanaNetworkAsset[]>)
 }
 
 export interface RuleValidationContext {

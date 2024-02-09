@@ -18,7 +18,7 @@ export default function SettingsFeature() {
   }
 
   return (
-    <UiContainer size="lg">
+    <UiContainer>
       <UiGrid
         sidebar={
           <UserUiProfile

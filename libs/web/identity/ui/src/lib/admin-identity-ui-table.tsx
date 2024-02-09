@@ -1,9 +1,9 @@
 import { ActionIcon, Anchor, Group, ScrollArea, Stack, Text } from '@mantine/core'
 import { ellipsify, Identity } from '@pubkey-link/sdk'
+import { IdentityUiAvatar } from '@pubkey-link/web-ui-core'
 import { UiCopy, UiDebugModal } from '@pubkey-ui/core'
 import { IconTrash } from '@tabler/icons-react'
 import { DataTable } from 'mantine-datatable'
-import { IdentityUiAvatar } from './identity-ui-avatar'
 
 interface AdminIdentityTableProps {
   identities: Identity[]

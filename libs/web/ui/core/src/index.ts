@@ -1,3 +1,5 @@
+export * from './lib/identity-ui-avatar'
+export * from './lib/identity-ui-avatar-group'
 export * from './lib/ui-address-input'
 export * from './lib/ui-avatar'
 export * from './lib/ui-discord-role-color'

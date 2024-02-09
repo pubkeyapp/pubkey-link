@@ -1,8 +1,7 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq'
 import { Logger } from '@nestjs/common'
-import { BotMember } from '@prisma/client'
+import { BotMember, IdentityProvider } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { IdentityProvider } from '@pubkey-link/sdk'
 import { Job } from 'bullmq'
 import { ApiBotMemberService } from '../api-bot-member.service'
 import { API_BOT_MEMBER_ADD } from '../helpers/api-bot.constants'
@@ -28,19 +27,21 @@ export class ApiBotMemberAddProcessor extends WorkerHost {
     const added = await this.member.upsert(job.data)
     if (added) {
       await job.log(`Added ${job.data.userId} to ${job.data.serverId} by bot ${job.data.botId}`)
-      await this.core.logInfo(
-        job.data.communityId,
-        `Added ${job.data.userId} to ${job.data.serverId} by bot ${job.data.botId}`,
-        { botId: job.data.botId, identityProvider: IdentityProvider.Discord, identityProviderId: job.data.userId },
-      )
+      await this.core.logInfo(`Added ${job.data.userId} to ${job.data.serverId} by bot ${job.data.botId}`, {
+        botId: job.data.botId,
+        communityId: job.data.communityId,
+        identityProvider: IdentityProvider.Discord,
+        identityProviderId: job.data.userId,
+      })
       return added
     } else {
       await job.log(`Failed to add ${job.data.userId} to ${job.data.serverId} by bot ${job.data.botId}`)
-      await this.core.logError(
-        job.data.communityId,
-        `Failed to add ${job.data.userId} to ${job.data.serverId} by bot ${job.data.botId}`,
-        { botId: job.data.botId, identityProvider: IdentityProvider.Discord, identityProviderId: job.data.userId },
-      )
+      await this.core.logError(`Failed to add ${job.data.userId} to ${job.data.serverId} by bot ${job.data.botId}`, {
+        botId: job.data.botId,
+        communityId: job.data.communityId,
+        identityProvider: IdentityProvider.Discord,
+        identityProviderId: job.data.userId,
+      })
       return undefined
     }
   }

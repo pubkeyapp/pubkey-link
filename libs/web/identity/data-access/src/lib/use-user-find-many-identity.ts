@@ -57,5 +57,16 @@ export function useUserFindManyIdentity({ username }: { username: string }) {
         })
         .finally(() => query.refetch())
     },
+    refreshIdentity(identityId: string) {
+      sdk
+        .userRefreshIdentity({ identityId })
+        .then(() => {
+          toastSuccess('Identity refresh initiated')
+        })
+        .catch((res) => {
+          toastError({ title: 'Error initiating identity refresh', message: `${res}` })
+        })
+        .finally(() => query.refetch())
+    },
   }
 }

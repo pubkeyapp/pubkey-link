@@ -1,10 +1,11 @@
 import { Group } from '@mantine/core'
-import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoutes } from '@pubkey-ui/core'
+import { AdminNetworkAssetFeature } from '@pubkey-link/web-network-asset-feature'
 import { useAdminFindOneNetwork } from '@pubkey-link/web-network-data-access'
+import { AdminNetworkTokenFeature } from '@pubkey-link/web-network-token-feature'
+import { NetworkUiItem } from '@pubkey-link/web-network-ui'
+import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoutes } from '@pubkey-ui/core'
 import { useParams } from 'react-router-dom'
 import { AdminNetworkDetailSettingsTab } from './admin-network-detail-settings.tab'
-import { NetworkUiItem } from '@pubkey-link/web-network-ui'
-import { AdminNetworkTokenFeature } from '@pubkey-link/web-network-token-feature'
 
 export function AdminNetworkDetailFeature() {
   const { networkId } = useParams<{ networkId: string }>() as { networkId: string }
@@ -35,6 +36,7 @@ export function AdminNetworkDetailFeature() {
             label: 'Settings',
             element: <AdminNetworkDetailSettingsTab networkId={networkId} />,
           },
+          { path: 'assets', label: 'Assets', element: <AdminNetworkAssetFeature cluster={item.cluster} /> },
         ]}
       />
     </UiPage>

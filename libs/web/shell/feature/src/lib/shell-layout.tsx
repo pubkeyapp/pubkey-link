@@ -24,6 +24,7 @@ export function ShellLayout({ children }: { children: ReactNode }) {
           links={[
             { link: '/dashboard', label: 'Dashboard' },
             { link: '/c', label: 'Communities' },
+            { link: `${user?.profileUrl}`, label: 'Profile' },
           ]}
           profile={
             <Group gap="xs">
