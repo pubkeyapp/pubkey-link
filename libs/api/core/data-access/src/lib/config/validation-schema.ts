@@ -33,6 +33,8 @@ export const validationSchema = Joi.object({
   AUTH_SOLANA_ADMIN_IDS: Joi.string(),
   AUTH_SOLANA_LINK_ENABLED: Joi.boolean().default(true),
   AUTH_SOLANA_LOGIN_ENABLED: Joi.boolean().default(false),
+  CLOAK_MASTER_KEY: Joi.string().required().error(new Error(`CLOAK_MASTER_KEY is required.`)),
+  CLOAK_KEYCHAIN: Joi.string().required().error(new Error(`CLOAK_KEYCHAIN is required.`)),
   COOKIE_NAME: Joi.string().default('__session'),
   COOKIE_SECURE: Joi.boolean().default(true),
   DATABASE_PROVISION: Joi.boolean().default(false),

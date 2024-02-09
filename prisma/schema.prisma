@@ -104,8 +104,8 @@ model Identity {
   provider     IdentityProvider
   providerId   String
   name         String?
-  accessToken  String?
-  refreshToken String?
+  accessToken  String? /// @encrypted
+  refreshToken String? /// @encrypted
   profile      Json?
   verified     Boolean             @default(false)
   owner        User                @relation(fields: [ownerId], references: [id], onDelete: Cascade)
@@ -261,7 +261,7 @@ model User {
   avatarUrl   String?
   developer   Boolean           @default(false)
   name        String?
-  password    String?
+  password    String? /// @encrypted
   role        UserRole          @default(User)
   status      UserStatus        @default(Created)
   username    String            @unique
