@@ -1,9 +1,8 @@
-import { Button, Group } from '@mantine/core'
+import { Group } from '@mantine/core'
 import { useAdminFindManyLog } from '@pubkey-link/web-log-data-access'
 import { AdminLogUiTable } from '@pubkey-link/web-log-ui'
 import { UiPageLimit, UiSearchField } from '@pubkey-link/web-ui-core'
 import { UiBack, UiDebugModal, UiInfo, UiLoader, UiPage } from '@pubkey-ui/core'
-import { Link } from 'react-router-dom'
 
 export function AdminLogListFeature({ communityId }: { communityId: string }) {
   const { deleteLog, items, pagination, query, setSearch } = useAdminFindManyLog({
@@ -18,9 +17,6 @@ export function AdminLogListFeature({ communityId }: { communityId: string }) {
       rightAction={
         <Group>
           <UiDebugModal data={items} />
-          <Button component={Link} to="create">
-            Create
-          </Button>
         </Group>
       }
     >

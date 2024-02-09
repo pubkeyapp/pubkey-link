@@ -5,7 +5,7 @@ import { UiSearchField } from '@pubkey-link/web-ui-core'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function UserLogListFeature({ communityId }: { communityId: string }) {
-  const { deleteLog, items, pagination, query, setSearch } = useUserFindManyLog({
+  const { items, pagination, query, setSearch } = useUserFindManyLog({
     communityId,
   })
 
@@ -20,10 +20,6 @@ export function UserLogListFeature({ communityId }: { communityId: string }) {
         <UiLoader />
       ) : items?.length ? (
         <UserLogUiTable
-          deleteLog={(log) => {
-            if (!window.confirm('Are you sure?')) return
-            return deleteLog(log.id)
-          }}
           logs={items}
           page={pagination.page}
           totalRecords={pagination.total}

@@ -14,26 +14,35 @@ export class ApiUserCommunityService {
     return this.core.createCommunity({ userId, input })
   }
 
-  async deleteCommunity(communityId: string) {
+  async deleteCommunity(userId: string, communityId: string) {
+    await this.core.ensureCommunityAdmin({ communityId, userId })
     const deleted = await this.core.data.community.delete({ where: { id: communityId } })
     return !!deleted
   }
 
-  async findManyCommunity(input: UserFindManyCommunityInput): Promise<CommunityPaging> {
+  async findManyCommunity(userId: string, input: UserFindManyCommunityInput): Promise<CommunityPaging> {
+    const user = await this.core.ensureUserById(userId)
     return this.core.data.community
       .paginate({
         orderBy: { name: 'asc' },
-        where: getUserCommunityWhereInput(input),
+        where: getUserCommunityWhereInput(user, input),
       })
       .withPages({ limit: input.limit, page: input.page })
       .then(([data, meta]) => ({ data, meta }))
   }
 
-  async findOneCommunity(communityId: string) {
-    return this.core.data.community.findUnique({ where: { id: communityId } })
+  async findOneCommunity(userId: string, communityId: string) {
+    const user = await this.core.ensureUserById(userId)
+    return this.core.data.community.findFirst({
+      where: {
+        id: communityId,
+        members: { some: { userId: user.id } },
+      },
+    })
   }
 
-  async updateCommunity(communityId: string, input: UserUpdateCommunityInput) {
+  async updateCommunity(userId: string, communityId: string, input: UserUpdateCommunityInput) {
+    await this.core.ensureCommunityAdmin({ communityId, userId })
     return this.core.data.community.update({ where: { id: communityId }, data: input })
   }
 }

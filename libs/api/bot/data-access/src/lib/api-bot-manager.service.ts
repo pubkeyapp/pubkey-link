@@ -1,4 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
+import { Bot } from '@prisma/client'
 
 import { createDiscordRestClient, DiscordBot } from '@pubkey-link/api-bot-util'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
@@ -19,7 +20,7 @@ export class ApiBotManagerService implements OnModuleInit {
     const bots = await this.core.data.bot.findMany({ where: { status: BotStatus.Active } })
     for (const bot of bots) {
       this.logger.verbose(`Starting bot ${bot.name}`)
-      await this.startBot(bot.id)
+      await this.startBot(bot)
     }
   }
 
@@ -41,7 +42,7 @@ export class ApiBotManagerService implements OnModuleInit {
     return `https://discord.com/developers/applications/${botId}`
   }
 
-  async getBotRoles(botId: string, serverId: string): Promise<DiscordRole[]> {
+  async getBotRoles(userId: string, botId: string, serverId: string): Promise<DiscordRole[]> {
     const bot = this.getBotInstance(botId)
     if (!bot) {
       return []
@@ -49,7 +50,7 @@ export class ApiBotManagerService implements OnModuleInit {
     return bot.getRoles(serverId)
   }
 
-  async getBotServers(botId: string): Promise<DiscordServer[]> {
+  async getBotServers(userId: string, botId: string): Promise<DiscordServer[]> {
     const bot = this.getBotInstance(botId)
 
     if (!bot) {
@@ -107,7 +108,7 @@ export class ApiBotManagerService implements OnModuleInit {
     return url.toString()
   }
 
-  async leaveBotServer(botId: string, serverId: string) {
+  async leaveBotServer(userId: string, botId: string, serverId: string) {
     return this.ensureBotInstance(botId).leaveServer(serverId)
   }
 
@@ -116,16 +117,24 @@ export class ApiBotManagerService implements OnModuleInit {
     // return `${this.core.config.apiUrl}/bot/${botId}/callback`
   }
 
-  async startBot(botId: string) {
-    const bot = await this.core.data.bot.findUnique({ where: { id: botId } })
-    if (!bot) {
-      throw new Error(`Bot with id ${botId} not found`)
-    }
+  async userStartBot(userId: string, botId: string) {
+    const bot = await this.botMember.ensureBotAdmin({ botId, userId })
+
+    return this.startBot(bot)
+  }
+
+  async userStopBot(userId: string, botId: string) {
+    const bot = await this.botMember.ensureBotAdmin({ botId, userId })
+
+    return this.stopBot(bot)
+  }
+
+  private async startBot(bot: Bot) {
     if (this.bots.get(bot.id)) {
       throw new Error(`Bot ${bot.name} already started`)
     }
 
-    const instance = new DiscordBot({ botId, token: bot.token })
+    const instance = new DiscordBot({ botId: bot.id, token: bot.token })
     await instance.start()
     await this.botMember.setupListeners(bot, instance)
     this.bots.set(bot.id, instance)
@@ -133,11 +142,7 @@ export class ApiBotManagerService implements OnModuleInit {
     return true
   }
 
-  async stopBot(botId: string) {
-    const bot = await this.core.data.bot.findUnique({ where: { id: botId } })
-    if (!bot) {
-      throw new Error(`Bot with id ${botId} not found`)
-    }
+  private async stopBot(bot: Bot) {
     const instance = this.bots.get(bot.id)
     if (!instance) {
       throw new Error(`Bot ${bot.name} not started`)
@@ -164,7 +169,7 @@ export class ApiBotManagerService implements OnModuleInit {
     return instance
   }
 
-  async syncBotServer(botId: string, serverId: string) {
+  async syncBotServer(userId: string, botId: string, serverId: string) {
     const bot = this.ensureBotInstance(botId)
     if (!bot) {
       console.log(`Can't find bot.`, botId, serverId)

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { CommunityRole, IdentityProvider, LogLevel, Prisma } from '@prisma/client'
+import { CommunityRole, IdentityProvider, LogLevel, Prisma, UserRole } from '@prisma/client'
 import { LogRelatedType } from '@pubkey-link/sdk'
 import { ApiCorePrismaClient, prismaClient } from './api-core-prisma-client'
 import { ApiCoreConfigService } from './config/api-core-config.service'
@@ -34,6 +34,46 @@ export class ApiCoreService {
     })
   }
 
+  async ensureCommunityAccess({
+    communityId,
+    userId,
+  }: {
+    communityId: string
+    userId: string
+  }): Promise<CommunityRole> {
+    const user = await this.findUserById(userId)
+    if (!user) {
+      throw new Error(`User ${userId} not found`)
+    }
+    // Admins have Admin role in all communities
+    if (user.role === UserRole.Admin) {
+      return CommunityRole.Admin
+    }
+    const found = await this.data.communityMember.findUnique({
+      where: { communityId_userId: { communityId, userId } },
+    })
+    if (!found) {
+      throw new Error(`User ${userId} is not a member of community ${communityId}`)
+    }
+    return found.role
+  }
+
+  async ensureCommunityAdmin({ communityId, userId }: { communityId: string; userId: string }): Promise<boolean> {
+    const role = await this.ensureCommunityAccess({ communityId, userId })
+    if (role !== CommunityRole.Admin) {
+      throw new Error(`User ${userId} is not an admin of community ${communityId}`)
+    }
+    return role === CommunityRole.Admin
+  }
+
+  async ensureUserById(userId: string) {
+    const found = await this.findUserById(userId)
+    if (!found) {
+      throw new Error(`User ${userId} not found`)
+    }
+    return found
+  }
+
   async getCommunityById(communityId: string) {
     return this.data.community.findUnique({
       where: { id: communityId },
@@ -48,6 +88,10 @@ export class ApiCoreService {
     })
   }
 
+  async findUserById(userId: string) {
+    return this.data.user.findUnique({ where: { id: userId } })
+  }
+
   async findUsername(username: string): Promise<string> {
     username = slugifyId(username)
     const exists = await this.data.user.findUnique({ where: { username } })
@@ -57,6 +101,7 @@ export class ApiCoreService {
     const newUsername = `${username}-${Math.floor(Math.random() * 1000)}`
     return this.findUsername(newUsername)
   }
+
   private async log(communityId: string, message: string, input: CoreLogInput) {
     return this.data.log.create({ data: { ...input, message, communityId } })
   }

@@ -1,6 +1,6 @@
 import { UseGuards } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
-import { ApiAuthGraphQLUserGuard, CtxUser } from '@pubkey-link/api-auth-data-access'
+import { ApiAuthGraphQLUserGuard, CtxUserId } from '@pubkey-link/api-auth-data-access'
 import {
   ApiUserService,
   User,
@@ -30,7 +30,7 @@ export class ApiUserUserResolver {
   }
 
   @Mutation(() => User, { nullable: true })
-  userUpdateUser(@CtxUser() user: User, @Args('input') input: UserUpdateUserInput) {
-    return this.service.user.updateUser(user.id as string, input)
+  userUpdateUser(@CtxUserId() userId: string, @Args('input') input: UserUpdateUserInput) {
+    return this.service.user.updateUser(userId as string, input)
   }
 }

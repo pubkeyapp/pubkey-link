@@ -120,6 +120,15 @@ export class ApiBotMemberService {
       })
   }
 
+  async ensureBotAdmin({ botId, userId }: { botId: string; userId: string }) {
+    const bot = await this.core.data.bot.findUnique({ where: { id: botId } })
+    if (!bot) {
+      throw new Error(`Bot with id ${botId} not found`)
+    }
+    await this.core.ensureCommunityAdmin({ userId, communityId: bot.communityId })
+    return bot
+  }
+
   async getBotMemberIds(botId: string, serverId: string) {
     return this.core.data.botMember
       .findMany({ where: { botId, serverId } })
@@ -132,7 +141,7 @@ export class ApiBotMemberService {
       .then((items) => items.map((item) => item.providerId))
   }
 
-  async getBotMembers(botId: string, serverId: string) {
+  async getBotMembers(userId: string, botId: string, serverId: string) {
     return this.core.data.botMember.findMany({
       where: {
         botId,

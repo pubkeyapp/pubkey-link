@@ -8,12 +8,8 @@ import { getUserLogWhereInput } from './helpers/get-user-log-where.input'
 export class ApiUserLogService {
   constructor(private readonly core: ApiCoreService) {}
 
-  async deleteLog(logId: string) {
-    const deleted = await this.core.data.log.delete({ where: { id: logId } })
-    return !!deleted
-  }
-
-  async findManyLog(input: UserFindManyLogInput): Promise<LogPaging> {
+  async findManyLog(userId: string, input: UserFindManyLogInput): Promise<LogPaging> {
+    await this.core.ensureCommunityAdmin({ communityId: input.communityId, userId })
     return this.core.data.log
       .paginate({
         orderBy: { createdAt: 'desc' },
@@ -23,10 +19,15 @@ export class ApiUserLogService {
       .then(([data, meta]) => ({ data, meta }))
   }
 
-  async findOneLog(logId: string) {
-    return this.core.data.log.findUnique({
+  async findOneLog(userId: string, logId: string) {
+    const found = await this.core.data.log.findUnique({
       where: { id: logId },
       include: { bot: true, identity: true, rule: true, user: true },
     })
+    if (!found) {
+      throw new Error('Log not found')
+    }
+    await this.core.ensureCommunityAdmin({ communityId: found.communityId, userId })
+    return found
   }
 }

@@ -4,9 +4,9 @@ import { AdminBotUiCreateForm } from '@pubkey-link/web-bot-ui'
 import { toastError, UiBack, UiCard, UiPage } from '@pubkey-ui/core'
 import { useNavigate } from 'react-router-dom'
 
-export function AdminBotCreateFeature() {
+export function AdminBotCreateFeature({ communityId }: { communityId: string }) {
   const navigate = useNavigate()
-  const { createBot } = useAdminFindManyBot()
+  const { createBot } = useAdminFindManyBot({ communityId })
 
   async function submit(input: AdminCreateBotInput) {
     return createBot(input)

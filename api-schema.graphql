@@ -21,12 +21,6 @@ input AdminCreateCommunityInput {
   websiteUrl: String
 }
 
-input AdminCreateCommunityMemberInput {
-  communityId: String!
-  role: CommunityRole!
-  userId: String!
-}
-
 input AdminCreateIdentityInput {
   ownerId: String!
   provider: IdentityProvider!
@@ -57,6 +51,7 @@ input AdminCreateUserInput {
 }
 
 input AdminFindManyBotInput {
+  communityId: String!
   limit: Int = 10
   page: Int = 1
   search: String
@@ -387,7 +382,6 @@ type Mutation {
   adminCreateBackup: Boolean!
   adminCreateBot(input: AdminCreateBotInput!): Bot
   adminCreateCommunity(input: AdminCreateCommunityInput!): Community
-  adminCreateCommunityMember(input: AdminCreateCommunityMemberInput!): CommunityMember
   adminCreateIdentity(input: AdminCreateIdentityInput!): Identity
   adminCreateNetwork(input: AdminCreateNetworkInput!): Network
   adminCreateNetworkToken(input: AdminCreateNetworkTokenInput!): NetworkToken
@@ -419,7 +413,6 @@ type Mutation {
   register(input: RegisterInput!): User
   userCreateBot(input: UserCreateBotInput!): Bot
   userCreateCommunity(input: UserCreateCommunityInput!): Community
-  userCreateCommunityMember(input: UserCreateCommunityMemberInput!): CommunityMember
   userCreateRule(input: UserCreateRuleInput!): Rule
   userCreateRuleCondition(input: UserCreateRuleConditionInput!): RuleCondition
   userCreateRulePermission(input: UserCreateRulePermissionInput!): RulePermission
@@ -427,7 +420,6 @@ type Mutation {
   userDeleteCommunity(communityId: String!): Boolean
   userDeleteCommunityMember(communityMemberId: String!): Boolean
   userDeleteIdentity(identityId: String!): Boolean
-  userDeleteLog(logId: String!): Boolean
   userDeleteRule(ruleId: String!): Boolean
   userDeleteRuleCondition(ruleConditionId: String!): Boolean
   userDeleteRulePermission(rulePermissionId: String!): Boolean
@@ -657,12 +649,6 @@ input UserCreateCommunityInput {
   telegramUrl: String
   twitterUrl: String
   websiteUrl: String
-}
-
-input UserCreateCommunityMemberInput {
-  communityId: String!
-  role: CommunityRole!
-  userId: String!
 }
 
 input UserCreateRuleConditionInput {

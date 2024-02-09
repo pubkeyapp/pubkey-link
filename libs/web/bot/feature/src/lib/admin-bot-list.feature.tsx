@@ -1,13 +1,13 @@
 import { Button, Group } from '@mantine/core'
-import { UiPageLimit, UiSearchField } from '@pubkey-link/web-ui-core'
 import { useAdminFindManyBot } from '@pubkey-link/web-bot-data-access'
 import { AdminBotUiTable } from '@pubkey-link/web-bot-ui'
+import { UiPageLimit, UiSearchField } from '@pubkey-link/web-ui-core'
 import { UiBack, UiDebugModal, UiInfo, UiLoader, UiPage } from '@pubkey-ui/core'
 import { Link } from 'react-router-dom'
 
-export function AdminBotListFeature() {
+export function AdminBotListFeature({ communityId }: { communityId: string }) {
   const { deleteBot, items, pagination, query, setSearch } = useAdminFindManyBot({
-    limit: 10,
+    communityId,
   })
 
   return (

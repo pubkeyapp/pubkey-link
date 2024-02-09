@@ -1,14 +1,14 @@
 import { useRoutes } from 'react-router-dom'
-import { AdminBotDetailFeature } from './admin-bot-detail.feature'
 import { AdminBotCreateFeature } from './admin-bot-create.feature'
+import { AdminBotDetailFeature } from './admin-bot-detail.feature'
 import { AdminBotListFeature } from './admin-bot-list.feature'
 
-export default function AdminBotRoutes() {
+export default function AdminBotRoutes({ communityId }: { communityId: string }) {
   return useRoutes([
-    { path: '', element: <AdminBotListFeature /> },
+    { path: '', element: <AdminBotListFeature communityId={communityId} /> },
     {
       path: 'create',
-      element: <AdminBotCreateFeature />,
+      element: <AdminBotCreateFeature communityId={communityId} />,
     },
     { path: ':botId/*', element: <AdminBotDetailFeature /> },
   ])

@@ -2,7 +2,9 @@ import { Prisma } from '@prisma/client'
 import { AdminFindManyBotInput } from '../dto/admin-find-many-bot.input'
 
 export function getAdminBotWhereInput(input: AdminFindManyBotInput): Prisma.BotWhereInput {
-  const where: Prisma.BotWhereInput = {}
+  const where: Prisma.BotWhereInput = {
+    communityId: input.communityId,
+  }
 
   if (input.search) {
     where.OR = [

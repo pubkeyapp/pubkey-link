@@ -1,4 +1,5 @@
 import { Group } from '@mantine/core'
+import { AdminBotFeature } from '@pubkey-link/web-bot-feature'
 import { useAdminFindOneCommunity } from '@pubkey-link/web-community-data-access'
 import { AdminCommunityMemberFeature } from '@pubkey-link/web-community-member-feature'
 import { AdminLogFeature } from '@pubkey-link/web-log-feature'
@@ -42,6 +43,7 @@ export function AdminCommunityDetailFeature() {
             element: <AdminRuleFeature communityId={communityId} />,
           },
           { path: 'logs', label: 'Logs', element: <AdminLogFeature communityId={communityId} /> },
+          { path: 'bots', label: 'Bots', element: <AdminBotFeature communityId={communityId} /> },
           {
             path: 'members',
             label: 'Members',

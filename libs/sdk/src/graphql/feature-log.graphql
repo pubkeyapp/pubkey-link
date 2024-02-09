@@ -44,10 +44,6 @@ query userFindOneLog($logId: String!) {
   }
 }
 
-mutation userDeleteLog($logId: String!) {
-  deleted: userDeleteLog(logId: $logId)
-}
-
 query adminFindManyLog($input: AdminFindManyLogInput!) {
   paging: adminFindManyLog(input: $input) {
     data {

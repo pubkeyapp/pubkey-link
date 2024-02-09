@@ -1,13 +1,11 @@
-import { Resolver } from '@nestjs/graphql'
-import { ApiCommunityMemberService } from '@pubkey-link/api-community-member-data-access'
-import { ApiAuthGraphQLUserGuard } from '@pubkey-link/api-auth-data-access'
-import { Mutation, Query, Args } from '@nestjs/graphql'
 import { UseGuards } from '@nestjs/common'
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { ApiAuthGraphQLUserGuard, CtxUserId } from '@pubkey-link/api-auth-data-access'
 import {
-  UserCreateCommunityMemberInput,
-  UserFindManyCommunityMemberInput,
+  ApiCommunityMemberService,
   CommunityMember,
   CommunityMemberPaging,
+  UserFindManyCommunityMemberInput,
   UserUpdateCommunityMemberInput,
 } from '@pubkey-link/api-community-member-data-access'
 
@@ -16,31 +14,27 @@ import {
 export class ApiUserCommunityMemberResolver {
   constructor(private readonly service: ApiCommunityMemberService) {}
 
-  @Mutation(() => CommunityMember, { nullable: true })
-  userCreateCommunityMember(@Args('input') input: UserCreateCommunityMemberInput) {
-    return this.service.user.createCommunityMember(input)
-  }
-
   @Mutation(() => Boolean, { nullable: true })
-  userDeleteCommunityMember(@Args('communityMemberId') communityMemberId: string) {
-    return this.service.user.deleteCommunityMember(communityMemberId)
+  userDeleteCommunityMember(@CtxUserId() userId: string, @Args('communityMemberId') communityMemberId: string) {
+    return this.service.user.deleteCommunityMember(userId, communityMemberId)
   }
 
   @Query(() => CommunityMemberPaging)
-  userFindManyCommunityMember(@Args('input') input: UserFindManyCommunityMemberInput) {
-    return this.service.user.findManyCommunityMember(input)
+  userFindManyCommunityMember(@CtxUserId() userId: string, @Args('input') input: UserFindManyCommunityMemberInput) {
+    return this.service.user.findManyCommunityMember(userId, input)
   }
 
   @Query(() => CommunityMember, { nullable: true })
-  userFindOneCommunityMember(@Args('communityMemberId') communityMemberId: string) {
-    return this.service.user.findOneCommunityMember(communityMemberId)
+  userFindOneCommunityMember(@CtxUserId() userId: string, @Args('communityMemberId') communityMemberId: string) {
+    return this.service.user.findOneCommunityMember(userId, communityMemberId)
   }
 
   @Mutation(() => CommunityMember, { nullable: true })
   userUpdateCommunityMember(
+    @CtxUserId() userId: string,
     @Args('communityMemberId') communityMemberId: string,
     @Args('input') input: UserUpdateCommunityMemberInput,
   ) {
-    return this.service.user.updateCommunityMember(communityMemberId, input)
+    return this.service.user.updateCommunityMember(userId, communityMemberId, input)
   }
 }

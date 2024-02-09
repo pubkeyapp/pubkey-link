@@ -22,48 +22,48 @@ export class ApiUserRuleResolver {
   constructor(private readonly service: ApiRuleService) {}
 
   @Mutation(() => Rule, { nullable: true })
-  userCreateRule(@Args('input') input: UserCreateRuleInput) {
-    return this.service.user.createRule(input)
+  userCreateRule(@CtxUserId() userId: string, @Args('input') input: UserCreateRuleInput) {
+    return this.service.user.createRule(userId, input)
   }
 
   @Mutation(() => RuleCondition, { nullable: true })
-  userCreateRuleCondition(@Args('input') input: UserCreateRuleConditionInput) {
-    return this.service.user.createRuleCondition(input)
+  userCreateRuleCondition(@CtxUserId() userId: string, @Args('input') input: UserCreateRuleConditionInput) {
+    return this.service.user.createRuleCondition(userId, input)
   }
 
   @Mutation(() => RulePermission, { nullable: true })
-  userCreateRulePermission(@Args('input') input: UserCreateRulePermissionInput) {
-    return this.service.user.createRulePermission(input)
+  userCreateRulePermission(@CtxUserId() userId: string, @Args('input') input: UserCreateRulePermissionInput) {
+    return this.service.user.createRulePermission(userId, input)
   }
 
   @Mutation(() => Boolean, { nullable: true })
-  userDeleteRuleCondition(@Args('ruleConditionId') ruleConditionId: string) {
-    return this.service.user.deleteRuleCondition(ruleConditionId)
+  userDeleteRuleCondition(@CtxUserId() userId: string, @Args('ruleConditionId') ruleConditionId: string) {
+    return this.service.user.deleteRuleCondition(userId, ruleConditionId)
   }
 
   @Mutation(() => Boolean, { nullable: true })
-  userDeleteRulePermission(@Args('rulePermissionId') rulePermissionId: string) {
-    return this.service.user.deleteRulePermission(rulePermissionId)
+  userDeleteRulePermission(@CtxUserId() userId: string, @Args('rulePermissionId') rulePermissionId: string) {
+    return this.service.user.deleteRulePermission(userId, rulePermissionId)
   }
 
   @Mutation(() => Boolean, { nullable: true })
-  userDeleteRule(@Args('ruleId') ruleId: string) {
-    return this.service.user.deleteRule(ruleId)
+  userDeleteRule(@CtxUserId() userId: string, @Args('ruleId') ruleId: string) {
+    return this.service.user.deleteRule(userId, ruleId)
   }
 
   @Query(() => RulePaging)
-  userFindManyRule(@Args('input') input: UserFindManyRuleInput) {
-    return this.service.user.findManyRule(input)
+  userFindManyRule(@CtxUserId() userId: string, @Args('input') input: UserFindManyRuleInput) {
+    return this.service.user.findManyRule(userId, input)
   }
 
   @Query(() => Rule, { nullable: true })
-  userFindOneRule(@Args('ruleId') ruleId: string) {
-    return this.service.user.findOneRule(ruleId)
+  userFindOneRule(@CtxUserId() userId: string, @Args('ruleId') ruleId: string) {
+    return this.service.user.findOneRule(userId, ruleId)
   }
 
   @Mutation(() => [RuleCondition], { nullable: true })
-  userValidateRule(@Args('ruleId') ruleId: string, @Args('address') address: string) {
-    return this.service.user.validateRule(ruleId, address)
+  userValidateRule(@CtxUserId() userId: string, @Args('ruleId') ruleId: string, @Args('address') address: string) {
+    return this.service.user.validateRule(userId, ruleId, address)
   }
 
   @Mutation(() => GraphQLJSON, { nullable: true })
@@ -72,15 +72,20 @@ export class ApiUserRuleResolver {
   }
 
   @Mutation(() => Rule, { nullable: true })
-  userUpdateRule(@Args('ruleId') ruleId: string, @Args('input') input: UserUpdateRuleInput) {
-    return this.service.user.updateRule(ruleId, input)
+  userUpdateRule(
+    @CtxUserId() userId: string,
+    @Args('ruleId') ruleId: string,
+    @Args('input') input: UserUpdateRuleInput,
+  ) {
+    return this.service.user.updateRule(userId, ruleId, input)
   }
 
   @Mutation(() => RuleCondition, { nullable: true })
   userUpdateRuleCondition(
+    @CtxUserId() userId: string,
     @Args('ruleConditionId') ruleConditionId: string,
     @Args('input') input: UserUpdateRuleConditionInput,
   ) {
-    return this.service.user.updateRuleCondition(ruleConditionId, input)
+    return this.service.user.updateRuleCondition(userId, ruleConditionId, input)
   }
 }

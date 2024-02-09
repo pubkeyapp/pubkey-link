@@ -1,9 +1,8 @@
-import { Button, Group } from '@mantine/core'
-import { UiPageLimit, UiSearchField } from '@pubkey-link/web-ui-core'
+import { Group } from '@mantine/core'
 import { useAdminFindManyCommunityMember } from '@pubkey-link/web-community-member-data-access'
 import { AdminCommunityMemberUiTable } from '@pubkey-link/web-community-member-ui'
+import { UiPageLimit, UiSearchField } from '@pubkey-link/web-ui-core'
 import { UiBack, UiDebugModal, UiInfo, UiLoader, UiPage } from '@pubkey-ui/core'
-import { Link } from 'react-router-dom'
 
 export function AdminCommunityMemberListFeature({ communityId }: { communityId: string }) {
   const { deleteCommunityMember, items, pagination, query, setSearch } = useAdminFindManyCommunityMember({
@@ -17,9 +16,6 @@ export function AdminCommunityMemberListFeature({ communityId }: { communityId: 
       rightAction={
         <Group>
           <UiDebugModal data={items} />
-          <Button component={Link} to="create">
-            Create
-          </Button>
         </Group>
       }
     >

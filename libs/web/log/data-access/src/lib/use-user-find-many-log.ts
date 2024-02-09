@@ -1,6 +1,5 @@
 import { UserFindManyLogInput } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
-import { toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
@@ -29,10 +28,5 @@ export function useUserFindManyLog(props: Partial<UserFindManyLogInput> & { comm
       total,
     },
     setSearch,
-    deleteLog: (logId: string) =>
-      sdk.userDeleteLog({ logId }).then(() => {
-        toastSuccess('Log deleted')
-        return query.refetch()
-      }),
   }
 }

@@ -1,4 +1,6 @@
+import { UseGuards } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { ApiAuthGraphQLUserGuard, CtxUserId } from '@pubkey-link/api-auth-data-access'
 import {
   ApiCommunityService,
   Community,
@@ -7,8 +9,6 @@ import {
   UserFindManyCommunityInput,
   UserUpdateCommunityInput,
 } from '@pubkey-link/api-community-data-access'
-import { ApiAuthGraphQLUserGuard, CtxUserId } from '@pubkey-link/api-auth-data-access'
-import { UseGuards } from '@nestjs/common'
 
 @Resolver()
 @UseGuards(ApiAuthGraphQLUserGuard)
@@ -21,22 +21,26 @@ export class ApiUserCommunityResolver {
   }
 
   @Mutation(() => Boolean, { nullable: true })
-  userDeleteCommunity(@Args('communityId') communityId: string) {
-    return this.service.user.deleteCommunity(communityId)
+  userDeleteCommunity(@CtxUserId() userId: string, @Args('communityId') communityId: string) {
+    return this.service.user.deleteCommunity(userId, communityId)
   }
 
   @Query(() => CommunityPaging)
-  userFindManyCommunity(@Args('input') input: UserFindManyCommunityInput) {
-    return this.service.user.findManyCommunity(input)
+  userFindManyCommunity(@CtxUserId() userId: string, @Args('input') input: UserFindManyCommunityInput) {
+    return this.service.user.findManyCommunity(userId, input)
   }
 
   @Query(() => Community, { nullable: true })
-  userFindOneCommunity(@Args('communityId') communityId: string) {
-    return this.service.user.findOneCommunity(communityId)
+  userFindOneCommunity(@CtxUserId() userId: string, @Args('communityId') communityId: string) {
+    return this.service.user.findOneCommunity(userId, communityId)
   }
 
   @Mutation(() => Community, { nullable: true })
-  userUpdateCommunity(@Args('communityId') communityId: string, @Args('input') input: UserUpdateCommunityInput) {
-    return this.service.user.updateCommunity(communityId, input)
+  userUpdateCommunity(
+    @CtxUserId() userId: string,
+    @Args('communityId') communityId: string,
+    @Args('input') input: UserUpdateCommunityInput,
+  ) {
+    return this.service.user.updateCommunity(userId, communityId, input)
   }
 }

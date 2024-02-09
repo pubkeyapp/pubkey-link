@@ -1,6 +1,6 @@
 import { UseGuards } from '@nestjs/common'
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
-import { ApiAuthGraphQLUserGuard } from '@pubkey-link/api-auth-data-access'
+import { Args, Query, Resolver } from '@nestjs/graphql'
+import { ApiAuthGraphQLUserGuard, CtxUserId } from '@pubkey-link/api-auth-data-access'
 import { ApiLogService, Log, LogPaging, UserFindManyLogInput } from '@pubkey-link/api-log-data-access'
 
 @Resolver()
@@ -8,18 +8,13 @@ import { ApiLogService, Log, LogPaging, UserFindManyLogInput } from '@pubkey-lin
 export class ApiUserLogResolver {
   constructor(private readonly service: ApiLogService) {}
 
-  @Mutation(() => Boolean, { nullable: true })
-  userDeleteLog(@Args('logId') logId: string) {
-    return this.service.user.deleteLog(logId)
-  }
-
   @Query(() => LogPaging)
-  userFindManyLog(@Args('input') input: UserFindManyLogInput) {
-    return this.service.user.findManyLog(input)
+  userFindManyLog(@CtxUserId() userId: string, @Args('input') input: UserFindManyLogInput) {
+    return this.service.user.findManyLog(userId, input)
   }
 
   @Query(() => Log, { nullable: true })
-  userFindOneLog(@Args('logId') logId: string) {
-    return this.service.user.findOneLog(logId)
+  userFindOneLog(@CtxUserId() userId: string, @Args('logId') logId: string) {
+    return this.service.user.findOneLog(userId, logId)
   }
 }

@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { IdentityProvider, NetworkCluster, NetworkToken, Prisma, RuleConditionType, UserStatus } from '@prisma/client'
-import { ApiCommunityService } from '@pubkey-link/api-community-data-access'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkService, NetworkAsset } from '@pubkey-link/api-network-data-access'
 import { LRUCache } from 'lru-cache'
@@ -13,11 +12,7 @@ export class ApiRuleResolverService {
     ttl: 1000 * 60 * 60, // 1 hour
   })
   private readonly logger = new Logger(ApiRuleResolverService.name)
-  constructor(
-    readonly community: ApiCommunityService,
-    readonly core: ApiCoreService,
-    readonly network: ApiNetworkService,
-  ) {}
+  constructor(readonly core: ApiCoreService, readonly network: ApiNetworkService) {}
 
   async resolve(cluster: NetworkCluster, conditions: RuleCondition[], owner: string): Promise<RuleCondition[]> {
     // We want to loop over all the conditions, resolve them, then tack the resolved network assets onto the condition
@@ -61,9 +56,8 @@ export class ApiRuleResolverService {
   //       throw new Error(`Unknown condition type "${condition.type}" for "${condition.id}"`)
   //   }
   // }
-
   async validateRules(userId: string, communityId: string) {
-    const community = await this.community.ensureCommunityAdmin(userId, communityId)
+    const community = await this.core.ensureCommunityAdmin({ communityId, userId })
 
     const startedAt = Date.now()
     await this.core.logInfo(communityId, `Validating rules for community ${communityId}`)

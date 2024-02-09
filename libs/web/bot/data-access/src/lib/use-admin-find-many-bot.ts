@@ -4,13 +4,13 @@ import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
-export function useAdminFindManyBot(props?: Partial<AdminFindManyBotInput>) {
+export function useAdminFindManyBot(props: Partial<AdminFindManyBotInput> & { communityId: string }) {
   const sdk = useSdk()
   const [limit, setLimit] = useState(props?.limit ?? 10)
   const [page, setPage] = useState(props?.page ?? 1)
   const [search, setSearch] = useState<string>(props?.search ?? '')
 
-  const input: AdminFindManyBotInput = { page, limit, search }
+  const input: AdminFindManyBotInput = { page, limit, search, communityId: props.communityId }
   const query = useQuery({
     queryKey: ['admin', 'find-many-bot', input],
     queryFn: () => sdk.adminFindManyBot({ input }).then((res) => res.data),
@@ -31,7 +31,7 @@ export function useAdminFindManyBot(props?: Partial<AdminFindManyBotInput>) {
     setSearch,
     createBot: (input: AdminCreateBotInput) =>
       sdk
-        .adminCreateBot({ input })
+        .adminCreateBot({ input: { ...input, communityId: props.communityId } })
         .then((res) => res.data)
         .then((res) => {
           if (res.created) {

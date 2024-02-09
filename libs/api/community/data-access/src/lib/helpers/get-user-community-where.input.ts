@@ -1,8 +1,13 @@
-import { Prisma } from '@prisma/client'
+import { Prisma, User, UserRole } from '@prisma/client'
+
 import { UserFindManyCommunityInput } from '../dto/user-find-many-community.input'
 
-export function getUserCommunityWhereInput(input: UserFindManyCommunityInput): Prisma.CommunityWhereInput {
+export function getUserCommunityWhereInput(user: User, input: UserFindManyCommunityInput): Prisma.CommunityWhereInput {
   const where: Prisma.CommunityWhereInput = {}
+
+  if (user.role !== UserRole.Admin) {
+    where.members = { some: { userId: user.id } }
+  }
 
   if (input.search) {
     where.OR = [

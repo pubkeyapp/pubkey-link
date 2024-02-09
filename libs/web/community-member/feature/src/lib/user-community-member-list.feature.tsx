@@ -1,10 +1,9 @@
-import { Button, Group } from '@mantine/core'
+import { Group } from '@mantine/core'
 import { Community } from '@pubkey-link/sdk'
 import { useUserFindManyCommunityMember } from '@pubkey-link/web-community-member-data-access'
 import { UserCommunityMemberUiTable } from '@pubkey-link/web-community-member-ui'
 import { UiSearchField } from '@pubkey-link/web-ui-core'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
-import { Link } from 'react-router-dom'
 
 export function UserCommunityMemberListFeature({ community }: { community: Community }) {
   const { deleteCommunityMember, items, pagination, query, setSearch } = useUserFindManyCommunityMember({
@@ -17,9 +16,6 @@ export function UserCommunityMemberListFeature({ community }: { community: Commu
       <Group>
         <UiSearchField placeholder="Search member" setSearch={setSearch} />
         <UiDebugModal data={items} />
-        <Button component={Link} to="create">
-          Create
-        </Button>
       </Group>
 
       {query.isLoading ? (

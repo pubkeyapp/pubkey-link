@@ -1,19 +1,16 @@
-import { ActionIcon, Anchor, Badge, Group, ScrollArea } from '@mantine/core'
+import { Anchor, Badge, Group, ScrollArea } from '@mantine/core'
 import { Log, LogLevel } from '@pubkey-link/sdk'
 import { UiDebugModal, UiTime, useUiColorScheme } from '@pubkey-ui/core'
-import { IconTrash } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'
 
 export function UserLogUiTable({
-  deleteLog,
   logs = [],
   onPageChange,
   page,
   recordsPerPage,
   totalRecords,
 }: {
-  deleteLog: (log: Log) => void
   logs: Log[]
   page: DataTableProps['page']
   totalRecords: DataTableProps['totalRecords']
@@ -60,9 +57,7 @@ export function UserLogUiTable({
             render: (item) => (
               <Group gap="xs" justify="right">
                 <UiDebugModal disabled={!item.data} data={item.data} />
-                <ActionIcon color="red" variant="light" size="sm" onClick={() => deleteLog(item)}>
-                  <IconTrash size={16} />
-                </ActionIcon>
+                <UiDebugModal data={item} />
               </Group>
             ),
           },
