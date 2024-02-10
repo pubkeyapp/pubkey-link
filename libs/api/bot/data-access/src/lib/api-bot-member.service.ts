@@ -60,12 +60,6 @@ export class ApiBotMemberService {
         include: { bot: { select: { id: true, communityId: true } }, identity: { select: { ownerId: true } } },
       })
       .then(async (created) => {
-        await this.core.logInfo(`Added ${userId} to ${serverId}`, {
-          botId,
-          communityId,
-          identityProvider: IdentityProvider.Discord,
-          identityProviderId: userId,
-        })
         await this.core.data.communityMember.upsert({
           where: { communityId_userId: { communityId: created.bot.communityId, userId: created.identity.ownerId } },
           create: {
@@ -96,12 +90,6 @@ export class ApiBotMemberService {
         include: { bot: true, identity: { select: { ownerId: true } } },
       })
       .then(async (deleted) => {
-        await this.core.logInfo(`Removed ${userId} from ${serverId}`, {
-          botId,
-          communityId,
-          identityProvider: IdentityProvider.Discord,
-          identityProviderId: userId,
-        })
         const botMembers = await this.core.data.botMember.findMany({ where: { botId, userId } })
         if (!botMembers.length) {
           await this.core.data.communityMember
@@ -117,6 +105,8 @@ export class ApiBotMemberService {
                 identityProvider: IdentityProvider.Discord,
                 identityProviderId: userId,
                 userId: res.userId,
+                relatedId: res.id,
+                relatedType: 'BotMember',
               })
             })
         }

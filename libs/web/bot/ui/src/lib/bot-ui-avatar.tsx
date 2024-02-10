@@ -1,13 +1,14 @@
 import { Avatar, Indicator } from '@mantine/core'
 import { Bot, getRandomInt } from '@pubkey-link/sdk'
 import { UiAvatarProps } from '@pubkey-link/web-ui-core'
-import { getColorByIndex } from '@pubkey-ui/core'
+import { getColorByIndex, UiAnchor } from '@pubkey-ui/core'
 
 export type BotUiAvatarProps = UiAvatarProps & {
   bot?: Bot
+  to?: string | null
 }
 
-export function BotUiAvatar({ bot, ...props }: BotUiAvatarProps) {
+export function BotUiAvatar({ bot, to, ...props }: BotUiAvatarProps) {
   const { avatarUrl, name } = bot ?? {}
   const firstLetter = name?.charAt(0) ?? '?'
 
@@ -21,8 +22,10 @@ export function BotUiAvatar({ bot, ...props }: BotUiAvatarProps) {
   const color = bot?.started ? 'green' : 'red'
 
   return (
-    <Indicator offset={4} color={color}>
-      {avatar}
-    </Indicator>
+    <UiAnchor to={to ?? undefined}>
+      <Indicator offset={4} color={color}>
+        {avatar}
+      </Indicator>
+    </UiAnchor>
   )
 }

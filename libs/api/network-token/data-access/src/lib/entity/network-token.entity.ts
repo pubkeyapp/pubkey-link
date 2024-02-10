@@ -1,8 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql'
-import { NetworkCluster } from '@pubkey-link/api-network-data-access'
-import { NetworkTokenType } from './network-token-type.enum'
 import { Prisma } from '@prisma/client'
+import { NetworkCluster } from '@pubkey-link/api-network-data-access'
 import { GraphQLJSON } from 'graphql-scalars'
+import { NetworkTokenType } from './network-token-type.enum'
 
 @ObjectType()
 export class NetworkToken {
@@ -22,6 +22,8 @@ export class NetworkToken {
   name!: string
   @Field()
   program!: string
+  @Field({ nullable: true })
+  vault?: string | null
   @Field({ nullable: true })
   imageUrl?: string | null
   @Field({ nullable: true })

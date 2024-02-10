@@ -17,6 +17,7 @@ export function useUserFindManyNetworkAsset(
     limit,
     search,
     cluster,
+    group: props.group,
     username: props.username,
     type: props.type,
   }

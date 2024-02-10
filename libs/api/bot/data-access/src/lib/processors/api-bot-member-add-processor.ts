@@ -27,11 +27,14 @@ export class ApiBotMemberAddProcessor extends WorkerHost {
     const added = await this.member.upsert(job.data)
     if (added) {
       await job.log(`Added ${job.data.userId} to ${job.data.serverId} by bot ${job.data.botId}`)
-      await this.core.logInfo(`Added ${job.data.userId} to ${job.data.serverId} by bot ${job.data.botId}`, {
+      await this.core.logInfo(`Added bot member`, {
         botId: job.data.botId,
         communityId: job.data.communityId,
         identityProvider: IdentityProvider.Discord,
         identityProviderId: job.data.userId,
+        relatedId: added.id,
+        relatedType: 'BotMember',
+        data: { botId: job.data.botId, serverId: job.data.serverId, userId: job.data.userId },
       })
       return added
     } else {
@@ -41,6 +44,7 @@ export class ApiBotMemberAddProcessor extends WorkerHost {
         communityId: job.data.communityId,
         identityProvider: IdentityProvider.Discord,
         identityProviderId: job.data.userId,
+        data: { botId: job.data.botId, serverId: job.data.serverId, userId: job.data.userId },
       })
       return undefined
     }

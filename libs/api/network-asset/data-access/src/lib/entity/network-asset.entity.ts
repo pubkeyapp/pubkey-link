@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { Prisma } from '@prisma/client'
-import { NetworkCluster } from '@pubkey-link/api-network-data-access'
+import { NetworkCluster, NetworkResolver } from '@pubkey-link/api-network-data-access'
 import { NetworkTokenType } from '@pubkey-link/api-network-token-data-access'
 import { GraphQLJSON } from 'graphql-scalars'
 
@@ -12,10 +12,12 @@ export class NetworkAsset {
   createdAt?: Date
   @Field({ nullable: true })
   updatedAt?: Date
-  @Field(() => NetworkTokenType)
-  type!: NetworkTokenType
   @Field(() => NetworkCluster)
   cluster!: NetworkCluster
+  @Field(() => NetworkResolver)
+  resolver!: NetworkResolver
+  @Field(() => NetworkTokenType)
+  type!: NetworkTokenType
   @Field()
   account!: string
   @Field()

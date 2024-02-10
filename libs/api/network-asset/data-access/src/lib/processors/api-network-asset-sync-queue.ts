@@ -21,6 +21,9 @@ export class ApiNetworkAssetSyncQueue extends WorkerHost {
   override async process(job: Job<ApiNetworkAssetIdentitySyncPayload, boolean | undefined, string>): Promise<void> {
     this.logger.debug(`Dequeueing ${job.name} [${job.id}]`)
     await job.updateProgress(0)
+    if (!job.data.identity.syncStarted) {
+      await this.core.data.identity.update({ where: { id: job.data.identity.id }, data: { syncStarted: new Date() } })
+    }
     const synced = await this.sync.syncIdentity({ cluster: job.data.cluster, owner: job.data.identity.providerId })
 
     if (synced) {
@@ -44,7 +47,11 @@ export class ApiNetworkAssetSyncQueue extends WorkerHost {
   }
 
   @OnWorkerEvent('completed')
-  onCompleted(job: Job<ApiNetworkAssetIdentitySyncPayload, boolean | undefined, string>) {
+  async onCompleted(job: Job<ApiNetworkAssetIdentitySyncPayload, boolean | undefined, string>) {
     this.logger.debug(`Finished ${job.name} [${job.id}]`)
+    await this.core.data.identity.update({
+      where: { id: job.data.identity.id },
+      data: { syncEnded: new Date(), syncStarted: null },
+    })
   }
 }

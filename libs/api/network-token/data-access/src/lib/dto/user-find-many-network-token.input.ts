@@ -11,4 +11,6 @@ export class UserFindManyNetworkTokenInput extends PagingInput() {
   type?: NetworkTokenType
   @Field({ nullable: true })
   search?: string
+  @Field({ nullable: true })
+  username?: string
 }

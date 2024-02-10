@@ -8,6 +8,7 @@ fragment LogDetails on Log {
   communityId
   identityProvider
   identityProviderId
+  networkAssetId
   botId
   userId
   ruleId

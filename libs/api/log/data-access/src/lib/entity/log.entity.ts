@@ -23,14 +23,16 @@ export class Log {
   relatedId?: string | null
   @Field(() => LogRelatedType, { nullable: true })
   relatedType?: LogRelatedType | null
-  @Field()
-  communityId!: string
+  @Field({ nullable: true })
+  communityId?: string | null
   @Field(() => IdentityProvider, { nullable: true })
   identityProvider?: IdentityProvider | null
   @Field({ nullable: true })
   identityProviderId?: string | null
   @HideField()
   identity?: Identity | null
+  @Field({ nullable: true })
+  networkAssetId?: string | null
   @Field({ nullable: true })
   botId?: string | null
   @HideField()

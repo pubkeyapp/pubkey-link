@@ -57,6 +57,16 @@ export class ApiAdminNetworkTokenService implements OnModuleInit {
   }
 
   async updateNetworkToken(networkTokenId: string, input: AdminUpdateNetworkTokenInput) {
+    const token = await this.core.data.networkToken.findUnique({ where: { id: networkTokenId } })
+    if (!token) {
+      throw new Error(`Network token ${networkTokenId} not found`)
+    }
+    if (input.vault && token.type !== NetworkTokenType.NonFungible) {
+      throw new Error(`Vault can only be set for non-fungible tokens`)
+    }
+    if (input.vault && !input.vault.includes(':')) {
+      throw new Error(`Vault must be in the format <cluster>:<address>`)
+    }
     return this.core.data.networkToken.update({ where: { id: networkTokenId }, data: input })
   }
 

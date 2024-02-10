@@ -28,4 +28,9 @@ export class ApiLogResolver {
   user(@Parent() log: Log) {
     return log.user
   }
+
+  @ResolveField(() => String, { nullable: true })
+  userId(@Parent() log: Log) {
+    return log.userId ?? log.identity?.ownerId
+  }
 }

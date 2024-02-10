@@ -180,6 +180,7 @@ export type AdminUpdateNetworkInput = {
 
 export type AdminUpdateNetworkTokenInput = {
   name?: InputMaybe<Scalars['String']['input']>
+  vault?: InputMaybe<Scalars['String']['input']>
 }
 
 export type AdminUpdateRuleInput = {
@@ -334,6 +335,8 @@ export type Identity = {
   profile?: Maybe<Scalars['JSON']['output']>
   provider: IdentityProvider
   providerId: Scalars['String']['output']
+  syncEnded?: Maybe<Scalars['DateTime']['output']>
+  syncStarted?: Maybe<Scalars['DateTime']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   url?: Maybe<Scalars['String']['output']>
   verified?: Maybe<Scalars['Boolean']['output']>
@@ -370,7 +373,7 @@ export type Log = {
   __typename?: 'Log'
   bot?: Maybe<Bot>
   botId?: Maybe<Scalars['String']['output']>
-  communityId: Scalars['String']['output']
+  communityId?: Maybe<Scalars['String']['output']>
   createdAt?: Maybe<Scalars['DateTime']['output']>
   data?: Maybe<Scalars['JSON']['output']>
   id: Scalars['String']['output']
@@ -379,6 +382,7 @@ export type Log = {
   identityProviderId?: Maybe<Scalars['String']['output']>
   level: LogLevel
   message: Scalars['String']['output']
+  networkAssetId?: Maybe<Scalars['String']['output']>
   relatedId?: Maybe<Scalars['String']['output']>
   relatedType?: Maybe<LogRelatedType>
   rule?: Maybe<Rule>
@@ -402,6 +406,7 @@ export type LogPaging = {
 
 export enum LogRelatedType {
   Bot = 'Bot',
+  BotMember = 'BotMember',
   Community = 'Community',
   Identity = 'Identity',
   Rule = 'Rule',
@@ -754,6 +759,7 @@ export type NetworkAsset = {
   name: Scalars['String']['output']
   owner: Scalars['String']['output']
   program?: Maybe<Scalars['String']['output']>
+  resolver: NetworkResolver
   symbol?: Maybe<Scalars['String']['output']>
   type: NetworkTokenType
   updatedAt?: Maybe<Scalars['DateTime']['output']>
@@ -778,6 +784,12 @@ export type NetworkPaging = {
   meta: PagingMeta
 }
 
+export enum NetworkResolver {
+  Anybodies = 'Anybodies',
+  SolanaFungible = 'SolanaFungible',
+  SolanaNonFungible = 'SolanaNonFungible',
+}
+
 export type NetworkToken = {
   __typename?: 'NetworkToken'
   account: Scalars['String']['output']
@@ -793,6 +805,7 @@ export type NetworkToken = {
   symbol?: Maybe<Scalars['String']['output']>
   type: NetworkTokenType
   updatedAt?: Maybe<Scalars['DateTime']['output']>
+  vault?: Maybe<Scalars['String']['output']>
 }
 
 export type NetworkTokenPaging = {
@@ -1215,11 +1228,12 @@ export type UserFindManyIdentityInput = {
 
 export type UserFindManyLogInput = {
   botId?: InputMaybe<Scalars['String']['input']>
-  communityId: Scalars['String']['input']
+  communityId?: InputMaybe<Scalars['String']['input']>
   identityProvider?: InputMaybe<IdentityProvider>
   identityProviderId?: InputMaybe<Scalars['String']['input']>
   level?: InputMaybe<LogLevel>
   limit?: InputMaybe<Scalars['Int']['input']>
+  networkAssetId?: InputMaybe<Scalars['String']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
   relatedId?: InputMaybe<Scalars['String']['input']>
   relatedType?: InputMaybe<LogRelatedType>
@@ -1230,6 +1244,7 @@ export type UserFindManyLogInput = {
 
 export type UserFindManyNetworkAssetInput = {
   cluster: NetworkCluster
+  group?: InputMaybe<Scalars['String']['input']>
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
   search?: InputMaybe<Scalars['String']['input']>
@@ -1243,6 +1258,7 @@ export type UserFindManyNetworkTokenInput = {
   page?: InputMaybe<Scalars['Int']['input']>
   search?: InputMaybe<Scalars['String']['input']>
   type?: InputMaybe<NetworkTokenType>
+  username?: InputMaybe<Scalars['String']['input']>
 }
 
 export type UserFindManyRuleInput = {
@@ -1477,6 +1493,8 @@ export type BotMemberDetailsFragment = {
     __typename?: 'Identity'
     avatarUrl?: string | null
     createdAt?: Date | null
+    syncStarted?: Date | null
+    syncEnded?: Date | null
     expired?: boolean | null
     id: string
     name?: string | null
@@ -1822,6 +1840,7 @@ export type UserFindOneBotQuery = {
             account: string
             program: string
             name: string
+            vault?: string | null
             symbol?: string | null
             description?: string | null
             imageUrl?: string | null
@@ -2033,6 +2052,8 @@ export type UserGetBotMembersQuery = {
       __typename?: 'Identity'
       avatarUrl?: string | null
       createdAt?: Date | null
+      syncStarted?: Date | null
+      syncEnded?: Date | null
       expired?: boolean | null
       id: string
       name?: string | null
@@ -2640,6 +2661,8 @@ export type IdentityDetailsFragment = {
   __typename?: 'Identity'
   avatarUrl?: string | null
   createdAt?: Date | null
+  syncStarted?: Date | null
+  syncEnded?: Date | null
   expired?: boolean | null
   id: string
   name?: string | null
@@ -2676,6 +2699,8 @@ export type AdminFindManyIdentityQuery = {
     __typename?: 'Identity'
     avatarUrl?: string | null
     createdAt?: Date | null
+    syncStarted?: Date | null
+    syncEnded?: Date | null
     expired?: boolean | null
     id: string
     name?: string | null
@@ -2725,6 +2750,8 @@ export type AdminCreateIdentityMutation = {
     __typename?: 'Identity'
     avatarUrl?: string | null
     createdAt?: Date | null
+    syncStarted?: Date | null
+    syncEnded?: Date | null
     expired?: boolean | null
     id: string
     name?: string | null
@@ -2754,6 +2781,8 @@ export type UserFindManyIdentityQuery = {
     __typename?: 'Identity'
     avatarUrl?: string | null
     createdAt?: Date | null
+    syncStarted?: Date | null
+    syncEnded?: Date | null
     expired?: boolean | null
     id: string
     name?: string | null
@@ -2778,6 +2807,8 @@ export type UserFindOneIdentityQuery = {
     __typename?: 'Identity'
     avatarUrl?: string | null
     createdAt?: Date | null
+    syncStarted?: Date | null
+    syncEnded?: Date | null
     expired?: boolean | null
     id: string
     name?: string | null
@@ -2868,6 +2899,8 @@ export type UserLinkIdentityMutation = {
     __typename?: 'Identity'
     avatarUrl?: string | null
     createdAt?: Date | null
+    syncStarted?: Date | null
+    syncEnded?: Date | null
     expired?: boolean | null
     id: string
     name?: string | null
@@ -2958,9 +2991,10 @@ export type LogDetailsFragment = {
   level: LogLevel
   relatedId?: string | null
   relatedType?: LogRelatedType | null
-  communityId: string
+  communityId?: string | null
   identityProvider?: IdentityProvider | null
   identityProviderId?: string | null
+  networkAssetId?: string | null
   botId?: string | null
   userId?: string | null
   ruleId?: string | null
@@ -3011,6 +3045,8 @@ export type LogDetailsFragment = {
     __typename?: 'Identity'
     avatarUrl?: string | null
     createdAt?: Date | null
+    syncStarted?: Date | null
+    syncEnded?: Date | null
     expired?: boolean | null
     id: string
     name?: string | null
@@ -3053,6 +3089,7 @@ export type LogDetailsFragment = {
         account: string
         program: string
         name: string
+        vault?: string | null
         symbol?: string | null
         description?: string | null
         imageUrl?: string | null
@@ -3125,9 +3162,10 @@ export type UserFindManyLogQuery = {
       level: LogLevel
       relatedId?: string | null
       relatedType?: LogRelatedType | null
-      communityId: string
+      communityId?: string | null
       identityProvider?: IdentityProvider | null
       identityProviderId?: string | null
+      networkAssetId?: string | null
       botId?: string | null
       userId?: string | null
       ruleId?: string | null
@@ -3178,6 +3216,8 @@ export type UserFindManyLogQuery = {
         __typename?: 'Identity'
         avatarUrl?: string | null
         createdAt?: Date | null
+        syncStarted?: Date | null
+        syncEnded?: Date | null
         expired?: boolean | null
         id: string
         name?: string | null
@@ -3220,6 +3260,7 @@ export type UserFindManyLogQuery = {
             account: string
             program: string
             name: string
+            vault?: string | null
             symbol?: string | null
             description?: string | null
             imageUrl?: string | null
@@ -3302,9 +3343,10 @@ export type UserFindOneLogQuery = {
     level: LogLevel
     relatedId?: string | null
     relatedType?: LogRelatedType | null
-    communityId: string
+    communityId?: string | null
     identityProvider?: IdentityProvider | null
     identityProviderId?: string | null
+    networkAssetId?: string | null
     botId?: string | null
     userId?: string | null
     ruleId?: string | null
@@ -3355,6 +3397,8 @@ export type UserFindOneLogQuery = {
       __typename?: 'Identity'
       avatarUrl?: string | null
       createdAt?: Date | null
+      syncStarted?: Date | null
+      syncEnded?: Date | null
       expired?: boolean | null
       id: string
       name?: string | null
@@ -3397,6 +3441,7 @@ export type UserFindOneLogQuery = {
           account: string
           program: string
           name: string
+          vault?: string | null
           symbol?: string | null
           description?: string | null
           imageUrl?: string | null
@@ -3470,9 +3515,10 @@ export type AdminFindManyLogQuery = {
       level: LogLevel
       relatedId?: string | null
       relatedType?: LogRelatedType | null
-      communityId: string
+      communityId?: string | null
       identityProvider?: IdentityProvider | null
       identityProviderId?: string | null
+      networkAssetId?: string | null
       botId?: string | null
       userId?: string | null
       ruleId?: string | null
@@ -3523,6 +3569,8 @@ export type AdminFindManyLogQuery = {
         __typename?: 'Identity'
         avatarUrl?: string | null
         createdAt?: Date | null
+        syncStarted?: Date | null
+        syncEnded?: Date | null
         expired?: boolean | null
         id: string
         name?: string | null
@@ -3565,6 +3613,7 @@ export type AdminFindManyLogQuery = {
             account: string
             program: string
             name: string
+            vault?: string | null
             symbol?: string | null
             description?: string | null
             imageUrl?: string | null
@@ -3647,9 +3696,10 @@ export type AdminFindOneLogQuery = {
     level: LogLevel
     relatedId?: string | null
     relatedType?: LogRelatedType | null
-    communityId: string
+    communityId?: string | null
     identityProvider?: IdentityProvider | null
     identityProviderId?: string | null
+    networkAssetId?: string | null
     botId?: string | null
     userId?: string | null
     ruleId?: string | null
@@ -3700,6 +3750,8 @@ export type AdminFindOneLogQuery = {
       __typename?: 'Identity'
       avatarUrl?: string | null
       createdAt?: Date | null
+      syncStarted?: Date | null
+      syncEnded?: Date | null
       expired?: boolean | null
       id: string
       name?: string | null
@@ -3742,6 +3794,7 @@ export type AdminFindOneLogQuery = {
           account: string
           program: string
           name: string
+          vault?: string | null
           symbol?: string | null
           description?: string | null
           imageUrl?: string | null
@@ -3810,8 +3863,9 @@ export type NetworkAssetDetailsFragment = {
   id: string
   createdAt?: Date | null
   updatedAt?: Date | null
-  type: NetworkTokenType
   cluster: NetworkCluster
+  resolver: NetworkResolver
+  type: NetworkTokenType
   account: string
   balance?: string | null
   name: string
@@ -3839,8 +3893,9 @@ export type UserFindManyNetworkAssetQuery = {
       id: string
       createdAt?: Date | null
       updatedAt?: Date | null
-      type: NetworkTokenType
       cluster: NetworkCluster
+      resolver: NetworkResolver
+      type: NetworkTokenType
       account: string
       balance?: string | null
       name: string
@@ -3879,8 +3934,9 @@ export type UserFindOneNetworkAssetQuery = {
     id: string
     createdAt?: Date | null
     updatedAt?: Date | null
-    type: NetworkTokenType
     cluster: NetworkCluster
+    resolver: NetworkResolver
+    type: NetworkTokenType
     account: string
     balance?: string | null
     name: string
@@ -3909,8 +3965,9 @@ export type AdminFindManyNetworkAssetQuery = {
       id: string
       createdAt?: Date | null
       updatedAt?: Date | null
-      type: NetworkTokenType
       cluster: NetworkCluster
+      resolver: NetworkResolver
+      type: NetworkTokenType
       account: string
       balance?: string | null
       name: string
@@ -3948,8 +4005,9 @@ export type AdminFindOneNetworkAssetQuery = {
     id: string
     createdAt?: Date | null
     updatedAt?: Date | null
-    type: NetworkTokenType
     cluster: NetworkCluster
+    resolver: NetworkResolver
+    type: NetworkTokenType
     account: string
     balance?: string | null
     name: string
@@ -3981,6 +4039,7 @@ export type NetworkTokenDetailsFragment = {
   account: string
   program: string
   name: string
+  vault?: string | null
   symbol?: string | null
   description?: string | null
   imageUrl?: string | null
@@ -4006,6 +4065,7 @@ export type AdminFindManyNetworkTokenQuery = {
       account: string
       program: string
       name: string
+      vault?: string | null
       symbol?: string | null
       description?: string | null
       imageUrl?: string | null
@@ -4041,6 +4101,7 @@ export type AdminFindOneNetworkTokenQuery = {
     account: string
     program: string
     name: string
+    vault?: string | null
     symbol?: string | null
     description?: string | null
     imageUrl?: string | null
@@ -4065,6 +4126,7 @@ export type AdminCreateNetworkTokenMutation = {
     account: string
     program: string
     name: string
+    vault?: string | null
     symbol?: string | null
     description?: string | null
     imageUrl?: string | null
@@ -4090,6 +4152,7 @@ export type AdminUpdateNetworkTokenMutation = {
     account: string
     program: string
     name: string
+    vault?: string | null
     symbol?: string | null
     description?: string | null
     imageUrl?: string | null
@@ -4114,6 +4177,7 @@ export type AdminUpdateNetworkTokenMetadataMutation = {
     account: string
     program: string
     name: string
+    vault?: string | null
     symbol?: string | null
     description?: string | null
     imageUrl?: string | null
@@ -4146,6 +4210,7 @@ export type UserFindManyNetworkTokenQuery = {
       account: string
       program: string
       name: string
+      vault?: string | null
       symbol?: string | null
       description?: string | null
       imageUrl?: string | null
@@ -4328,6 +4393,7 @@ export type RuleDetailsFragment = {
       account: string
       program: string
       name: string
+      vault?: string | null
       symbol?: string | null
       description?: string | null
       imageUrl?: string | null
@@ -4392,6 +4458,7 @@ export type RuleConditionDetailsFragment = {
     account: string
     program: string
     name: string
+    vault?: string | null
     symbol?: string | null
     description?: string | null
     imageUrl?: string | null
@@ -4473,6 +4540,7 @@ export type AdminFindManyRuleQuery = {
           account: string
           program: string
           name: string
+          vault?: string | null
           symbol?: string | null
           description?: string | null
           imageUrl?: string | null
@@ -4564,6 +4632,7 @@ export type AdminFindOneRuleQuery = {
         account: string
         program: string
         name: string
+        vault?: string | null
         symbol?: string | null
         description?: string | null
         imageUrl?: string | null
@@ -4644,6 +4713,7 @@ export type AdminCreateRuleMutation = {
         account: string
         program: string
         name: string
+        vault?: string | null
         symbol?: string | null
         description?: string | null
         imageUrl?: string | null
@@ -4725,6 +4795,7 @@ export type AdminUpdateRuleMutation = {
         account: string
         program: string
         name: string
+        vault?: string | null
         symbol?: string | null
         description?: string | null
         imageUrl?: string | null
@@ -4813,6 +4884,7 @@ export type UserFindManyRuleQuery = {
           account: string
           program: string
           name: string
+          vault?: string | null
           symbol?: string | null
           description?: string | null
           imageUrl?: string | null
@@ -4904,6 +4976,7 @@ export type UserFindOneRuleQuery = {
         account: string
         program: string
         name: string
+        vault?: string | null
         symbol?: string | null
         description?: string | null
         imageUrl?: string | null
@@ -4984,6 +5057,7 @@ export type UserCreateRuleMutation = {
         account: string
         program: string
         name: string
+        vault?: string | null
         symbol?: string | null
         description?: string | null
         imageUrl?: string | null
@@ -5055,6 +5129,7 @@ export type UserCreateRuleConditionMutation = {
       account: string
       program: string
       name: string
+      vault?: string | null
       symbol?: string | null
       description?: string | null
       imageUrl?: string | null
@@ -5143,6 +5218,7 @@ export type UserUpdateRuleMutation = {
         account: string
         program: string
         name: string
+        vault?: string | null
         symbol?: string | null
         description?: string | null
         imageUrl?: string | null
@@ -5215,6 +5291,7 @@ export type UserUpdateRuleConditionMutation = {
       account: string
       program: string
       name: string
+      vault?: string | null
       symbol?: string | null
       description?: string | null
       imageUrl?: string | null
@@ -5272,6 +5349,7 @@ export type UserValidateRuleMutation = {
       account: string
       program: string
       name: string
+      vault?: string | null
       symbol?: string | null
       description?: string | null
       imageUrl?: string | null
@@ -5364,6 +5442,8 @@ export type AdminFindManyUserQuery = {
         __typename?: 'Identity'
         avatarUrl?: string | null
         createdAt?: Date | null
+        syncStarted?: Date | null
+        syncEnded?: Date | null
         expired?: boolean | null
         id: string
         name?: string | null
@@ -5533,6 +5613,8 @@ export const IdentityDetailsFragmentDoc = gql`
   fragment IdentityDetails on Identity {
     avatarUrl
     createdAt
+    syncStarted
+    syncEnded
     expired
     id
     name
@@ -5717,6 +5799,7 @@ export const NetworkTokenDetailsFragmentDoc = gql`
     account
     program
     name
+    vault
     symbol
     description
     imageUrl
@@ -5790,6 +5873,7 @@ export const LogDetailsFragmentDoc = gql`
     communityId
     identityProvider
     identityProviderId
+    networkAssetId
     botId
     userId
     ruleId
@@ -5818,8 +5902,9 @@ export const NetworkAssetDetailsFragmentDoc = gql`
     id
     createdAt
     updatedAt
-    type
     cluster
+    resolver
+    type
     account
     balance
     name
@@ -9189,6 +9274,8 @@ export const LogRelatedTypeSchema = z.nativeEnum(LogRelatedType)
 
 export const NetworkClusterSchema = z.nativeEnum(NetworkCluster)
 
+export const NetworkResolverSchema = z.nativeEnum(NetworkResolver)
+
 export const NetworkTokenTypeSchema = z.nativeEnum(NetworkTokenType)
 
 export const NetworkTypeSchema = z.nativeEnum(NetworkType)
@@ -9398,6 +9485,7 @@ export function AdminUpdateNetworkInputSchema(): z.ZodObject<Properties<AdminUpd
 export function AdminUpdateNetworkTokenInputSchema(): z.ZodObject<Properties<AdminUpdateNetworkTokenInput>> {
   return z.object({
     name: z.string().nullish(),
+    vault: z.string().nullish(),
   })
 }
 
@@ -9526,11 +9614,12 @@ export function UserFindManyIdentityInputSchema(): z.ZodObject<Properties<UserFi
 export function UserFindManyLogInputSchema(): z.ZodObject<Properties<UserFindManyLogInput>> {
   return z.object({
     botId: z.string().nullish(),
-    communityId: z.string(),
+    communityId: z.string().nullish(),
     identityProvider: IdentityProviderSchema.nullish(),
     identityProviderId: z.string().nullish(),
     level: LogLevelSchema.nullish(),
     limit: z.number().nullish(),
+    networkAssetId: z.string().nullish(),
     page: z.number().nullish(),
     relatedId: z.string().nullish(),
     relatedType: LogRelatedTypeSchema.nullish(),
@@ -9543,6 +9632,7 @@ export function UserFindManyLogInputSchema(): z.ZodObject<Properties<UserFindMan
 export function UserFindManyNetworkAssetInputSchema(): z.ZodObject<Properties<UserFindManyNetworkAssetInput>> {
   return z.object({
     cluster: NetworkClusterSchema,
+    group: z.string().nullish(),
     limit: z.number().nullish(),
     page: z.number().nullish(),
     search: z.string().nullish(),
@@ -9558,6 +9648,7 @@ export function UserFindManyNetworkTokenInputSchema(): z.ZodObject<Properties<Us
     page: z.number().nullish(),
     search: z.string().nullish(),
     type: NetworkTokenTypeSchema.nullish(),
+    username: z.string().nullish(),
   })
 }
 

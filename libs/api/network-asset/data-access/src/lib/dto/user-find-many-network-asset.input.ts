@@ -13,4 +13,6 @@ export class UserFindManyNetworkAssetInput extends PagingInput() {
   cluster!: NetworkCluster
   @Field({ nullable: true })
   search?: string
+  @Field({ nullable: true })
+  group?: string
 }

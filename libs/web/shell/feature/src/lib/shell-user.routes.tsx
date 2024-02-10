@@ -18,7 +18,7 @@ const links: UiDashboardItem[] = [
 
 const routes: RouteObject[] = [
   // User Dashboard Routes are added by the web-crud generator
-  { path: '/assets/:cluster/:account', element: <UserNetworkAssetDetailFeature /> },
+  { path: '/assets/:cluster/:account/*', element: <UserNetworkAssetDetailFeature /> },
   { path: '/c/*', element: <UserCommunityFeature /> },
   { path: '/dashboard', element: <DashboardFeature links={links} /> },
   { path: '/settings/*', element: <SettingsFeature /> },

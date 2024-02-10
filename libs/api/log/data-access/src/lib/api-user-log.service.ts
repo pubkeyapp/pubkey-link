@@ -9,11 +9,14 @@ export class ApiUserLogService {
   constructor(private readonly core: ApiCoreService) {}
 
   async findManyLog(userId: string, input: UserFindManyLogInput): Promise<LogPaging> {
-    await this.core.ensureCommunityAdmin({ communityId: input.communityId, userId })
+    if (input.communityId) {
+      await this.core.ensureCommunityAdmin({ communityId: input.communityId, userId })
+    }
     return this.core.data.log
       .paginate({
         orderBy: { createdAt: 'desc' },
         where: getUserLogWhereInput(input),
+        include: { bot: true, identity: true },
       })
       .withPages({ limit: input.limit, page: input.page })
       .then(([data, meta]) => ({ data, meta }))
@@ -27,7 +30,9 @@ export class ApiUserLogService {
     if (!found) {
       throw new Error('Log not found')
     }
-    await this.core.ensureCommunityAdmin({ communityId: found.communityId, userId })
+    if (found.communityId) {
+      await this.core.ensureCommunityAdmin({ communityId: found.communityId, userId })
+    }
     return found
   }
 }

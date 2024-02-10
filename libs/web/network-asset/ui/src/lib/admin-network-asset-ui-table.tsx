@@ -3,7 +3,8 @@ import { NetworkAsset } from '@pubkey-link/sdk'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'
-import { NetworkAssetUiListItem } from './network-asset-ui-item'
+
+import { NetworkAssetUiListItem } from './network-asset-ui-list-item'
 
 export function AdminNetworkAssetUiTable({
   deleteNetworkAsset,

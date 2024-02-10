@@ -5,7 +5,7 @@ const endpoint = 'https://us-central1-nft-anybodies.cloudfunctions.net/API_V2_Ge
 
 export async function getAnybodiesVaultResponse(options: AnybodiesVaultOptions): Promise<AnybodiesVaultResponse> {
   return fetch(options.endpoint ?? endpoint, {
-    body: JSON.stringify({ data: { vaultId: options.vaultId } }),
+    body: JSON.stringify({ data: { vaultId: options.vault } }),
     headers: { 'Content-Type': 'application/json' },
     method: 'POST',
   }).then((res) => res.json() as Promise<AnybodiesVaultResponse>)

@@ -1,9 +1,9 @@
 import { Button, Group, Stack, Text } from '@mantine/core'
-import { ellipsify, NetworkTokenType } from '@pubkey-link/sdk'
+import { ellipsify, NetworkCluster } from '@pubkey-link/sdk'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { useUserFindManyIdentity } from '@pubkey-link/web-identity-data-access'
 import { IdentityRefreshIcon, IdentityUiIcon, IdentityUiLink } from '@pubkey-link/web-identity-ui'
-import { UserNetworkAssetFeature } from '@pubkey-link/web-network-asset-feature'
+import { UserNetworkTokenFeature } from '@pubkey-link/web-network-token-feature'
 import { UiGrid } from '@pubkey-link/web-ui-core'
 import { useUserFineOneUser } from '@pubkey-link/web-user-data-access'
 import { UserUiProfile } from '@pubkey-link/web-user-ui'
@@ -67,14 +67,9 @@ export function UserUserDetailFeature() {
           <UiTabRoutes
             tabs={[
               {
-                path: 'collectibles',
-                label: 'Collectibles',
-                element: <UserNetworkAssetFeature username={username} type={NetworkTokenType.NonFungible} />,
-              },
-              {
-                path: 'tokens',
-                label: 'Tokens',
-                element: <UserNetworkAssetFeature username={username} type={NetworkTokenType.Fungible} />,
+                path: 'assets',
+                label: 'Assets',
+                element: <UserNetworkTokenFeature username={username} cluster={NetworkCluster.SolanaMainnet} />,
               },
             ]}
           />

@@ -4,9 +4,10 @@ import { UserLogUiTable } from '@pubkey-link/web-log-ui'
 import { UiSearchField } from '@pubkey-link/web-ui-core'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
-export function UserLogListFeature({ communityId }: { communityId: string }) {
+export function UserLogListFeature({ communityId, networkAssetId }: { communityId?: string; networkAssetId?: string }) {
   const { items, pagination, query, setSearch } = useUserFindManyLog({
     communityId,
+    networkAssetId,
   })
 
   return (

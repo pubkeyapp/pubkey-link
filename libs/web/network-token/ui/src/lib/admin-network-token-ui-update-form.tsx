@@ -11,9 +11,16 @@ export function AdminNetworkTokenUiUpdateForm({
 }) {
   const model: AdminUpdateNetworkTokenInput = {
     name: networkToken.name ?? '',
+    vault: networkToken.vault ?? '',
   }
 
-  const fields: UiFormField<AdminUpdateNetworkTokenInput>[] = [formFieldText('name', { label: 'name' })]
+  const fields: UiFormField<AdminUpdateNetworkTokenInput>[] = [
+    formFieldText('name', { label: 'Name' }),
+    formFieldText('vault', {
+      label: 'Vault',
+      description: `You can configure your Anybodies vault here using the format <vault>:<account>`,
+    }),
+  ]
   return (
     <UiForm model={model} fields={fields} submit={(res) => submit(res as AdminUpdateNetworkTokenInput)}>
       <Group justify="right">

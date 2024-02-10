@@ -66,7 +66,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
               {
                 type: RuleConditionType.AnybodiesAsset,
                 name: 'Deanslist NFT staked in Anybodies Vault',
-                config: { vaultId: 'JiZUwqz0ETakNYOIulut' },
+                config: { vault: 'JiZUwqz0ETakNYOIulut:CjYTP9jJVmCqnmdPf8tyafTHxTQtAjsFckVGZWMwprca' },
                 amount: '1',
               },
             ],
@@ -114,7 +114,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
               {
                 type: RuleConditionType.AnybodiesAsset,
                 name: 'Deanslist NFT staked in Anybodies Vault',
-                config: { vaultId: 'JiZUwqz0ETakNYOIulut' },
+                config: { vault: 'JiZUwqz0ETakNYOIulut:CjYTP9jJVmCqnmdPf8tyafTHxTQtAjsFckVGZWMwprca' },
                 amount: '1',
               },
             ],

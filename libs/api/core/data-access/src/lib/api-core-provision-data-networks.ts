@@ -91,6 +91,7 @@ export const provisionNetworks: Prisma.NetworkCreateInput[] = [
           imageUrl: 'https://shdw-drive.genesysgo.net/GQfWBgNh4GUM1Y7nRrx8MFiMoxDLcNDCpsptXYxbozAE/collection.png',
           metadataUrl: 'https://shdw-drive.genesysgo.net/GQfWBgNh4GUM1Y7nRrx8MFiMoxDLcNDCpsptXYxbozAE/collection.json',
           name: 'Deanslist',
+          vault: 'JiZUwqz0ETakNYOIulut:CjYTP9jJVmCqnmdPf8tyafTHxTQtAjsFckVGZWMwprca',
           program: TOKEN_PROGRAM_ID.toString(),
           symbol: 'DEAN',
           type: NetworkTokenType.NonFungible,

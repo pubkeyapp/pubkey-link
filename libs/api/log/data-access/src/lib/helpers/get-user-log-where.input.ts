@@ -3,32 +3,16 @@ import { UserFindManyLogInput } from '../dto/user-find-many-log.input'
 
 export function getUserLogWhereInput(input: UserFindManyLogInput): Prisma.LogWhereInput {
   const where: Prisma.LogWhereInput = {
-    communityId: input.communityId,
-  }
-
-  if (input.level) {
-    where.level = input.level
-  }
-  if (input.relatedId) {
-    where.relatedId = input.relatedId
-  }
-  if (input.relatedType) {
-    where.relatedType = input.relatedType
-  }
-  if (input.identityProvider) {
-    where.identityProvider = input.identityProvider
-  }
-  if (input.identityProviderId) {
-    where.identityProviderId = input.identityProviderId
-  }
-  if (input.botId) {
-    where.botId = input.botId
-  }
-  if (input.userId) {
-    where.userId = input.userId
-  }
-  if (input.ruleId) {
-    where.ruleId = input.ruleId
+    communityId: input.communityId ?? undefined,
+    networkAssetId: input.networkAssetId ?? undefined,
+    level: input.level ?? undefined,
+    relatedId: input.relatedId ?? undefined,
+    relatedType: input.relatedType ?? undefined,
+    identityProvider: input.identityProvider ?? undefined,
+    identityProviderId: input.identityProviderId ?? undefined,
+    botId: input.botId ?? undefined,
+    userId: input.userId ?? undefined,
+    ruleId: input.ruleId ?? undefined,
   }
 
   if (input.search) {

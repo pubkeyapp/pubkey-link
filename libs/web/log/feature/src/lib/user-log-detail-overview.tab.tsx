@@ -14,7 +14,7 @@ export function UserLogDetailOverviewTab({ logId }: { logId: string }) {
     return <UiError message="Log not found." />
   }
   const items: FactTypes = []
-  if (item.botId) {
+  if (item.botId && item.communityId) {
     items.unshift(['Bot', <BotUiItemById communityId={item.communityId} />])
   }
   if (item.identity?.ownerId) {

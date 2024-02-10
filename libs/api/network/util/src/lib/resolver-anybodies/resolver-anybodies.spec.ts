@@ -2,7 +2,7 @@ import { getAnybodiesVaultMap, getAnybodiesVaultResponse, getAnybodiesVaultSnaps
 import { AnybodiesVaultOptions } from './types'
 
 describe('resolverAnybodies', () => {
-  const options: AnybodiesVaultOptions = { vaultId: 'JiZUwqz0ETakNYOIulut' }
+  const options: AnybodiesVaultOptions = { vault: 'JiZUwqz0ETakNYOIulut:CjYTP9jJVmCqnmdPf8tyafTHxTQtAjsFckVGZWMwprca' }
 
   it('getAnybodiesVaultResponse', async () => {
     const results = await getAnybodiesVaultResponse(options)

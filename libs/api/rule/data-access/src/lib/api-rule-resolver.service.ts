@@ -34,14 +34,14 @@ export class ApiRuleResolverService {
   //   condition: RuleCondition,
   //   owner: string,
   // ): Promise<NetworkAsset[]> {
-  //   const { vaultId } = (condition.config ?? {}) as { vaultId?: string }
+  //   const { vault } = (condition.config ?? {}) as { vault?: string }
   //   const account = condition.account
   //   switch (condition.type) {
   //     case RuleConditionType.AnybodiesAsset:
-  //       if (!vaultId) {
-  //         throw new Error(`Condition ${condition.id} is Missing vaultId`)
+  //       if (!vault) {
+  //         throw new Error(`Condition ${condition.id} is Missing vault`)
   //       }
-  //       return this.network.resolveAnybodiesAsset({ owner, vaultId })
+  //       return this.network.resolveAnybodiesAsset({ owner, vault })
   //     case RuleConditionType.SolanaFungibleAsset:
   //       if (!account) {
   //         throw new Error(`Condition ${condition.id} is Missing account`)
@@ -124,12 +124,12 @@ export class ApiRuleResolverService {
     const groups = this.groupConditionsByType(conditions)
 
     if (groups[RuleConditionType.AnybodiesAsset].length) {
-      const uniqueVaultIds = this.deduplicateAnybodiesVaults(groups[RuleConditionType.AnybodiesAsset])
+      const uniqueVaults = this.deduplicateAnybodiesVaults(groups[RuleConditionType.AnybodiesAsset])
 
-      // Now we want to loop over each unique vaultId
-      for (const vaultId of uniqueVaultIds) {
-        // We want to look up the vaultIds with the solanaIds
-        const assets = await this.network.resolveAnybodiesAssets({ vaultId, owners: solanaIds ?? [] })
+      // Now we want to loop over each unique vault
+      for (const vault of uniqueVaults) {
+        // We want to look up the vaults with the solanaIds
+        const assets = await this.network.resolveAnybodiesAssets({ vault, owners: solanaIds ?? [] })
 
         // Now we want to loop over each asset and add it to the solanaIdAssets map
         for (const asset of assets) {
@@ -215,7 +215,7 @@ export class ApiRuleResolverService {
 
   private deduplicateAnybodiesVaults(conditions: RuleCondition[]) {
     return conditions
-      .map((c) => (c.config as { vaultId?: string })?.vaultId)
+      .map((c) => (c.config as { vault?: string })?.vault)
       .filter((v) => !!v)
       .filter((v, i, a) => a.indexOf(v) === i) as string[]
   }

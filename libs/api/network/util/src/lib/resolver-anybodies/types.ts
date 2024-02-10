@@ -6,6 +6,6 @@ export type AnybodiesVaultResponse = {
 }[]
 
 export type AnybodiesVaultOptions = {
-  vaultId: string
+  vault: string
   endpoint?: string
 }

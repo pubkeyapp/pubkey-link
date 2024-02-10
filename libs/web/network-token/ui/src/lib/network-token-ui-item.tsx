@@ -1,7 +1,8 @@
 import { AvatarProps, Group, type GroupProps, Stack, Text } from '@mantine/core'
 import { ellipsify, NetworkToken } from '@pubkey-link/sdk'
-import { UiAnchor, type UiAnchorProps, UiCopy } from '@pubkey-ui/core'
+import { UiAnchor, type UiAnchorProps, UiCopy, UiDebugModal } from '@pubkey-ui/core'
 import { NetworkTokenUiAvatar } from './network-token-ui-avatar'
+import { NetworkTokenUiTypeBadge } from './network-token-ui-type-badge'
 
 export function NetworkTokenUiItem({
   anchorProps,
@@ -24,16 +25,13 @@ export function NetworkTokenUiItem({
         <NetworkTokenUiAvatar networkToken={networkToken} {...avatarProps} />
         <Stack gap={1}>
           <Group gap="xs">
+            <NetworkTokenUiTypeBadge type={networkToken.type} />
             <Text size="lg" fw={500}>
               {networkToken?.name}
             </Text>
-            {networkToken?.symbol ? (
-              <Text size="xs" c="dimmed">
-                {networkToken?.symbol}
-              </Text>
-            ) : null}
           </Group>
           <Group gap={4}>
+            <UiDebugModal data={networkToken} />
             <UiCopy text={networkToken.account} tooltip="Copy account address" />
             <Text size="sm" c="dimmed">
               {ellipsify(networkToken.account, 10)}

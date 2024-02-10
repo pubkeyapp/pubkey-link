@@ -1,26 +1,33 @@
-import { dasApi, DasApiAsset, DasApiAssetList } from '@metaplex-foundation/digital-asset-standard-api'
-import { createUmi, publicKey, Umi } from '@metaplex-foundation/umi'
-import { web3JsRpc } from '@metaplex-foundation/umi-rpc-web3js'
+import { DasApiAssetList } from '@metaplex-foundation/digital-asset-standard-api'
+import { publicKey } from '@metaplex-foundation/umi'
 import { Injectable, Logger } from '@nestjs/common'
-import { NetworkCluster, NetworkToken, NetworkTokenType, Prisma } from '@prisma/client'
+import { NetworkCluster, NetworkResolver, NetworkToken, NetworkTokenType, Prisma } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { AnybodiesVaultSnapshot, getAnybodiesVaultMap, getAnybodiesVaultSnapshot } from '@pubkey-link/api-network-util'
+import {
+  AnybodiesVaultSnapshot,
+  findAssetGroupValue,
+  findAssetsByGroup,
+  getAnybodiesVaultSnapshot,
+  NetworkAssetInput,
+} from '@pubkey-link/api-network-util'
 import { getTokenMetadata, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { TokenMetadata } from '@solana/spl-token-metadata'
-import { AccountInfo, Connection, ParsedAccountData, PublicKey } from '@solana/web3.js'
-import { ChainId, Client, Token } from '@solflare-wallet/utl-sdk'
+import { AccountInfo, ParsedAccountData, PublicKey } from '@solana/web3.js'
+import { Token } from '@solflare-wallet/utl-sdk'
 import { LRUCache } from 'lru-cache'
 import { ApiAdminNetworkService } from './api-admin-network.service'
+import { ApiNetworkClusterService } from './api-network-cluster.service'
 import { SolanaNetworkAsset } from './entity/solana-network-asset.entity'
+import { ApiNetworkResolverService } from './resolver/api-network-resolver.service'
 
 @Injectable()
 export class ApiNetworkService {
   private readonly cacheAnybodiesVaults = new LRUCache<string, AnybodiesVaultSnapshot>({
     max: 1000,
     ttl: 1000 * 60 * 60, // 1 hour
-    fetchMethod: async (vaultId) => {
-      this.logger.verbose(`cacheAnybodiesVaults: Cache miss for ${vaultId}`)
-      return getAnybodiesVaultSnapshot({ vaultId })
+    fetchMethod: async (vault) => {
+      this.logger.verbose(`cacheAnybodiesVaults: Cache miss for ${vault}`)
+      return getAnybodiesVaultSnapshot({ vault })
     },
   })
 
@@ -30,25 +37,15 @@ export class ApiNetworkService {
   })
 
   private readonly logger = new Logger(ApiNetworkService.name)
-  private readonly connections: Map<NetworkCluster, Connection> = new Map()
-  private readonly umis: Map<NetworkCluster, Umi> = new Map()
-  private readonly tokenList: Map<NetworkCluster, Client> = new Map()
-  constructor(readonly admin: ApiAdminNetworkService, readonly core: ApiCoreService) {}
+  constructor(
+    readonly admin: ApiAdminNetworkService,
+    readonly cluster: ApiNetworkClusterService,
+    readonly core: ApiCoreService,
+    readonly resolver: ApiNetworkResolverService,
+  ) {}
 
-  async resolveAnybodiesAsset({ owner, vaultId }: { owner: string; vaultId: string }): Promise<SolanaNetworkAsset> {
-    return getAnybodiesVaultMap({ vaultId })
-      .then((map) => map.find((item) => item.owner === owner)?.accounts ?? [])
-      .then((accounts) => ({ owner, accounts, amount: `${accounts.length}` }))
-  }
-
-  async resolveAnybodiesAssets({
-    owners,
-    vaultId,
-  }: {
-    owners: string[]
-    vaultId: string
-  }): Promise<SolanaNetworkAsset[]> {
-    const snapshot: AnybodiesVaultSnapshot = await this.getCachedAnybodiesVaultSnapshot({ vaultId }).then((snapshot) =>
+  async resolveAnybodiesAssets({ owners, vault }: { owners: string[]; vault: string }): Promise<SolanaNetworkAsset[]> {
+    const snapshot: AnybodiesVaultSnapshot = await this.getCachedAnybodiesVaultSnapshot({ vault }).then((snapshot) =>
       snapshot.filter((item) => owners.includes(item.owner)),
     )
 
@@ -60,7 +57,7 @@ export class ApiNetworkService {
           ...asset,
           accounts: [...asset.accounts, curr.account],
           amount: `${asset.accounts.length + 1}`,
-          group: `vault:${vaultId}`,
+          group: `vault:${vault}`,
         },
       }
     }, {} as Record<string, SolanaNetworkAsset>)
@@ -69,14 +66,20 @@ export class ApiNetworkService {
   }
 
   async getAccountInfo({ cluster, account }: { cluster: NetworkCluster; account: string }) {
-    return this.getConnection(cluster).then((conn) =>
-      conn.getParsedAccountInfo(new PublicKey(account)).then((res) => res.value as AccountInfo<ParsedAccountData>),
-    )
+    console.log('getAccountInfo', cluster, account)
+    return this.cluster
+      .getConnection(cluster)
+      .then((conn) =>
+        conn.getParsedAccountInfo(new PublicKey(account)).then((res) => res.value as AccountInfo<ParsedAccountData>),
+      )
   }
   async getTokenMetadata({ cluster, account }: { cluster: NetworkCluster; account: string }) {
-    return this.getConnection(cluster).then((conn) =>
-      getTokenMetadata(conn, new PublicKey(account)).then((res) => (res ? (res as TokenMetadata) : null)),
-    )
+    console.log('getTokenMetadata', cluster, account)
+    return this.cluster
+      .getConnection(cluster)
+      .then((conn) =>
+        getTokenMetadata(conn, new PublicKey(account)).then((res) => (res ? (res as TokenMetadata) : null)),
+      )
   }
 
   async getAllTokenMetadata({ cluster, account }: { cluster: NetworkCluster; account: string }) {
@@ -91,7 +94,7 @@ export class ApiNetworkService {
 
     let tokenList: Token | null = null
     try {
-      tokenList = await this.getTokenList(cluster).then((res) => res.fetchMint(new PublicKey(account)))
+      tokenList = await this.cluster.getTokenList(cluster).then((res) => res.fetchMint(new PublicKey(account)))
     } catch (e) {
       this.logger.verbose(`Failed to fetch token list for ${account}`)
     }
@@ -100,7 +103,9 @@ export class ApiNetworkService {
       throw new Error(`Asset or metadata for ${account} not found on cluster ${cluster}`)
     }
 
-    const imageUrl = metadata?.uri
+    const imageUrl = asset.content.files?.length
+      ? asset.content.files[0].uri
+      : metadata?.uri
       ? await fetch(metadata?.uri)
           .then((res) => res.json())
           .then((res) => res.image)
@@ -122,7 +127,7 @@ export class ApiNetworkService {
 
   async getTokenAccounts({ cluster, account }: { cluster: NetworkCluster; account: string }) {
     const address = new PublicKey(account)
-    return this.getConnection(cluster).then((conn) =>
+    return this.cluster.getConnection(cluster).then((conn) =>
       Promise.all([
         conn.getTokenAccountsByOwner(address, { programId: TOKEN_PROGRAM_ID }).then((res) => res.value ?? []),
         conn.getTokenAccountsByOwner(address, { programId: TOKEN_2022_PROGRAM_ID }).then((res) => res.value ?? []),
@@ -149,7 +154,7 @@ export class ApiNetworkService {
   }
 
   async getAsset({ cluster, account }: { cluster: NetworkCluster; account: string }) {
-    return this.getUmi(cluster).then((res) => res.rpc.getAsset(publicKey(account)))
+    return this.cluster.getUmi(cluster).then((res) => res.rpc.getAsset(publicKey(account)))
   }
 
   async resolveSolanaNonFungibleAssetXX({
@@ -177,7 +182,8 @@ export class ApiNetworkService {
     program: string
     mint: string
   }): Promise<SolanaNetworkAsset[]> {
-    return this.getConnection(cluster)
+    return this.cluster
+      .getConnection(cluster)
       .then((conn) =>
         conn.getParsedTokenAccountsByOwner(new PublicKey(owner), {
           mint: new PublicKey(mint),
@@ -210,14 +216,14 @@ export class ApiNetworkService {
     cluster: NetworkCluster
     owner: string
     tokens: NetworkToken[]
-  }): Promise<Prisma.NetworkAssetCreateInput[]> {
+  }): Promise<NetworkAssetInput[]> {
     const address = new PublicKey(owner)
     const mints = tokens.map((token) => token.account)
     const tokenMap = tokens.reduce(
       (acc, curr) => ({ ...acc, [curr.account]: curr }),
       {} as Record<string, NetworkToken>,
     )
-    return this.getConnection(cluster).then((conn) =>
+    return this.cluster.getConnection(cluster).then((conn) =>
       Promise.all([
         conn.getParsedTokenAccountsByOwner(address, { programId: TOKEN_PROGRAM_ID }).then((res) => res.value ?? []),
         conn
@@ -231,13 +237,14 @@ export class ApiNetworkService {
             const mint = account.account.data.parsed.info.mint
             const program = account.account.owner.toBase58()
             return {
-              account: account.pubkey.toString(),
               network: { connect: { cluster } },
+              resolver: NetworkResolver.SolanaFungible,
+              type: NetworkTokenType.Fungible,
+              account: account.pubkey.toString(),
               name: tokenMap[mint.toString()]?.name ?? '',
               symbol: tokenMap[mint.toString()]?.symbol ?? '',
               imageUrl: tokenMap[mint.toString()]?.imageUrl ?? undefined,
               owner,
-              type: NetworkTokenType.Fungible,
               balance,
               group: mint,
               decimals: 0,
@@ -357,7 +364,7 @@ export class ApiNetworkService {
     groups?: string[]
   }) {
     const tag = `getAllAssetsByOwner(${owner}, ${cluster}, ${groups.join(',')})`
-    const umi = await this.getUmi(cluster)
+    const umi = await this.cluster.getUmi(cluster)
 
     // Create a response list similar to the one returned by the API
     const list: DasApiAssetList = { total: 0, items: [], limit: 1000, page: 1 }
@@ -387,93 +394,8 @@ export class ApiNetworkService {
     return { ...list, page: page - 1, items }
   }
 
-  private async getConnection(cluster: NetworkCluster) {
-    if (!this.connections.has(cluster)) {
-      const network = await this.core.data.network.findUnique({ where: { cluster } })
-      if (!network) {
-        throw new Error(`getConnection: Network not found for cluster: ${cluster}`)
-      }
-      this.connections.set(cluster, new Connection(network.endpoint, 'confirmed'))
-      this.logger.verbose(`getConnection: Network created for cluster: ${cluster}`)
-    }
-    const connection = this.connections.get(cluster)
-    if (!connection) {
-      throw new Error(`getConnection: Error getting network for cluster: ${cluster}`)
-    }
-    return connection
-  }
-
-  private async getTokenList(cluster: NetworkCluster) {
-    if (!this.tokenList.has(cluster)) {
-      const connection = await this.getConnection(cluster)
-      const chainId = getChainId(cluster)
-      this.tokenList.set(
-        cluster,
-        new Client({
-          connection,
-          chainId,
-          apiUrl: 'https://token-list-api.solana.cloud',
-          cdnUrl: 'https://cdn.jsdelivr.net/gh/solflare-wallet/token-list/solana-tokenlist.json',
-          metaplexTimeout: 2000,
-          timeout: 2000,
-        }),
-      )
-      this.logger.verbose(`getConnection: Network created for cluster: ${cluster}`)
-    }
-    const connection = this.tokenList.get(cluster)
-    if (!connection) {
-      throw new Error(`getConnection: Error getting network for cluster: ${cluster}`)
-    }
-    return connection
-  }
-
-  private async getUmi(cluster: NetworkCluster) {
-    if (!this.umis.has(cluster)) {
-      const network = await this.core.data.network.findUnique({ where: { cluster } })
-      if (!network) {
-        throw new Error(`getUmi: Network not found for cluster: ${cluster}`)
-      }
-      this.umis.set(cluster, createUmi().use(web3JsRpc(network.endpoint, 'confirmed')).use(dasApi()))
-      this.logger.verbose(`getUmi: Network created for cluster: ${cluster}`)
-    }
-    const umi = this.umis.get(cluster)
-    if (!umi) {
-      throw new Error(`getUmi: Error getting network for cluster: ${cluster}`)
-    }
-    return umi
-  }
-
-  private async getCachedAnybodiesVaultSnapshot({ vaultId }: { vaultId: string }): Promise<AnybodiesVaultSnapshot> {
-    const result = await this.cacheAnybodiesVaults.fetch(vaultId)
+  private async getCachedAnybodiesVaultSnapshot({ vault }: { vault: string }): Promise<AnybodiesVaultSnapshot> {
+    const result = await this.cacheAnybodiesVaults.fetch(vault)
     return result ?? []
-  }
-}
-/**
- * Find the collection group value for the asset
- * @param asset DasApiAsset Asset to find the collection group value for
- */
-export function findAssetGroupValue(asset: DasApiAsset) {
-  return asset.grouping?.find((g) => g.group_key === 'collection')?.group_value
-}
-
-/**
- * Filter assets by optional list of collections (comma separated)
- * @param items DasApiAsset[] List of assets to filter
- * @param groups string[] Optional list of groups
- */
-export function findAssetsByGroup(items: DasApiAsset[], groups: string[]) {
-  return items.filter((item) => groups?.length === 0 || groups.includes(findAssetGroupValue(item) ?? ''))
-}
-
-function getChainId(cluster: NetworkCluster): ChainId {
-  switch (cluster) {
-    case NetworkCluster.SolanaMainnet:
-      return ChainId.MAINNET
-    case NetworkCluster.SolanaDevnet:
-      return ChainId.DEVNET
-    case NetworkCluster.SolanaTestnet:
-      return ChainId.TESTNET
-    default:
-      throw new Error(`getChainId: ChainId not found for cluster: ${cluster}`)
   }
 }

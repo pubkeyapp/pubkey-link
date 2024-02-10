@@ -12,7 +12,10 @@ export class Identity {
   createdAt?: Date
   @Field({ nullable: true })
   updatedAt?: Date
-
+  @Field({ nullable: true })
+  syncStarted?: Date | null
+  @Field({ nullable: true })
+  syncEnded?: Date | null
   @Field(() => IdentityProvider)
   provider!: IdentityProvider
   @Field()

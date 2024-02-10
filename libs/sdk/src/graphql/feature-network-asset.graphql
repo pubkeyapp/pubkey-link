@@ -2,8 +2,9 @@ fragment NetworkAssetDetails on NetworkAsset {
   id
   createdAt
   updatedAt
-  type
   cluster
+  resolver
+  type
   account
   balance
   name

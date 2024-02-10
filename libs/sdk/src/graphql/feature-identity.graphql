@@ -9,6 +9,8 @@ fragment IdentitySummary on Identity {
 fragment IdentityDetails on Identity {
   avatarUrl
   createdAt
+  syncStarted
+  syncEnded
   expired
   id
   name

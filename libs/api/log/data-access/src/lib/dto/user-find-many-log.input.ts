@@ -5,10 +5,12 @@ import { LogRelatedType } from '../entity/log-related-type.enum'
 
 @InputType()
 export class UserFindManyLogInput extends PagingInput() {
-  @Field()
-  communityId!: string
+  @Field({ nullable: true })
+  communityId?: string
   @Field(() => LogLevel, { nullable: true })
   level?: LogLevel
+  @Field({ nullable: true })
+  botId?: string | null
   @Field({ nullable: true })
   relatedId?: string
   @Field(() => LogRelatedType, { nullable: true })
@@ -18,7 +20,7 @@ export class UserFindManyLogInput extends PagingInput() {
   @Field({ nullable: true })
   identityProviderId?: string | null
   @Field({ nullable: true })
-  botId?: string | null
+  networkAssetId?: string
   @Field({ nullable: true })
   userId?: string | null
   @Field({ nullable: true })

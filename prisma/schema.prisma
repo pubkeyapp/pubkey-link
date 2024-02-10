@@ -101,6 +101,8 @@ model Identity {
   id           String              @id @default(cuid())
   createdAt    DateTime            @default(now())
   updatedAt    DateTime            @updatedAt
+  syncStarted  DateTime?
+  syncEnded    DateTime?
   provider     IdentityProvider
   providerId   String
   name         String?
@@ -173,6 +175,7 @@ model NetworkAsset {
   updatedAt  DateTime         @updatedAt
   network    Network          @relation(fields: [cluster], references: [cluster])
   cluster    NetworkCluster
+  resolver   NetworkResolver
   type       NetworkTokenType
   account    String
   group      String?
@@ -190,6 +193,7 @@ model NetworkAsset {
 
   @@unique([account, cluster])
   @@index([cluster, owner, type])
+  @@index([cluster, group, type])
 }
 
 model NetworkToken {
@@ -202,6 +206,7 @@ model NetworkToken {
   name        String
   account     String
   program     String
+  vault       String?
   imageUrl    String?
   metadataUrl String?
   description String?
@@ -296,6 +301,7 @@ enum LogLevel {
 
 enum LogRelatedType {
   Bot
+  BotMember
   Community
   Identity
   Rule
@@ -307,6 +313,12 @@ enum NetworkCluster {
   SolanaDevnet
   SolanaMainnet
   SolanaTestnet
+}
+
+enum NetworkResolver {
+  Anybodies
+  SolanaFungible
+  SolanaNonFungible
 }
 
 enum NetworkTokenType {
