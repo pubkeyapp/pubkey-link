@@ -7,7 +7,17 @@ import { UserNetworkTokenFeature } from '@pubkey-link/web-network-token-feature'
 import { UiGrid } from '@pubkey-link/web-ui-core'
 import { useUserFineOneUser } from '@pubkey-link/web-user-data-access'
 import { UserUiProfile } from '@pubkey-link/web-user-ui'
-import { UiCard, UiContainer, UiDebugModal, UiGroup, UiLoader, UiStack, UiTabRoutes, UiWarning } from '@pubkey-ui/core'
+import {
+  UiCard,
+  UiContainer,
+  UiDebugModal,
+  UiGroup,
+  UiLoader,
+  UiStack,
+  UiTabRoutes,
+  UiTime,
+  UiWarning,
+} from '@pubkey-ui/core'
 import { Link, useParams } from 'react-router-dom'
 
 export function UserUserDetailFeature() {
@@ -43,13 +53,16 @@ export function UserUserDetailFeature() {
             />
             {items?.map((identity) => (
               <UiCard key={identity.id} p="xs">
-                <UiGroup align="start">
-                  <Group>
-                    <IdentityUiIcon provider={identity.provider} />
+                <UiGroup align="center">
+                  <Group gap="xs">
+                    <IdentityUiIcon size={28} provider={identity.provider} />
                     <Stack gap={0}>
                       <Text size="sm" fw="bold">
                         {ellipsify(identity.name ?? identity.providerId, 6)}
                       </Text>
+                      {identity.syncEnded ? (
+                        <UiTime size="xs" c="dimmed" prefix="Synced " date={new Date(identity.syncEnded)} />
+                      ) : null}
                     </Stack>
                   </Group>
                   <Group gap={2}>

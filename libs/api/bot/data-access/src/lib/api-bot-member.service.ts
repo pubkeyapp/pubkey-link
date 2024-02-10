@@ -23,8 +23,22 @@ export class ApiBotMemberService {
       return
     }
     this.logger.verbose(`Setting up listeners for bot ${bot.name}`)
-    instance.client?.on('guildMemberAdd', (member) => this.scheduleAddMember(bot, member.guild.id, member.id))
-    instance.client.on('guildMemberRemove', (member) => this.scheduleRemoveMember(bot, member.guild.id, member.id))
+    instance.client?.on('guildMemberAdd', (member) =>
+      this.scheduleAddMember({
+        botId: bot.id,
+        communityId: bot.communityId,
+        serverId: member.guild.id,
+        userId: member.id,
+      }),
+    )
+    instance.client.on('guildMemberRemove', (member) =>
+      this.scheduleRemoveMember({
+        botId: bot.id,
+        communityId: bot.communityId,
+        serverId: member.guild.id,
+        userId: member.id,
+      }),
+    )
   }
 
   async upsert({
@@ -146,10 +160,20 @@ export class ApiBotMemberService {
     })
   }
 
-  async scheduleAddMember(bot: Bot, serverId: string, userId: string) {
-    const jobId = `${bot.id}-${serverId}-${userId}`
+  async scheduleAddMember({
+    botId,
+    communityId,
+    serverId,
+    userId,
+  }: {
+    botId: string
+    communityId: string
+    serverId: string
+    userId: string
+  }) {
+    const jobId = `${botId}-${serverId}-${userId}`
     await this.botMemberAddQueue
-      .add('member-add', { botId: bot.id, communityId: bot.communityId, serverId, userId })
+      .add('member-add', { botId, communityId, serverId, userId })
       .then((res) => {
         this.logger.verbose(`scheduleAddMember queued: ${res.id}`)
       })
@@ -157,10 +181,20 @@ export class ApiBotMemberService {
         this.logger.error(`scheduleAddMember error: ${jobId}: ${err}`)
       })
   }
-  async scheduleRemoveMember(bot: Bot, serverId: string, userId: string) {
-    const jobId = `${bot.id}-${serverId}-${userId}`
+  async scheduleRemoveMember({
+    botId,
+    communityId,
+    serverId,
+    userId,
+  }: {
+    botId: string
+    communityId: string
+    serverId: string
+    userId: string
+  }) {
+    const jobId = `${botId}-${serverId}-${userId}`
     await this.botMemberRemoveQueue
-      .add('member-remove', { botId: bot.id, communityId: bot.communityId, serverId, userId })
+      .add('member-remove', { botId, communityId, serverId, userId })
       .then((res) => {
         this.logger.verbose(`scheduleRemoveMember queued: ${res.id}`)
       })

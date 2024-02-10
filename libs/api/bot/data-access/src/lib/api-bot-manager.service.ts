@@ -1,4 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
+import { Cron, CronExpression } from '@nestjs/schedule'
 import { Bot } from '@prisma/client'
 
 import { createDiscordRestClient, DiscordBot } from '@pubkey-link/api-bot-util'
@@ -170,11 +171,6 @@ export class ApiBotManagerService implements OnModuleInit {
   }
 
   async syncBotServer(userId: string, botId: string, serverId: string) {
-    const bot = this.ensureBotInstance(botId)
-    if (!bot) {
-      console.log(`Can't find bot.`, botId, serverId)
-      return false
-    }
     const community = await this.core.data.community.findFirst({
       where: { bot: { id: botId } },
       include: { bot: true },
@@ -183,13 +179,48 @@ export class ApiBotManagerService implements OnModuleInit {
       console.log(`Can't find community.`, botId, serverId)
       return false
     }
+    await this.core.ensureCommunityAdmin({ userId, communityId: community.id })
+    await this.syncBotServerMembers({
+      communityId: community.id,
+      botId,
+      serverId,
+    })
+    return true
+  }
+
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  private async syncBotServers() {
+    const bots = await this.core.data.bot.findMany({ where: { status: BotStatus.Active } })
+
+    for (const bot of bots) {
+      const servers = await this.getBotServers('-no-user-id-', bot.id)
+      for (const server of servers) {
+        await this.syncBotServerMembers({ botId: bot.id, communityId: bot.communityId, serverId: server.id })
+      }
+    }
+  }
+
+  async syncBotServerMembers({
+    botId,
+    communityId,
+    serverId,
+  }: {
+    botId: string
+    communityId: string
+    serverId: string
+  }) {
+    const discordBot = this.ensureBotInstance(botId)
+    if (!discordBot) {
+      console.log(`Can't find bot.`, botId, serverId)
+      return false
+    }
     this.logger.verbose(`Fetching members... ${botId} ${serverId}`)
 
     const [discordIdentityIds, botMemberIds] = await Promise.all([
       this.botMember.getDiscordIdentityIds(),
       this.botMember.getBotMemberIds(botId, serverId),
     ])
-    const members = await bot.getDiscordServerMembers(serverId)
+    const members = await discordBot.getDiscordServerMembers(serverId)
 
     this.logger.verbose(`Found ${members.length} members to process`)
     const filtered = members
@@ -202,20 +233,28 @@ export class ApiBotManagerService implements OnModuleInit {
 
     if (toBeDeleted.length) {
       this.logger.warn(`Found ${toBeDeleted.length} members to delete`)
-      this.logger.warn(`TODO: DELETE MEMBERS`)
+      for (const userId of toBeDeleted) {
+        this.logger.verbose(`Removing member ${userId} from bot ${botId} server ${serverId}...`)
+        await this.botMember.scheduleRemoveMember({ communityId, botId, serverId, userId })
+      }
     }
 
     this.logger.verbose(`Found ${filtered.length} members to process (filtered)`)
     let linkedCount = 0
     for (const member of filtered) {
       const userId = member.id
-      await this.botMember.scheduleAddMember(community.bot, serverId, userId)
-
-      this.logger.verbose(`${botId} ${serverId} Processed ${member.user.username} (linked: ${!!member.id})`)
+      await this.botMember.scheduleAddMember({ communityId, botId: botId, serverId, userId })
       if (member.id) {
         linkedCount++
       }
     }
+    await this.core.logInfo(
+      `Found ${members.length} members to process (filtered ${filtered.length}) (linked ${linkedCount})`,
+      {
+        botId,
+        communityId,
+      },
+    )
     this.logger.verbose(
       `Found ${members.length} members to process (filtered ${filtered.length}) (linked ${linkedCount})`,
     )
