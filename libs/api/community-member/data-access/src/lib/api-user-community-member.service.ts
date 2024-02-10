@@ -28,7 +28,7 @@ export class ApiUserCommunityMemberService {
       .paginate({
         orderBy: { createdAt: 'desc' },
         where: getUserCommunityMemberWhereInput(input),
-        include: { user: true, rules: { include: { rule: true } } },
+        include: { user: true, roles: { include: { role: true } } },
       })
       .withPages({ limit: input.limit, page: input.page })
       .then(([data, meta]) => ({ data, meta }))

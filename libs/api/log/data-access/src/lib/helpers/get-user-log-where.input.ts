@@ -12,7 +12,7 @@ export function getUserLogWhereInput(input: UserFindManyLogInput): Prisma.LogWhe
     identityProviderId: input.identityProviderId ?? undefined,
     botId: input.botId ?? undefined,
     userId: input.userId ?? undefined,
-    ruleId: input.ruleId ?? undefined,
+    roleId: input.roleId ?? undefined,
   }
 
   if (input.search) {

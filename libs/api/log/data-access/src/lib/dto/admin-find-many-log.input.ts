@@ -22,7 +22,7 @@ export class AdminFindManyLogInput extends PagingInput() {
   @Field({ nullable: true })
   userId?: string | null
   @Field({ nullable: true })
-  ruleId?: string
+  roleId?: string
   @Field({ nullable: true })
   search?: string
 }

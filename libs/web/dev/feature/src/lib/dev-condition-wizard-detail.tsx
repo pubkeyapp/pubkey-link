@@ -1,22 +1,22 @@
 import { Accordion, Grid, NavLink } from '@mantine/core'
-import { Community, NetworkToken, Rule } from '@pubkey-link/sdk'
+import { Community, NetworkToken, Role } from '@pubkey-link/sdk'
 import { useAdminFindOneCommunity } from '@pubkey-link/web-community-data-access'
 import { CommunityUiItem } from '@pubkey-link/web-community-ui'
 import { useAdminFindManyNetworkToken } from '@pubkey-link/web-network-token-data-access'
-import { useAdminFindManyRule, useUserFindOneRule } from '@pubkey-link/web-rule-data-access'
+import { useAdminFindManyRole, useUserFindOneRole } from '@pubkey-link/web-role-data-access'
 import {
-  RuleConditionUiCreateWizard,
-  RuleConditionUiItem,
-  RuleConditionUiPanel,
-  RuleUiItem,
-} from '@pubkey-link/web-rule-ui'
+  RoleConditionUiCreateWizard,
+  RoleConditionUiItem,
+  RoleConditionUiPanel,
+  RoleUiItem,
+} from '@pubkey-link/web-role-ui'
 import { UiCard, UiCardTitle, UiError, UiInfo, UiLoader, UiStack, UiWarning } from '@pubkey-ui/core'
 import { Link, useLocation, useParams, useRoutes } from 'react-router-dom'
 
 export function DevConditionWizardDetail() {
   const { communityId } = useParams() as { communityId: string }
   const { item: community } = useAdminFindOneCommunity({ communityId })
-  const { items: rules, query } = useAdminFindManyRule({ communityId })
+  const { items: roles, query } = useAdminFindManyRole({ communityId })
 
   if (!community) {
     return <UiError message={`Community ${communityId} not found`} />
@@ -30,7 +30,7 @@ export function DevConditionWizardDetail() {
       {query.isLoading ? (
         <UiLoader />
       ) : query.data ? (
-        <DevConditionWizardDetailGrid community={community} rules={rules} />
+        <DevConditionWizardDetailGrid community={community} roles={roles} />
       ) : (
         <UiWarning title="No communities found" message="Please create a community first." />
       )}
@@ -38,12 +38,12 @@ export function DevConditionWizardDetail() {
   )
 }
 
-export function DevConditionWizardDetailGrid({ community, rules }: { community: Community; rules: Rule[] }) {
+export function DevConditionWizardDetailGrid({ community, roles }: { community: Community; roles: Role[] }) {
   const { pathname } = useLocation()
   const { items } = useAdminFindManyNetworkToken({ cluster: community.cluster })
   const routes = useRoutes([
-    { path: '', element: <UiInfo message="Select a rule to continue" /> },
-    { path: ':ruleId', element: <RuleDetails community={community} rules={rules ?? []} tokens={items} /> },
+    { path: '', element: <UiInfo message="Select a role to continue" /> },
+    { path: ':roleId', element: <RoleDetails community={community} roles={roles ?? []} tokens={items} /> },
   ])
 
   return (
@@ -51,13 +51,13 @@ export function DevConditionWizardDetailGrid({ community, rules }: { community: 
       <Grid.Col span={3}>
         <UiCard>
           <UiStack>
-            {rules.map((rule) => (
+            {roles.map((role) => (
               <NavLink
-                active={pathname.includes('/' + rule.id)}
+                active={pathname.includes('/' + role.id)}
                 component={Link}
-                key={rule.id}
-                label={<RuleUiItem rule={rule} />}
-                to={rule.id}
+                key={role.id}
+                label={<RoleUiItem role={role} />}
+                to={role.id}
                 variant="light"
               />
             ))}
@@ -69,16 +69,16 @@ export function DevConditionWizardDetailGrid({ community, rules }: { community: 
   )
 }
 
-function RuleDetails({ community, rules, tokens }: { community: Community; rules: Rule[]; tokens: NetworkToken[] }) {
-  const { ruleId } = useParams() as { ruleId: string }
-  const { item: rule, query } = useUserFindOneRule({ ruleId })
+function RoleDetails({ community, roles, tokens }: { community: Community; roles: Role[]; tokens: NetworkToken[] }) {
+  const { roleId } = useParams() as { roleId: string }
+  const { item: role, query } = useUserFindOneRole({ roleId })
 
   if (query.isLoading) {
     return <UiLoader />
   }
 
-  if (!rule) {
-    return <UiError message={`Rule ${ruleId} not found`} />
+  if (!role) {
+    return <UiError message={`Role ${roleId} not found`} />
   }
 
   return (
@@ -86,16 +86,16 @@ function RuleDetails({ community, rules, tokens }: { community: Community; rules
       <UiCard>
         <UiCardTitle>Conditions</UiCardTitle>
       </UiCard>
-      <RuleConditionUiCreateWizard rule={rule} community={community} tokens={tokens} />
-      {rule.conditions?.length ? (
+      <RoleConditionUiCreateWizard role={role} community={community} tokens={tokens} />
+      {role.conditions?.length ? (
         <Accordion multiple variant="separated">
-          {rule.conditions.map((condition) => (
+          {role.conditions.map((condition) => (
             <Accordion.Item key={condition.id} value={condition.id}>
               <Accordion.Control>
-                <RuleConditionUiItem type={condition.type} />
+                <RoleConditionUiItem type={condition.type} />
               </Accordion.Control>
               <Accordion.Panel>
-                <RuleConditionUiPanel condition={condition} />
+                <RoleConditionUiPanel condition={condition} />
               </Accordion.Panel>
             </Accordion.Item>
           ))}

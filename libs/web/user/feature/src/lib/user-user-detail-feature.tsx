@@ -1,5 +1,5 @@
 import { Button, Group, Stack, Text } from '@mantine/core'
-import { ellipsify, NetworkCluster } from '@pubkey-link/sdk'
+import { ellipsify, NetworkCluster, UserRole } from '@pubkey-link/sdk'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { useUserFindManyIdentity } from '@pubkey-link/web-identity-data-access'
 import { IdentityRefreshIcon, IdentityUiIcon, IdentityUiLink } from '@pubkey-link/web-identity-ui'
@@ -34,6 +34,7 @@ export function UserUserDetailFeature() {
     return <UiWarning message="User not found." />
   }
 
+  const isAuthAdmin = authUser?.role === UserRole.Admin
   const isAuthUser = authUser?.id === user.id
 
   return (
@@ -44,11 +45,18 @@ export function UserUserDetailFeature() {
             <UserUiProfile
               user={user}
               action={
-                isAuthUser ? (
-                  <Button size="xs" variant="light" component={Link} to={`/settings`}>
-                    Edit profile
-                  </Button>
-                ) : null
+                <Group>
+                  {isAuthAdmin ? (
+                    <Button size="xs" variant="light" component={Link} to={`/admin/users/${user.id}`}>
+                      Manage
+                    </Button>
+                  ) : null}
+                  {isAuthUser ? (
+                    <Button size="xs" variant="light" component={Link} to={`/settings`}>
+                      Edit profile
+                    </Button>
+                  ) : null}
+                </Group>
               }
             />
             {items?.map((identity) => (

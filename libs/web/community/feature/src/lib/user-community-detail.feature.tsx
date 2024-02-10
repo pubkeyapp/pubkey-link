@@ -5,7 +5,7 @@ import { UserCommunityMemberFeature } from '@pubkey-link/web-community-member-fe
 import { CommunityUiItem } from '@pubkey-link/web-community-ui'
 import { UserLogFeature } from '@pubkey-link/web-log-feature'
 import { NetworkUiClusterBadge } from '@pubkey-link/web-network-ui'
-import { UserRuleFeature } from '@pubkey-link/web-rule-feature'
+import { UserRoleFeature } from '@pubkey-link/web-role-feature'
 import { UiIcon } from '@pubkey-link/web-ui-core'
 import {
   UiBack,
@@ -50,10 +50,10 @@ export function UserCommunityDetailFeature() {
       leftSection: <IconBrandDiscord size={20} />,
     },
     {
-      path: 'rules',
-      label: 'Rules',
-      element: <UserRuleFeature community={item} />,
-      leftSection: <UiIcon type="rules" size={20} />,
+      path: 'roles',
+      label: 'Roles',
+      element: <UserRoleFeature community={item} />,
+      leftSection: <UiIcon type="roles" size={20} />,
     },
     {
       path: 'members',

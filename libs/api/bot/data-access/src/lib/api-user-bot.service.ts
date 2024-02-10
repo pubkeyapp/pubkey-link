@@ -40,7 +40,7 @@ export class ApiUserBotService {
     await this.core.ensureCommunityAccess({ communityId, userId })
     const bot = await this.core.data.bot.findUnique({
       where: { communityId },
-      include: { permissions: { include: { rules: { include: { rule: true } } } } },
+      include: { permissions: { include: { roles: { include: { role: true } } } } },
     })
     if (!bot) {
       return null

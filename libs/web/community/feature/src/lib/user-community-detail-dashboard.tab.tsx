@@ -2,8 +2,8 @@ import { Button, SimpleGrid } from '@mantine/core'
 import { Community } from '@pubkey-link/sdk'
 import { useUserFindOneBot } from '@pubkey-link/web-bot-data-access'
 import { BotUiItem, UserBotPermissionUiTable } from '@pubkey-link/web-bot-ui'
-import { useUserFindManyRule } from '@pubkey-link/web-rule-data-access'
-import { RuleUiItem } from '@pubkey-link/web-rule-ui'
+import { useUserFindManyRole } from '@pubkey-link/web-role-data-access'
+import { RoleUiItem } from '@pubkey-link/web-role-ui'
 import { UiCard, UiCardTitle, UiGroup, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 import { Link } from 'react-router-dom'
 
@@ -11,31 +11,31 @@ export default function UserCommunityDetailDashboardTab({ community }: { communi
   return (
     <UiStack>
       <SimpleGrid cols={{ base: 0, xl: 2 }} spacing={20}>
-        <CommunityDashboardCardRules community={community} />
+        <CommunityDashboardCardRoles community={community} />
         <CommunityDashboardCardBot community={community} />
       </SimpleGrid>
     </UiStack>
   )
 }
 
-export function CommunityDashboardCardRules({ community }: { community: Community }) {
-  const { items, query } = useUserFindManyRule({ communityId: community.id })
+export function CommunityDashboardCardRoles({ community }: { community: Community }) {
+  const { items, query } = useUserFindManyRole({ communityId: community.id })
   return query.isLoading ? (
     <UiLoader />
   ) : items?.length ? (
-    <UiCard title={<UiCardTitle>Rules</UiCardTitle>}>
+    <UiCard title={<UiCardTitle>Roles</UiCardTitle>}>
       <UiStack>
         {items.map((item) => (
-          <RuleUiItem key={item.id} rule={item} to={item.viewUrl} />
+          <RoleUiItem key={item.id} role={item} to={item.viewUrl} />
         ))}
       </UiStack>
     </UiCard>
   ) : (
-    <UiCard title="No rules found.">
+    <UiCard title="No roles found.">
       <UiGroup>
-        <div>This community does not have any rules.</div>
-        <Button component={Link} to={'../rules'}>
-          Add rules
+        <div>This community does not have any roles.</div>
+        <Button component={Link} to={'../roles'}>
+          Add roles
         </Button>
       </UiGroup>
     </UiCard>

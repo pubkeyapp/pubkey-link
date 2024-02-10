@@ -7,8 +7,8 @@ fragment CommunityMemberDetails on CommunityMember {
   user {
     ...UserDetails
   }
-  rules {
-    ...RuleDetails
+  roles {
+    ...RoleDetails
   }
   userId
 }

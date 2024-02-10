@@ -102,8 +102,8 @@ query userFindOneBot($communityId: String!) {
     ...BotDetails
     permissions {
       ...BotPermissionDetails
-      rules {
-        ...RuleDetails
+      roles {
+        ...RoleDetails
       }
     }
   }

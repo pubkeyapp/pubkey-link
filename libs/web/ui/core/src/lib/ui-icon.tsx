@@ -8,7 +8,7 @@ import {
   IconUsersGroup,
 } from '@tabler/icons-react'
 
-export type UiIconType = 'community' | 'dashboard' | 'logs' | 'rules' | 'settings' | 'users'
+export type UiIconType = 'community' | 'dashboard' | 'logs' | 'roles' | 'settings' | 'users'
 
 export function UiIcon({ type, ...props }: { type: UiIconType | string; size?: number }) {
   switch (type) {
@@ -18,7 +18,7 @@ export function UiIcon({ type, ...props }: { type: UiIconType | string; size?: n
       return <IconDashboard {...props} />
     case 'logs':
       return <IconTimelineEventText {...props} />
-    case 'rules':
+    case 'roles':
       return <IconChecklist {...props} />
     case 'settings':
       return <IconSettings {...props} />

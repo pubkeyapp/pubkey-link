@@ -121,6 +121,10 @@ export class ApiCoreService {
     return this.log(message, { ...input, level: LogLevel.Info })
   }
 
+  async logVerbose(message: string, input?: Omit<CoreLogInput, 'level'>) {
+    return this.log(message, { ...input, level: LogLevel.Verbose })
+  }
+
   async logWarning(message: string, input?: Omit<CoreLogInput, 'level'>) {
     return this.log(message, { ...input, level: LogLevel.Warning })
   }
@@ -134,10 +138,11 @@ export interface CoreLogInput {
   botId?: string | null
   communityId?: string | null
   data?: Prisma.InputJsonValue
+  identityProvider?: IdentityProvider | null
+  identityProviderId?: string | null
   level: LogLevel
   relatedId?: string | null
   relatedType?: LogRelatedType | null
-  identityProvider?: IdentityProvider | null
-  identityProviderId?: string | null
+  roleId?: string | null
   userId?: string | null
 }

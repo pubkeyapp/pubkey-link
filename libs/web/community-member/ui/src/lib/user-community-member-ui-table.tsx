@@ -1,6 +1,6 @@
 import { ActionIcon, Anchor, Group, ScrollArea } from '@mantine/core'
 import { CommunityMember } from '@pubkey-link/sdk'
-import { RuleUiItem } from '@pubkey-link/web-rule-ui'
+import { RoleUiItem } from '@pubkey-link/web-role-ui'
 import { UserUiItem } from '@pubkey-link/web-user-ui'
 import { UiDebugModal } from '@pubkey-ui/core'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
@@ -39,12 +39,12 @@ export function UserCommunityMemberUiTable({
             render: (item) => (item.user ? <UserUiItem user={item.user} to={item.user.profileUrl} /> : null),
           },
           {
-            accessor: 'rules',
+            accessor: 'roles',
             render: (item) => (
               <Group gap="xs">
-                {item.rules?.map((rule) => (
-                  <Anchor key={rule.id} component={Link} to={`../rules/${rule.id}`} size="sm" fw={500}>
-                    <RuleUiItem avatarProps={{ size: 'sm' }} textProps={{ fz: 'sm' }} rule={rule} />
+                {item.roles?.map((role) => (
+                  <Anchor key={role.id} component={Link} to={`../roles/${role.id}`} size="sm" fw={500}>
+                    <RoleUiItem avatarProps={{ size: 'sm' }} textProps={{ fz: 'sm' }} role={role} />
                   </Anchor>
                 ))}
               </Group>

@@ -3,7 +3,7 @@ import { AdminBotFeature } from '@pubkey-link/web-bot-feature'
 import { useAdminFindOneCommunity } from '@pubkey-link/web-community-data-access'
 import { AdminCommunityMemberFeature } from '@pubkey-link/web-community-member-feature'
 import { AdminLogFeature } from '@pubkey-link/web-log-feature'
-import { AdminRuleFeature } from '@pubkey-link/web-rule-feature'
+import { AdminRoleFeature } from '@pubkey-link/web-role-feature'
 import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoutes } from '@pubkey-ui/core'
 import { useParams } from 'react-router-dom'
 import { AdminCommunityDetailOverviewTab } from './admin-community-detail-overview.tab'
@@ -38,9 +38,9 @@ export function AdminCommunityDetailFeature() {
             element: <AdminCommunityDetailOverviewTab communityId={communityId} />,
           },
           {
-            path: 'rules',
-            label: 'Rules',
-            element: <AdminRuleFeature communityId={communityId} />,
+            path: 'roles',
+            label: 'Roles',
+            element: <AdminRoleFeature communityId={communityId} />,
           },
           { path: 'logs', label: 'Logs', element: <AdminLogFeature communityId={communityId} /> },
           { path: 'bots', label: 'Bots', element: <AdminBotFeature communityId={communityId} /> },

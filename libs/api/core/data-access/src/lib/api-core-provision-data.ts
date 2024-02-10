@@ -43,10 +43,10 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
         { user: { connect: { id: 'alice' } }, role: CommunityRole.Member },
       ],
     },
-    rules: {
+    roles: {
       create: [
         {
-          id: 'rule-one-of-us',
+          id: 'role-one-of-us',
           name: 'One of Us',
           // permissions: {
           //   create: [
@@ -90,15 +90,15 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
         id: '1138462172092039258',
         name: "Dean's List Projects LOCAL",
         permissions: {
-          create: [DL_ROLE_ONE_OF_US, DL_ROLE_BV, DL_ROLE_BV_EXPIRED, DL_ROLE_HOLDER].map((roleId) => ({
-            id: `${DL_SERVER}-${roleId}`,
+          create: [DL_ROLE_ONE_OF_US, DL_ROLE_BV, DL_ROLE_BV_EXPIRED, DL_ROLE_HOLDER].map((serverRoleId) => ({
+            id: `${DL_SERVER}-${serverRoleId}`,
             serverId: DL_SERVER,
-            roleId,
+            serverRoleId,
           })),
         },
       },
     },
-    rules: {
+    roles: {
       create: [
         {
           id: 'one-of-us',
@@ -193,7 +193,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
         { user: { connect: { id: 'bob' } }, role: CommunityRole.Member },
       ],
     },
-    rules: {
+    roles: {
       create: [{ name: 'MNDE Holders' }, { name: 'MNDE Holders (Shark)' }, { name: 'MNDE Holders (Whale)' }],
     },
   },

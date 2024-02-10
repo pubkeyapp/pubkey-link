@@ -37,11 +37,7 @@ export function UserUiProfile({
             <Text c="dimmed" fz="sm">
               {user.name}
             </Text>
-            {action ? (
-              <Group justify="center" mt="sm">
-                {action}
-              </Group>
-            ) : null}
+            {action ? <Group mt="sm">{action}</Group> : null}
           </Stack>
         </Group>
       </UiGroup>

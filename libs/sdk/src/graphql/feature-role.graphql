@@ -1,0 +1,147 @@
+fragment RoleDetails on Role {
+  createdAt
+  id
+  communityId
+  name
+  description
+  conditions {
+    ...RoleConditionDetails
+  }
+  permissions {
+    ...RolePermissionDetails
+  }
+  updatedAt
+  viewUrl
+}
+
+fragment RoleConditionDetails on RoleCondition {
+  createdAt
+  id
+  type
+  amount
+  filters
+  config
+  token {
+    ...NetworkTokenDetails
+  }
+  tokenId
+  asset {
+    owner
+    amount
+    accounts
+  }
+  updatedAt
+  valid
+}
+
+fragment RolePermissionDetails on RolePermission {
+  createdAt
+  id
+  updatedAt
+  botId
+  roleId
+  bot {
+    ...BotPermissionDetails
+  }
+}
+
+query adminFindManyRole($input: AdminFindManyRoleInput!) {
+  paging: adminFindManyRole(input: $input) {
+    data {
+      ...RoleDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query adminFindOneRole($roleId: String!) {
+  item: adminFindOneRole(roleId: $roleId) {
+    ...RoleDetails
+  }
+}
+
+mutation adminCreateRole($input: AdminCreateRoleInput!) {
+  created: adminCreateRole(input: $input) {
+    ...RoleDetails
+  }
+}
+
+mutation adminUpdateRole($roleId: String!, $input: AdminUpdateRoleInput!) {
+  updated: adminUpdateRole(roleId: $roleId, input: $input) {
+    ...RoleDetails
+  }
+}
+
+mutation adminDeleteRole($roleId: String!) {
+  deleted: adminDeleteRole(roleId: $roleId)
+}
+
+query userFindManyRole($input: UserFindManyRoleInput!) {
+  paging: userFindManyRole(input: $input) {
+    data {
+      ...RoleDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query userFindOneRole($roleId: String!) {
+  item: userFindOneRole(roleId: $roleId) {
+    ...RoleDetails
+  }
+}
+
+mutation userCreateRole($input: UserCreateRoleInput!) {
+  created: userCreateRole(input: $input) {
+    ...RoleDetails
+  }
+}
+
+mutation userCreateRoleCondition($input: UserCreateRoleConditionInput!) {
+  created: userCreateRoleCondition(input: $input) {
+    ...RoleConditionDetails
+  }
+}
+
+mutation userCreateRolePermission($input: UserCreateRolePermissionInput!) {
+  created: userCreateRolePermission(input: $input) {
+    ...RolePermissionDetails
+  }
+}
+
+mutation userUpdateRole($roleId: String!, $input: UserUpdateRoleInput!) {
+  updated: userUpdateRole(roleId: $roleId, input: $input) {
+    ...RoleDetails
+  }
+}
+mutation userUpdateRoleCondition($roleConditionId: String!, $input: UserUpdateRoleConditionInput!) {
+  updated: userUpdateRoleCondition(roleConditionId: $roleConditionId, input: $input) {
+    ...RoleConditionDetails
+  }
+}
+
+mutation userDeleteRole($roleId: String!) {
+  deleted: userDeleteRole(roleId: $roleId)
+}
+
+mutation userDeleteRoleCondition($roleConditionId: String!) {
+  deleted: userDeleteRoleCondition(roleConditionId: $roleConditionId)
+}
+
+mutation userDeleteRolePermission($rolePermissionId: String!) {
+  deleted: userDeleteRolePermission(rolePermissionId: $rolePermissionId)
+}
+
+mutation userValidateRole($roleId: String!, $address: String!) {
+  result: userValidateRole(roleId: $roleId, address: $address) {
+    ...RoleConditionDetails
+  }
+}
+
+mutation userValidateRoles($communityId: String!) {
+  result: userValidateRoles(communityId: $communityId)
+}

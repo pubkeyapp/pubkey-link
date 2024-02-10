@@ -191,7 +191,7 @@ export class ApiBotManagerService implements OnModuleInit {
     return true
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_MINUTE)
   private async syncBotServers() {
     const bots = await this.core.data.bot.findMany({ where: { status: BotStatus.Active } })
 
@@ -279,7 +279,7 @@ export class ApiBotManagerService implements OnModuleInit {
     if (!linkedCount) {
       return true
     }
-    await this.core.logInfo(
+    await this.core.logVerbose(
       `Found ${members.length} members to process (filtered ${filtered.length}) (linked ${linkedCount})`,
       {
         botId,

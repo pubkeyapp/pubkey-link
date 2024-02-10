@@ -27,8 +27,8 @@ export function getAdminLogWhereInput(input: AdminFindManyLogInput): Prisma.LogW
   if (input.userId) {
     where.userId = input.userId
   }
-  if (input.ruleId) {
-    where.ruleId = input.ruleId
+  if (input.roleId) {
+    where.roleId = input.roleId
   }
 
   if (input.search) {

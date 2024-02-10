@@ -11,7 +11,7 @@ fragment LogDetails on Log {
   networkAssetId
   botId
   userId
-  ruleId
+  roleId
   updatedAt
   data
   bot {
@@ -20,8 +20,8 @@ fragment LogDetails on Log {
   identity {
     ...IdentityDetails
   }
-  rule {
-    ...RuleDetails
+  role {
+    ...RoleDetails
   }
   user {
     ...UserDetails

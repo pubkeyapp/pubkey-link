@@ -39,7 +39,7 @@ input AdminCreateNetworkTokenInput {
   cluster: NetworkCluster!
 }
 
-input AdminCreateRuleInput {
+input AdminCreateRoleInput {
   communityId: String!
   description: String
   name: String!
@@ -86,7 +86,7 @@ input AdminFindManyLogInput {
   page: Int = 1
   relatedId: String
   relatedType: LogRelatedType
-  ruleId: String
+  roleId: String
   search: String
   userId: String
 }
@@ -112,7 +112,7 @@ input AdminFindManyNetworkTokenInput {
   search: String
 }
 
-input AdminFindManyRuleInput {
+input AdminFindManyRoleInput {
   communityId: String!
   limit: Int = 10
   page: Int = 1
@@ -161,7 +161,7 @@ input AdminUpdateNetworkTokenInput {
   vault: String
 }
 
-input AdminUpdateRuleInput {
+input AdminUpdateRoleInput {
   description: String
   name: String
 }
@@ -223,7 +223,7 @@ type BotPermission {
   id: String!
   role: DiscordRole
   roleId: String
-  rules: [Rule!]
+  roles: [Role!]
   server: DiscordServer
   serverId: String
   updatedAt: DateTime
@@ -254,7 +254,7 @@ type CommunityMember {
   createdAt: DateTime
   id: String!
   role: CommunityRole!
-  rules: [Rule!]
+  roles: [Role!]
   updatedAt: DateTime
   user: User
   userId: String!
@@ -360,8 +360,8 @@ type Log {
   networkAssetId: String
   relatedId: String
   relatedType: LogRelatedType
-  rule: Rule
-  ruleId: String
+  role: Role
+  roleId: String
   updatedAt: DateTime
   user: User
   userId: String
@@ -370,6 +370,7 @@ type Log {
 enum LogLevel {
   Error
   Info
+  Verbose
   Warning
 }
 
@@ -383,7 +384,7 @@ enum LogRelatedType {
   BotMember
   Community
   Identity
-  Rule
+  Role
   User
 }
 
@@ -399,7 +400,7 @@ type Mutation {
   adminCreateIdentity(input: AdminCreateIdentityInput!): Identity
   adminCreateNetwork(input: AdminCreateNetworkInput!): Network
   adminCreateNetworkToken(input: AdminCreateNetworkTokenInput!): NetworkToken
-  adminCreateRule(input: AdminCreateRuleInput!): Rule
+  adminCreateRole(input: AdminCreateRoleInput!): Role
   adminCreateUser(input: AdminCreateUserInput!): User
   adminDeleteBackup(name: String!): Boolean!
   adminDeleteBot(botId: String!): Boolean
@@ -410,7 +411,7 @@ type Mutation {
   adminDeleteNetwork(networkId: String!): Boolean
   adminDeleteNetworkAsset(networkAssetId: String!): Boolean
   adminDeleteNetworkToken(networkTokenId: String!): Boolean
-  adminDeleteRule(ruleId: String!): Boolean
+  adminDeleteRole(roleId: String!): Boolean
   adminDeleteUser(userId: String!): Boolean
   adminFetchBackup(url: String!): Boolean!
   adminRestoreBackup(name: String!): Boolean!
@@ -420,7 +421,7 @@ type Mutation {
   adminUpdateNetwork(input: AdminUpdateNetworkInput!, networkId: String!): Network
   adminUpdateNetworkToken(input: AdminUpdateNetworkTokenInput!, networkTokenId: String!): NetworkToken
   adminUpdateNetworkTokenMetadata(networkTokenId: String!): NetworkToken
-  adminUpdateRule(input: AdminUpdateRuleInput!, ruleId: String!): Rule
+  adminUpdateRole(input: AdminUpdateRoleInput!, roleId: String!): Role
   adminUpdateUser(input: AdminUpdateUserInput!, userId: String!): User
   anonVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
   login(input: LoginInput!): User
@@ -428,16 +429,16 @@ type Mutation {
   register(input: RegisterInput!): User
   userCreateBot(input: UserCreateBotInput!): Bot
   userCreateCommunity(input: UserCreateCommunityInput!): Community
-  userCreateRule(input: UserCreateRuleInput!): Rule
-  userCreateRuleCondition(input: UserCreateRuleConditionInput!): RuleCondition
-  userCreateRulePermission(input: UserCreateRulePermissionInput!): RulePermission
+  userCreateRole(input: UserCreateRoleInput!): Role
+  userCreateRoleCondition(input: UserCreateRoleConditionInput!): RoleCondition
+  userCreateRolePermission(input: UserCreateRolePermissionInput!): RolePermission
   userDeleteBot(botId: String!): Boolean
   userDeleteCommunity(communityId: String!): Boolean
   userDeleteCommunityMember(communityMemberId: String!): Boolean
   userDeleteIdentity(identityId: String!): Boolean
-  userDeleteRule(ruleId: String!): Boolean
-  userDeleteRuleCondition(ruleConditionId: String!): Boolean
-  userDeleteRulePermission(rulePermissionId: String!): Boolean
+  userDeleteRole(roleId: String!): Boolean
+  userDeleteRoleCondition(roleConditionId: String!): Boolean
+  userDeleteRolePermission(rolePermissionId: String!): Boolean
   userLeaveBotServer(botId: String!, serverId: String!): Boolean
   userLinkIdentity(input: LinkIdentityInput!): Identity
   userRefreshIdentity(identityId: String!): Boolean
@@ -447,11 +448,11 @@ type Mutation {
   userUpdateBot(botId: String!, input: UserUpdateBotInput!): Bot
   userUpdateCommunity(communityId: String!, input: UserUpdateCommunityInput!): Community
   userUpdateCommunityMember(communityMemberId: String!, input: UserUpdateCommunityMemberInput!): CommunityMember
-  userUpdateRule(input: UserUpdateRuleInput!, ruleId: String!): Rule
-  userUpdateRuleCondition(input: UserUpdateRuleConditionInput!, ruleConditionId: String!): RuleCondition
+  userUpdateRole(input: UserUpdateRoleInput!, roleId: String!): Role
+  userUpdateRoleCondition(input: UserUpdateRoleConditionInput!, roleConditionId: String!): RoleCondition
   userUpdateUser(input: UserUpdateUserInput!): User
-  userValidateRule(address: String!, ruleId: String!): [RuleCondition!]
-  userValidateRules(communityId: String!): JSON
+  userValidateRole(address: String!, roleId: String!): [RoleCondition!]
+  userValidateRoles(communityId: String!): JSON
   userVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
 }
 
@@ -562,7 +563,7 @@ type Query {
   adminFindManyNetwork(input: AdminFindManyNetworkInput!): NetworkPaging!
   adminFindManyNetworkAsset(input: AdminFindManyNetworkAssetInput!): NetworkAssetPaging!
   adminFindManyNetworkToken(input: AdminFindManyNetworkTokenInput!): NetworkTokenPaging!
-  adminFindManyRule(input: AdminFindManyRuleInput!): RulePaging!
+  adminFindManyRole(input: AdminFindManyRoleInput!): RolePaging!
   adminFindManyUser(input: AdminFindManyUserInput!): UserPaging!
   adminFindOneBot(botId: String!): Bot
   adminFindOneCommunity(communityId: String!): Community
@@ -571,7 +572,7 @@ type Query {
   adminFindOneNetwork(networkId: String!): Network
   adminFindOneNetworkAsset(networkAssetId: String!): NetworkAsset
   adminFindOneNetworkToken(networkTokenId: String!): NetworkToken
-  adminFindOneRule(ruleId: String!): Rule
+  adminFindOneRole(roleId: String!): Role
   adminFindOneUser(userId: String!): User
   adminGetBackup(name: String!): JSON
   adminGetBackups: [String!]!
@@ -586,7 +587,7 @@ type Query {
   userFindManyLog(input: UserFindManyLogInput!): LogPaging!
   userFindManyNetworkAsset(input: UserFindManyNetworkAssetInput!): NetworkAssetPaging!
   userFindManyNetworkToken(input: UserFindManyNetworkTokenInput!): NetworkTokenPaging!
-  userFindManyRule(input: UserFindManyRuleInput!): RulePaging!
+  userFindManyRole(input: UserFindManyRoleInput!): RolePaging!
   userFindManyUser(input: UserFindManyUserInput!): UserPaging!
   userFindOneBot(communityId: String!): Bot
   userFindOneCommunity(communityId: String!): Community
@@ -594,7 +595,7 @@ type Query {
   userFindOneIdentity(provider: IdentityProvider!, providerId: String!): Identity
   userFindOneLog(logId: String!): Log
   userFindOneNetworkAsset(account: String!, cluster: NetworkCluster!): NetworkAsset
-  userFindOneRule(ruleId: String!): Rule
+  userFindOneRole(roleId: String!): Role
   userFindOneUser(username: String!): User
   userFindOneUserById(userId: String!): User
   userGetBotMembers(botId: String!, serverId: String!): [BotMember!]
@@ -616,19 +617,19 @@ input RequestIdentityChallengeInput {
   providerId: String!
 }
 
-type Rule {
+type Role {
   communityId: String!
-  conditions: [RuleCondition!]
+  conditions: [RoleCondition!]
   createdAt: DateTime
   description: String
   id: String!
   name: String!
-  permissions: [RulePermission!]
+  permissions: [RolePermission!]
   updatedAt: DateTime
   viewUrl: String
 }
 
-type RuleCondition {
+type RoleCondition {
   amount: String
   asset: SolanaNetworkAsset
   config: JSON
@@ -642,18 +643,18 @@ type RuleCondition {
   valid: Boolean
 }
 
-type RulePaging {
-  data: [Rule!]!
+type RolePaging {
+  data: [Role!]!
   meta: PagingMeta!
 }
 
-type RulePermission {
+type RolePermission {
   bot: BotPermission
   botId: String
   createdAt: DateTime
   id: String!
-  rule: Rule
-  ruleId: String
+  role: Role
+  roleId: String
   updatedAt: DateTime
 }
 
@@ -697,26 +698,26 @@ input UserCreateCommunityInput {
   websiteUrl: String
 }
 
-input UserCreateRuleConditionInput {
+input UserCreateRoleConditionInput {
   amount: String
   config: JSON
   filters: JSON
-  ruleId: String!
+  roleId: String!
   tokenId: String!
   type: NetworkTokenType!
 }
 
-input UserCreateRuleInput {
+input UserCreateRoleInput {
   communityId: String!
   description: String
   name: String!
 }
 
-input UserCreateRulePermissionInput {
+input UserCreateRolePermissionInput {
   botId: String!
   roleId: String!
-  ruleId: String!
   serverId: String!
+  serverRoleId: String!
 }
 
 input UserFindManyCommunityInput {
@@ -748,7 +749,7 @@ input UserFindManyLogInput {
   page: Int = 1
   relatedId: String
   relatedType: LogRelatedType
-  ruleId: String
+  roleId: String
   search: String
   userId: String
 }
@@ -772,7 +773,7 @@ input UserFindManyNetworkTokenInput {
   username: String
 }
 
-input UserFindManyRuleInput {
+input UserFindManyRoleInput {
   communityId: String!
   limit: Int = 10
   page: Int = 1
@@ -824,13 +825,13 @@ input UserUpdateCommunityMemberInput {
   role: CommunityRole!
 }
 
-input UserUpdateRuleConditionInput {
+input UserUpdateRoleConditionInput {
   amount: String
   config: JSON
   filters: JSON
 }
 
-input UserUpdateRuleInput {
+input UserUpdateRoleInput {
   description: String
   name: String
 }

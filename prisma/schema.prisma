@@ -55,16 +55,16 @@ model BotMember {
 }
 
 model BotPermission {
-  id        String           @id @default(cuid())
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
-  bot       Bot              @relation(fields: [botId], references: [id], onDelete: Cascade)
-  botId     String
-  serverId  String
-  roleId    String
-  rules     RulePermission[]
+  id           String           @id @default(cuid())
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  bot          Bot              @relation(fields: [botId], references: [id], onDelete: Cascade)
+  botId        String
+  serverId     String
+  serverRoleId String
+  roles        RolePermission[]
 
-  @@unique([botId, serverId, roleId])
+  @@unique([botId, serverId, serverRoleId])
 }
 
 model Community {
@@ -80,7 +80,7 @@ model Community {
   twitterUrl  String?
   telegramUrl String?
   members     CommunityMember[]
-  rules       Rule[]
+  roles       Role[]
   cluster     NetworkCluster
   bot         Bot?
   logs        Log[]
@@ -97,19 +97,19 @@ model CommunityMember {
   communityId String
   user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
-  rules       CommunityMemberRule[]
+  roles       CommunityMemberRole[]
 
   @@unique([communityId, userId])
 }
 
-model CommunityMemberRule {
+model CommunityMemberRole {
   id        String          @id @default(cuid())
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
   member    CommunityMember @relation(fields: [memberId], references: [id])
   memberId  String
-  rule      Rule            @relation(fields: [ruleId], references: [id])
-  ruleId    String
+  role      Role            @relation(fields: [roleId], references: [id])
+  roleId    String
 }
 
 model Identity {
@@ -168,8 +168,8 @@ model Log {
   networkAssetId     String?
   user               User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId             String?
-  rule               Rule?             @relation(fields: [ruleId], references: [id], onDelete: Cascade)
-  ruleId             String?
+  role               Role?             @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId             String?
 }
 
 model Network {
@@ -227,12 +227,12 @@ model NetworkToken {
   description String?
   symbol      String?
   raw         Json?
-  conditions  RuleCondition[]
+  conditions  RoleCondition[]
 
   @@unique([account, cluster])
 }
 
-model Rule {
+model Role {
   id          String                @id @default(cuid())
   createdAt   DateTime              @default(now())
   updatedAt   DateTime              @updatedAt
@@ -240,13 +240,13 @@ model Rule {
   communityId String
   name        String
   description String?
-  conditions  RuleCondition[]
-  permissions RulePermission[]
-  members     CommunityMemberRule[]
+  conditions  RoleCondition[]
+  permissions RolePermission[]
+  members     CommunityMemberRole[]
   logs        Log[]
 }
 
-model RuleCondition {
+model RoleCondition {
   id        String           @id @default(cuid())
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
@@ -257,20 +257,20 @@ model RuleCondition {
   name      String
   token     NetworkToken     @relation(fields: [tokenId], references: [id])
   tokenId   String
-  rule      Rule             @relation(fields: [ruleId], references: [id])
-  ruleId    String
+  role      Role             @relation(fields: [roleId], references: [id])
+  roleId    String
 }
 
-model RulePermission {
+model RolePermission {
   id        String         @id @default(cuid())
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
-  rule      Rule           @relation(fields: [ruleId], references: [id], onDelete: Cascade)
-  ruleId    String
+  role      Role           @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId    String
   bot       BotPermission? @relation(fields: [botId], references: [id], onDelete: Cascade)
   botId     String?
 
-  @@unique([ruleId, botId])
+  @@unique([roleId, botId])
 }
 
 model User {
@@ -308,9 +308,10 @@ enum IdentityProvider {
 }
 
 enum LogLevel {
-  Info
-  Warning
   Error
+  Info
+  Verbose
+  Warning
 }
 
 enum LogRelatedType {
@@ -318,7 +319,7 @@ enum LogRelatedType {
   BotMember
   Community
   Identity
-  Rule
+  Role
   User
 }
 

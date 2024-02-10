@@ -1,6 +1,6 @@
 import { Parent, ResolveField, Resolver } from '@nestjs/graphql'
 import { ApiBotService, BotPermission, DiscordRole, DiscordServer } from '@pubkey-link/api-bot-data-access'
-import { Rule, RulePermission } from '@pubkey-link/api-rule-data-access'
+import { Role, RolePermission } from '@pubkey-link/api-role-data-access'
 
 @Resolver(() => BotPermission)
 export class ApiBotPermissionResolver {
@@ -11,12 +11,12 @@ export class ApiBotPermissionResolver {
     return this.service.manager.getBotRole(permission.botId, permission.serverId, permission.roleId)
   }
 
-  @ResolveField(() => [Rule], { nullable: true })
-  rules(@Parent() permission: BotPermission) {
-    if (!permission.rules?.length) {
+  @ResolveField(() => [Role], { nullable: true })
+  roles(@Parent() permission: BotPermission) {
+    if (!permission.roles?.length) {
       return []
     }
-    return (permission.rules as RulePermission[]).map((r) => r.rule)
+    return (permission.roles as RolePermission[]).map((r) => r.role)
   }
 
   @ResolveField(() => DiscordServer, { nullable: true })

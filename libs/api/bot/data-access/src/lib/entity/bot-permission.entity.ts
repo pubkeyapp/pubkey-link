@@ -20,5 +20,5 @@ export class BotPermission {
   @Field({ nullable: true })
   serverId!: string
   @HideField()
-  rules: unknown[]
+  roles: unknown[]
 }

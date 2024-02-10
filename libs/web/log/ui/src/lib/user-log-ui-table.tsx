@@ -31,6 +31,12 @@ export function UserLogUiTable({
         totalRecords={totalRecords ?? 1}
         columns={[
           {
+            accessor: 'level',
+            width: '90px',
+            textAlign: 'center',
+            render: (item) => <LogUiLevelBadge level={item.level} />,
+          },
+          {
             accessor: 'message',
             render: (item) => (
               <Anchor component={Link} to={`./${item.id}`} size="xs">
@@ -61,12 +67,6 @@ export function UserLogUiTable({
               item?.bot ? <BotUiAvatar bot={item.bot} size="sm" to={`/c/${item.communityId}/discord`} /> : null,
           },
           {
-            accessor: 'level',
-            width: '75px',
-            textAlign: 'right',
-            render: (item) => <LogUiLevelBadge level={item.level} />,
-          },
-          {
             width: '75px',
             accessor: 'actions',
             title: 'Actions',
@@ -86,9 +86,10 @@ export function UserLogUiTable({
 }
 
 export const LOG_LEVEL_COLORS: Record<LogLevel, string> = {
-  [LogLevel.Info]: 'cyan',
+  [LogLevel.Info]: 'green',
   [LogLevel.Error]: 'red',
   [LogLevel.Warning]: 'yellow',
+  [LogLevel.Verbose]: 'cyan',
 }
 
 export function LogUiLevelBadge({ level }: { level: LogLevel }) {

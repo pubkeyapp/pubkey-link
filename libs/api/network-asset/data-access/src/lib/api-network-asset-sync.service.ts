@@ -39,7 +39,7 @@ export class ApiNetworkAssetSyncService {
     return !!job.id
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async syncAll() {
     const identities = await this.core.data.identity.findMany({
       where: {

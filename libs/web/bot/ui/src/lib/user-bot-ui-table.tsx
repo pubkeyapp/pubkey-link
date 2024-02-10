@@ -1,6 +1,6 @@
 import { ActionIcon, Anchor, Group, ScrollArea } from '@mantine/core'
 import { Bot, BotPermission } from '@pubkey-link/sdk'
-import { RuleUiItem } from '@pubkey-link/web-rule-ui'
+import { RoleUiItem } from '@pubkey-link/web-role-ui'
 import { UiDiscordServerItem } from '@pubkey-link/web-ui-core'
 import { UiStack } from '@pubkey-ui/core'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
@@ -82,14 +82,14 @@ export function UserBotPermissionUiTable({ permissions = [] }: { permissions: Bo
             render: (item) => <UiDiscordServerItem server={item?.server} role={item?.role} />,
           },
           {
-            accessor: 'rule',
-            title: 'Rule',
+            accessor: 'role',
+            title: 'Role',
             render: (item) =>
-              item?.rules?.length ? (
+              item?.roles?.length ? (
                 <UiStack>
-                  {item?.rules?.map((rule) => (
-                    <UiStack key={rule.id}>
-                      <RuleUiItem rule={rule} to={rule.viewUrl} />
+                  {item?.roles?.map((role) => (
+                    <UiStack key={role.id}>
+                      <RoleUiItem role={role} to={role.viewUrl} />
                     </UiStack>
                   ))}
                 </UiStack>

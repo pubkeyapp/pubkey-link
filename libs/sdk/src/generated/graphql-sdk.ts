@@ -61,7 +61,7 @@ export type AdminCreateNetworkTokenInput = {
   cluster: NetworkCluster
 }
 
-export type AdminCreateRuleInput = {
+export type AdminCreateRoleInput = {
   communityId: Scalars['String']['input']
   description?: InputMaybe<Scalars['String']['input']>
   name: Scalars['String']['input']
@@ -108,7 +108,7 @@ export type AdminFindManyLogInput = {
   page?: InputMaybe<Scalars['Int']['input']>
   relatedId?: InputMaybe<Scalars['String']['input']>
   relatedType?: InputMaybe<LogRelatedType>
-  ruleId?: InputMaybe<Scalars['String']['input']>
+  roleId?: InputMaybe<Scalars['String']['input']>
   search?: InputMaybe<Scalars['String']['input']>
   userId?: InputMaybe<Scalars['String']['input']>
 }
@@ -134,7 +134,7 @@ export type AdminFindManyNetworkTokenInput = {
   search?: InputMaybe<Scalars['String']['input']>
 }
 
-export type AdminFindManyRuleInput = {
+export type AdminFindManyRoleInput = {
   communityId: Scalars['String']['input']
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
@@ -183,7 +183,7 @@ export type AdminUpdateNetworkTokenInput = {
   vault?: InputMaybe<Scalars['String']['input']>
 }
 
-export type AdminUpdateRuleInput = {
+export type AdminUpdateRoleInput = {
   description?: InputMaybe<Scalars['String']['input']>
   name?: InputMaybe<Scalars['String']['input']>
 }
@@ -250,7 +250,7 @@ export type BotPermission = {
   id: Scalars['String']['output']
   role?: Maybe<DiscordRole>
   roleId?: Maybe<Scalars['String']['output']>
-  rules?: Maybe<Array<Rule>>
+  roles?: Maybe<Array<Role>>
   server?: Maybe<DiscordServer>
   serverId?: Maybe<Scalars['String']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
@@ -283,7 +283,7 @@ export type CommunityMember = {
   createdAt?: Maybe<Scalars['DateTime']['output']>
   id: Scalars['String']['output']
   role: CommunityRole
-  rules?: Maybe<Array<Rule>>
+  roles?: Maybe<Array<Role>>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   user?: Maybe<User>
   userId: Scalars['String']['output']
@@ -386,8 +386,8 @@ export type Log = {
   networkAssetId?: Maybe<Scalars['String']['output']>
   relatedId?: Maybe<Scalars['String']['output']>
   relatedType?: Maybe<LogRelatedType>
-  rule?: Maybe<Rule>
-  ruleId?: Maybe<Scalars['String']['output']>
+  role?: Maybe<Role>
+  roleId?: Maybe<Scalars['String']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   user?: Maybe<User>
   userId?: Maybe<Scalars['String']['output']>
@@ -396,6 +396,7 @@ export type Log = {
 export enum LogLevel {
   Error = 'Error',
   Info = 'Info',
+  Verbose = 'Verbose',
   Warning = 'Warning',
 }
 
@@ -410,7 +411,7 @@ export enum LogRelatedType {
   BotMember = 'BotMember',
   Community = 'Community',
   Identity = 'Identity',
-  Rule = 'Rule',
+  Role = 'Role',
   User = 'User',
 }
 
@@ -427,7 +428,7 @@ export type Mutation = {
   adminCreateIdentity?: Maybe<Identity>
   adminCreateNetwork?: Maybe<Network>
   adminCreateNetworkToken?: Maybe<NetworkToken>
-  adminCreateRule?: Maybe<Rule>
+  adminCreateRole?: Maybe<Role>
   adminCreateUser?: Maybe<User>
   adminDeleteBackup: Scalars['Boolean']['output']
   adminDeleteBot?: Maybe<Scalars['Boolean']['output']>
@@ -438,7 +439,7 @@ export type Mutation = {
   adminDeleteNetwork?: Maybe<Scalars['Boolean']['output']>
   adminDeleteNetworkAsset?: Maybe<Scalars['Boolean']['output']>
   adminDeleteNetworkToken?: Maybe<Scalars['Boolean']['output']>
-  adminDeleteRule?: Maybe<Scalars['Boolean']['output']>
+  adminDeleteRole?: Maybe<Scalars['Boolean']['output']>
   adminDeleteUser?: Maybe<Scalars['Boolean']['output']>
   adminFetchBackup: Scalars['Boolean']['output']
   adminRestoreBackup: Scalars['Boolean']['output']
@@ -448,7 +449,7 @@ export type Mutation = {
   adminUpdateNetwork?: Maybe<Network>
   adminUpdateNetworkToken?: Maybe<NetworkToken>
   adminUpdateNetworkTokenMetadata?: Maybe<NetworkToken>
-  adminUpdateRule?: Maybe<Rule>
+  adminUpdateRole?: Maybe<Role>
   adminUpdateUser?: Maybe<User>
   anonVerifyIdentityChallenge?: Maybe<IdentityChallenge>
   login?: Maybe<User>
@@ -456,16 +457,16 @@ export type Mutation = {
   register?: Maybe<User>
   userCreateBot?: Maybe<Bot>
   userCreateCommunity?: Maybe<Community>
-  userCreateRule?: Maybe<Rule>
-  userCreateRuleCondition?: Maybe<RuleCondition>
-  userCreateRulePermission?: Maybe<RulePermission>
+  userCreateRole?: Maybe<Role>
+  userCreateRoleCondition?: Maybe<RoleCondition>
+  userCreateRolePermission?: Maybe<RolePermission>
   userDeleteBot?: Maybe<Scalars['Boolean']['output']>
   userDeleteCommunity?: Maybe<Scalars['Boolean']['output']>
   userDeleteCommunityMember?: Maybe<Scalars['Boolean']['output']>
   userDeleteIdentity?: Maybe<Scalars['Boolean']['output']>
-  userDeleteRule?: Maybe<Scalars['Boolean']['output']>
-  userDeleteRuleCondition?: Maybe<Scalars['Boolean']['output']>
-  userDeleteRulePermission?: Maybe<Scalars['Boolean']['output']>
+  userDeleteRole?: Maybe<Scalars['Boolean']['output']>
+  userDeleteRoleCondition?: Maybe<Scalars['Boolean']['output']>
+  userDeleteRolePermission?: Maybe<Scalars['Boolean']['output']>
   userLeaveBotServer?: Maybe<Scalars['Boolean']['output']>
   userLinkIdentity?: Maybe<Identity>
   userRefreshIdentity?: Maybe<Scalars['Boolean']['output']>
@@ -475,11 +476,11 @@ export type Mutation = {
   userUpdateBot?: Maybe<Bot>
   userUpdateCommunity?: Maybe<Community>
   userUpdateCommunityMember?: Maybe<CommunityMember>
-  userUpdateRule?: Maybe<Rule>
-  userUpdateRuleCondition?: Maybe<RuleCondition>
+  userUpdateRole?: Maybe<Role>
+  userUpdateRoleCondition?: Maybe<RoleCondition>
   userUpdateUser?: Maybe<User>
-  userValidateRule?: Maybe<Array<RuleCondition>>
-  userValidateRules?: Maybe<Scalars['JSON']['output']>
+  userValidateRole?: Maybe<Array<RoleCondition>>
+  userValidateRoles?: Maybe<Scalars['JSON']['output']>
   userVerifyIdentityChallenge?: Maybe<IdentityChallenge>
 }
 
@@ -503,8 +504,8 @@ export type MutationAdminCreateNetworkTokenArgs = {
   input: AdminCreateNetworkTokenInput
 }
 
-export type MutationAdminCreateRuleArgs = {
-  input: AdminCreateRuleInput
+export type MutationAdminCreateRoleArgs = {
+  input: AdminCreateRoleInput
 }
 
 export type MutationAdminCreateUserArgs = {
@@ -547,8 +548,8 @@ export type MutationAdminDeleteNetworkTokenArgs = {
   networkTokenId: Scalars['String']['input']
 }
 
-export type MutationAdminDeleteRuleArgs = {
-  ruleId: Scalars['String']['input']
+export type MutationAdminDeleteRoleArgs = {
+  roleId: Scalars['String']['input']
 }
 
 export type MutationAdminDeleteUserArgs = {
@@ -592,9 +593,9 @@ export type MutationAdminUpdateNetworkTokenMetadataArgs = {
   networkTokenId: Scalars['String']['input']
 }
 
-export type MutationAdminUpdateRuleArgs = {
-  input: AdminUpdateRuleInput
-  ruleId: Scalars['String']['input']
+export type MutationAdminUpdateRoleArgs = {
+  input: AdminUpdateRoleInput
+  roleId: Scalars['String']['input']
 }
 
 export type MutationAdminUpdateUserArgs = {
@@ -622,16 +623,16 @@ export type MutationUserCreateCommunityArgs = {
   input: UserCreateCommunityInput
 }
 
-export type MutationUserCreateRuleArgs = {
-  input: UserCreateRuleInput
+export type MutationUserCreateRoleArgs = {
+  input: UserCreateRoleInput
 }
 
-export type MutationUserCreateRuleConditionArgs = {
-  input: UserCreateRuleConditionInput
+export type MutationUserCreateRoleConditionArgs = {
+  input: UserCreateRoleConditionInput
 }
 
-export type MutationUserCreateRulePermissionArgs = {
-  input: UserCreateRulePermissionInput
+export type MutationUserCreateRolePermissionArgs = {
+  input: UserCreateRolePermissionInput
 }
 
 export type MutationUserDeleteBotArgs = {
@@ -650,16 +651,16 @@ export type MutationUserDeleteIdentityArgs = {
   identityId: Scalars['String']['input']
 }
 
-export type MutationUserDeleteRuleArgs = {
-  ruleId: Scalars['String']['input']
+export type MutationUserDeleteRoleArgs = {
+  roleId: Scalars['String']['input']
 }
 
-export type MutationUserDeleteRuleConditionArgs = {
-  ruleConditionId: Scalars['String']['input']
+export type MutationUserDeleteRoleConditionArgs = {
+  roleConditionId: Scalars['String']['input']
 }
 
-export type MutationUserDeleteRulePermissionArgs = {
-  rulePermissionId: Scalars['String']['input']
+export type MutationUserDeleteRolePermissionArgs = {
+  rolePermissionId: Scalars['String']['input']
 }
 
 export type MutationUserLeaveBotServerArgs = {
@@ -703,26 +704,26 @@ export type MutationUserUpdateCommunityMemberArgs = {
   input: UserUpdateCommunityMemberInput
 }
 
-export type MutationUserUpdateRuleArgs = {
-  input: UserUpdateRuleInput
-  ruleId: Scalars['String']['input']
+export type MutationUserUpdateRoleArgs = {
+  input: UserUpdateRoleInput
+  roleId: Scalars['String']['input']
 }
 
-export type MutationUserUpdateRuleConditionArgs = {
-  input: UserUpdateRuleConditionInput
-  ruleConditionId: Scalars['String']['input']
+export type MutationUserUpdateRoleConditionArgs = {
+  input: UserUpdateRoleConditionInput
+  roleConditionId: Scalars['String']['input']
 }
 
 export type MutationUserUpdateUserArgs = {
   input: UserUpdateUserInput
 }
 
-export type MutationUserValidateRuleArgs = {
+export type MutationUserValidateRoleArgs = {
   address: Scalars['String']['input']
-  ruleId: Scalars['String']['input']
+  roleId: Scalars['String']['input']
 }
 
-export type MutationUserValidateRulesArgs = {
+export type MutationUserValidateRolesArgs = {
   communityId: Scalars['String']['input']
 }
 
@@ -845,7 +846,7 @@ export type Query = {
   adminFindManyNetwork: NetworkPaging
   adminFindManyNetworkAsset: NetworkAssetPaging
   adminFindManyNetworkToken: NetworkTokenPaging
-  adminFindManyRule: RulePaging
+  adminFindManyRole: RolePaging
   adminFindManyUser: UserPaging
   adminFindOneBot?: Maybe<Bot>
   adminFindOneCommunity?: Maybe<Community>
@@ -854,7 +855,7 @@ export type Query = {
   adminFindOneNetwork?: Maybe<Network>
   adminFindOneNetworkAsset?: Maybe<NetworkAsset>
   adminFindOneNetworkToken?: Maybe<NetworkToken>
-  adminFindOneRule?: Maybe<Rule>
+  adminFindOneRole?: Maybe<Role>
   adminFindOneUser?: Maybe<User>
   adminGetBackup?: Maybe<Scalars['JSON']['output']>
   adminGetBackups: Array<Scalars['String']['output']>
@@ -869,7 +870,7 @@ export type Query = {
   userFindManyLog: LogPaging
   userFindManyNetworkAsset: NetworkAssetPaging
   userFindManyNetworkToken: NetworkTokenPaging
-  userFindManyRule: RulePaging
+  userFindManyRole: RolePaging
   userFindManyUser: UserPaging
   userFindOneBot?: Maybe<Bot>
   userFindOneCommunity?: Maybe<Community>
@@ -877,7 +878,7 @@ export type Query = {
   userFindOneIdentity?: Maybe<Identity>
   userFindOneLog?: Maybe<Log>
   userFindOneNetworkAsset?: Maybe<NetworkAsset>
-  userFindOneRule?: Maybe<Rule>
+  userFindOneRole?: Maybe<Role>
   userFindOneUser?: Maybe<User>
   userFindOneUserById?: Maybe<User>
   userGetBotMembers?: Maybe<Array<BotMember>>
@@ -921,8 +922,8 @@ export type QueryAdminFindManyNetworkTokenArgs = {
   input: AdminFindManyNetworkTokenInput
 }
 
-export type QueryAdminFindManyRuleArgs = {
-  input: AdminFindManyRuleInput
+export type QueryAdminFindManyRoleArgs = {
+  input: AdminFindManyRoleInput
 }
 
 export type QueryAdminFindManyUserArgs = {
@@ -957,8 +958,8 @@ export type QueryAdminFindOneNetworkTokenArgs = {
   networkTokenId: Scalars['String']['input']
 }
 
-export type QueryAdminFindOneRuleArgs = {
-  ruleId: Scalars['String']['input']
+export type QueryAdminFindOneRoleArgs = {
+  roleId: Scalars['String']['input']
 }
 
 export type QueryAdminFindOneUserArgs = {
@@ -1002,8 +1003,8 @@ export type QueryUserFindManyNetworkTokenArgs = {
   input: UserFindManyNetworkTokenInput
 }
 
-export type QueryUserFindManyRuleArgs = {
-  input: UserFindManyRuleInput
+export type QueryUserFindManyRoleArgs = {
+  input: UserFindManyRoleInput
 }
 
 export type QueryUserFindManyUserArgs = {
@@ -1036,8 +1037,8 @@ export type QueryUserFindOneNetworkAssetArgs = {
   cluster: NetworkCluster
 }
 
-export type QueryUserFindOneRuleArgs = {
-  ruleId: Scalars['String']['input']
+export type QueryUserFindOneRoleArgs = {
+  roleId: Scalars['String']['input']
 }
 
 export type QueryUserFindOneUserArgs = {
@@ -1091,21 +1092,21 @@ export type RequestIdentityChallengeInput = {
   providerId: Scalars['String']['input']
 }
 
-export type Rule = {
-  __typename?: 'Rule'
+export type Role = {
+  __typename?: 'Role'
   communityId: Scalars['String']['output']
-  conditions?: Maybe<Array<RuleCondition>>
+  conditions?: Maybe<Array<RoleCondition>>
   createdAt?: Maybe<Scalars['DateTime']['output']>
   description?: Maybe<Scalars['String']['output']>
   id: Scalars['String']['output']
   name: Scalars['String']['output']
-  permissions?: Maybe<Array<RulePermission>>
+  permissions?: Maybe<Array<RolePermission>>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   viewUrl?: Maybe<Scalars['String']['output']>
 }
 
-export type RuleCondition = {
-  __typename?: 'RuleCondition'
+export type RoleCondition = {
+  __typename?: 'RoleCondition'
   amount?: Maybe<Scalars['String']['output']>
   asset?: Maybe<SolanaNetworkAsset>
   config?: Maybe<Scalars['JSON']['output']>
@@ -1119,20 +1120,20 @@ export type RuleCondition = {
   valid?: Maybe<Scalars['Boolean']['output']>
 }
 
-export type RulePaging = {
-  __typename?: 'RulePaging'
-  data: Array<Rule>
+export type RolePaging = {
+  __typename?: 'RolePaging'
+  data: Array<Role>
   meta: PagingMeta
 }
 
-export type RulePermission = {
-  __typename?: 'RulePermission'
+export type RolePermission = {
+  __typename?: 'RolePermission'
   bot?: Maybe<BotPermission>
   botId?: Maybe<Scalars['String']['output']>
   createdAt?: Maybe<Scalars['DateTime']['output']>
   id: Scalars['String']['output']
-  rule?: Maybe<Rule>
-  ruleId?: Maybe<Scalars['String']['output']>
+  role?: Maybe<Role>
+  roleId?: Maybe<Scalars['String']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
@@ -1178,26 +1179,26 @@ export type UserCreateCommunityInput = {
   websiteUrl?: InputMaybe<Scalars['String']['input']>
 }
 
-export type UserCreateRuleConditionInput = {
+export type UserCreateRoleConditionInput = {
   amount?: InputMaybe<Scalars['String']['input']>
   config?: InputMaybe<Scalars['JSON']['input']>
   filters?: InputMaybe<Scalars['JSON']['input']>
-  ruleId: Scalars['String']['input']
+  roleId: Scalars['String']['input']
   tokenId: Scalars['String']['input']
   type: NetworkTokenType
 }
 
-export type UserCreateRuleInput = {
+export type UserCreateRoleInput = {
   communityId: Scalars['String']['input']
   description?: InputMaybe<Scalars['String']['input']>
   name: Scalars['String']['input']
 }
 
-export type UserCreateRulePermissionInput = {
+export type UserCreateRolePermissionInput = {
   botId: Scalars['String']['input']
   roleId: Scalars['String']['input']
-  ruleId: Scalars['String']['input']
   serverId: Scalars['String']['input']
+  serverRoleId: Scalars['String']['input']
 }
 
 export type UserFindManyCommunityInput = {
@@ -1229,7 +1230,7 @@ export type UserFindManyLogInput = {
   page?: InputMaybe<Scalars['Int']['input']>
   relatedId?: InputMaybe<Scalars['String']['input']>
   relatedType?: InputMaybe<LogRelatedType>
-  ruleId?: InputMaybe<Scalars['String']['input']>
+  roleId?: InputMaybe<Scalars['String']['input']>
   search?: InputMaybe<Scalars['String']['input']>
   userId?: InputMaybe<Scalars['String']['input']>
 }
@@ -1253,7 +1254,7 @@ export type UserFindManyNetworkTokenInput = {
   username?: InputMaybe<Scalars['String']['input']>
 }
 
-export type UserFindManyRuleInput = {
+export type UserFindManyRoleInput = {
   communityId: Scalars['String']['input']
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
@@ -1306,13 +1307,13 @@ export type UserUpdateCommunityMemberInput = {
   role: CommunityRole
 }
 
-export type UserUpdateRuleConditionInput = {
+export type UserUpdateRoleConditionInput = {
   amount?: InputMaybe<Scalars['String']['input']>
   config?: InputMaybe<Scalars['JSON']['input']>
   filters?: InputMaybe<Scalars['JSON']['input']>
 }
 
-export type UserUpdateRuleInput = {
+export type UserUpdateRoleInput = {
   description?: InputMaybe<Scalars['String']['input']>
   name?: InputMaybe<Scalars['String']['input']>
 }
@@ -1799,8 +1800,8 @@ export type UserFindOneBotQuery = {
       roleId?: string | null
       serverId?: string | null
       updatedAt?: Date | null
-      rules?: Array<{
-        __typename?: 'Rule'
+      roles?: Array<{
+        __typename?: 'Role'
         createdAt?: Date | null
         id: string
         communityId: string
@@ -1809,7 +1810,7 @@ export type UserFindOneBotQuery = {
         updatedAt?: Date | null
         viewUrl?: string | null
         conditions?: Array<{
-          __typename?: 'RuleCondition'
+          __typename?: 'RoleCondition'
           createdAt?: Date | null
           id: string
           type: NetworkTokenType
@@ -1839,12 +1840,12 @@ export type UserFindOneBotQuery = {
           asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
         }> | null
         permissions?: Array<{
-          __typename?: 'RulePermission'
+          __typename?: 'RolePermission'
           createdAt?: Date | null
           id: string
           updatedAt?: Date | null
           botId?: string | null
-          ruleId?: string | null
+          roleId?: string | null
           bot?: {
             __typename?: 'BotPermission'
             botId?: string | null
@@ -2139,8 +2140,8 @@ export type CommunityMemberDetailsFragment = {
     updatedAt?: Date | null
     username?: string | null
   } | null
-  rules?: Array<{
-    __typename?: 'Rule'
+  roles?: Array<{
+    __typename?: 'Role'
     createdAt?: Date | null
     id: string
     communityId: string
@@ -2149,7 +2150,7 @@ export type CommunityMemberDetailsFragment = {
     updatedAt?: Date | null
     viewUrl?: string | null
     conditions?: Array<{
-      __typename?: 'RuleCondition'
+      __typename?: 'RoleCondition'
       createdAt?: Date | null
       id: string
       type: NetworkTokenType
@@ -2179,12 +2180,12 @@ export type CommunityMemberDetailsFragment = {
       asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
     permissions?: Array<{
-      __typename?: 'RulePermission'
+      __typename?: 'RolePermission'
       createdAt?: Date | null
       id: string
       updatedAt?: Date | null
       botId?: string | null
-      ruleId?: string | null
+      roleId?: string | null
       bot?: {
         __typename?: 'BotPermission'
         botId?: string | null
@@ -2242,8 +2243,8 @@ export type AdminFindManyCommunityMemberQuery = {
         updatedAt?: Date | null
         username?: string | null
       } | null
-      rules?: Array<{
-        __typename?: 'Rule'
+      roles?: Array<{
+        __typename?: 'Role'
         createdAt?: Date | null
         id: string
         communityId: string
@@ -2252,7 +2253,7 @@ export type AdminFindManyCommunityMemberQuery = {
         updatedAt?: Date | null
         viewUrl?: string | null
         conditions?: Array<{
-          __typename?: 'RuleCondition'
+          __typename?: 'RoleCondition'
           createdAt?: Date | null
           id: string
           type: NetworkTokenType
@@ -2282,12 +2283,12 @@ export type AdminFindManyCommunityMemberQuery = {
           asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
         }> | null
         permissions?: Array<{
-          __typename?: 'RulePermission'
+          __typename?: 'RolePermission'
           createdAt?: Date | null
           id: string
           updatedAt?: Date | null
           botId?: string | null
-          ruleId?: string | null
+          roleId?: string | null
           bot?: {
             __typename?: 'BotPermission'
             botId?: string | null
@@ -2355,8 +2356,8 @@ export type AdminFindOneCommunityMemberQuery = {
       updatedAt?: Date | null
       username?: string | null
     } | null
-    rules?: Array<{
-      __typename?: 'Rule'
+    roles?: Array<{
+      __typename?: 'Role'
       createdAt?: Date | null
       id: string
       communityId: string
@@ -2365,7 +2366,7 @@ export type AdminFindOneCommunityMemberQuery = {
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
-        __typename?: 'RuleCondition'
+        __typename?: 'RoleCondition'
         createdAt?: Date | null
         id: string
         type: NetworkTokenType
@@ -2395,12 +2396,12 @@ export type AdminFindOneCommunityMemberQuery = {
         asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
       }> | null
       permissions?: Array<{
-        __typename?: 'RulePermission'
+        __typename?: 'RolePermission'
         createdAt?: Date | null
         id: string
         updatedAt?: Date | null
         botId?: string | null
-        ruleId?: string | null
+        roleId?: string | null
         bot?: {
           __typename?: 'BotPermission'
           botId?: string | null
@@ -2458,8 +2459,8 @@ export type AdminUpdateCommunityMemberMutation = {
       updatedAt?: Date | null
       username?: string | null
     } | null
-    rules?: Array<{
-      __typename?: 'Rule'
+    roles?: Array<{
+      __typename?: 'Role'
       createdAt?: Date | null
       id: string
       communityId: string
@@ -2468,7 +2469,7 @@ export type AdminUpdateCommunityMemberMutation = {
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
-        __typename?: 'RuleCondition'
+        __typename?: 'RoleCondition'
         createdAt?: Date | null
         id: string
         type: NetworkTokenType
@@ -2498,12 +2499,12 @@ export type AdminUpdateCommunityMemberMutation = {
         asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
       }> | null
       permissions?: Array<{
-        __typename?: 'RulePermission'
+        __typename?: 'RolePermission'
         createdAt?: Date | null
         id: string
         updatedAt?: Date | null
         botId?: string | null
-        ruleId?: string | null
+        roleId?: string | null
         bot?: {
           __typename?: 'BotPermission'
           botId?: string | null
@@ -2568,8 +2569,8 @@ export type UserFindManyCommunityMemberQuery = {
         updatedAt?: Date | null
         username?: string | null
       } | null
-      rules?: Array<{
-        __typename?: 'Rule'
+      roles?: Array<{
+        __typename?: 'Role'
         createdAt?: Date | null
         id: string
         communityId: string
@@ -2578,7 +2579,7 @@ export type UserFindManyCommunityMemberQuery = {
         updatedAt?: Date | null
         viewUrl?: string | null
         conditions?: Array<{
-          __typename?: 'RuleCondition'
+          __typename?: 'RoleCondition'
           createdAt?: Date | null
           id: string
           type: NetworkTokenType
@@ -2608,12 +2609,12 @@ export type UserFindManyCommunityMemberQuery = {
           asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
         }> | null
         permissions?: Array<{
-          __typename?: 'RulePermission'
+          __typename?: 'RolePermission'
           createdAt?: Date | null
           id: string
           updatedAt?: Date | null
           botId?: string | null
-          ruleId?: string | null
+          roleId?: string | null
           bot?: {
             __typename?: 'BotPermission'
             botId?: string | null
@@ -2681,8 +2682,8 @@ export type UserFindOneCommunityMemberQuery = {
       updatedAt?: Date | null
       username?: string | null
     } | null
-    rules?: Array<{
-      __typename?: 'Rule'
+    roles?: Array<{
+      __typename?: 'Role'
       createdAt?: Date | null
       id: string
       communityId: string
@@ -2691,7 +2692,7 @@ export type UserFindOneCommunityMemberQuery = {
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
-        __typename?: 'RuleCondition'
+        __typename?: 'RoleCondition'
         createdAt?: Date | null
         id: string
         type: NetworkTokenType
@@ -2721,12 +2722,12 @@ export type UserFindOneCommunityMemberQuery = {
         asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
       }> | null
       permissions?: Array<{
-        __typename?: 'RulePermission'
+        __typename?: 'RolePermission'
         createdAt?: Date | null
         id: string
         updatedAt?: Date | null
         botId?: string | null
-        ruleId?: string | null
+        roleId?: string | null
         bot?: {
           __typename?: 'BotPermission'
           botId?: string | null
@@ -2784,8 +2785,8 @@ export type UserUpdateCommunityMemberMutation = {
       updatedAt?: Date | null
       username?: string | null
     } | null
-    rules?: Array<{
-      __typename?: 'Rule'
+    roles?: Array<{
+      __typename?: 'Role'
       createdAt?: Date | null
       id: string
       communityId: string
@@ -2794,7 +2795,7 @@ export type UserUpdateCommunityMemberMutation = {
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
-        __typename?: 'RuleCondition'
+        __typename?: 'RoleCondition'
         createdAt?: Date | null
         id: string
         type: NetworkTokenType
@@ -2824,12 +2825,12 @@ export type UserUpdateCommunityMemberMutation = {
         asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
       }> | null
       permissions?: Array<{
-        __typename?: 'RulePermission'
+        __typename?: 'RolePermission'
         createdAt?: Date | null
         id: string
         updatedAt?: Date | null
         botId?: string | null
-        ruleId?: string | null
+        roleId?: string | null
         bot?: {
           __typename?: 'BotPermission'
           botId?: string | null
@@ -3490,7 +3491,7 @@ export type LogDetailsFragment = {
   networkAssetId?: string | null
   botId?: string | null
   userId?: string | null
-  ruleId?: string | null
+  roleId?: string | null
   updatedAt?: Date | null
   data?: any | null
   bot?: {
@@ -3551,8 +3552,8 @@ export type LogDetailsFragment = {
     url?: string | null
     verified?: boolean | null
   } | null
-  rule?: {
-    __typename?: 'Rule'
+  role?: {
+    __typename?: 'Role'
     createdAt?: Date | null
     id: string
     communityId: string
@@ -3561,7 +3562,7 @@ export type LogDetailsFragment = {
     updatedAt?: Date | null
     viewUrl?: string | null
     conditions?: Array<{
-      __typename?: 'RuleCondition'
+      __typename?: 'RoleCondition'
       createdAt?: Date | null
       id: string
       type: NetworkTokenType
@@ -3591,12 +3592,12 @@ export type LogDetailsFragment = {
       asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
     permissions?: Array<{
-      __typename?: 'RulePermission'
+      __typename?: 'RolePermission'
       createdAt?: Date | null
       id: string
       updatedAt?: Date | null
       botId?: string | null
-      ruleId?: string | null
+      roleId?: string | null
       bot?: {
         __typename?: 'BotPermission'
         botId?: string | null
@@ -3660,7 +3661,7 @@ export type UserFindManyLogQuery = {
       networkAssetId?: string | null
       botId?: string | null
       userId?: string | null
-      ruleId?: string | null
+      roleId?: string | null
       updatedAt?: Date | null
       data?: any | null
       bot?: {
@@ -3721,8 +3722,8 @@ export type UserFindManyLogQuery = {
         url?: string | null
         verified?: boolean | null
       } | null
-      rule?: {
-        __typename?: 'Rule'
+      role?: {
+        __typename?: 'Role'
         createdAt?: Date | null
         id: string
         communityId: string
@@ -3731,7 +3732,7 @@ export type UserFindManyLogQuery = {
         updatedAt?: Date | null
         viewUrl?: string | null
         conditions?: Array<{
-          __typename?: 'RuleCondition'
+          __typename?: 'RoleCondition'
           createdAt?: Date | null
           id: string
           type: NetworkTokenType
@@ -3761,12 +3762,12 @@ export type UserFindManyLogQuery = {
           asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
         }> | null
         permissions?: Array<{
-          __typename?: 'RulePermission'
+          __typename?: 'RolePermission'
           createdAt?: Date | null
           id: string
           updatedAt?: Date | null
           botId?: string | null
-          ruleId?: string | null
+          roleId?: string | null
           bot?: {
             __typename?: 'BotPermission'
             botId?: string | null
@@ -3840,7 +3841,7 @@ export type UserFindOneLogQuery = {
     networkAssetId?: string | null
     botId?: string | null
     userId?: string | null
-    ruleId?: string | null
+    roleId?: string | null
     updatedAt?: Date | null
     data?: any | null
     bot?: {
@@ -3901,8 +3902,8 @@ export type UserFindOneLogQuery = {
       url?: string | null
       verified?: boolean | null
     } | null
-    rule?: {
-      __typename?: 'Rule'
+    role?: {
+      __typename?: 'Role'
       createdAt?: Date | null
       id: string
       communityId: string
@@ -3911,7 +3912,7 @@ export type UserFindOneLogQuery = {
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
-        __typename?: 'RuleCondition'
+        __typename?: 'RoleCondition'
         createdAt?: Date | null
         id: string
         type: NetworkTokenType
@@ -3941,12 +3942,12 @@ export type UserFindOneLogQuery = {
         asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
       }> | null
       permissions?: Array<{
-        __typename?: 'RulePermission'
+        __typename?: 'RolePermission'
         createdAt?: Date | null
         id: string
         updatedAt?: Date | null
         botId?: string | null
-        ruleId?: string | null
+        roleId?: string | null
         bot?: {
           __typename?: 'BotPermission'
           botId?: string | null
@@ -4011,7 +4012,7 @@ export type AdminFindManyLogQuery = {
       networkAssetId?: string | null
       botId?: string | null
       userId?: string | null
-      ruleId?: string | null
+      roleId?: string | null
       updatedAt?: Date | null
       data?: any | null
       bot?: {
@@ -4072,8 +4073,8 @@ export type AdminFindManyLogQuery = {
         url?: string | null
         verified?: boolean | null
       } | null
-      rule?: {
-        __typename?: 'Rule'
+      role?: {
+        __typename?: 'Role'
         createdAt?: Date | null
         id: string
         communityId: string
@@ -4082,7 +4083,7 @@ export type AdminFindManyLogQuery = {
         updatedAt?: Date | null
         viewUrl?: string | null
         conditions?: Array<{
-          __typename?: 'RuleCondition'
+          __typename?: 'RoleCondition'
           createdAt?: Date | null
           id: string
           type: NetworkTokenType
@@ -4112,12 +4113,12 @@ export type AdminFindManyLogQuery = {
           asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
         }> | null
         permissions?: Array<{
-          __typename?: 'RulePermission'
+          __typename?: 'RolePermission'
           createdAt?: Date | null
           id: string
           updatedAt?: Date | null
           botId?: string | null
-          ruleId?: string | null
+          roleId?: string | null
           bot?: {
             __typename?: 'BotPermission'
             botId?: string | null
@@ -4191,7 +4192,7 @@ export type AdminFindOneLogQuery = {
     networkAssetId?: string | null
     botId?: string | null
     userId?: string | null
-    ruleId?: string | null
+    roleId?: string | null
     updatedAt?: Date | null
     data?: any | null
     bot?: {
@@ -4252,8 +4253,8 @@ export type AdminFindOneLogQuery = {
       url?: string | null
       verified?: boolean | null
     } | null
-    rule?: {
-      __typename?: 'Rule'
+    role?: {
+      __typename?: 'Role'
       createdAt?: Date | null
       id: string
       communityId: string
@@ -4262,7 +4263,7 @@ export type AdminFindOneLogQuery = {
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
-        __typename?: 'RuleCondition'
+        __typename?: 'RoleCondition'
         createdAt?: Date | null
         id: string
         type: NetworkTokenType
@@ -4292,12 +4293,12 @@ export type AdminFindOneLogQuery = {
         asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
       }> | null
       permissions?: Array<{
-        __typename?: 'RulePermission'
+        __typename?: 'RolePermission'
         createdAt?: Date | null
         id: string
         updatedAt?: Date | null
         botId?: string | null
-        ruleId?: string | null
+        roleId?: string | null
         bot?: {
           __typename?: 'BotPermission'
           botId?: string | null
@@ -4850,8 +4851,8 @@ export type UserGetTokenAccountsQueryVariables = Exact<{
 
 export type UserGetTokenAccountsQuery = { __typename?: 'Query'; result?: any | null }
 
-export type RuleDetailsFragment = {
-  __typename?: 'Rule'
+export type RoleDetailsFragment = {
+  __typename?: 'Role'
   createdAt?: Date | null
   id: string
   communityId: string
@@ -4860,7 +4861,7 @@ export type RuleDetailsFragment = {
   updatedAt?: Date | null
   viewUrl?: string | null
   conditions?: Array<{
-    __typename?: 'RuleCondition'
+    __typename?: 'RoleCondition'
     createdAt?: Date | null
     id: string
     type: NetworkTokenType
@@ -4890,12 +4891,12 @@ export type RuleDetailsFragment = {
     asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
   }> | null
   permissions?: Array<{
-    __typename?: 'RulePermission'
+    __typename?: 'RolePermission'
     createdAt?: Date | null
     id: string
     updatedAt?: Date | null
     botId?: string | null
-    ruleId?: string | null
+    roleId?: string | null
     bot?: {
       __typename?: 'BotPermission'
       botId?: string | null
@@ -4923,8 +4924,8 @@ export type RuleDetailsFragment = {
   }> | null
 }
 
-export type RuleConditionDetailsFragment = {
-  __typename?: 'RuleCondition'
+export type RoleConditionDetailsFragment = {
+  __typename?: 'RoleCondition'
   createdAt?: Date | null
   id: string
   type: NetworkTokenType
@@ -4954,13 +4955,13 @@ export type RuleConditionDetailsFragment = {
   asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
 }
 
-export type RulePermissionDetailsFragment = {
-  __typename?: 'RulePermission'
+export type RolePermissionDetailsFragment = {
+  __typename?: 'RolePermission'
   createdAt?: Date | null
   id: string
   updatedAt?: Date | null
   botId?: string | null
-  ruleId?: string | null
+  roleId?: string | null
   bot?: {
     __typename?: 'BotPermission'
     botId?: string | null
@@ -4987,16 +4988,16 @@ export type RulePermissionDetailsFragment = {
   } | null
 }
 
-export type AdminFindManyRuleQueryVariables = Exact<{
-  input: AdminFindManyRuleInput
+export type AdminFindManyRoleQueryVariables = Exact<{
+  input: AdminFindManyRoleInput
 }>
 
-export type AdminFindManyRuleQuery = {
+export type AdminFindManyRoleQuery = {
   __typename?: 'Query'
   paging: {
-    __typename?: 'RulePaging'
+    __typename?: 'RolePaging'
     data: Array<{
-      __typename?: 'Rule'
+      __typename?: 'Role'
       createdAt?: Date | null
       id: string
       communityId: string
@@ -5005,7 +5006,7 @@ export type AdminFindManyRuleQuery = {
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
-        __typename?: 'RuleCondition'
+        __typename?: 'RoleCondition'
         createdAt?: Date | null
         id: string
         type: NetworkTokenType
@@ -5035,12 +5036,12 @@ export type AdminFindManyRuleQuery = {
         asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
       }> | null
       permissions?: Array<{
-        __typename?: 'RulePermission'
+        __typename?: 'RolePermission'
         createdAt?: Date | null
         id: string
         updatedAt?: Date | null
         botId?: string | null
-        ruleId?: string | null
+        roleId?: string | null
         bot?: {
           __typename?: 'BotPermission'
           botId?: string | null
@@ -5080,14 +5081,14 @@ export type AdminFindManyRuleQuery = {
   }
 }
 
-export type AdminFindOneRuleQueryVariables = Exact<{
-  ruleId: Scalars['String']['input']
+export type AdminFindOneRoleQueryVariables = Exact<{
+  roleId: Scalars['String']['input']
 }>
 
-export type AdminFindOneRuleQuery = {
+export type AdminFindOneRoleQuery = {
   __typename?: 'Query'
   item?: {
-    __typename?: 'Rule'
+    __typename?: 'Role'
     createdAt?: Date | null
     id: string
     communityId: string
@@ -5096,7 +5097,7 @@ export type AdminFindOneRuleQuery = {
     updatedAt?: Date | null
     viewUrl?: string | null
     conditions?: Array<{
-      __typename?: 'RuleCondition'
+      __typename?: 'RoleCondition'
       createdAt?: Date | null
       id: string
       type: NetworkTokenType
@@ -5126,12 +5127,12 @@ export type AdminFindOneRuleQuery = {
       asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
     permissions?: Array<{
-      __typename?: 'RulePermission'
+      __typename?: 'RolePermission'
       createdAt?: Date | null
       id: string
       updatedAt?: Date | null
       botId?: string | null
-      ruleId?: string | null
+      roleId?: string | null
       bot?: {
         __typename?: 'BotPermission'
         botId?: string | null
@@ -5160,14 +5161,14 @@ export type AdminFindOneRuleQuery = {
   } | null
 }
 
-export type AdminCreateRuleMutationVariables = Exact<{
-  input: AdminCreateRuleInput
+export type AdminCreateRoleMutationVariables = Exact<{
+  input: AdminCreateRoleInput
 }>
 
-export type AdminCreateRuleMutation = {
+export type AdminCreateRoleMutation = {
   __typename?: 'Mutation'
   created?: {
-    __typename?: 'Rule'
+    __typename?: 'Role'
     createdAt?: Date | null
     id: string
     communityId: string
@@ -5176,7 +5177,7 @@ export type AdminCreateRuleMutation = {
     updatedAt?: Date | null
     viewUrl?: string | null
     conditions?: Array<{
-      __typename?: 'RuleCondition'
+      __typename?: 'RoleCondition'
       createdAt?: Date | null
       id: string
       type: NetworkTokenType
@@ -5206,12 +5207,12 @@ export type AdminCreateRuleMutation = {
       asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
     permissions?: Array<{
-      __typename?: 'RulePermission'
+      __typename?: 'RolePermission'
       createdAt?: Date | null
       id: string
       updatedAt?: Date | null
       botId?: string | null
-      ruleId?: string | null
+      roleId?: string | null
       bot?: {
         __typename?: 'BotPermission'
         botId?: string | null
@@ -5240,15 +5241,15 @@ export type AdminCreateRuleMutation = {
   } | null
 }
 
-export type AdminUpdateRuleMutationVariables = Exact<{
-  ruleId: Scalars['String']['input']
-  input: AdminUpdateRuleInput
+export type AdminUpdateRoleMutationVariables = Exact<{
+  roleId: Scalars['String']['input']
+  input: AdminUpdateRoleInput
 }>
 
-export type AdminUpdateRuleMutation = {
+export type AdminUpdateRoleMutation = {
   __typename?: 'Mutation'
   updated?: {
-    __typename?: 'Rule'
+    __typename?: 'Role'
     createdAt?: Date | null
     id: string
     communityId: string
@@ -5257,7 +5258,7 @@ export type AdminUpdateRuleMutation = {
     updatedAt?: Date | null
     viewUrl?: string | null
     conditions?: Array<{
-      __typename?: 'RuleCondition'
+      __typename?: 'RoleCondition'
       createdAt?: Date | null
       id: string
       type: NetworkTokenType
@@ -5287,12 +5288,12 @@ export type AdminUpdateRuleMutation = {
       asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
     permissions?: Array<{
-      __typename?: 'RulePermission'
+      __typename?: 'RolePermission'
       createdAt?: Date | null
       id: string
       updatedAt?: Date | null
       botId?: string | null
-      ruleId?: string | null
+      roleId?: string | null
       bot?: {
         __typename?: 'BotPermission'
         botId?: string | null
@@ -5321,22 +5322,22 @@ export type AdminUpdateRuleMutation = {
   } | null
 }
 
-export type AdminDeleteRuleMutationVariables = Exact<{
-  ruleId: Scalars['String']['input']
+export type AdminDeleteRoleMutationVariables = Exact<{
+  roleId: Scalars['String']['input']
 }>
 
-export type AdminDeleteRuleMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+export type AdminDeleteRoleMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
-export type UserFindManyRuleQueryVariables = Exact<{
-  input: UserFindManyRuleInput
+export type UserFindManyRoleQueryVariables = Exact<{
+  input: UserFindManyRoleInput
 }>
 
-export type UserFindManyRuleQuery = {
+export type UserFindManyRoleQuery = {
   __typename?: 'Query'
   paging: {
-    __typename?: 'RulePaging'
+    __typename?: 'RolePaging'
     data: Array<{
-      __typename?: 'Rule'
+      __typename?: 'Role'
       createdAt?: Date | null
       id: string
       communityId: string
@@ -5345,7 +5346,7 @@ export type UserFindManyRuleQuery = {
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
-        __typename?: 'RuleCondition'
+        __typename?: 'RoleCondition'
         createdAt?: Date | null
         id: string
         type: NetworkTokenType
@@ -5375,12 +5376,12 @@ export type UserFindManyRuleQuery = {
         asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
       }> | null
       permissions?: Array<{
-        __typename?: 'RulePermission'
+        __typename?: 'RolePermission'
         createdAt?: Date | null
         id: string
         updatedAt?: Date | null
         botId?: string | null
-        ruleId?: string | null
+        roleId?: string | null
         bot?: {
           __typename?: 'BotPermission'
           botId?: string | null
@@ -5420,14 +5421,14 @@ export type UserFindManyRuleQuery = {
   }
 }
 
-export type UserFindOneRuleQueryVariables = Exact<{
-  ruleId: Scalars['String']['input']
+export type UserFindOneRoleQueryVariables = Exact<{
+  roleId: Scalars['String']['input']
 }>
 
-export type UserFindOneRuleQuery = {
+export type UserFindOneRoleQuery = {
   __typename?: 'Query'
   item?: {
-    __typename?: 'Rule'
+    __typename?: 'Role'
     createdAt?: Date | null
     id: string
     communityId: string
@@ -5436,7 +5437,7 @@ export type UserFindOneRuleQuery = {
     updatedAt?: Date | null
     viewUrl?: string | null
     conditions?: Array<{
-      __typename?: 'RuleCondition'
+      __typename?: 'RoleCondition'
       createdAt?: Date | null
       id: string
       type: NetworkTokenType
@@ -5466,12 +5467,12 @@ export type UserFindOneRuleQuery = {
       asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
     permissions?: Array<{
-      __typename?: 'RulePermission'
+      __typename?: 'RolePermission'
       createdAt?: Date | null
       id: string
       updatedAt?: Date | null
       botId?: string | null
-      ruleId?: string | null
+      roleId?: string | null
       bot?: {
         __typename?: 'BotPermission'
         botId?: string | null
@@ -5500,14 +5501,14 @@ export type UserFindOneRuleQuery = {
   } | null
 }
 
-export type UserCreateRuleMutationVariables = Exact<{
-  input: UserCreateRuleInput
+export type UserCreateRoleMutationVariables = Exact<{
+  input: UserCreateRoleInput
 }>
 
-export type UserCreateRuleMutation = {
+export type UserCreateRoleMutation = {
   __typename?: 'Mutation'
   created?: {
-    __typename?: 'Rule'
+    __typename?: 'Role'
     createdAt?: Date | null
     id: string
     communityId: string
@@ -5516,7 +5517,7 @@ export type UserCreateRuleMutation = {
     updatedAt?: Date | null
     viewUrl?: string | null
     conditions?: Array<{
-      __typename?: 'RuleCondition'
+      __typename?: 'RoleCondition'
       createdAt?: Date | null
       id: string
       type: NetworkTokenType
@@ -5546,12 +5547,12 @@ export type UserCreateRuleMutation = {
       asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
     permissions?: Array<{
-      __typename?: 'RulePermission'
+      __typename?: 'RolePermission'
       createdAt?: Date | null
       id: string
       updatedAt?: Date | null
       botId?: string | null
-      ruleId?: string | null
+      roleId?: string | null
       bot?: {
         __typename?: 'BotPermission'
         botId?: string | null
@@ -5580,14 +5581,14 @@ export type UserCreateRuleMutation = {
   } | null
 }
 
-export type UserCreateRuleConditionMutationVariables = Exact<{
-  input: UserCreateRuleConditionInput
+export type UserCreateRoleConditionMutationVariables = Exact<{
+  input: UserCreateRoleConditionInput
 }>
 
-export type UserCreateRuleConditionMutation = {
+export type UserCreateRoleConditionMutation = {
   __typename?: 'Mutation'
   created?: {
-    __typename?: 'RuleCondition'
+    __typename?: 'RoleCondition'
     createdAt?: Date | null
     id: string
     type: NetworkTokenType
@@ -5618,19 +5619,19 @@ export type UserCreateRuleConditionMutation = {
   } | null
 }
 
-export type UserCreateRulePermissionMutationVariables = Exact<{
-  input: UserCreateRulePermissionInput
+export type UserCreateRolePermissionMutationVariables = Exact<{
+  input: UserCreateRolePermissionInput
 }>
 
-export type UserCreateRulePermissionMutation = {
+export type UserCreateRolePermissionMutation = {
   __typename?: 'Mutation'
   created?: {
-    __typename?: 'RulePermission'
+    __typename?: 'RolePermission'
     createdAt?: Date | null
     id: string
     updatedAt?: Date | null
     botId?: string | null
-    ruleId?: string | null
+    roleId?: string | null
     bot?: {
       __typename?: 'BotPermission'
       botId?: string | null
@@ -5658,15 +5659,15 @@ export type UserCreateRulePermissionMutation = {
   } | null
 }
 
-export type UserUpdateRuleMutationVariables = Exact<{
-  ruleId: Scalars['String']['input']
-  input: UserUpdateRuleInput
+export type UserUpdateRoleMutationVariables = Exact<{
+  roleId: Scalars['String']['input']
+  input: UserUpdateRoleInput
 }>
 
-export type UserUpdateRuleMutation = {
+export type UserUpdateRoleMutation = {
   __typename?: 'Mutation'
   updated?: {
-    __typename?: 'Rule'
+    __typename?: 'Role'
     createdAt?: Date | null
     id: string
     communityId: string
@@ -5675,7 +5676,7 @@ export type UserUpdateRuleMutation = {
     updatedAt?: Date | null
     viewUrl?: string | null
     conditions?: Array<{
-      __typename?: 'RuleCondition'
+      __typename?: 'RoleCondition'
       createdAt?: Date | null
       id: string
       type: NetworkTokenType
@@ -5705,12 +5706,12 @@ export type UserUpdateRuleMutation = {
       asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
     }> | null
     permissions?: Array<{
-      __typename?: 'RulePermission'
+      __typename?: 'RolePermission'
       createdAt?: Date | null
       id: string
       updatedAt?: Date | null
       botId?: string | null
-      ruleId?: string | null
+      roleId?: string | null
       bot?: {
         __typename?: 'BotPermission'
         botId?: string | null
@@ -5739,15 +5740,15 @@ export type UserUpdateRuleMutation = {
   } | null
 }
 
-export type UserUpdateRuleConditionMutationVariables = Exact<{
-  ruleConditionId: Scalars['String']['input']
-  input: UserUpdateRuleConditionInput
+export type UserUpdateRoleConditionMutationVariables = Exact<{
+  roleConditionId: Scalars['String']['input']
+  input: UserUpdateRoleConditionInput
 }>
 
-export type UserUpdateRuleConditionMutation = {
+export type UserUpdateRoleConditionMutation = {
   __typename?: 'Mutation'
   updated?: {
-    __typename?: 'RuleCondition'
+    __typename?: 'RoleCondition'
     createdAt?: Date | null
     id: string
     type: NetworkTokenType
@@ -5778,33 +5779,33 @@ export type UserUpdateRuleConditionMutation = {
   } | null
 }
 
-export type UserDeleteRuleMutationVariables = Exact<{
-  ruleId: Scalars['String']['input']
+export type UserDeleteRoleMutationVariables = Exact<{
+  roleId: Scalars['String']['input']
 }>
 
-export type UserDeleteRuleMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+export type UserDeleteRoleMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
-export type UserDeleteRuleConditionMutationVariables = Exact<{
-  ruleConditionId: Scalars['String']['input']
+export type UserDeleteRoleConditionMutationVariables = Exact<{
+  roleConditionId: Scalars['String']['input']
 }>
 
-export type UserDeleteRuleConditionMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+export type UserDeleteRoleConditionMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
-export type UserDeleteRulePermissionMutationVariables = Exact<{
-  rulePermissionId: Scalars['String']['input']
+export type UserDeleteRolePermissionMutationVariables = Exact<{
+  rolePermissionId: Scalars['String']['input']
 }>
 
-export type UserDeleteRulePermissionMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+export type UserDeleteRolePermissionMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
-export type UserValidateRuleMutationVariables = Exact<{
-  ruleId: Scalars['String']['input']
+export type UserValidateRoleMutationVariables = Exact<{
+  roleId: Scalars['String']['input']
   address: Scalars['String']['input']
 }>
 
-export type UserValidateRuleMutation = {
+export type UserValidateRoleMutation = {
   __typename?: 'Mutation'
   result?: Array<{
-    __typename?: 'RuleCondition'
+    __typename?: 'RoleCondition'
     createdAt?: Date | null
     id: string
     type: NetworkTokenType
@@ -5835,11 +5836,11 @@ export type UserValidateRuleMutation = {
   }> | null
 }
 
-export type UserValidateRulesMutationVariables = Exact<{
+export type UserValidateRolesMutationVariables = Exact<{
   communityId: Scalars['String']['input']
 }>
 
-export type UserValidateRulesMutation = { __typename?: 'Mutation'; result?: any | null }
+export type UserValidateRolesMutation = { __typename?: 'Mutation'; result?: any | null }
 
 export type UserSummaryFragment = {
   __typename?: 'User'
@@ -6153,8 +6154,8 @@ export const NetworkTokenDetailsFragmentDoc = gql`
     raw
   }
 `
-export const RuleConditionDetailsFragmentDoc = gql`
-  fragment RuleConditionDetails on RuleCondition {
+export const RoleConditionDetailsFragmentDoc = gql`
+  fragment RoleConditionDetails on RoleCondition {
     createdAt
     id
     type
@@ -6210,37 +6211,37 @@ export const BotPermissionDetailsFragmentDoc = gql`
   ${DiscordRoleDetailsFragmentDoc}
   ${DiscordServerDetailsFragmentDoc}
 `
-export const RulePermissionDetailsFragmentDoc = gql`
-  fragment RulePermissionDetails on RulePermission {
+export const RolePermissionDetailsFragmentDoc = gql`
+  fragment RolePermissionDetails on RolePermission {
     createdAt
     id
     updatedAt
     botId
-    ruleId
+    roleId
     bot {
       ...BotPermissionDetails
     }
   }
   ${BotPermissionDetailsFragmentDoc}
 `
-export const RuleDetailsFragmentDoc = gql`
-  fragment RuleDetails on Rule {
+export const RoleDetailsFragmentDoc = gql`
+  fragment RoleDetails on Role {
     createdAt
     id
     communityId
     name
     description
     conditions {
-      ...RuleConditionDetails
+      ...RoleConditionDetails
     }
     permissions {
-      ...RulePermissionDetails
+      ...RolePermissionDetails
     }
     updatedAt
     viewUrl
   }
-  ${RuleConditionDetailsFragmentDoc}
-  ${RulePermissionDetailsFragmentDoc}
+  ${RoleConditionDetailsFragmentDoc}
+  ${RolePermissionDetailsFragmentDoc}
 `
 export const CommunityMemberDetailsFragmentDoc = gql`
   fragment CommunityMemberDetails on CommunityMember {
@@ -6252,13 +6253,13 @@ export const CommunityMemberDetailsFragmentDoc = gql`
     user {
       ...UserDetails
     }
-    rules {
-      ...RuleDetails
+    roles {
+      ...RoleDetails
     }
     userId
   }
   ${UserDetailsFragmentDoc}
-  ${RuleDetailsFragmentDoc}
+  ${RoleDetailsFragmentDoc}
 `
 export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
@@ -6354,7 +6355,7 @@ export const LogDetailsFragmentDoc = gql`
     networkAssetId
     botId
     userId
-    ruleId
+    roleId
     updatedAt
     data
     bot {
@@ -6363,8 +6364,8 @@ export const LogDetailsFragmentDoc = gql`
     identity {
       ...IdentityDetails
     }
-    rule {
-      ...RuleDetails
+    role {
+      ...RoleDetails
     }
     user {
       ...UserDetails
@@ -6372,7 +6373,7 @@ export const LogDetailsFragmentDoc = gql`
   }
   ${BotDetailsFragmentDoc}
   ${IdentityDetailsFragmentDoc}
-  ${RuleDetailsFragmentDoc}
+  ${RoleDetailsFragmentDoc}
   ${UserDetailsFragmentDoc}
 `
 export const NetworkAssetDetailsFragmentDoc = gql`
@@ -6530,15 +6531,15 @@ export const UserFindOneBotDocument = gql`
       ...BotDetails
       permissions {
         ...BotPermissionDetails
-        rules {
-          ...RuleDetails
+        roles {
+          ...RoleDetails
         }
       }
     }
   }
   ${BotDetailsFragmentDoc}
   ${BotPermissionDetailsFragmentDoc}
-  ${RuleDetailsFragmentDoc}
+  ${RoleDetailsFragmentDoc}
 `
 export const UserCreateBotDocument = gql`
   mutation userCreateBot($input: UserCreateBotInput!) {
@@ -7109,137 +7110,137 @@ export const UserGetTokenAccountsDocument = gql`
     result: userGetTokenAccounts(cluster: $cluster, account: $account)
   }
 `
-export const AdminFindManyRuleDocument = gql`
-  query adminFindManyRule($input: AdminFindManyRuleInput!) {
-    paging: adminFindManyRule(input: $input) {
+export const AdminFindManyRoleDocument = gql`
+  query adminFindManyRole($input: AdminFindManyRoleInput!) {
+    paging: adminFindManyRole(input: $input) {
       data {
-        ...RuleDetails
+        ...RoleDetails
       }
       meta {
         ...PagingMetaDetails
       }
     }
   }
-  ${RuleDetailsFragmentDoc}
+  ${RoleDetailsFragmentDoc}
   ${PagingMetaDetailsFragmentDoc}
 `
-export const AdminFindOneRuleDocument = gql`
-  query adminFindOneRule($ruleId: String!) {
-    item: adminFindOneRule(ruleId: $ruleId) {
-      ...RuleDetails
+export const AdminFindOneRoleDocument = gql`
+  query adminFindOneRole($roleId: String!) {
+    item: adminFindOneRole(roleId: $roleId) {
+      ...RoleDetails
     }
   }
-  ${RuleDetailsFragmentDoc}
+  ${RoleDetailsFragmentDoc}
 `
-export const AdminCreateRuleDocument = gql`
-  mutation adminCreateRule($input: AdminCreateRuleInput!) {
-    created: adminCreateRule(input: $input) {
-      ...RuleDetails
+export const AdminCreateRoleDocument = gql`
+  mutation adminCreateRole($input: AdminCreateRoleInput!) {
+    created: adminCreateRole(input: $input) {
+      ...RoleDetails
     }
   }
-  ${RuleDetailsFragmentDoc}
+  ${RoleDetailsFragmentDoc}
 `
-export const AdminUpdateRuleDocument = gql`
-  mutation adminUpdateRule($ruleId: String!, $input: AdminUpdateRuleInput!) {
-    updated: adminUpdateRule(ruleId: $ruleId, input: $input) {
-      ...RuleDetails
+export const AdminUpdateRoleDocument = gql`
+  mutation adminUpdateRole($roleId: String!, $input: AdminUpdateRoleInput!) {
+    updated: adminUpdateRole(roleId: $roleId, input: $input) {
+      ...RoleDetails
     }
   }
-  ${RuleDetailsFragmentDoc}
+  ${RoleDetailsFragmentDoc}
 `
-export const AdminDeleteRuleDocument = gql`
-  mutation adminDeleteRule($ruleId: String!) {
-    deleted: adminDeleteRule(ruleId: $ruleId)
+export const AdminDeleteRoleDocument = gql`
+  mutation adminDeleteRole($roleId: String!) {
+    deleted: adminDeleteRole(roleId: $roleId)
   }
 `
-export const UserFindManyRuleDocument = gql`
-  query userFindManyRule($input: UserFindManyRuleInput!) {
-    paging: userFindManyRule(input: $input) {
+export const UserFindManyRoleDocument = gql`
+  query userFindManyRole($input: UserFindManyRoleInput!) {
+    paging: userFindManyRole(input: $input) {
       data {
-        ...RuleDetails
+        ...RoleDetails
       }
       meta {
         ...PagingMetaDetails
       }
     }
   }
-  ${RuleDetailsFragmentDoc}
+  ${RoleDetailsFragmentDoc}
   ${PagingMetaDetailsFragmentDoc}
 `
-export const UserFindOneRuleDocument = gql`
-  query userFindOneRule($ruleId: String!) {
-    item: userFindOneRule(ruleId: $ruleId) {
-      ...RuleDetails
+export const UserFindOneRoleDocument = gql`
+  query userFindOneRole($roleId: String!) {
+    item: userFindOneRole(roleId: $roleId) {
+      ...RoleDetails
     }
   }
-  ${RuleDetailsFragmentDoc}
+  ${RoleDetailsFragmentDoc}
 `
-export const UserCreateRuleDocument = gql`
-  mutation userCreateRule($input: UserCreateRuleInput!) {
-    created: userCreateRule(input: $input) {
-      ...RuleDetails
+export const UserCreateRoleDocument = gql`
+  mutation userCreateRole($input: UserCreateRoleInput!) {
+    created: userCreateRole(input: $input) {
+      ...RoleDetails
     }
   }
-  ${RuleDetailsFragmentDoc}
+  ${RoleDetailsFragmentDoc}
 `
-export const UserCreateRuleConditionDocument = gql`
-  mutation userCreateRuleCondition($input: UserCreateRuleConditionInput!) {
-    created: userCreateRuleCondition(input: $input) {
-      ...RuleConditionDetails
+export const UserCreateRoleConditionDocument = gql`
+  mutation userCreateRoleCondition($input: UserCreateRoleConditionInput!) {
+    created: userCreateRoleCondition(input: $input) {
+      ...RoleConditionDetails
     }
   }
-  ${RuleConditionDetailsFragmentDoc}
+  ${RoleConditionDetailsFragmentDoc}
 `
-export const UserCreateRulePermissionDocument = gql`
-  mutation userCreateRulePermission($input: UserCreateRulePermissionInput!) {
-    created: userCreateRulePermission(input: $input) {
-      ...RulePermissionDetails
+export const UserCreateRolePermissionDocument = gql`
+  mutation userCreateRolePermission($input: UserCreateRolePermissionInput!) {
+    created: userCreateRolePermission(input: $input) {
+      ...RolePermissionDetails
     }
   }
-  ${RulePermissionDetailsFragmentDoc}
+  ${RolePermissionDetailsFragmentDoc}
 `
-export const UserUpdateRuleDocument = gql`
-  mutation userUpdateRule($ruleId: String!, $input: UserUpdateRuleInput!) {
-    updated: userUpdateRule(ruleId: $ruleId, input: $input) {
-      ...RuleDetails
+export const UserUpdateRoleDocument = gql`
+  mutation userUpdateRole($roleId: String!, $input: UserUpdateRoleInput!) {
+    updated: userUpdateRole(roleId: $roleId, input: $input) {
+      ...RoleDetails
     }
   }
-  ${RuleDetailsFragmentDoc}
+  ${RoleDetailsFragmentDoc}
 `
-export const UserUpdateRuleConditionDocument = gql`
-  mutation userUpdateRuleCondition($ruleConditionId: String!, $input: UserUpdateRuleConditionInput!) {
-    updated: userUpdateRuleCondition(ruleConditionId: $ruleConditionId, input: $input) {
-      ...RuleConditionDetails
+export const UserUpdateRoleConditionDocument = gql`
+  mutation userUpdateRoleCondition($roleConditionId: String!, $input: UserUpdateRoleConditionInput!) {
+    updated: userUpdateRoleCondition(roleConditionId: $roleConditionId, input: $input) {
+      ...RoleConditionDetails
     }
   }
-  ${RuleConditionDetailsFragmentDoc}
+  ${RoleConditionDetailsFragmentDoc}
 `
-export const UserDeleteRuleDocument = gql`
-  mutation userDeleteRule($ruleId: String!) {
-    deleted: userDeleteRule(ruleId: $ruleId)
+export const UserDeleteRoleDocument = gql`
+  mutation userDeleteRole($roleId: String!) {
+    deleted: userDeleteRole(roleId: $roleId)
   }
 `
-export const UserDeleteRuleConditionDocument = gql`
-  mutation userDeleteRuleCondition($ruleConditionId: String!) {
-    deleted: userDeleteRuleCondition(ruleConditionId: $ruleConditionId)
+export const UserDeleteRoleConditionDocument = gql`
+  mutation userDeleteRoleCondition($roleConditionId: String!) {
+    deleted: userDeleteRoleCondition(roleConditionId: $roleConditionId)
   }
 `
-export const UserDeleteRulePermissionDocument = gql`
-  mutation userDeleteRulePermission($rulePermissionId: String!) {
-    deleted: userDeleteRulePermission(rulePermissionId: $rulePermissionId)
+export const UserDeleteRolePermissionDocument = gql`
+  mutation userDeleteRolePermission($rolePermissionId: String!) {
+    deleted: userDeleteRolePermission(rolePermissionId: $rolePermissionId)
   }
 `
-export const UserValidateRuleDocument = gql`
-  mutation userValidateRule($ruleId: String!, $address: String!) {
-    result: userValidateRule(ruleId: $ruleId, address: $address) {
-      ...RuleConditionDetails
+export const UserValidateRoleDocument = gql`
+  mutation userValidateRole($roleId: String!, $address: String!) {
+    result: userValidateRole(roleId: $roleId, address: $address) {
+      ...RoleConditionDetails
     }
   }
-  ${RuleConditionDetailsFragmentDoc}
+  ${RoleConditionDetailsFragmentDoc}
 `
-export const UserValidateRulesDocument = gql`
-  mutation userValidateRules($communityId: String!) {
-    result: userValidateRules(communityId: $communityId)
+export const UserValidateRolesDocument = gql`
+  mutation userValidateRoles($communityId: String!) {
+    result: userValidateRoles(communityId: $communityId)
   }
 `
 export const AdminCreateUserDocument = gql`
@@ -7420,23 +7421,23 @@ const AdminUpdateNetworkDocumentString = print(AdminUpdateNetworkDocument)
 const AdminDeleteNetworkDocumentString = print(AdminDeleteNetworkDocument)
 const UserGetTokenMetadataDocumentString = print(UserGetTokenMetadataDocument)
 const UserGetTokenAccountsDocumentString = print(UserGetTokenAccountsDocument)
-const AdminFindManyRuleDocumentString = print(AdminFindManyRuleDocument)
-const AdminFindOneRuleDocumentString = print(AdminFindOneRuleDocument)
-const AdminCreateRuleDocumentString = print(AdminCreateRuleDocument)
-const AdminUpdateRuleDocumentString = print(AdminUpdateRuleDocument)
-const AdminDeleteRuleDocumentString = print(AdminDeleteRuleDocument)
-const UserFindManyRuleDocumentString = print(UserFindManyRuleDocument)
-const UserFindOneRuleDocumentString = print(UserFindOneRuleDocument)
-const UserCreateRuleDocumentString = print(UserCreateRuleDocument)
-const UserCreateRuleConditionDocumentString = print(UserCreateRuleConditionDocument)
-const UserCreateRulePermissionDocumentString = print(UserCreateRulePermissionDocument)
-const UserUpdateRuleDocumentString = print(UserUpdateRuleDocument)
-const UserUpdateRuleConditionDocumentString = print(UserUpdateRuleConditionDocument)
-const UserDeleteRuleDocumentString = print(UserDeleteRuleDocument)
-const UserDeleteRuleConditionDocumentString = print(UserDeleteRuleConditionDocument)
-const UserDeleteRulePermissionDocumentString = print(UserDeleteRulePermissionDocument)
-const UserValidateRuleDocumentString = print(UserValidateRuleDocument)
-const UserValidateRulesDocumentString = print(UserValidateRulesDocument)
+const AdminFindManyRoleDocumentString = print(AdminFindManyRoleDocument)
+const AdminFindOneRoleDocumentString = print(AdminFindOneRoleDocument)
+const AdminCreateRoleDocumentString = print(AdminCreateRoleDocument)
+const AdminUpdateRoleDocumentString = print(AdminUpdateRoleDocument)
+const AdminDeleteRoleDocumentString = print(AdminDeleteRoleDocument)
+const UserFindManyRoleDocumentString = print(UserFindManyRoleDocument)
+const UserFindOneRoleDocumentString = print(UserFindOneRoleDocument)
+const UserCreateRoleDocumentString = print(UserCreateRoleDocument)
+const UserCreateRoleConditionDocumentString = print(UserCreateRoleConditionDocument)
+const UserCreateRolePermissionDocumentString = print(UserCreateRolePermissionDocument)
+const UserUpdateRoleDocumentString = print(UserUpdateRoleDocument)
+const UserUpdateRoleConditionDocumentString = print(UserUpdateRoleConditionDocument)
+const UserDeleteRoleDocumentString = print(UserDeleteRoleDocument)
+const UserDeleteRoleConditionDocumentString = print(UserDeleteRoleConditionDocument)
+const UserDeleteRolePermissionDocumentString = print(UserDeleteRolePermissionDocument)
+const UserValidateRoleDocumentString = print(UserValidateRoleDocument)
+const UserValidateRolesDocumentString = print(UserValidateRolesDocument)
 const AdminCreateUserDocumentString = print(AdminCreateUserDocument)
 const AdminDeleteUserDocumentString = print(AdminDeleteUserDocument)
 const AdminFindManyUserDocumentString = print(AdminFindManyUserDocument)
@@ -9180,11 +9181,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
-    adminFindManyRule(
-      variables: AdminFindManyRuleQueryVariables,
+    adminFindManyRole(
+      variables: AdminFindManyRoleQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: AdminFindManyRuleQuery
+      data: AdminFindManyRoleQuery
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9192,20 +9193,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<AdminFindManyRuleQuery>(AdminFindManyRuleDocumentString, variables, {
+          client.rawRequest<AdminFindManyRoleQuery>(AdminFindManyRoleDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'adminFindManyRule',
+        'adminFindManyRole',
         'query',
         variables,
       )
     },
-    adminFindOneRule(
-      variables: AdminFindOneRuleQueryVariables,
+    adminFindOneRole(
+      variables: AdminFindOneRoleQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: AdminFindOneRuleQuery
+      data: AdminFindOneRoleQuery
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9213,20 +9214,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<AdminFindOneRuleQuery>(AdminFindOneRuleDocumentString, variables, {
+          client.rawRequest<AdminFindOneRoleQuery>(AdminFindOneRoleDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'adminFindOneRule',
+        'adminFindOneRole',
         'query',
         variables,
       )
     },
-    adminCreateRule(
-      variables: AdminCreateRuleMutationVariables,
+    adminCreateRole(
+      variables: AdminCreateRoleMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: AdminCreateRuleMutation
+      data: AdminCreateRoleMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9234,20 +9235,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<AdminCreateRuleMutation>(AdminCreateRuleDocumentString, variables, {
+          client.rawRequest<AdminCreateRoleMutation>(AdminCreateRoleDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'adminCreateRule',
+        'adminCreateRole',
         'mutation',
         variables,
       )
     },
-    adminUpdateRule(
-      variables: AdminUpdateRuleMutationVariables,
+    adminUpdateRole(
+      variables: AdminUpdateRoleMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: AdminUpdateRuleMutation
+      data: AdminUpdateRoleMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9255,20 +9256,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<AdminUpdateRuleMutation>(AdminUpdateRuleDocumentString, variables, {
+          client.rawRequest<AdminUpdateRoleMutation>(AdminUpdateRoleDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'adminUpdateRule',
+        'adminUpdateRole',
         'mutation',
         variables,
       )
     },
-    adminDeleteRule(
-      variables: AdminDeleteRuleMutationVariables,
+    adminDeleteRole(
+      variables: AdminDeleteRoleMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: AdminDeleteRuleMutation
+      data: AdminDeleteRoleMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9276,20 +9277,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<AdminDeleteRuleMutation>(AdminDeleteRuleDocumentString, variables, {
+          client.rawRequest<AdminDeleteRoleMutation>(AdminDeleteRoleDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'adminDeleteRule',
+        'adminDeleteRole',
         'mutation',
         variables,
       )
     },
-    userFindManyRule(
-      variables: UserFindManyRuleQueryVariables,
+    userFindManyRole(
+      variables: UserFindManyRoleQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserFindManyRuleQuery
+      data: UserFindManyRoleQuery
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9297,20 +9298,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserFindManyRuleQuery>(UserFindManyRuleDocumentString, variables, {
+          client.rawRequest<UserFindManyRoleQuery>(UserFindManyRoleDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userFindManyRule',
+        'userFindManyRole',
         'query',
         variables,
       )
     },
-    userFindOneRule(
-      variables: UserFindOneRuleQueryVariables,
+    userFindOneRole(
+      variables: UserFindOneRoleQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserFindOneRuleQuery
+      data: UserFindOneRoleQuery
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9318,20 +9319,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserFindOneRuleQuery>(UserFindOneRuleDocumentString, variables, {
+          client.rawRequest<UserFindOneRoleQuery>(UserFindOneRoleDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userFindOneRule',
+        'userFindOneRole',
         'query',
         variables,
       )
     },
-    userCreateRule(
-      variables: UserCreateRuleMutationVariables,
+    userCreateRole(
+      variables: UserCreateRoleMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserCreateRuleMutation
+      data: UserCreateRoleMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9339,20 +9340,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserCreateRuleMutation>(UserCreateRuleDocumentString, variables, {
+          client.rawRequest<UserCreateRoleMutation>(UserCreateRoleDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userCreateRule',
+        'userCreateRole',
         'mutation',
         variables,
       )
     },
-    userCreateRuleCondition(
-      variables: UserCreateRuleConditionMutationVariables,
+    userCreateRoleCondition(
+      variables: UserCreateRoleConditionMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserCreateRuleConditionMutation
+      data: UserCreateRoleConditionMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9360,20 +9361,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserCreateRuleConditionMutation>(UserCreateRuleConditionDocumentString, variables, {
+          client.rawRequest<UserCreateRoleConditionMutation>(UserCreateRoleConditionDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userCreateRuleCondition',
+        'userCreateRoleCondition',
         'mutation',
         variables,
       )
     },
-    userCreateRulePermission(
-      variables: UserCreateRulePermissionMutationVariables,
+    userCreateRolePermission(
+      variables: UserCreateRolePermissionMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserCreateRulePermissionMutation
+      data: UserCreateRolePermissionMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9381,20 +9382,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserCreateRulePermissionMutation>(UserCreateRulePermissionDocumentString, variables, {
+          client.rawRequest<UserCreateRolePermissionMutation>(UserCreateRolePermissionDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userCreateRulePermission',
+        'userCreateRolePermission',
         'mutation',
         variables,
       )
     },
-    userUpdateRule(
-      variables: UserUpdateRuleMutationVariables,
+    userUpdateRole(
+      variables: UserUpdateRoleMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserUpdateRuleMutation
+      data: UserUpdateRoleMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9402,20 +9403,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserUpdateRuleMutation>(UserUpdateRuleDocumentString, variables, {
+          client.rawRequest<UserUpdateRoleMutation>(UserUpdateRoleDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userUpdateRule',
+        'userUpdateRole',
         'mutation',
         variables,
       )
     },
-    userUpdateRuleCondition(
-      variables: UserUpdateRuleConditionMutationVariables,
+    userUpdateRoleCondition(
+      variables: UserUpdateRoleConditionMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserUpdateRuleConditionMutation
+      data: UserUpdateRoleConditionMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9423,20 +9424,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserUpdateRuleConditionMutation>(UserUpdateRuleConditionDocumentString, variables, {
+          client.rawRequest<UserUpdateRoleConditionMutation>(UserUpdateRoleConditionDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userUpdateRuleCondition',
+        'userUpdateRoleCondition',
         'mutation',
         variables,
       )
     },
-    userDeleteRule(
-      variables: UserDeleteRuleMutationVariables,
+    userDeleteRole(
+      variables: UserDeleteRoleMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserDeleteRuleMutation
+      data: UserDeleteRoleMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9444,20 +9445,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserDeleteRuleMutation>(UserDeleteRuleDocumentString, variables, {
+          client.rawRequest<UserDeleteRoleMutation>(UserDeleteRoleDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userDeleteRule',
+        'userDeleteRole',
         'mutation',
         variables,
       )
     },
-    userDeleteRuleCondition(
-      variables: UserDeleteRuleConditionMutationVariables,
+    userDeleteRoleCondition(
+      variables: UserDeleteRoleConditionMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserDeleteRuleConditionMutation
+      data: UserDeleteRoleConditionMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9465,20 +9466,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserDeleteRuleConditionMutation>(UserDeleteRuleConditionDocumentString, variables, {
+          client.rawRequest<UserDeleteRoleConditionMutation>(UserDeleteRoleConditionDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userDeleteRuleCondition',
+        'userDeleteRoleCondition',
         'mutation',
         variables,
       )
     },
-    userDeleteRulePermission(
-      variables: UserDeleteRulePermissionMutationVariables,
+    userDeleteRolePermission(
+      variables: UserDeleteRolePermissionMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserDeleteRulePermissionMutation
+      data: UserDeleteRolePermissionMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9486,20 +9487,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserDeleteRulePermissionMutation>(UserDeleteRulePermissionDocumentString, variables, {
+          client.rawRequest<UserDeleteRolePermissionMutation>(UserDeleteRolePermissionDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userDeleteRulePermission',
+        'userDeleteRolePermission',
         'mutation',
         variables,
       )
     },
-    userValidateRule(
-      variables: UserValidateRuleMutationVariables,
+    userValidateRole(
+      variables: UserValidateRoleMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserValidateRuleMutation
+      data: UserValidateRoleMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9507,20 +9508,20 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserValidateRuleMutation>(UserValidateRuleDocumentString, variables, {
+          client.rawRequest<UserValidateRoleMutation>(UserValidateRoleDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userValidateRule',
+        'userValidateRole',
         'mutation',
         variables,
       )
     },
-    userValidateRules(
-      variables: UserValidateRulesMutationVariables,
+    userValidateRoles(
+      variables: UserValidateRolesMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserValidateRulesMutation
+      data: UserValidateRolesMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9528,11 +9529,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserValidateRulesMutation>(UserValidateRulesDocumentString, variables, {
+          client.rawRequest<UserValidateRolesMutation>(UserValidateRolesDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userValidateRules',
+        'userValidateRoles',
         'mutation',
         variables,
       )
@@ -9809,7 +9810,7 @@ export function AdminCreateNetworkTokenInputSchema(): z.ZodObject<Properties<Adm
   })
 }
 
-export function AdminCreateRuleInputSchema(): z.ZodObject<Properties<AdminCreateRuleInput>> {
+export function AdminCreateRoleInputSchema(): z.ZodObject<Properties<AdminCreateRoleInput>> {
   return z.object({
     communityId: z.string(),
     description: z.string().nullish(),
@@ -9869,7 +9870,7 @@ export function AdminFindManyLogInputSchema(): z.ZodObject<Properties<AdminFindM
     page: z.number().nullish(),
     relatedId: z.string().nullish(),
     relatedType: LogRelatedTypeSchema.nullish(),
-    ruleId: z.string().nullish(),
+    roleId: z.string().nullish(),
     search: z.string().nullish(),
     userId: z.string().nullish(),
   })
@@ -9902,7 +9903,7 @@ export function AdminFindManyNetworkTokenInputSchema(): z.ZodObject<Properties<A
   })
 }
 
-export function AdminFindManyRuleInputSchema(): z.ZodObject<Properties<AdminFindManyRuleInput>> {
+export function AdminFindManyRoleInputSchema(): z.ZodObject<Properties<AdminFindManyRoleInput>> {
   return z.object({
     communityId: z.string(),
     limit: z.number().nullish(),
@@ -9965,7 +9966,7 @@ export function AdminUpdateNetworkTokenInputSchema(): z.ZodObject<Properties<Adm
   })
 }
 
-export function AdminUpdateRuleInputSchema(): z.ZodObject<Properties<AdminUpdateRuleInput>> {
+export function AdminUpdateRoleInputSchema(): z.ZodObject<Properties<AdminUpdateRoleInput>> {
   return z.object({
     description: z.string().nullish(),
     name: z.string().nullish(),
@@ -10034,18 +10035,18 @@ export function UserCreateCommunityInputSchema(): z.ZodObject<Properties<UserCre
   })
 }
 
-export function UserCreateRuleConditionInputSchema(): z.ZodObject<Properties<UserCreateRuleConditionInput>> {
+export function UserCreateRoleConditionInputSchema(): z.ZodObject<Properties<UserCreateRoleConditionInput>> {
   return z.object({
     amount: z.string().nullish(),
     config: definedNonNullAnySchema.nullish(),
     filters: definedNonNullAnySchema.nullish(),
-    ruleId: z.string(),
+    roleId: z.string(),
     tokenId: z.string(),
     type: NetworkTokenTypeSchema,
   })
 }
 
-export function UserCreateRuleInputSchema(): z.ZodObject<Properties<UserCreateRuleInput>> {
+export function UserCreateRoleInputSchema(): z.ZodObject<Properties<UserCreateRoleInput>> {
   return z.object({
     communityId: z.string(),
     description: z.string().nullish(),
@@ -10053,12 +10054,12 @@ export function UserCreateRuleInputSchema(): z.ZodObject<Properties<UserCreateRu
   })
 }
 
-export function UserCreateRulePermissionInputSchema(): z.ZodObject<Properties<UserCreateRulePermissionInput>> {
+export function UserCreateRolePermissionInputSchema(): z.ZodObject<Properties<UserCreateRolePermissionInput>> {
   return z.object({
     botId: z.string(),
     roleId: z.string(),
-    ruleId: z.string(),
     serverId: z.string(),
+    serverRoleId: z.string(),
   })
 }
 
@@ -10098,7 +10099,7 @@ export function UserFindManyLogInputSchema(): z.ZodObject<Properties<UserFindMan
     page: z.number().nullish(),
     relatedId: z.string().nullish(),
     relatedType: LogRelatedTypeSchema.nullish(),
-    ruleId: z.string().nullish(),
+    roleId: z.string().nullish(),
     search: z.string().nullish(),
     userId: z.string().nullish(),
   })
@@ -10127,7 +10128,7 @@ export function UserFindManyNetworkTokenInputSchema(): z.ZodObject<Properties<Us
   })
 }
 
-export function UserFindManyRuleInputSchema(): z.ZodObject<Properties<UserFindManyRuleInput>> {
+export function UserFindManyRoleInputSchema(): z.ZodObject<Properties<UserFindManyRoleInput>> {
   return z.object({
     communityId: z.string(),
     limit: z.number().nullish(),
@@ -10173,7 +10174,7 @@ export function UserUpdateCommunityMemberInputSchema(): z.ZodObject<Properties<U
   })
 }
 
-export function UserUpdateRuleConditionInputSchema(): z.ZodObject<Properties<UserUpdateRuleConditionInput>> {
+export function UserUpdateRoleConditionInputSchema(): z.ZodObject<Properties<UserUpdateRoleConditionInput>> {
   return z.object({
     amount: z.string().nullish(),
     config: definedNonNullAnySchema.nullish(),
@@ -10181,7 +10182,7 @@ export function UserUpdateRuleConditionInputSchema(): z.ZodObject<Properties<Use
   })
 }
 
-export function UserUpdateRuleInputSchema(): z.ZodObject<Properties<UserUpdateRuleInput>> {
+export function UserUpdateRoleInputSchema(): z.ZodObject<Properties<UserUpdateRoleInput>> {
   return z.object({
     description: z.string().nullish(),
     name: z.string().nullish(),

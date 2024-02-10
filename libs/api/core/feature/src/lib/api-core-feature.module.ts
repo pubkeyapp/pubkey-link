@@ -7,7 +7,7 @@ import { ApiCoreController } from './api-core.controller'
 import { ApiCoreResolver } from './api-core.resolver'
 import { ApiCommunityFeatureModule } from '@pubkey-link/api-community-feature'
 import { ApiCommunityMemberFeatureModule } from '@pubkey-link/api-community-member-feature'
-import { ApiRuleFeatureModule } from '@pubkey-link/api-rule-feature'
+import { ApiRoleFeatureModule } from '@pubkey-link/api-role-feature'
 import { ApiNetworkFeatureModule } from '@pubkey-link/api-network-feature'
 import { ApiNetworkTokenFeatureModule } from '@pubkey-link/api-network-token-feature'
 import { ApiBotFeatureModule } from '@pubkey-link/api-bot-feature'
@@ -23,7 +23,7 @@ const imports = [
   ApiUserFeatureModule,
   ApiCommunityFeatureModule,
   ApiCommunityMemberFeatureModule,
-  ApiRuleFeatureModule,
+  ApiRoleFeatureModule,
   ApiNetworkFeatureModule,
   ApiNetworkTokenFeatureModule,
   ApiBotFeatureModule,
