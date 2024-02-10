@@ -1,4 +1,4 @@
-import { NetworkCluster } from '@prisma/client'
+import { NetworkCluster } from '../generated/graphql-sdk'
 
 export function getNetworkExplorerUrl(cluster: NetworkCluster, endpoint: string = 'http://localost:8899') {
   const base = 'https://solana.fm/{path}'
