@@ -12,3 +12,4 @@ export * from './lib/entity/discord-server.entity'
 
 export * from './lib/entity/bot-permission.entity'
 export * from './lib/entity/bot-member.entity'
+export * from './lib/entity/bot-server.entity'

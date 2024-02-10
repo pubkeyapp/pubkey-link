@@ -23,6 +23,9 @@ export class ApiBotManagerService implements OnModuleInit {
       this.logger.verbose(`Starting bot ${bot.name}`)
       await this.startBot(bot)
     }
+    this.syncBotServers().then(() => {
+      this.logger.verbose(`Bot servers synced`)
+    })
   }
 
   async getBotUser(token: string) {
@@ -195,11 +198,29 @@ export class ApiBotManagerService implements OnModuleInit {
     for (const bot of bots) {
       const servers = await this.getBotServers('-no-user-id-', bot.id)
       for (const server of servers) {
+        await this.ensureBotServer({ bot, server })
         await this.syncBotServerMembers({ botId: bot.id, communityId: bot.communityId, serverId: server.id })
       }
     }
+    return bots
   }
 
+  private async ensureBotServer({ bot, server }: { bot: Bot; server: DiscordServer }) {
+    const found = await this.core.data.botServer.findUnique({
+      where: { botId_serverId: { botId: bot.id, serverId: server.id } },
+    })
+    if (!found) {
+      this.logger.verbose(`Creating bot server ${server.name}`)
+      return this.core.data.botServer.create({
+        data: {
+          bot: { connect: { id: bot.id } },
+          serverId: server.id,
+          name: server.name,
+        },
+      })
+    }
+    return found
+  }
   async syncBotServerMembers({
     botId,
     communityId,
@@ -214,7 +235,8 @@ export class ApiBotManagerService implements OnModuleInit {
       console.log(`Can't find bot.`, botId, serverId)
       return false
     }
-    this.logger.verbose(`Fetching members... ${botId} ${serverId}`)
+    const tag = `[${discordBot.client?.user?.username}] syncBotServerMembers (${serverId})`
+    this.logger.verbose(tag)
 
     const [discordIdentityIds, botMemberIds] = await Promise.all([
       this.botMember.getDiscordIdentityIds(),
@@ -222,31 +244,40 @@ export class ApiBotManagerService implements OnModuleInit {
     ])
     const members = await discordBot.getDiscordServerMembers(serverId)
 
-    this.logger.verbose(`Found ${members.length} members to process`)
     const filtered = members
       // We only want to process members that have a discord identity
       .filter((member) => discordIdentityIds.includes(member.id))
       // We don't want to process members that are already in the database
       .filter((member) => !botMemberIds.includes(member.id))
 
+    if (!filtered.length) {
+      this.logger.verbose(`${tag}: No members to process (filtered ${members.length} members)`)
+      return true
+    }
+
     const toBeDeleted = botMemberIds.filter((id) => !members.find((member) => member.id === id))
 
     if (toBeDeleted.length) {
-      this.logger.warn(`Found ${toBeDeleted.length} members to delete`)
+      this.logger.warn(`${tag}: Found ${toBeDeleted.length} members to delete`)
       for (const userId of toBeDeleted) {
-        this.logger.verbose(`Removing member ${userId} from bot ${botId} server ${serverId}...`)
+        this.logger.verbose(`${tag}: Removing member ${userId} from bot ${botId} server ${serverId}...`)
         await this.botMember.scheduleRemoveMember({ communityId, botId, serverId, userId })
       }
     }
 
-    this.logger.verbose(`Found ${filtered.length} members to process (filtered)`)
     let linkedCount = 0
-    for (const member of filtered) {
-      const userId = member.id
-      await this.botMember.scheduleAddMember({ communityId, botId: botId, serverId, userId })
-      if (member.id) {
-        linkedCount++
+    if (filtered.length) {
+      this.logger.verbose(`${tag}: Found ${filtered.length} members to process`)
+      for (const member of filtered) {
+        const userId = member.id
+        await this.botMember.scheduleAddMember({ communityId, botId: botId, serverId, userId })
+        if (member.id) {
+          linkedCount++
+        }
       }
+    }
+    if (!linkedCount) {
+      return true
     }
     await this.core.logInfo(
       `Found ${members.length} members to process (filtered ${filtered.length}) (linked ${linkedCount})`,
@@ -256,7 +287,7 @@ export class ApiBotManagerService implements OnModuleInit {
       },
     )
     this.logger.verbose(
-      `Found ${members.length} members to process (filtered ${filtered.length}) (linked ${linkedCount})`,
+      `${tag}: Found ${members.length} members to process (filtered ${filtered.length}) (linked ${linkedCount})`,
     )
     return true
   }

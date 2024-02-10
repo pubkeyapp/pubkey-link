@@ -17,7 +17,7 @@ export class Rule {
   @Field({ nullable: true })
   description?: string | null
   @Field(() => [RuleCondition], { nullable: true })
-  conditions?: RuleCondition[]
+  conditions?: RuleCondition[] | null
   @Field(() => [RulePermission], { nullable: true })
-  permissions?: RulePermission[]
+  permissions?: RulePermission[] | null
 }

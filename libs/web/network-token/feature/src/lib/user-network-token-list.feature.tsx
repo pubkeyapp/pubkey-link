@@ -48,7 +48,6 @@ function NetworkTokenUiDetail(props: { token: NetworkToken; username: string }) 
       return <NetworkTokenUiDetailFungible {...props} />
     case NetworkTokenType.NonFungible:
       return <NetworkTokenUiDetailNonFungible {...props} />
-    case NetworkTokenType.Unknown:
     default:
       return <UiInfo message="Unknown token type." />
   }

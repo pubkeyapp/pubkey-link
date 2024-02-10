@@ -254,6 +254,7 @@ type CommunityMember {
   createdAt: DateTime
   id: String!
   role: CommunityRole!
+  rules: [Rule!]
   updatedAt: DateTime
   user: User
   userId: String!
@@ -536,7 +537,6 @@ type NetworkTokenPaging {
 enum NetworkTokenType {
   Fungible
   NonFungible
-  Unknown
 }
 
 enum NetworkType {
@@ -629,7 +629,6 @@ type Rule {
 }
 
 type RuleCondition {
-  account: String
   amount: String
   asset: SolanaNetworkAsset
   config: JSON
@@ -638,15 +637,9 @@ type RuleCondition {
   id: String!
   token: NetworkToken
   tokenId: String
-  type: RuleConditionType!
+  type: NetworkTokenType!
   updatedAt: DateTime
   valid: Boolean
-}
-
-enum RuleConditionType {
-  AnybodiesAsset
-  SolanaFungibleAsset
-  SolanaNonFungibleAsset
 }
 
 type RulePaging {
@@ -705,13 +698,12 @@ input UserCreateCommunityInput {
 }
 
 input UserCreateRuleConditionInput {
-  account: String
   amount: String
   config: JSON
   filters: JSON
   ruleId: String!
-  tokenId: String
-  type: RuleConditionType!
+  tokenId: String!
+  type: NetworkTokenType!
 }
 
 input UserCreateRuleInput {
@@ -833,11 +825,9 @@ input UserUpdateCommunityMemberInput {
 }
 
 input UserUpdateRuleConditionInput {
-  account: String
   amount: String
   config: JSON
   filters: JSON
-  tokenId: String
 }
 
 input UserUpdateRuleInput {

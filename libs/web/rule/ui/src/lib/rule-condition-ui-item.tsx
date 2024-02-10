@@ -1,10 +1,10 @@
 import { Group, Stack, Text, TextProps } from '@mantine/core'
 import {
-  getRuleConditionColor,
-  getRuleConditionTypeDescription,
-  getRuleConditionTypeTitle,
+  getNetworkTokenTypeColor,
+  getNetworkTokenTypeDescription,
+  getNetworkTokenTypeTitle,
 } from '@pubkey-link/resolvers'
-import { RuleConditionType } from '@pubkey-link/sdk'
+import { NetworkTokenType } from '@pubkey-link/sdk'
 import { UiIconAvatar } from '@pubkey-link/web-ui-core'
 import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core'
 import { getRuleConditionIconType } from './get-rule-condition-icon-type'
@@ -17,7 +17,7 @@ export function RuleConditionUiItem({
 }: {
   anchorProps?: UiAnchorProps
   textProps?: TextProps
-  type?: RuleConditionType
+  type?: NetworkTokenType
   to?: string | null
 }) {
   if (!type) return null
@@ -28,10 +28,10 @@ export function RuleConditionUiItem({
         <RuleConditionUiAvatar type={type} />
         <Stack gap={0}>
           <Text size="lg" fw={500} {...textProps}>
-            {getRuleConditionTypeTitle(type)}
+            {getNetworkTokenTypeTitle(type)}
           </Text>
           <Text size="xs" c="dimmed">
-            {getRuleConditionTypeDescription(type)}
+            {getNetworkTokenTypeDescription(type)}
           </Text>
         </Stack>
       </Group>
@@ -39,8 +39,8 @@ export function RuleConditionUiItem({
   )
 }
 
-export function RuleConditionUiAvatar({ type }: { type?: RuleConditionType | null }) {
+export function RuleConditionUiAvatar({ type }: { type?: NetworkTokenType | null }) {
   return (
-    <UiIconAvatar icon={getRuleConditionIconType(type)} name={type} size="md" color={getRuleConditionColor(type)} />
+    <UiIconAvatar icon={getRuleConditionIconType(type)} name={type} size="md" color={getNetworkTokenTypeColor(type)} />
   )
 }

@@ -18,7 +18,6 @@ fragment RuleConditionDetails on RuleCondition {
   createdAt
   id
   type
-  account
   amount
   filters
   config

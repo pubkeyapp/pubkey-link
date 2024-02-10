@@ -1,15 +1,15 @@
 import {
-  getRuleConditionTypeDescription,
-  getRuleConditionTypeTitle,
-  isRuleConditionType,
-  RuleConditionType,
+  getNetworkTokenTypeDescription,
+  getNetworkTokenTypeTitle,
+  isNetworkTokenType,
+  NetworkTokenType,
 } from '@pubkey-link/resolvers'
 
 import { UiAlertProps, UiInfo, UiWarning } from '@pubkey-ui/core'
 
-export function RuleConditionUiInfo({ type, ...props }: Omit<UiAlertProps, 'message'> & { type: RuleConditionType }) {
-  if (isRuleConditionType(type)) {
-    return <UiInfo title={getRuleConditionTypeTitle(type)} message={getRuleConditionTypeDescription(type)} {...props} />
+export function RuleConditionUiInfo({ type, ...props }: Omit<UiAlertProps, 'message'> & { type: NetworkTokenType }) {
+  if (isNetworkTokenType(type)) {
+    return <UiInfo title={getNetworkTokenTypeTitle(type)} message={getNetworkTokenTypeDescription(type)} {...props} />
   }
 
   return <UiWarning message={`Unknown condition type: ${type}`} />

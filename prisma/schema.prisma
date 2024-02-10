@@ -21,16 +21,31 @@ model Bot {
   communityId  String          @unique
   permissions  BotPermission[]
   members      BotMember[]
+  servers      BotServer[]
   logs         Log[]
 }
 
+model BotServer {
+  id        String      @id @default(cuid())
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  bot       Bot         @relation(fields: [botId], references: [id], onDelete: Cascade)
+  botId     String
+  serverId  String
+  name      String
+  member    BotMember[]
+
+  @@unique([botId, serverId])
+}
+
 model BotMember {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  bot       Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  bot       Bot       @relation(fields: [botId], references: [id], onDelete: Cascade)
   botId     String
   userId    String
+  server    BotServer @relation(fields: [botId, serverId], references: [botId, serverId])
   serverId  String
 
   identity         Identity         @relation(fields: [identityProvider, userId], references: [provider, providerId], onDelete: Cascade)
@@ -232,18 +247,17 @@ model Rule {
 }
 
 model RuleCondition {
-  id        String            @id @default(cuid())
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
-  type      RuleConditionType
-  account   String?
-  amount    String?
+  id        String           @id @default(cuid())
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  type      NetworkTokenType
+  amount    String           @default("0")
   config    Json?
   filters   Json?
   name      String
-  token     NetworkToken?     @relation(fields: [tokenId], references: [id])
-  tokenId   String?
-  rule      Rule              @relation(fields: [ruleId], references: [id])
+  token     NetworkToken     @relation(fields: [tokenId], references: [id])
+  tokenId   String
+  rule      Rule             @relation(fields: [ruleId], references: [id])
   ruleId    String
 }
 
@@ -324,17 +338,10 @@ enum NetworkResolver {
 enum NetworkTokenType {
   Fungible
   NonFungible
-  Unknown
 }
 
 enum NetworkType {
   Solana
-}
-
-enum RuleConditionType {
-  AnybodiesAsset
-  SolanaFungibleAsset
-  SolanaNonFungibleAsset
 }
 
 enum UserRole {

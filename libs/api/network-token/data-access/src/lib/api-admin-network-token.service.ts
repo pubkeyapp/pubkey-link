@@ -97,7 +97,6 @@ export function getNetworkTokenType(int: DasApiAsset['interface'] | string) {
     case 'V2_NFT':
       return NetworkTokenType.NonFungible
     default:
-      console.log(`getNetworkTokenType: Unknown interface: ${int}`)
-      return NetworkTokenType.Unknown
+      throw new Error(`getNetworkTokenType: Unknown interface: ${int}`)
   }
 }

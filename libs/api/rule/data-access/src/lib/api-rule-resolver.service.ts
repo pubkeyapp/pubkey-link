@@ -1,234 +1,263 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { IdentityProvider, NetworkCluster, NetworkToken, Prisma, RuleConditionType, UserStatus } from '@prisma/client'
+import { Cron, CronExpression } from '@nestjs/schedule'
+import {
+  IdentityProvider,
+  NetworkAsset,
+  NetworkCluster,
+  NetworkToken,
+  NetworkTokenType,
+  Prisma,
+  UserStatus,
+} from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { ApiNetworkService, SolanaNetworkAsset } from '@pubkey-link/api-network-data-access'
-import { LRUCache } from 'lru-cache'
+import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-access'
+import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
 import { RuleCondition } from './entity/rule-condition.entity'
 
 @Injectable()
 export class ApiRuleResolverService {
-  private readonly cacheAnybodiesVaults = new LRUCache<string, SolanaNetworkAsset[]>({
-    max: 1000,
-    ttl: 1000 * 60 * 60, // 1 hour
-  })
   private readonly logger = new Logger(ApiRuleResolverService.name)
-  constructor(readonly core: ApiCoreService, readonly network: ApiNetworkService) {}
+  constructor(
+    readonly core: ApiCoreService,
+    readonly network: ApiNetworkService,
+    readonly networkAsset: ApiNetworkAssetService,
+  ) {}
 
   async resolve(cluster: NetworkCluster, conditions: RuleCondition[], owner: string): Promise<RuleCondition[]> {
     // We want to loop over all the conditions, resolve them, then tack the resolved network assets onto the condition
 
     const result: RuleCondition[] = []
 
-    for (const condition of conditions) {
-      // const resolved = await this.resolveCondition(cluster, condition, owner)
-      // console.log(`Resolved condition "${condition.type}" for "${owner}"`, resolved?.accounts ?? [])
-      // const valid = condition.amount && resolved.amount && parseInt(condition.amount) <= parseInt(resolved.amount)
-      // result.push({ ...condition, asset: resolved, valid: !!valid })
-    }
-
     return result
   }
 
-  // private async resolveCondition(
-  //   cluster: NetworkCluster,
-  //   condition: RuleCondition,
-  //   owner: string,
-  // ): Promise<NetworkAsset[]> {
-  //   const { vault } = (condition.config ?? {}) as { vault?: string }
-  //   const account = condition.account
-  //   switch (condition.type) {
-  //     case RuleConditionType.AnybodiesAsset:
-  //       if (!vault) {
-  //         throw new Error(`Condition ${condition.id} is Missing vault`)
-  //       }
-  //       return this.network.resolveAnybodiesAsset({ owner, vault })
-  //     case RuleConditionType.SolanaFungibleAsset:
-  //       if (!account) {
-  //         throw new Error(`Condition ${condition.id} is Missing account`)
-  //       }
-  //       return this.network.resolveSolanaFungibleAsset({ cluster, account, owner })
-  //     case RuleConditionType.SolanaNonFungibleAsset:
-  //       if (!account) {
-  //         throw new Error(`Condition ${condition.id} is Missing account`)
-  //       }
-  //       return this.network.resolveSolanaNonFungibleAsset({ cluster, groups: [account], owner })
-  //     default:
-  //       throw new Error(`Unknown condition type "${condition.type}" for "${condition.id}"`)
-  //   }
-  // }
-  async validateRules(userId: string, communityId: string) {
-    const community = await this.core.ensureCommunityAdmin({ communityId, userId })
+  @Cron(CronExpression.EVERY_MINUTE)
+  async validateAllRules() {
+    this.logger.log(`Validating rules of all communities`)
+    const communities = await this.core.data.community.findMany({
+      where: {
+        bot: {
+          isNot: null,
+        },
+      },
+    })
+    for (const community of communities) {
+      await this.validateRules(community.id)
+    }
+  }
 
+  async validateRules(communityId: string) {
     const startedAt = Date.now()
-    await this.core.logInfo(`Validating rules for community ${communityId}`, { communityId })
 
-    // We get the conditions for this community and the contexts for all users
-    const [conditions, contexts] = await Promise.all([
+    const [conditions, users] = await Promise.all([
       this.getRuleConditions({ communityId }),
-      this.getRuleValidationContexts({ communityId }),
+      this.getCommunityUsers({ communityId }),
     ])
-
-    // We need to resolve the assets for each condition and user
-    const contextsWithAssets = await this.resolveNetworkAssets({ conditions, contexts })
-
-    // Filter out the contexts that don't have any assets
-    const filteredContexts = contextsWithAssets.filter((c) => Object.values(c.assetMap).flat().length > 0)
-
-    // Once we have the assets, we can validate the rules by looping over each condition and checking the assets for each user
-
-    // The best way to do this is to loop over each condition, then loop over each user, then loop over each asset
 
     const result = {
       duration: Date.now() - startedAt,
-      contextsCount: contexts.length,
-      contexts: filteredContexts,
+      contextsCount: users?.length,
+      totalRevoked: 0,
+      totalGranted: 0,
     }
-    console.log(`Validating ${conditions.length} rules for community ${communityId}`)
-    await this.core.logInfo(`Validated ${conditions.length} rules for community ${communityId}`, {
-      communityId,
-      data: result as unknown as Prisma.InputJsonValue,
-    })
+    if (!conditions?.length) {
+      await this.core.logInfo(`No conditions found for community ${communityId}`, { communityId })
+      return result
+    }
+
+    for (const user of users) {
+      // We are now in the context of a user
+      const resolved = await this.resolveNetworkAssetsForContext({ conditions, context: user })
+
+      // Now we want to loop over each condition and check the assets
+      for (const condition of conditions) {
+        const result = this.validateRuleCondition(condition, resolved.assetMap[condition.type] ?? [])
+        if (result) {
+          resolved.conditions.push(condition)
+        }
+      }
+
+      const rules: string[] = (resolved.conditions.map((c) => c.rule?.id) ?? []) as string[]
+      if (rules?.length) {
+        const ensureRules = await this.ensureCommunityMemberRules({
+          communityId,
+          userId: resolved.userId,
+          rules: rules ?? [],
+        })
+        if (ensureRules.granted || ensureRules.revoked) {
+          await this.core.logInfo(`Rules set: ${ensureRules.granted} granted, ${ensureRules.revoked} revoked`, {
+            userId: resolved.userId,
+            communityId,
+          })
+        }
+        result.totalGranted += ensureRules.granted
+        result.totalRevoked += ensureRules.revoked
+      }
+    }
+
+    await this.core.logInfo(
+      `Validated ${conditions?.length} rules in ${result.duration}ms, ${result.totalGranted} granted, ${result.totalRevoked} revoked`,
+      {
+        communityId,
+        data: result as unknown as Prisma.InputJsonValue,
+      },
+    )
     return Promise.resolve(result)
   }
 
-  private groupConditionsByType(conditions: RuleCondition[]): Record<RuleConditionType, RuleCondition[]> {
-    return conditions.reduce((acc, condition) => {
-      const type = condition.type
-      acc[type] = acc[type] ?? []
-      acc[type].push(condition)
-      return acc
-    }, {} as Record<RuleConditionType, RuleCondition[]>)
+  private async ensureCommunityMemberRules({
+    communityId,
+    userId,
+    rules,
+  }: {
+    communityId: string
+    userId: string
+    rules: string[]
+  }): Promise<{
+    granted: number
+    revoked: number
+  }> {
+    const result = {
+      granted: 0,
+      revoked: 0,
+    }
+    const existing = await this.core.data.communityMemberRule.findMany({
+      where: { member: { communityId, userId } },
+    })
+    const toGrant = rules.filter((r) => !existing.find((e) => e.ruleId === r))
+    const toRevoke = existing.filter((e) => !rules.find((r) => e.ruleId === r)).map((e) => e.ruleId)
+
+    if (!toGrant?.length && !toRevoke?.length) {
+      return result
+    }
+
+    for (const ruleId of toRevoke) {
+      const deleted = await this.core.data.communityMemberRule.deleteMany({
+        where: { member: { communityId, userId }, ruleId },
+      })
+      result.revoked += deleted.count
+    }
+    for (const ruleId of toGrant) {
+      const created = await this.core.data.communityMemberRule.create({
+        data: {
+          rule: { connect: { id: ruleId } },
+          member: { connect: { communityId_userId: { communityId, userId } } },
+        },
+      })
+      result.granted += created ? 1 : 0
+    }
+    return result
   }
 
-  private async resolveNetworkAssets({
+  private validateRuleCondition(condition: RuleCondition, assets: NetworkAsset[]) {
+    const found: NetworkAsset[] = assets.filter((asset) => asset.group === condition.token?.account) ?? []
+    if (!found?.length) {
+      return false
+    }
+
+    const filtered =
+      condition.type === NetworkTokenType.NonFungible && Object.keys(condition.filters ?? {})
+        ? found
+            .filter((assets) => !!Object.keys(assets.attributes ?? {})?.length)
+            .filter((assets) =>
+              validateAttributeFilter({
+                attributes: assets.attributes as [string, string][],
+                filters: (condition.filters ?? {}) as Record<string, string>,
+              }),
+            )
+        : found
+
+    switch (condition.type) {
+      case NetworkTokenType.NonFungible:
+        return filtered?.length >= parseInt(condition.amount ?? '0')
+      case NetworkTokenType.Fungible:
+        return (
+          filtered?.reduce((acc, asset) => acc + parseInt(asset.balance ?? '0'), 0) >= parseInt(condition.amount ?? '0')
+        )
+    }
+  }
+
+  private async resolveNetworkAssetsForContext({
     conditions,
-    contexts,
+    context,
   }: {
     conditions: RuleCondition[]
-    contexts: RuleValidationContext[]
-  }) {
+    context: RuleValidationUser
+  }): Promise<RuleValidationUser> {
     // Get all the solanaIds
-    const solanaIds = contexts.map((c) => c.solanaIds).flat()
+    const solanaIds = context.solanaIds ?? []
 
-    if (!solanaIds.length) {
-      this.logger.warn(`No solanaIds found in ${contexts.length} RuleValidationContexts`)
-      return []
+    if (!solanaIds?.length) {
+      this.logger.warn(`No solanaIds found in RuleValidationContext`)
+      return context
     }
 
     // Create a map of solanaIds to assets
-    const solanaIdAssets: Record<string, ContextAssetMap> = solanaIds.reduce((acc, solanaId) => {
-      acc[solanaId] = createContextAssetMap()
-      return acc
-    }, {} as Record<string, ContextAssetMap>)
+    const solanaIdAssets: ContextAssetMap = createContextAssetMap()
 
-    const groups = this.groupConditionsByType(conditions)
+    const groups = groupConditionsByType(conditions)
 
-    if (groups[RuleConditionType.AnybodiesAsset].length) {
-      const uniqueVaults = this.deduplicateAnybodiesVaults(groups[RuleConditionType.AnybodiesAsset])
+    if (groups[NetworkTokenType.Fungible]?.length) {
+      // Get the unique tokens
+      const tokens = deduplicateTokens(groups[NetworkTokenType.Fungible])
 
-      // Now we want to loop over each unique vault
-      for (const vault of uniqueVaults) {
-        // We want to look up the vaults with the solanaIds
-        const assets = await this.network.resolveAnybodiesAssets({ vault, owners: solanaIds ?? [] })
-
-        // Now we want to loop over each asset and add it to the solanaIdAssets map
-        for (const asset of assets) {
-          solanaIdAssets[asset.owner][RuleConditionType.AnybodiesAsset].push(asset)
+      if (tokens.length) {
+        for (const token of tokens) {
+          // We want to look up the tokens with the solanaIds
+          await this.networkAsset
+            .getFungibleAssetsForOwners({
+              cluster: token.cluster,
+              mint: token.account,
+              owners: solanaIds ?? [],
+              program: token.program,
+            })
+            .then((assets) => {
+              if (!assets.length) {
+                return
+              }
+              solanaIdAssets[NetworkTokenType.Fungible].push(...assets)
+            })
         }
+      } else {
+        this.logger.warn(`No unique tokens found in ${conditions.length} conditions`)
       }
     }
 
-    if (groups[RuleConditionType.SolanaFungibleAsset].length) {
+    if (groups[NetworkTokenType.NonFungible]?.length) {
       // Get the unique tokens
-      const tokens = this.deduplicateTokens(groups[RuleConditionType.SolanaFungibleAsset])
+      const tokens = deduplicateTokens(groups[NetworkTokenType.NonFungible])
 
-      if (!tokens.length) {
-        this.logger.warn(`No unique tokens found in ${conditions.length} conditions`)
-        return []
-      }
-
-      const cluster = tokens[0].cluster
-
-      for (const token of tokens) {
+      if (tokens.length) {
+        const cluster = tokens[0].cluster
+        const accounts = tokens.map((t) => t.account)
         // We want to look up the tokens with the solanaIds
-        const assets = await this.network.resolveSolanaFungibleAssetsForOwners({
-          mint: token.account,
-          cluster,
-          owners: solanaIds ?? [],
-          program: token.program,
-        })
-
-        // Now we want to loop over each asset and add it to the solanaIdAssets map
-        for (const asset of assets) {
-          solanaIdAssets[asset.owner][RuleConditionType.SolanaFungibleAsset].push(asset)
-        }
-      }
-    }
-
-    if (groups[RuleConditionType.SolanaNonFungibleAsset].length) {
-      // Get the unique tokens
-      const tokens = this.deduplicateTokens(groups[RuleConditionType.SolanaNonFungibleAsset])
-
-      if (!tokens.length) {
+        await this.networkAsset
+          .getNonFungibleAssetsForOwners({
+            cluster: cluster,
+            groups: accounts,
+            owners: solanaIds ?? [],
+          })
+          .then((assets) => {
+            if (!assets.length) {
+              return
+            }
+            solanaIdAssets[NetworkTokenType.NonFungible].push(...assets)
+          })
+      } else {
         this.logger.warn(`No unique tokens found in ${conditions.length} conditions`)
-        return []
-      }
-
-      const cluster = tokens[0].cluster
-      const accounts = tokens.map((t) => t.account)
-
-      // We want to look up the tokens with the solanaIds
-      const assets = await this.network.resolveSolanaNonFungibleAssetsForOwners({
-        cluster: cluster,
-        groups: accounts,
-        owners: solanaIds ?? [],
-      })
-
-      // Now we want to loop over each asset and add it to the solanaIdAssets map
-      for (const asset of assets) {
-        solanaIdAssets[asset.owner][RuleConditionType.SolanaNonFungibleAsset].push(asset)
       }
     }
 
-    // Now we want to loop over each context and add the assets to the context
-    for (const context of contexts) {
-      // Find the assets for this context
-      const contextAssetsMaps = context.solanaIds.map((id) => solanaIdAssets[id])
-      if (!contextAssetsMaps.length) {
-        this.logger.warn(`No assets found for context ${context.username}`)
+    // Find the assets for this context
+    for (const type of Object.keys(solanaIdAssets) as NetworkTokenType[]) {
+      const assets = solanaIdAssets[type] ?? []
+      if (!assets.length) {
         continue
       }
-
-      for (const contextAssetsMap of contextAssetsMaps) {
-        for (const type of Object.keys(contextAssetsMap) as RuleConditionType[]) {
-          const assets = (contextAssetsMap[type] ?? []).filter((a) => a.accounts?.length > 0)
-          if (!assets.length) {
-            continue
-          }
-          context.assetMap[type] = context.assetMap[type].concat(assets)
-        }
-      }
+      context.assetMap[type] = context.assetMap[type].concat(assets)
     }
 
-    return contexts
-  }
-
-  private deduplicateAnybodiesVaults(conditions: RuleCondition[]) {
-    return conditions
-      .map((c) => (c.config as { vault?: string })?.vault)
-      .filter((v) => !!v)
-      .filter((v, i, a) => a.indexOf(v) === i) as string[]
-  }
-
-  private deduplicateTokens(conditions: RuleCondition[]) {
-    return (
-      ((conditions.filter((c) => !!c.token).map((c) => c.token) ?? []) as NetworkToken[])
-        // A unique token is where the account and cluster are the same
-        .filter((t) => !!t.account && !!t.cluster)
-        .filter(
-          (t, i, a) => a.findIndex((u) => u.account === t.account && u.cluster === t.cluster) === i,
-        ) as NetworkToken[]
-    )
+    return context
   }
 
   private async getRuleConditions({ communityId }: { communityId: string }): Promise<RuleCondition[]> {
@@ -236,47 +265,37 @@ export class ApiRuleResolverService {
       .findMany({
         where: { rule: { communityId } },
         select: {
-          account: true,
           amount: true,
           config: true,
           filters: true,
           id: true,
           name: true,
           type: true,
-          rule: {
-            select: { id: true, name: true },
-          },
+          rule: true,
           token: {
             select: { id: true, account: true, cluster: true, type: true, name: true, program: true },
           },
         },
       })
-      .then(
-        (conditions) =>
-          conditions.map((condition) => ({
-            ...condition,
-            account: condition.account ?? undefined,
-            amount: condition.amount ?? undefined,
-            config: condition.config ?? undefined,
-            filters: condition.filters ?? undefined,
-            name: condition.name ?? condition.type,
-            token: condition.token ?? undefined,
-          })) as RuleCondition[],
+      .then((conditions) =>
+        conditions.map((condition) => ({
+          ...condition,
+          amount: condition.amount ?? undefined,
+          config: condition.config ?? undefined,
+          filters: condition.filters ?? undefined,
+          name: condition.name ?? condition.type,
+          token: condition.token ?? undefined,
+        })),
       )
   }
 
-  private async getRuleValidationContexts({ communityId }: { communityId: string }): Promise<RuleValidationContext[]> {
+  private async getCommunityUsers({ communityId }: { communityId: string }): Promise<RuleValidationUser[]> {
     return this.core.data.user
       .findMany({
         where: {
-          // id: { in: userIds },
           status: UserStatus.Active,
           identities: {
-            some: {
-              //
-              bots: { some: { bot: { communityId } } },
-              // provider: IdentityProvider.Discord,
-            },
+            some: { bots: { some: { bot: { communityId } } } },
           },
         },
         select: {
@@ -302,29 +321,97 @@ export class ApiRuleResolverService {
             discordId,
             solanaIds,
             assetMap: createContextAssetMap(),
-            ruleIds: [],
+            conditions: [],
           }
         }),
       )
       .then((contexts) => {
-        return contexts.filter((c) => !!c.discordId && c.solanaIds?.length > 0) as RuleValidationContext[]
+        return contexts.filter((c) => !!c.discordId && c.solanaIds?.length > 0) as RuleValidationUser[]
+      })
+  }
+
+  private async getUserContext({ userId }: { userId: string }): Promise<RuleValidationUser> {
+    return this.core.data.user
+      .findUnique({
+        where: { id: userId, status: UserStatus.Active },
+        select: {
+          id: true,
+          username: true,
+          identities: {
+            where: { provider: { in: [IdentityProvider.Discord, IdentityProvider.Solana] } },
+            select: { provider: true, providerId: true },
+          },
+        },
+      })
+      .then((user) => {
+        if (!user) {
+          throw new Error('User not found')
+        }
+        const discordId = user.identities.find((i) => i.provider === IdentityProvider.Discord)?.providerId
+        const solanaIds = user.identities.filter((i) => i.provider === IdentityProvider.Solana).map((i) => i.providerId)
+
+        if (!discordId || !solanaIds.length) {
+          throw new Error('User has no discordId or solanaIds')
+        }
+
+        return {
+          userId: user.id,
+          username: user.username,
+          discordId,
+          solanaIds,
+          assetMap: createContextAssetMap(),
+          conditions: [],
+        }
       })
   }
 }
 
-type ContextAssetMap = Record<RuleConditionType, SolanaNetworkAsset[]>
+type ContextAssetMap = Record<NetworkTokenType, NetworkAsset[]>
 function createContextAssetMap(): ContextAssetMap {
-  return Object.values(RuleConditionType).reduce((acc, type) => {
+  return Object.values(NetworkTokenType).reduce((acc, type) => {
     acc[type] = []
     return acc
-  }, {} as Record<RuleConditionType, SolanaNetworkAsset[]>)
+  }, {} as Record<NetworkTokenType, NetworkAsset[]>)
 }
 
-export interface RuleValidationContext {
+export interface RuleValidationUser {
   userId: string
   username: string
   discordId: string
   solanaIds: string[]
   assetMap: ContextAssetMap
-  ruleIds: string[]
+  conditions: RuleCondition[]
+}
+
+function validateAttributeFilter({
+  attributes,
+  filters,
+}: {
+  attributes: [string, string][]
+  filters: Record<string, string>
+}): boolean {
+  return Object.entries(filters).every(([key, value]) => {
+    const found = attributes.find(([k, v]) => k === key && v === value)
+    return !!found
+  })
+}
+
+function groupConditionsByType(conditions: RuleCondition[]): Record<NetworkTokenType, RuleCondition[]> {
+  return conditions.reduce((acc, condition) => {
+    const type = condition.type
+    acc[type] = acc[type] ?? []
+    acc[type].push(condition)
+    return acc
+  }, {} as Record<NetworkTokenType, RuleCondition[]>)
+}
+
+function deduplicateTokens(conditions: RuleCondition[]) {
+  return (
+    ((conditions.filter((c) => !!c.token).map((c) => c.token) ?? []) as NetworkToken[])
+      // A unique token is where the account and cluster are the same
+      .filter((t) => !!t.account && !!t.cluster)
+      .filter(
+        (t, i, a) => a.findIndex((u) => u.account === t.account && u.cluster === t.cluster) === i,
+      ) as NetworkToken[]
+  )
 }

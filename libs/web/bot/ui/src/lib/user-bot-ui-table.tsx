@@ -88,7 +88,9 @@ export function UserBotPermissionUiTable({ permissions = [] }: { permissions: Bo
               item?.rules?.length ? (
                 <UiStack>
                   {item?.rules?.map((rule) => (
-                    <RuleUiItem key={rule.id} rule={rule} to={rule.viewUrl} />
+                    <UiStack key={rule.id}>
+                      <RuleUiItem rule={rule} to={rule.viewUrl} />
+                    </UiStack>
                   ))}
                 </UiStack>
               ) : null,

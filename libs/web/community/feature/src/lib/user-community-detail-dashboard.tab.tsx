@@ -4,13 +4,13 @@ import { useUserFindOneBot } from '@pubkey-link/web-bot-data-access'
 import { BotUiItem, UserBotPermissionUiTable } from '@pubkey-link/web-bot-ui'
 import { useUserFindManyRule } from '@pubkey-link/web-rule-data-access'
 import { RuleUiItem } from '@pubkey-link/web-rule-ui'
-import { UiCard, UiCardTitle, UiGroup, UiLoader, UiStack } from '@pubkey-ui/core'
+import { UiCard, UiCardTitle, UiGroup, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 import { Link } from 'react-router-dom'
 
 export default function UserCommunityDetailDashboardTab({ community }: { community: Community }) {
   return (
     <UiStack>
-      <SimpleGrid cols={{ base: 0, sm: 2 }} spacing={20}>
+      <SimpleGrid cols={{ base: 0, xl: 2 }} spacing={20}>
         <CommunityDashboardCardRules community={community} />
         <CommunityDashboardCardBot community={community} />
       </SimpleGrid>
@@ -52,7 +52,11 @@ export function CommunityDashboardCardBot({ community }: { community: Community 
         <UiCard>
           <BotUiItem bot={item} to="../discord" />
         </UiCard>
-        <UserBotPermissionUiTable permissions={item.permissions ?? []} />
+        {item.permissions?.length ? (
+          <UserBotPermissionUiTable permissions={item.permissions ?? []} />
+        ) : (
+          <UiInfo message="No permissions" />
+        )}
       </UiStack>
     </UiCard>
   ) : (

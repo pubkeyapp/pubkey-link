@@ -23,7 +23,7 @@ export class ApiBotMemberService {
       return
     }
     this.logger.verbose(`Setting up listeners for bot ${bot.name}`)
-    instance.client?.on('guildMemberAdd', (member) =>
+    instance.client.on('guildMemberAdd', (member) =>
       this.scheduleAddMember({
         botId: bot.id,
         communityId: bot.communityId,
@@ -172,14 +172,9 @@ export class ApiBotMemberService {
     userId: string
   }) {
     const jobId = `${botId}-${serverId}-${userId}`
-    await this.botMemberAddQueue
-      .add('member-add', { botId, communityId, serverId, userId })
-      .then((res) => {
-        this.logger.verbose(`scheduleAddMember queued: ${res.id}`)
-      })
-      .catch((err) => {
-        this.logger.error(`scheduleAddMember error: ${jobId}: ${err}`)
-      })
+    await this.botMemberAddQueue.add('member-add', { botId, communityId, serverId, userId }).catch((err) => {
+      this.logger.error(`scheduleAddMember error: ${jobId}: ${err}`)
+    })
   }
   async scheduleRemoveMember({
     botId,
@@ -193,13 +188,8 @@ export class ApiBotMemberService {
     userId: string
   }) {
     const jobId = `${botId}-${serverId}-${userId}`
-    await this.botMemberRemoveQueue
-      .add('member-remove', { botId, communityId, serverId, userId })
-      .then((res) => {
-        this.logger.verbose(`scheduleRemoveMember queued: ${res.id}`)
-      })
-      .catch((err) => {
-        this.logger.error(`scheduleRemoveMember error: ${jobId}: ${err}`)
-      })
+    await this.botMemberRemoveQueue.add('member-remove', { botId, communityId, serverId, userId }).catch((err) => {
+      this.logger.error(`scheduleRemoveMember error: ${jobId}: ${err}`)
+    })
   }
 }

@@ -5,7 +5,6 @@ import {
   NetworkToken,
   NetworkTokenType,
   Rule,
-  RuleConditionType,
   UserCreateRuleConditionInput,
 } from '@pubkey-link/sdk'
 import { NetworkTokenUiItem } from '@pubkey-link/web-network-token-ui'
@@ -20,58 +19,51 @@ import { RuleUiItem } from './rule-ui-item'
 
 export function RuleConditionUiCreateWizard(props: { rule: Rule; community: Community; tokens: NetworkToken[] }) {
   const { query, createRuleCondition } = useUserFindOneRule({ ruleId: props.rule.id })
-  const [ruleConditionType, setRuleConditionType] = useState<RuleConditionType | undefined>(undefined)
+  const [networkTokenType, setNetworkTokenType] = useState<NetworkTokenType | undefined>(undefined)
   const [networkToken, setNetworkToken] = useState<NetworkToken | undefined>(undefined)
-  const [amount, setAmount] = useState<string>('1')
+  const [amount, setAmount] = useState<string>('0')
   const tokens: NetworkToken[] = useMemo(() => {
-    if (ruleConditionType === RuleConditionType.SolanaFungibleAsset) {
+    if (networkTokenType === NetworkTokenType.Fungible) {
       return props.tokens.filter((token) => token.type === NetworkTokenType.Fungible)
     }
-    if (ruleConditionType === RuleConditionType.SolanaNonFungibleAsset) {
+    if (networkTokenType === NetworkTokenType.NonFungible) {
       return props.tokens.filter((token) => token.type === NetworkTokenType.NonFungible)
     }
     return []
-  }, [ruleConditionType, props.tokens])
+  }, [networkTokenType, props.tokens])
 
   const config: UserCreateRuleConditionInput = useMemo(() => {
     const base: UserCreateRuleConditionInput = {
       ruleId: props.rule.id,
-      type: ruleConditionType ?? RuleConditionType.SolanaFungibleAsset,
+      type: networkTokenType ?? NetworkTokenType.Fungible,
+      tokenId: networkToken?.id ?? '',
     }
-    if (ruleConditionType === RuleConditionType.SolanaFungibleAsset && networkToken) {
+    if (networkTokenType === NetworkTokenType.Fungible && networkToken) {
       return {
         ...base,
         tokenId: networkToken?.id,
-        account: networkToken?.account,
-        amount: '1',
+        amount: amount ?? '0',
         config: {},
         filters: {},
       }
     }
-    if (ruleConditionType === RuleConditionType.SolanaNonFungibleAsset && networkToken) {
+    if (networkTokenType === NetworkTokenType.NonFungible && networkToken) {
       return {
         ...base,
         tokenId: networkToken?.id,
-        account: networkToken?.account,
-        amount: '1',
+        amount: amount ?? '0',
         config: {},
         filters: {},
-      }
-    }
-    if (ruleConditionType === RuleConditionType.AnybodiesAsset) {
-      return {
-        ...base,
-        config: { vaultId: '' },
       }
     }
     return {
       ...base,
     }
-  }, [props.rule.id, ruleConditionType, networkToken])
+  }, [props.rule.id, networkTokenType, networkToken])
 
-  async function addCondition(type: RuleConditionType, token: NetworkToken) {
+  async function addCondition(type: NetworkTokenType, token: NetworkToken) {
     console.log('addCondition', type, token)
-    createRuleCondition({ ...config, type, tokenId: token.id, account: token.account })
+    createRuleCondition({ ...config, type, tokenId: token.id })
       .then(async (res) => {
         console.log('res', res)
         toastSuccess('Condition created')
@@ -84,10 +76,10 @@ export function RuleConditionUiCreateWizard(props: { rule: Rule; community: Comm
   }
 
   const isActive = useMemo(() => {
-    if (!ruleConditionType) return 0
+    if (!networkTokenType) return 0
     if (!networkToken) return 1
     return 2
-  }, [ruleConditionType, networkToken])
+  }, [networkTokenType, networkToken])
 
   return (
     <UiStack>
@@ -97,7 +89,7 @@ export function RuleConditionUiCreateWizard(props: { rule: Rule; community: Comm
             active={isActive}
             onStepClick={(step) => {
               if (step === 0) {
-                setRuleConditionType(undefined)
+                setNetworkTokenType(undefined)
                 setNetworkToken(undefined)
               }
               if (step === 1) {
@@ -107,22 +99,22 @@ export function RuleConditionUiCreateWizard(props: { rule: Rule; community: Comm
           >
             <Stepper.Step label="Condition Type" description="Select Condition Type">
               <RuleConditionUiSelectType
-                ruleConditionType={ruleConditionType}
-                setRuleConditionType={(type) => {
-                  setRuleConditionType(type ?? undefined)
+                networkTokenType={networkTokenType}
+                setNetworkTokenType={(type) => {
+                  setNetworkTokenType(type ?? undefined)
                   setNetworkToken(undefined)
                 }}
               />
             </Stepper.Step>
             <Stepper.Step label="Configuration" description="Configure the condition">
-              {ruleConditionType ? (
+              {networkTokenType ? (
                 <UiStack>
                   <RuleConditionUiTypeForm
                     amount={amount}
                     setAmount={setAmount}
                     networkToken={networkToken}
                     setNetworkToken={setNetworkToken}
-                    type={ruleConditionType}
+                    type={networkTokenType}
                     tokens={tokens.sort((a, b) => a.name.localeCompare(b.name))}
                   />
                 </UiStack>
@@ -131,12 +123,12 @@ export function RuleConditionUiCreateWizard(props: { rule: Rule; community: Comm
               )}
             </Stepper.Step>
             <Stepper.Step label="Confirm" description="Confirm and create condition">
-              {ruleConditionType && networkToken ? (
+              {networkTokenType && networkToken ? (
                 <UiStack>
                   <UiKeyValueTable
                     items={[
                       ['Rule', <RuleUiItem rule={props.rule} />],
-                      ['Type', <RuleConditionUiItem type={ruleConditionType} />],
+                      ['Type', <RuleConditionUiItem type={networkTokenType} />],
                       networkToken ? ['Token', <NetworkTokenUiItem networkToken={networkToken} />] : undefined,
                       [
                         'Amount (min)',
@@ -147,7 +139,7 @@ export function RuleConditionUiCreateWizard(props: { rule: Rule; community: Comm
                     ]}
                   />
 
-                  <Button size="xl" onClick={() => addCondition(ruleConditionType, networkToken)}>
+                  <Button size="xl" onClick={() => addCondition(networkTokenType, networkToken)}>
                     Create Condition
                   </Button>
                 </UiStack>
@@ -165,28 +157,28 @@ export function RuleConditionUiCreateWizard(props: { rule: Rule; community: Comm
 }
 
 function RuleConditionUiSelectType({
-  ruleConditionType,
-  setRuleConditionType,
+  networkTokenType,
+  setNetworkTokenType,
 }: {
-  ruleConditionType: RuleConditionType | undefined
-  setRuleConditionType: (type: RuleConditionType | undefined) => void
+  networkTokenType: NetworkTokenType | undefined
+  setNetworkTokenType: (type: NetworkTokenType | undefined) => void
 }) {
-  return ruleConditionType ? (
+  return networkTokenType ? (
     <RuleConditionUiNavLink
-      type={ruleConditionType}
+      type={networkTokenType}
       active
       onClick={() => {
-        setRuleConditionType(undefined)
+        setNetworkTokenType(undefined)
       }}
     />
   ) : (
     <UiStack>
-      {getEnumOptions(RuleConditionType).map(({ value: type }) => (
+      {getEnumOptions(NetworkTokenType).map(({ value: type }) => (
         <RuleConditionUiNavLink
           type={type}
           key={type}
-          onClick={() => setRuleConditionType(type)}
-          active={ruleConditionType === type}
+          onClick={() => setNetworkTokenType(type)}
+          active={networkTokenType === type}
         />
       ))}
     </UiStack>

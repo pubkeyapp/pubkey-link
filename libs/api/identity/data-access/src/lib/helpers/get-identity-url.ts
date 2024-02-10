@@ -8,7 +8,7 @@ export function getIdentityUrl(identity: Identity) {
     case IdentityProvider.GitHub:
       return `https://github.com/${(identity.profile as unknown as { username: string })?.username}`
     case IdentityProvider.Solana:
-      return `https://explorer.solana.com/address/${identity.providerId}`
+      return `https://solana.fm/address/${identity.providerId}`
     case IdentityProvider.Twitter:
       return `https://twitter.com/${(identity.profile as unknown as { username: string })?.username}`
     default:

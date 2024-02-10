@@ -95,7 +95,9 @@ export class DiscordBot {
       count += members.size
     }
 
-    this.logger.verbose(`In ${guild.name}, I found ${count} members in ${batches} batches`)
+    this.logger.verbose(
+      `[${this.client?.user?.username}] getEachMember(${guild.name}): found ${count} members in ${batches} batches`,
+    )
 
     return result
   }

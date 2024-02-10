@@ -3,13 +3,19 @@ import {
   CommunityRole,
   IdentityProvider,
   NetworkCluster,
+  NetworkTokenType,
   Prisma,
-  RuleConditionType,
   UserRole,
   UserStatus,
 } from '@prisma/client'
 
 const cluster = NetworkCluster.SolanaMainnet
+const DL_SERVER = '953959331353751632'
+const DL_ROLE_ONE_OF_US = '1126756485200871465'
+const DL_ROLE_BV = '1148950083941961798'
+const DL_ROLE_BV_EXPIRED = '1150017837017084005'
+const DL_ROLE_HOLDER = '1205617205006434384'
+
 export const provisionCommunities: Prisma.CommunityCreateInput[] = [
   {
     cluster,
@@ -27,13 +33,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
         name: 'PubKey Linked Roles',
         status: 'Active',
         permissions: {
-          create: [
-            {
-              id: '1083213946078625853-1163196496607457441',
-              serverId: '1083213946078625853',
-              roleId: '1163196496607457441',
-            },
-          ],
+          create: [],
         },
       },
     },
@@ -48,25 +48,22 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
         {
           id: 'rule-one-of-us',
           name: 'One of Us',
-          permissions: { create: [{ id: 'perm-one-of-us', botId: '1083213946078625853-1163196496607457441' }] },
+          // permissions: {
+          //   create: [
+          //     { id: 'perm-one-of-us', botId: '953959331353751632-1163196496607457441' }
+          //   ],
+          // },
           conditions: {
             create: [
               {
                 id: 'cond-deanslist-nft-holder',
-                type: RuleConditionType.SolanaNonFungibleAsset,
+                type: NetworkTokenType.NonFungible,
                 name: 'Deanslist NFT holder',
-                account: '5FusHaKEKjfKsmQwXNrhFcFABGGxu7iYCdbvyVSRe3Ri',
                 token: {
                   connect: {
                     account_cluster: { cluster, account: '5FusHaKEKjfKsmQwXNrhFcFABGGxu7iYCdbvyVSRe3Ri' },
                   },
                 },
-                amount: '1',
-              },
-              {
-                type: RuleConditionType.AnybodiesAsset,
-                name: 'Deanslist NFT staked in Anybodies Vault',
-                config: { vault: 'JiZUwqz0ETakNYOIulut:CjYTP9jJVmCqnmdPf8tyafTHxTQtAjsFckVGZWMwprca' },
                 amount: '1',
               },
             ],
@@ -92,18 +89,25 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
           'https://cdn.discordapp.com/avatars/1138462172092039258/2d9f621e44433c97e171bb40ec122b6f.png?size=1024',
         id: '1138462172092039258',
         name: "Dean's List Projects LOCAL",
+        permissions: {
+          create: [DL_ROLE_ONE_OF_US, DL_ROLE_BV, DL_ROLE_BV_EXPIRED, DL_ROLE_HOLDER].map((roleId) => ({
+            id: `${DL_SERVER}-${roleId}`,
+            serverId: DL_SERVER,
+            roleId,
+          })),
+        },
       },
     },
     rules: {
       create: [
         {
+          id: 'one-of-us',
           name: 'One of Us',
           conditions: {
             create: [
               {
-                type: RuleConditionType.SolanaNonFungibleAsset,
+                type: NetworkTokenType.NonFungible,
                 name: 'Deanslist NFT holder',
-                account: '5FusHaKEKjfKsmQwXNrhFcFABGGxu7iYCdbvyVSRe3Ri',
                 token: {
                   connect: {
                     account_cluster: { cluster, account: '5FusHaKEKjfKsmQwXNrhFcFABGGxu7iYCdbvyVSRe3Ri' },
@@ -111,23 +115,18 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
                 },
                 amount: '1',
               },
-              {
-                type: RuleConditionType.AnybodiesAsset,
-                name: 'Deanslist NFT staked in Anybodies Vault',
-                config: { vault: 'JiZUwqz0ETakNYOIulut:CjYTP9jJVmCqnmdPf8tyafTHxTQtAjsFckVGZWMwprca' },
-                amount: '1',
-              },
             ],
           },
+          permissions: { create: [{ botId: `${DL_SERVER}-${DL_ROLE_ONE_OF_US}` }] },
         },
         {
+          id: 'business-visa',
           name: 'Business Visa',
           conditions: {
             create: [
               {
-                type: RuleConditionType.SolanaNonFungibleAsset,
+                type: NetworkTokenType.NonFungible,
                 name: 'Business Visa NFT holder',
-                account: '9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp',
                 token: {
                   connect: { account_cluster: { cluster, account: '9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp' } },
                 },
@@ -136,15 +135,16 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
               },
             ],
           },
+          permissions: { create: [{ botId: `${DL_SERVER}-${DL_ROLE_BV}` }] },
         },
         {
+          id: 'business-visa-expired',
           name: 'Business Visa (Expired)',
           conditions: {
             create: [
               {
-                type: RuleConditionType.SolanaNonFungibleAsset,
+                type: NetworkTokenType.NonFungible,
                 name: 'Business Visa NFT holder (Expired)',
-                account: '9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp',
                 token: {
                   connect: { account_cluster: { cluster, account: '9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp' } },
                 },
@@ -153,15 +153,16 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
               },
             ],
           },
+          permissions: { create: [{ botId: `${DL_SERVER}-${DL_ROLE_BV_EXPIRED}` }] },
         },
         {
+          id: 'dean-holder',
           name: 'DEAN Holder',
           conditions: {
             create: [
               {
-                type: RuleConditionType.SolanaFungibleAsset,
+                type: NetworkTokenType.Fungible,
                 name: '$DEAN token holder',
-                account: 'Ds52CDgqdWbTWsua1hgT3AuSSy4FNx2Ezge1br3jQ14a',
                 amount: '1000',
                 token: {
                   connect: { account_cluster: { cluster, account: 'Ds52CDgqdWbTWsua1hgT3AuSSy4FNx2Ezge1br3jQ14a' } },
@@ -169,6 +170,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
               },
             ],
           },
+          permissions: { create: [{ botId: `${DL_SERVER}-${DL_ROLE_HOLDER}` }] },
         },
       ],
     },

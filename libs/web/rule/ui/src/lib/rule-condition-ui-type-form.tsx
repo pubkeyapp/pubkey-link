@@ -1,7 +1,7 @@
 import { TextInput } from '@mantine/core'
-import { NetworkToken, RuleConditionType } from '@pubkey-link/sdk'
+import { NetworkToken, NetworkTokenType } from '@pubkey-link/sdk'
 import { NetworkTokenUiSelect } from '@pubkey-link/web-network-token-ui'
-import { UiStack, UiWarning } from '@pubkey-ui/core'
+import { UiStack } from '@pubkey-ui/core'
 
 export function RuleConditionUiTypeForm({
   amount,
@@ -15,14 +15,12 @@ export function RuleConditionUiTypeForm({
   setAmount: (amount: string) => void
   networkToken?: NetworkToken | undefined
   setNetworkToken: (token: NetworkToken | undefined) => void
-  type: RuleConditionType
+  type: NetworkTokenType
   tokens: NetworkToken[]
 }) {
   switch (type) {
-    case RuleConditionType.AnybodiesAsset:
-      return <UiWarning title="Not implemented" message="This condition type is not implemented yet." />
-    case RuleConditionType.SolanaFungibleAsset:
-    case RuleConditionType.SolanaNonFungibleAsset:
+    case NetworkTokenType.Fungible:
+    case NetworkTokenType.NonFungible:
       return (
         <UiStack>
           <NetworkTokenUiSelect value={networkToken} setValue={setNetworkToken} tokens={tokens} />

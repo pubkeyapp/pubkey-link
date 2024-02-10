@@ -1,6 +1,7 @@
-import { Field, ObjectType } from '@nestjs/graphql'
-import { CommunityRole } from './community-role.enum'
+import { Field, HideField, ObjectType } from '@nestjs/graphql'
 import { User } from '@pubkey-link/api-user-data-access'
+import { CommunityMemberRule } from './community-member-rule.entity'
+import { CommunityRole } from './community-role.enum'
 
 @ObjectType()
 export class CommunityMember {
@@ -14,6 +15,8 @@ export class CommunityMember {
   role!: CommunityRole
   @Field(() => User, { nullable: true })
   user?: User
+  @HideField()
+  rules?: CommunityMemberRule[]
   @Field()
   userId!: string
   @Field()

@@ -1,7 +1,3 @@
-import { RuleConditionType } from './rule-condition-type'
+import { NetworkTokenType } from './network-token-type'
 
-export const ruleConditionTypes = [
-  RuleConditionType.AnybodiesAsset,
-  RuleConditionType.SolanaFungibleAsset,
-  RuleConditionType.SolanaNonFungibleAsset,
-]
+export const ruleConditionTypes = [NetworkTokenType.Fungible, NetworkTokenType.NonFungible]

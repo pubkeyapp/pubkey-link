@@ -62,7 +62,11 @@ export function UserUserDetailFeature() {
                       </Text>
                       {identity.syncEnded ? (
                         <UiTime size="xs" c="dimmed" prefix="Synced " date={new Date(identity.syncEnded)} />
-                      ) : null}
+                      ) : (
+                        <Text size="xs" c="dimmed">
+                          Not synced
+                        </Text>
+                      )}
                     </Stack>
                   </Group>
                   <Group gap={2}>

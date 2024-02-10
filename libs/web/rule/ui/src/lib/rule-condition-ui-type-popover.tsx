@@ -1,10 +1,10 @@
 import { ActionIcon, Popover } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { RuleConditionType } from '@pubkey-link/sdk'
+import { NetworkTokenType } from '@pubkey-link/sdk'
 import { IconInfoCircle } from '@tabler/icons-react'
 import { RuleConditionUiInfo } from './rule-condition-ui-info'
 
-export function RuleConditionUiTypePopover({ type }: { type: RuleConditionType }) {
+export function RuleConditionUiTypePopover({ type }: { type: NetworkTokenType }) {
   const [opened, { close, open }] = useDisclosure(false)
   return (
     <Popover width={200} position="bottom" withArrow shadow="md" opened={opened}>

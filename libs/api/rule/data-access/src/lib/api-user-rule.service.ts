@@ -25,13 +25,11 @@ export class ApiUserRuleService {
     await this.ensureRuleAdmin({ userId, ruleId: input.ruleId })
     return this.core.data.ruleCondition.create({
       data: {
-        account: input.account,
-        amount: input.amount,
         config: input.config ?? undefined,
         filters: input.filters ?? undefined,
         name: input.type.toString(),
         rule: { connect: { id: input.ruleId } },
-        token: input.tokenId ? { connect: { id: input.tokenId } } : undefined,
+        token: { connect: { id: input.tokenId } },
         type: input.type,
       },
     })
@@ -121,6 +119,7 @@ export class ApiUserRuleService {
       where: { id: ruleConditionId },
       data: {
         ...input,
+        amount: input.amount ?? undefined,
         config: input.config ?? undefined,
         filters: input.filters ?? undefined,
       },
@@ -142,7 +141,8 @@ export class ApiUserRuleService {
   }
 
   async validateRules(userId: string, communityId: string) {
-    return this.resolver.validateRules(userId, communityId)
+    await this.core.ensureCommunityAdmin({ communityId, userId })
+    return this.resolver.validateRules(communityId)
   }
 
   private async ensureRuleAdmin({ userId, ruleId }: { userId: string; ruleId: string }) {

@@ -283,6 +283,7 @@ export type CommunityMember = {
   createdAt?: Maybe<Scalars['DateTime']['output']>
   id: Scalars['String']['output']
   role: CommunityRole
+  rules?: Maybe<Array<Rule>>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   user?: Maybe<User>
   userId: Scalars['String']['output']
@@ -817,7 +818,6 @@ export type NetworkTokenPaging = {
 export enum NetworkTokenType {
   Fungible = 'Fungible',
   NonFungible = 'NonFungible',
-  Unknown = 'Unknown',
 }
 
 export enum NetworkType {
@@ -1106,7 +1106,6 @@ export type Rule = {
 
 export type RuleCondition = {
   __typename?: 'RuleCondition'
-  account?: Maybe<Scalars['String']['output']>
   amount?: Maybe<Scalars['String']['output']>
   asset?: Maybe<SolanaNetworkAsset>
   config?: Maybe<Scalars['JSON']['output']>
@@ -1115,15 +1114,9 @@ export type RuleCondition = {
   id: Scalars['String']['output']
   token?: Maybe<NetworkToken>
   tokenId?: Maybe<Scalars['String']['output']>
-  type: RuleConditionType
+  type: NetworkTokenType
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   valid?: Maybe<Scalars['Boolean']['output']>
-}
-
-export enum RuleConditionType {
-  AnybodiesAsset = 'AnybodiesAsset',
-  SolanaFungibleAsset = 'SolanaFungibleAsset',
-  SolanaNonFungibleAsset = 'SolanaNonFungibleAsset',
 }
 
 export type RulePaging = {
@@ -1186,13 +1179,12 @@ export type UserCreateCommunityInput = {
 }
 
 export type UserCreateRuleConditionInput = {
-  account?: InputMaybe<Scalars['String']['input']>
   amount?: InputMaybe<Scalars['String']['input']>
   config?: InputMaybe<Scalars['JSON']['input']>
   filters?: InputMaybe<Scalars['JSON']['input']>
   ruleId: Scalars['String']['input']
-  tokenId?: InputMaybe<Scalars['String']['input']>
-  type: RuleConditionType
+  tokenId: Scalars['String']['input']
+  type: NetworkTokenType
 }
 
 export type UserCreateRuleInput = {
@@ -1315,11 +1307,9 @@ export type UserUpdateCommunityMemberInput = {
 }
 
 export type UserUpdateRuleConditionInput = {
-  account?: InputMaybe<Scalars['String']['input']>
   amount?: InputMaybe<Scalars['String']['input']>
   config?: InputMaybe<Scalars['JSON']['input']>
   filters?: InputMaybe<Scalars['JSON']['input']>
-  tokenId?: InputMaybe<Scalars['String']['input']>
 }
 
 export type UserUpdateRuleInput = {
@@ -1822,8 +1812,7 @@ export type UserFindOneBotQuery = {
           __typename?: 'RuleCondition'
           createdAt?: Date | null
           id: string
-          type: RuleConditionType
-          account?: string | null
+          type: NetworkTokenType
           amount?: string | null
           filters?: any | null
           config?: any | null
@@ -2150,6 +2139,78 @@ export type CommunityMemberDetailsFragment = {
     updatedAt?: Date | null
     username?: string | null
   } | null
+  rules?: Array<{
+    __typename?: 'Rule'
+    createdAt?: Date | null
+    id: string
+    communityId: string
+    name: string
+    description?: string | null
+    updatedAt?: Date | null
+    viewUrl?: string | null
+    conditions?: Array<{
+      __typename?: 'RuleCondition'
+      createdAt?: Date | null
+      id: string
+      type: NetworkTokenType
+      amount?: string | null
+      filters?: any | null
+      config?: any | null
+      tokenId?: string | null
+      updatedAt?: Date | null
+      valid?: boolean | null
+      token?: {
+        __typename?: 'NetworkToken'
+        id: string
+        createdAt?: Date | null
+        updatedAt?: Date | null
+        cluster: NetworkCluster
+        type: NetworkTokenType
+        account: string
+        program: string
+        name: string
+        vault?: string | null
+        symbol?: string | null
+        description?: string | null
+        imageUrl?: string | null
+        metadataUrl?: string | null
+        raw?: any | null
+      } | null
+      asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+    }> | null
+    permissions?: Array<{
+      __typename?: 'RulePermission'
+      createdAt?: Date | null
+      id: string
+      updatedAt?: Date | null
+      botId?: string | null
+      ruleId?: string | null
+      bot?: {
+        __typename?: 'BotPermission'
+        botId?: string | null
+        createdAt?: Date | null
+        id: string
+        roleId?: string | null
+        serverId?: string | null
+        updatedAt?: Date | null
+        role?: {
+          __typename?: 'DiscordRole'
+          id: string
+          name: string
+          managed: boolean
+          color: number
+          position: number
+        } | null
+        server?: {
+          __typename?: 'DiscordServer'
+          id: string
+          name: string
+          icon?: string | null
+          permissions?: Array<string> | null
+        } | null
+      } | null
+    }> | null
+  }> | null
 }
 
 export type AdminFindManyCommunityMemberQueryVariables = Exact<{
@@ -2181,6 +2242,78 @@ export type AdminFindManyCommunityMemberQuery = {
         updatedAt?: Date | null
         username?: string | null
       } | null
+      rules?: Array<{
+        __typename?: 'Rule'
+        createdAt?: Date | null
+        id: string
+        communityId: string
+        name: string
+        description?: string | null
+        updatedAt?: Date | null
+        viewUrl?: string | null
+        conditions?: Array<{
+          __typename?: 'RuleCondition'
+          createdAt?: Date | null
+          id: string
+          type: NetworkTokenType
+          amount?: string | null
+          filters?: any | null
+          config?: any | null
+          tokenId?: string | null
+          updatedAt?: Date | null
+          valid?: boolean | null
+          token?: {
+            __typename?: 'NetworkToken'
+            id: string
+            createdAt?: Date | null
+            updatedAt?: Date | null
+            cluster: NetworkCluster
+            type: NetworkTokenType
+            account: string
+            program: string
+            name: string
+            vault?: string | null
+            symbol?: string | null
+            description?: string | null
+            imageUrl?: string | null
+            metadataUrl?: string | null
+            raw?: any | null
+          } | null
+          asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+        }> | null
+        permissions?: Array<{
+          __typename?: 'RulePermission'
+          createdAt?: Date | null
+          id: string
+          updatedAt?: Date | null
+          botId?: string | null
+          ruleId?: string | null
+          bot?: {
+            __typename?: 'BotPermission'
+            botId?: string | null
+            createdAt?: Date | null
+            id: string
+            roleId?: string | null
+            serverId?: string | null
+            updatedAt?: Date | null
+            role?: {
+              __typename?: 'DiscordRole'
+              id: string
+              name: string
+              managed: boolean
+              color: number
+              position: number
+            } | null
+            server?: {
+              __typename?: 'DiscordServer'
+              id: string
+              name: string
+              icon?: string | null
+              permissions?: Array<string> | null
+            } | null
+          } | null
+        }> | null
+      }> | null
     }>
     meta: {
       __typename?: 'PagingMeta'
@@ -2222,6 +2355,78 @@ export type AdminFindOneCommunityMemberQuery = {
       updatedAt?: Date | null
       username?: string | null
     } | null
+    rules?: Array<{
+      __typename?: 'Rule'
+      createdAt?: Date | null
+      id: string
+      communityId: string
+      name: string
+      description?: string | null
+      updatedAt?: Date | null
+      viewUrl?: string | null
+      conditions?: Array<{
+        __typename?: 'RuleCondition'
+        createdAt?: Date | null
+        id: string
+        type: NetworkTokenType
+        amount?: string | null
+        filters?: any | null
+        config?: any | null
+        tokenId?: string | null
+        updatedAt?: Date | null
+        valid?: boolean | null
+        token?: {
+          __typename?: 'NetworkToken'
+          id: string
+          createdAt?: Date | null
+          updatedAt?: Date | null
+          cluster: NetworkCluster
+          type: NetworkTokenType
+          account: string
+          program: string
+          name: string
+          vault?: string | null
+          symbol?: string | null
+          description?: string | null
+          imageUrl?: string | null
+          metadataUrl?: string | null
+          raw?: any | null
+        } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      }> | null
+      permissions?: Array<{
+        __typename?: 'RulePermission'
+        createdAt?: Date | null
+        id: string
+        updatedAt?: Date | null
+        botId?: string | null
+        ruleId?: string | null
+        bot?: {
+          __typename?: 'BotPermission'
+          botId?: string | null
+          createdAt?: Date | null
+          id: string
+          roleId?: string | null
+          serverId?: string | null
+          updatedAt?: Date | null
+          role?: {
+            __typename?: 'DiscordRole'
+            id: string
+            name: string
+            managed: boolean
+            color: number
+            position: number
+          } | null
+          server?: {
+            __typename?: 'DiscordServer'
+            id: string
+            name: string
+            icon?: string | null
+            permissions?: Array<string> | null
+          } | null
+        } | null
+      }> | null
+    }> | null
   } | null
 }
 
@@ -2253,6 +2458,78 @@ export type AdminUpdateCommunityMemberMutation = {
       updatedAt?: Date | null
       username?: string | null
     } | null
+    rules?: Array<{
+      __typename?: 'Rule'
+      createdAt?: Date | null
+      id: string
+      communityId: string
+      name: string
+      description?: string | null
+      updatedAt?: Date | null
+      viewUrl?: string | null
+      conditions?: Array<{
+        __typename?: 'RuleCondition'
+        createdAt?: Date | null
+        id: string
+        type: NetworkTokenType
+        amount?: string | null
+        filters?: any | null
+        config?: any | null
+        tokenId?: string | null
+        updatedAt?: Date | null
+        valid?: boolean | null
+        token?: {
+          __typename?: 'NetworkToken'
+          id: string
+          createdAt?: Date | null
+          updatedAt?: Date | null
+          cluster: NetworkCluster
+          type: NetworkTokenType
+          account: string
+          program: string
+          name: string
+          vault?: string | null
+          symbol?: string | null
+          description?: string | null
+          imageUrl?: string | null
+          metadataUrl?: string | null
+          raw?: any | null
+        } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      }> | null
+      permissions?: Array<{
+        __typename?: 'RulePermission'
+        createdAt?: Date | null
+        id: string
+        updatedAt?: Date | null
+        botId?: string | null
+        ruleId?: string | null
+        bot?: {
+          __typename?: 'BotPermission'
+          botId?: string | null
+          createdAt?: Date | null
+          id: string
+          roleId?: string | null
+          serverId?: string | null
+          updatedAt?: Date | null
+          role?: {
+            __typename?: 'DiscordRole'
+            id: string
+            name: string
+            managed: boolean
+            color: number
+            position: number
+          } | null
+          server?: {
+            __typename?: 'DiscordServer'
+            id: string
+            name: string
+            icon?: string | null
+            permissions?: Array<string> | null
+          } | null
+        } | null
+      }> | null
+    }> | null
   } | null
 }
 
@@ -2291,6 +2568,78 @@ export type UserFindManyCommunityMemberQuery = {
         updatedAt?: Date | null
         username?: string | null
       } | null
+      rules?: Array<{
+        __typename?: 'Rule'
+        createdAt?: Date | null
+        id: string
+        communityId: string
+        name: string
+        description?: string | null
+        updatedAt?: Date | null
+        viewUrl?: string | null
+        conditions?: Array<{
+          __typename?: 'RuleCondition'
+          createdAt?: Date | null
+          id: string
+          type: NetworkTokenType
+          amount?: string | null
+          filters?: any | null
+          config?: any | null
+          tokenId?: string | null
+          updatedAt?: Date | null
+          valid?: boolean | null
+          token?: {
+            __typename?: 'NetworkToken'
+            id: string
+            createdAt?: Date | null
+            updatedAt?: Date | null
+            cluster: NetworkCluster
+            type: NetworkTokenType
+            account: string
+            program: string
+            name: string
+            vault?: string | null
+            symbol?: string | null
+            description?: string | null
+            imageUrl?: string | null
+            metadataUrl?: string | null
+            raw?: any | null
+          } | null
+          asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+        }> | null
+        permissions?: Array<{
+          __typename?: 'RulePermission'
+          createdAt?: Date | null
+          id: string
+          updatedAt?: Date | null
+          botId?: string | null
+          ruleId?: string | null
+          bot?: {
+            __typename?: 'BotPermission'
+            botId?: string | null
+            createdAt?: Date | null
+            id: string
+            roleId?: string | null
+            serverId?: string | null
+            updatedAt?: Date | null
+            role?: {
+              __typename?: 'DiscordRole'
+              id: string
+              name: string
+              managed: boolean
+              color: number
+              position: number
+            } | null
+            server?: {
+              __typename?: 'DiscordServer'
+              id: string
+              name: string
+              icon?: string | null
+              permissions?: Array<string> | null
+            } | null
+          } | null
+        }> | null
+      }> | null
     }>
     meta: {
       __typename?: 'PagingMeta'
@@ -2332,6 +2681,78 @@ export type UserFindOneCommunityMemberQuery = {
       updatedAt?: Date | null
       username?: string | null
     } | null
+    rules?: Array<{
+      __typename?: 'Rule'
+      createdAt?: Date | null
+      id: string
+      communityId: string
+      name: string
+      description?: string | null
+      updatedAt?: Date | null
+      viewUrl?: string | null
+      conditions?: Array<{
+        __typename?: 'RuleCondition'
+        createdAt?: Date | null
+        id: string
+        type: NetworkTokenType
+        amount?: string | null
+        filters?: any | null
+        config?: any | null
+        tokenId?: string | null
+        updatedAt?: Date | null
+        valid?: boolean | null
+        token?: {
+          __typename?: 'NetworkToken'
+          id: string
+          createdAt?: Date | null
+          updatedAt?: Date | null
+          cluster: NetworkCluster
+          type: NetworkTokenType
+          account: string
+          program: string
+          name: string
+          vault?: string | null
+          symbol?: string | null
+          description?: string | null
+          imageUrl?: string | null
+          metadataUrl?: string | null
+          raw?: any | null
+        } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      }> | null
+      permissions?: Array<{
+        __typename?: 'RulePermission'
+        createdAt?: Date | null
+        id: string
+        updatedAt?: Date | null
+        botId?: string | null
+        ruleId?: string | null
+        bot?: {
+          __typename?: 'BotPermission'
+          botId?: string | null
+          createdAt?: Date | null
+          id: string
+          roleId?: string | null
+          serverId?: string | null
+          updatedAt?: Date | null
+          role?: {
+            __typename?: 'DiscordRole'
+            id: string
+            name: string
+            managed: boolean
+            color: number
+            position: number
+          } | null
+          server?: {
+            __typename?: 'DiscordServer'
+            id: string
+            name: string
+            icon?: string | null
+            permissions?: Array<string> | null
+          } | null
+        } | null
+      }> | null
+    }> | null
   } | null
 }
 
@@ -2363,6 +2784,78 @@ export type UserUpdateCommunityMemberMutation = {
       updatedAt?: Date | null
       username?: string | null
     } | null
+    rules?: Array<{
+      __typename?: 'Rule'
+      createdAt?: Date | null
+      id: string
+      communityId: string
+      name: string
+      description?: string | null
+      updatedAt?: Date | null
+      viewUrl?: string | null
+      conditions?: Array<{
+        __typename?: 'RuleCondition'
+        createdAt?: Date | null
+        id: string
+        type: NetworkTokenType
+        amount?: string | null
+        filters?: any | null
+        config?: any | null
+        tokenId?: string | null
+        updatedAt?: Date | null
+        valid?: boolean | null
+        token?: {
+          __typename?: 'NetworkToken'
+          id: string
+          createdAt?: Date | null
+          updatedAt?: Date | null
+          cluster: NetworkCluster
+          type: NetworkTokenType
+          account: string
+          program: string
+          name: string
+          vault?: string | null
+          symbol?: string | null
+          description?: string | null
+          imageUrl?: string | null
+          metadataUrl?: string | null
+          raw?: any | null
+        } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      }> | null
+      permissions?: Array<{
+        __typename?: 'RulePermission'
+        createdAt?: Date | null
+        id: string
+        updatedAt?: Date | null
+        botId?: string | null
+        ruleId?: string | null
+        bot?: {
+          __typename?: 'BotPermission'
+          botId?: string | null
+          createdAt?: Date | null
+          id: string
+          roleId?: string | null
+          serverId?: string | null
+          updatedAt?: Date | null
+          role?: {
+            __typename?: 'DiscordRole'
+            id: string
+            name: string
+            managed: boolean
+            color: number
+            position: number
+          } | null
+          server?: {
+            __typename?: 'DiscordServer'
+            id: string
+            name: string
+            icon?: string | null
+            permissions?: Array<string> | null
+          } | null
+        } | null
+      }> | null
+    }> | null
   } | null
 }
 
@@ -3071,8 +3564,7 @@ export type LogDetailsFragment = {
       __typename?: 'RuleCondition'
       createdAt?: Date | null
       id: string
-      type: RuleConditionType
-      account?: string | null
+      type: NetworkTokenType
       amount?: string | null
       filters?: any | null
       config?: any | null
@@ -3242,8 +3734,7 @@ export type UserFindManyLogQuery = {
           __typename?: 'RuleCondition'
           createdAt?: Date | null
           id: string
-          type: RuleConditionType
-          account?: string | null
+          type: NetworkTokenType
           amount?: string | null
           filters?: any | null
           config?: any | null
@@ -3423,8 +3914,7 @@ export type UserFindOneLogQuery = {
         __typename?: 'RuleCondition'
         createdAt?: Date | null
         id: string
-        type: RuleConditionType
-        account?: string | null
+        type: NetworkTokenType
         amount?: string | null
         filters?: any | null
         config?: any | null
@@ -3595,8 +4085,7 @@ export type AdminFindManyLogQuery = {
           __typename?: 'RuleCondition'
           createdAt?: Date | null
           id: string
-          type: RuleConditionType
-          account?: string | null
+          type: NetworkTokenType
           amount?: string | null
           filters?: any | null
           config?: any | null
@@ -3776,8 +4265,7 @@ export type AdminFindOneLogQuery = {
         __typename?: 'RuleCondition'
         createdAt?: Date | null
         id: string
-        type: RuleConditionType
-        account?: string | null
+        type: NetworkTokenType
         amount?: string | null
         filters?: any | null
         config?: any | null
@@ -4375,8 +4863,7 @@ export type RuleDetailsFragment = {
     __typename?: 'RuleCondition'
     createdAt?: Date | null
     id: string
-    type: RuleConditionType
-    account?: string | null
+    type: NetworkTokenType
     amount?: string | null
     filters?: any | null
     config?: any | null
@@ -4440,8 +4927,7 @@ export type RuleConditionDetailsFragment = {
   __typename?: 'RuleCondition'
   createdAt?: Date | null
   id: string
-  type: RuleConditionType
-  account?: string | null
+  type: NetworkTokenType
   amount?: string | null
   filters?: any | null
   config?: any | null
@@ -4522,8 +5008,7 @@ export type AdminFindManyRuleQuery = {
         __typename?: 'RuleCondition'
         createdAt?: Date | null
         id: string
-        type: RuleConditionType
-        account?: string | null
+        type: NetworkTokenType
         amount?: string | null
         filters?: any | null
         config?: any | null
@@ -4614,8 +5099,7 @@ export type AdminFindOneRuleQuery = {
       __typename?: 'RuleCondition'
       createdAt?: Date | null
       id: string
-      type: RuleConditionType
-      account?: string | null
+      type: NetworkTokenType
       amount?: string | null
       filters?: any | null
       config?: any | null
@@ -4695,8 +5179,7 @@ export type AdminCreateRuleMutation = {
       __typename?: 'RuleCondition'
       createdAt?: Date | null
       id: string
-      type: RuleConditionType
-      account?: string | null
+      type: NetworkTokenType
       amount?: string | null
       filters?: any | null
       config?: any | null
@@ -4777,8 +5260,7 @@ export type AdminUpdateRuleMutation = {
       __typename?: 'RuleCondition'
       createdAt?: Date | null
       id: string
-      type: RuleConditionType
-      account?: string | null
+      type: NetworkTokenType
       amount?: string | null
       filters?: any | null
       config?: any | null
@@ -4866,8 +5348,7 @@ export type UserFindManyRuleQuery = {
         __typename?: 'RuleCondition'
         createdAt?: Date | null
         id: string
-        type: RuleConditionType
-        account?: string | null
+        type: NetworkTokenType
         amount?: string | null
         filters?: any | null
         config?: any | null
@@ -4958,8 +5439,7 @@ export type UserFindOneRuleQuery = {
       __typename?: 'RuleCondition'
       createdAt?: Date | null
       id: string
-      type: RuleConditionType
-      account?: string | null
+      type: NetworkTokenType
       amount?: string | null
       filters?: any | null
       config?: any | null
@@ -5039,8 +5519,7 @@ export type UserCreateRuleMutation = {
       __typename?: 'RuleCondition'
       createdAt?: Date | null
       id: string
-      type: RuleConditionType
-      account?: string | null
+      type: NetworkTokenType
       amount?: string | null
       filters?: any | null
       config?: any | null
@@ -5111,8 +5590,7 @@ export type UserCreateRuleConditionMutation = {
     __typename?: 'RuleCondition'
     createdAt?: Date | null
     id: string
-    type: RuleConditionType
-    account?: string | null
+    type: NetworkTokenType
     amount?: string | null
     filters?: any | null
     config?: any | null
@@ -5200,8 +5678,7 @@ export type UserUpdateRuleMutation = {
       __typename?: 'RuleCondition'
       createdAt?: Date | null
       id: string
-      type: RuleConditionType
-      account?: string | null
+      type: NetworkTokenType
       amount?: string | null
       filters?: any | null
       config?: any | null
@@ -5273,8 +5750,7 @@ export type UserUpdateRuleConditionMutation = {
     __typename?: 'RuleCondition'
     createdAt?: Date | null
     id: string
-    type: RuleConditionType
-    account?: string | null
+    type: NetworkTokenType
     amount?: string | null
     filters?: any | null
     config?: any | null
@@ -5331,8 +5807,7 @@ export type UserValidateRuleMutation = {
     __typename?: 'RuleCondition'
     createdAt?: Date | null
     id: string
-    type: RuleConditionType
-    account?: string | null
+    type: NetworkTokenType
     amount?: string | null
     filters?: any | null
     config?: any | null
@@ -5660,6 +6135,113 @@ export const BotMemberDetailsFragmentDoc = gql`
   ${IdentityDetailsFragmentDoc}
   ${UserDetailsFragmentDoc}
 `
+export const NetworkTokenDetailsFragmentDoc = gql`
+  fragment NetworkTokenDetails on NetworkToken {
+    id
+    createdAt
+    updatedAt
+    cluster
+    type
+    account
+    program
+    name
+    vault
+    symbol
+    description
+    imageUrl
+    metadataUrl
+    raw
+  }
+`
+export const RuleConditionDetailsFragmentDoc = gql`
+  fragment RuleConditionDetails on RuleCondition {
+    createdAt
+    id
+    type
+    amount
+    filters
+    config
+    token {
+      ...NetworkTokenDetails
+    }
+    tokenId
+    asset {
+      owner
+      amount
+      accounts
+    }
+    updatedAt
+    valid
+  }
+  ${NetworkTokenDetailsFragmentDoc}
+`
+export const DiscordRoleDetailsFragmentDoc = gql`
+  fragment DiscordRoleDetails on DiscordRole {
+    id
+    name
+    managed
+    color
+    position
+  }
+`
+export const DiscordServerDetailsFragmentDoc = gql`
+  fragment DiscordServerDetails on DiscordServer {
+    id
+    name
+    icon
+    permissions
+  }
+`
+export const BotPermissionDetailsFragmentDoc = gql`
+  fragment BotPermissionDetails on BotPermission {
+    botId
+    createdAt
+    id
+    roleId
+    serverId
+    updatedAt
+    role {
+      ...DiscordRoleDetails
+    }
+    server {
+      ...DiscordServerDetails
+    }
+  }
+  ${DiscordRoleDetailsFragmentDoc}
+  ${DiscordServerDetailsFragmentDoc}
+`
+export const RulePermissionDetailsFragmentDoc = gql`
+  fragment RulePermissionDetails on RulePermission {
+    createdAt
+    id
+    updatedAt
+    botId
+    ruleId
+    bot {
+      ...BotPermissionDetails
+    }
+  }
+  ${BotPermissionDetailsFragmentDoc}
+`
+export const RuleDetailsFragmentDoc = gql`
+  fragment RuleDetails on Rule {
+    createdAt
+    id
+    communityId
+    name
+    description
+    conditions {
+      ...RuleConditionDetails
+    }
+    permissions {
+      ...RulePermissionDetails
+    }
+    updatedAt
+    viewUrl
+  }
+  ${RuleConditionDetailsFragmentDoc}
+  ${RulePermissionDetailsFragmentDoc}
+`
 export const CommunityMemberDetailsFragmentDoc = gql`
   fragment CommunityMemberDetails on CommunityMember {
     communityId
@@ -5670,9 +6252,13 @@ export const CommunityMemberDetailsFragmentDoc = gql`
     user {
       ...UserDetails
     }
+    rules {
+      ...RuleDetails
+    }
     userId
   }
   ${UserDetailsFragmentDoc}
+  ${RuleDetailsFragmentDoc}
 `
 export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
@@ -5732,41 +6318,6 @@ export const IdentityChallengeDetailsFragmentDoc = gql`
     verified
   }
 `
-export const DiscordRoleDetailsFragmentDoc = gql`
-  fragment DiscordRoleDetails on DiscordRole {
-    id
-    name
-    managed
-    color
-    position
-  }
-`
-export const DiscordServerDetailsFragmentDoc = gql`
-  fragment DiscordServerDetails on DiscordServer {
-    id
-    name
-    icon
-    permissions
-  }
-`
-export const BotPermissionDetailsFragmentDoc = gql`
-  fragment BotPermissionDetails on BotPermission {
-    botId
-    createdAt
-    id
-    roleId
-    serverId
-    updatedAt
-    role {
-      ...DiscordRoleDetails
-    }
-    server {
-      ...DiscordServerDetails
-    }
-  }
-  ${DiscordRoleDetailsFragmentDoc}
-  ${DiscordServerDetailsFragmentDoc}
-`
 export const BotDetailsFragmentDoc = gql`
   fragment BotDetails on Bot {
     avatarUrl
@@ -5788,79 +6339,6 @@ export const BotDetailsFragmentDoc = gql`
     }
   }
   ${BotPermissionDetailsFragmentDoc}
-`
-export const NetworkTokenDetailsFragmentDoc = gql`
-  fragment NetworkTokenDetails on NetworkToken {
-    id
-    createdAt
-    updatedAt
-    cluster
-    type
-    account
-    program
-    name
-    vault
-    symbol
-    description
-    imageUrl
-    metadataUrl
-    raw
-  }
-`
-export const RuleConditionDetailsFragmentDoc = gql`
-  fragment RuleConditionDetails on RuleCondition {
-    createdAt
-    id
-    type
-    account
-    amount
-    filters
-    config
-    token {
-      ...NetworkTokenDetails
-    }
-    tokenId
-    asset {
-      owner
-      amount
-      accounts
-    }
-    updatedAt
-    valid
-  }
-  ${NetworkTokenDetailsFragmentDoc}
-`
-export const RulePermissionDetailsFragmentDoc = gql`
-  fragment RulePermissionDetails on RulePermission {
-    createdAt
-    id
-    updatedAt
-    botId
-    ruleId
-    bot {
-      ...BotPermissionDetails
-    }
-  }
-  ${BotPermissionDetailsFragmentDoc}
-`
-export const RuleDetailsFragmentDoc = gql`
-  fragment RuleDetails on Rule {
-    createdAt
-    id
-    communityId
-    name
-    description
-    conditions {
-      ...RuleConditionDetails
-    }
-    permissions {
-      ...RulePermissionDetails
-    }
-    updatedAt
-    viewUrl
-  }
-  ${RuleConditionDetailsFragmentDoc}
-  ${RulePermissionDetailsFragmentDoc}
 `
 export const LogDetailsFragmentDoc = gql`
   fragment LogDetails on Log {
@@ -9280,8 +9758,6 @@ export const NetworkTokenTypeSchema = z.nativeEnum(NetworkTokenType)
 
 export const NetworkTypeSchema = z.nativeEnum(NetworkType)
 
-export const RuleConditionTypeSchema = z.nativeEnum(RuleConditionType)
-
 export const UserRoleSchema = z.nativeEnum(UserRole)
 
 export const UserStatusSchema = z.nativeEnum(UserStatus)
@@ -9560,13 +10036,12 @@ export function UserCreateCommunityInputSchema(): z.ZodObject<Properties<UserCre
 
 export function UserCreateRuleConditionInputSchema(): z.ZodObject<Properties<UserCreateRuleConditionInput>> {
   return z.object({
-    account: z.string().nullish(),
     amount: z.string().nullish(),
     config: definedNonNullAnySchema.nullish(),
     filters: definedNonNullAnySchema.nullish(),
     ruleId: z.string(),
-    tokenId: z.string().nullish(),
-    type: RuleConditionTypeSchema,
+    tokenId: z.string(),
+    type: NetworkTokenTypeSchema,
   })
 }
 
@@ -9700,11 +10175,9 @@ export function UserUpdateCommunityMemberInputSchema(): z.ZodObject<Properties<U
 
 export function UserUpdateRuleConditionInputSchema(): z.ZodObject<Properties<UserUpdateRuleConditionInput>> {
   return z.object({
-    account: z.string().nullish(),
     amount: z.string().nullish(),
     config: definedNonNullAnySchema.nullish(),
     filters: definedNonNullAnySchema.nullish(),
-    tokenId: z.string().nullish(),
   })
 }
 
