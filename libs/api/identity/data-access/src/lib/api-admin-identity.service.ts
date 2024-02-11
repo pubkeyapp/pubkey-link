@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Identity as PrismaIdentity } from '@prisma/client'
+import { Identity as PrismaIdentity, IdentityProvider } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { AdminCreateIdentityInput } from './dto/admin-create-identity.input'
 import { AdminFindManyIdentityInput } from './dto/admin-find-many-identity.input'
@@ -15,11 +15,15 @@ export class ApiAdminIdentityService {
     if (found) {
       throw new Error(`Identity ${input.providerId} on ${input.provider} already exists`)
     }
+    if (input.provider === IdentityProvider.Discord) {
+      throw new Error(`Cannot create Discord identity`)
+    }
     const created = await this.core.data.identity.create({
       data: {
+        name: input.providerId,
+        ownerId: input.ownerId,
         providerId: input.providerId,
         provider: input.provider,
-        ownerId: input.ownerId,
       },
     })
     if (!created) {

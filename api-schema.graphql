@@ -732,6 +732,7 @@ input UserFindManyCommunityMemberInput {
 }
 
 input UserFindManyIdentityInput {
+  provider: IdentityProvider
   username: String!
 }
 

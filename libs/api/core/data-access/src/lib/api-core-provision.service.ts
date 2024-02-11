@@ -1,10 +1,10 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { Prisma, UserStatus } from '@prisma/client'
 import { fakeUsers, provisionCommunities, provisionUsers } from './api-core-provision-data'
-import { hashPassword } from './helpers/hash-validate-password'
-import { ApiCoreService } from './api-core.service'
-import { slugifyId } from './helpers/slugify-id'
 import { provisionNetworks } from './api-core-provision-data-networks'
+import { ApiCoreService } from './api-core.service'
+import { hashPassword } from './helpers/hash-validate-password'
+import { slugifyId, slugifyUsername } from './helpers/slugify-id'
 
 @Injectable()
 export class ApiCoreProvisionService implements OnModuleInit {
@@ -73,7 +73,7 @@ export class ApiCoreProvisionService implements OnModuleInit {
   }
 
   private async provisionUser(input: Prisma.UserCreateInput) {
-    const username = slugifyId(input.username)
+    const username = slugifyUsername(input.username)
     const existing = await this.core.data.user.count({ where: { username } })
     if (existing < 1) {
       await this.core.data.user.create({

@@ -120,7 +120,7 @@ model Identity {
   syncEnded    DateTime?
   provider     IdentityProvider
   providerId   String
-  name         String?
+  name         String
   accessToken  String? /// @encrypted
   refreshToken String? /// @encrypted
   profile      Json?

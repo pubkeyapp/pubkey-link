@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { CommunityRole, IdentityProvider, LogLevel, LogRelatedType, Prisma, UserRole } from '@prisma/client'
 import { ApiCorePrismaClient, prismaClient } from './api-core-prisma-client'
 import { ApiCoreConfigService } from './config/api-core-config.service'
-import { slugifyId } from './helpers/slugify-id'
+import { slugifyId, slugifyUsername } from './helpers/slugify-id'
 
 @Injectable()
 export class ApiCoreService {
+  private readonly logger = new Logger(ApiCoreService.name)
   readonly data: ApiCorePrismaClient = prismaClient
   constructor(readonly config: ApiCoreConfigService) {}
 
@@ -101,7 +102,7 @@ export class ApiCoreService {
   }
 
   async findUsername(username: string): Promise<string> {
-    username = slugifyId(username)
+    username = slugifyUsername(username)
     const exists = await this.data.user.findUnique({ where: { username } })
     if (!exists) {
       return username
@@ -114,18 +115,30 @@ export class ApiCoreService {
     return this.data.log.create({ data: { ...input, message } })
   }
   async logError(message: string, input?: Omit<CoreLogInput, 'level'>) {
+    if (this.config.isDevelopment) {
+      this.logger.error(message, JSON.stringify(input, null, 2))
+    }
     return this.log(message, { ...input, level: LogLevel.Error })
   }
 
   async logInfo(message: string, input?: Omit<CoreLogInput, 'level'>) {
+    if (this.config.isDevelopment) {
+      this.logger.log(message, JSON.stringify(input, null, 2))
+    }
     return this.log(message, { ...input, level: LogLevel.Info })
   }
 
   async logVerbose(message: string, input?: Omit<CoreLogInput, 'level'>) {
+    if (this.config.isDevelopment) {
+      this.logger.verbose(message, JSON.stringify(input, null, 2))
+    }
     return this.log(message, { ...input, level: LogLevel.Verbose })
   }
 
   async logWarning(message: string, input?: Omit<CoreLogInput, 'level'>) {
+    if (this.config.isDevelopment) {
+      this.logger.warn(message, JSON.stringify(input, null, 2))
+    }
     return this.log(message, { ...input, level: LogLevel.Warning })
   }
 

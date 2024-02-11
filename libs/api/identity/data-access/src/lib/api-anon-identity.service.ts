@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { IdentityProvider, UserRole, UserStatus } from '@prisma/client'
+import { ApiAuthService } from '@pubkey-link/api-auth-data-access'
 import { ApiCoreService, BaseContext, ellipsify, getRequestDetails, slugifyId } from '@pubkey-link/api-core-data-access'
+import { ApiSolanaIdentityService } from './api-solana-identity.service'
 import { RequestIdentityChallengeInput } from './dto/request-identity-challenge.input'
 import { VerifyIdentityChallengeInput } from './dto/verify-identity-challenge-input'
 import { sha256 } from './helpers/sha256'
-import { ApiSolanaIdentityService } from './api-solana-identity.service'
-import { ApiAuthService } from '@pubkey-link/api-auth-data-access'
-import { IdentityProvider, UserRole, UserStatus } from '@prisma/client'
 
 @Injectable()
 export class ApiAnonIdentityService {
@@ -66,6 +66,7 @@ export class ApiAnonIdentityService {
           connectOrCreate: {
             where: { provider_providerId: { provider, providerId } },
             create: {
+              name: providerId,
               provider,
               providerId,
               verified: false,

@@ -1213,6 +1213,7 @@ export type UserFindManyCommunityMemberInput = {
 }
 
 export type UserFindManyIdentityInput = {
+  provider?: InputMaybe<IdentityProvider>
   username: Scalars['String']['input']
 }
 
@@ -10080,6 +10081,7 @@ export function UserFindManyCommunityMemberInputSchema(): z.ZodObject<Properties
 
 export function UserFindManyIdentityInputSchema(): z.ZodObject<Properties<UserFindManyIdentityInput>> {
   return z.object({
+    provider: IdentityProviderSchema.nullish(),
     username: z.string(),
   })
 }

@@ -5,10 +5,10 @@ import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 
-export function useUserFindManyIdentity({ username }: { username: string }) {
+export function useUserFindManyIdentity({ username, provider }: { username: string; provider?: IdentityProvider }) {
   const sdk = useSdk()
   const { appConfig } = useAuth()
-  const input: UserFindManyIdentityInput = useMemo(() => ({ username }), [username])
+  const input: UserFindManyIdentityInput = useMemo(() => ({ username, provider }), [username, provider])
   const query = useQuery({
     queryKey: ['user', 'find-many-identity', input],
     queryFn: () => sdk.userFindManyIdentity({ input }).then((res) => res?.data),

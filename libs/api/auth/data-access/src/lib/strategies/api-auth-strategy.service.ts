@@ -21,42 +21,64 @@ export class ApiAuthStrategyService {
     provider: IdentityProvider
     accessToken: string
     refreshToken: string
-    profile: Prisma.InputJsonValue
+    profile: Prisma.InputJsonValue & { username?: string; name?: string; avatarUrl?: string }
     req: ApiAuthRequest
   }) {
     const canLink = this.core.config.appConfig.authLinkProviders.includes(provider)
     const canLogin = this.core.config.appConfig.authLoginProviders.includes(provider)
 
+    // This provider is completely disabled
     if (!canLink && !canLogin) {
       throw new Error(`This ${provider} account cannot be used to login or link.`)
     }
 
-    if (!canLink && req.user?.id) {
-      throw new Error(`This ${provider} account cannot be used to link.`)
-    }
-
+    // This provider is only for linking
     if (!canLogin && !req.user?.id) {
       throw new Error(`This ${provider} account cannot be used to login.`)
     }
 
+    // Here we figure out if we have a user with this identity
     const found = await this.core.findUserByIdentity({
       provider,
       providerId,
     })
 
-    if (found && req.user?.id && found.ownerId !== req.user?.id) {
-      throw new Error(`This ${provider} account is already linked to another user.`)
+    // If we have a user with this identity...
+    if (found) {
+      // ...and it's not the one making the request, we can't link
+      if (found && req.user?.id && found.ownerId !== req.user?.id) {
+        throw new Error(`This ${provider} account is already linked to another user.`)
+      }
+
+      // ...that's making the request, we update the profile and tokens on login
+      if (found && canLogin) {
+        await this.core.data.identity.update({
+          where: { id: found.id },
+          data: { accessToken, refreshToken, verified: true, profile, name: profile.username, syncEnded: new Date() },
+        })
+        // We sync the Discord username with the username in the users table
+        if (profile.username && found.owner.username !== profile.username) {
+          console.log({
+            owner: found.owner.username,
+            profile: profile.username,
+          })
+          // Because this can theoretically be a duplicate username, we need to find a new one
+          const newUsername = await this.core.findUsername(profile.username)
+          // Update the username in the users table
+          await this.core.data.user.update({ where: { id: found.ownerId }, data: { username: newUsername } })
+          await this.core.logInfo(`Updated username for ${found.owner.username} to ${newUsername}`, {
+            identityProvider: provider,
+            identityProviderId: providerId,
+            userId: found.ownerId,
+          })
+        }
+        return found.owner
+      }
     }
 
-    if (found && canLogin) {
-      await this.core.data.identity.update({
-        where: { id: found.id },
-        data: { accessToken, refreshToken, verified: true, profile },
-      })
-      return found.owner
-    }
-
+    // Create a new identity
     const identity: Prisma.IdentityCreateWithoutOwnerInput = {
+      name: profile?.username ?? providerId,
       provider,
       providerId,
       accessToken,
@@ -66,9 +88,11 @@ export class ApiAuthStrategyService {
     }
 
     if (req.user?.id) {
+      // Link the identity to the user making the request
       return await this.updateUserWithIdentity(req.user.id, identity)
     }
 
+    // Create a new user with this identity
     return await this.createUserWithIdentity(identity)
   }
 

@@ -39,7 +39,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     },
     members: {
       create: [
-        { user: { connect: { id: 'beeman' } }, role: CommunityRole.Admin },
+        { user: { connect: { id: 'beeman.dev' } }, role: CommunityRole.Admin },
         { user: { connect: { id: 'alice' } }, role: CommunityRole.Member },
       ],
     },
@@ -176,7 +176,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     },
     members: {
       create: [
-        { user: { connect: { id: 'beeman' } }, role: CommunityRole.Admin },
+        { user: { connect: { id: 'beeman.dev' } }, role: CommunityRole.Admin },
         { user: { connect: { id: 'alice' } }, role: CommunityRole.Admin },
         { user: { connect: { id: 'bob' } }, role: CommunityRole.Member },
       ],
@@ -189,7 +189,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     avatarUrl: 'https://avatars.githubusercontent.com/u/81361338?v=4',
     members: {
       create: [
-        { user: { connect: { id: 'beeman' } }, role: CommunityRole.Admin },
+        { user: { connect: { id: 'beeman.dev' } }, role: CommunityRole.Admin },
         { user: { connect: { id: 'bob' } }, role: CommunityRole.Member },
       ],
     },
@@ -200,23 +200,23 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
 ]
 export const provisionUsers: Prisma.UserCreateInput[] = [
   {
-    id: 'beeman',
-    username: 'beeman',
+    id: 'beeman.dev',
+    username: 'beeman.dev',
     avatarUrl: 'https://avatars.githubusercontent.com/u/36491?v=4',
     role: UserRole.Admin,
     developer: true,
     identities: {
       create: [
         //
-        { provider: IdentityProvider.Discord, providerId: '386584531353862154' },
+        { provider: IdentityProvider.Discord, providerId: '386584531353862154', name: 'beeman.dev' },
         ...[
-          '3XN71ShwyPNYZ22fV4phQCnyPj6E6EbMLAD5ReLRvdRP',
-          '9VyTdXMBXXPaEcCXjhCqicLF975Ji2zz4SwMSvCYe9ks',
-          'BeEMuaaQCQPodQdaA7W6Rmsu7761vCabN4Tth6jA4VCP',
-          'BumrJWH5kf4MXZ5bEg7VyZY6oXAMr78jXC1mFiDAE3u3',
-          'CdrFwyi78fjEN3WFUc72KUxewFdxv1SUSaKAMVkPHQyd',
-          'Dd1JSwojUsptwFa97A3WRZU1SijCWYo9Qa3xLxT8yzb7',
-        ].map((providerId) => ({ provider: IdentityProvider.Solana, providerId, verified: true })),
+          { providerId: '3XN71ShwyPNYZ22fV4phQCnyPj6E6EbMLAD5ReLRvdRP', name: '3XN71S..LRvdRP' },
+          { providerId: '9VyTdXMBXXPaEcCXjhCqicLF975Ji2zz4SwMSvCYe9ks', name: '9VyTdX..CYe9ks' },
+          { providerId: 'BeEMuaaQCQPodQdaA7W6Rmsu7761vCabN4Tth6jA4VCP', name: 'BeEMua..jA4VCP' },
+          { providerId: 'BumrJWH5kf4MXZ5bEg7VyZY6oXAMr78jXC1mFiDAE3u3', name: 'BumrJW..DAE3u3' },
+          { providerId: 'CdrFwyi78fjEN3WFUc72KUxewFdxv1SUSaKAMVkPHQyd', name: 'CdrFwy..kPHQyd' },
+          { providerId: 'Dd1JSwojUsptwFa97A3WRZU1SijCWYo9Qa3xLxT8yzb7', name: 'Dd1JSw..T8yzb7' },
+        ].map(({ providerId, name }) => ({ name, provider: IdentityProvider.Solana, providerId, verified: true })),
       ],
     },
   },
@@ -226,7 +226,13 @@ export const provisionUsers: Prisma.UserCreateInput[] = [
     role: UserRole.Admin,
     developer: true,
     identities: {
-      create: [{ provider: IdentityProvider.Solana, providerId: 'ALiC98dw6j47Skrxje3zBN4jTA11w67JRjQRBeZH3BRG' }],
+      create: [
+        {
+          provider: IdentityProvider.Solana,
+          providerId: 'ALiC98dw6j47Skrxje3zBN4jTA11w67JRjQRBeZH3BRG',
+          name: 'ALiC98..ZH3BRG',
+        },
+      ],
     },
   },
   {
