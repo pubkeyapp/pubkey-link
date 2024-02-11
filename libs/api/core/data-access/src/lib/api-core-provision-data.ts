@@ -209,7 +209,6 @@ export const provisionUsers: Prisma.UserCreateInput[] = [
       create: [
         //
         { provider: IdentityProvider.Discord, providerId: '386584531353862154' },
-        { provider: IdentityProvider.GitHub, providerId: '36491' },
         ...[
           '3XN71ShwyPNYZ22fV4phQCnyPj6E6EbMLAD5ReLRvdRP',
           '9VyTdXMBXXPaEcCXjhCqicLF975Ji2zz4SwMSvCYe9ks',

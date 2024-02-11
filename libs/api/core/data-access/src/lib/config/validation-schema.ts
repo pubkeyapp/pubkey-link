@@ -8,24 +8,6 @@ export const validationSchema = Joi.object({
   AUTH_DISCORD_CLIENT_SECRET: Joi.string(),
   AUTH_DISCORD_LINK_ENABLED: Joi.boolean().default(false),
   AUTH_DISCORD_LOGIN_ENABLED: Joi.boolean().default(true),
-  // GitHub Authentication
-  AUTH_GITHUB_ADMIN_IDS: Joi.string(),
-  AUTH_GITHUB_CLIENT_ID: Joi.string(),
-  AUTH_GITHUB_CLIENT_SECRET: Joi.string(),
-  AUTH_GITHUB_LINK_ENABLED: Joi.boolean().default(true),
-  AUTH_GITHUB_LOGIN_ENABLED: Joi.boolean().default(false),
-  // Google Authentication
-  AUTH_GOOGLE_ADMIN_IDS: Joi.string(),
-  AUTH_GOOGLE_CLIENT_ID: Joi.string(),
-  AUTH_GOOGLE_CLIENT_SECRET: Joi.string(),
-  AUTH_GOOGLE_LINK_ENABLED: Joi.boolean().default(false),
-  AUTH_GOOGLE_LOGIN_ENABLED: Joi.boolean().default(false),
-  // Twitter Authentication
-  AUTH_TWITTER_ADMIN_IDS: Joi.string(),
-  AUTH_TWITTER_CONSUMER_KEY: Joi.string(),
-  AUTH_TWITTER_CONSUMER_SECRET: Joi.string(),
-  AUTH_TWITTER_LINK_ENABLED: Joi.boolean().default(false),
-  AUTH_TWITTER_LOGIN_ENABLED: Joi.boolean().default(false),
   // Username and Password Authentication
   AUTH_PASSWORD_ENABLED: Joi.boolean().default(false),
   AUTH_REGISTER_ENABLED: Joi.boolean().default(false),

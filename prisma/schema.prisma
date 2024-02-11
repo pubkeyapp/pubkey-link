@@ -301,10 +301,7 @@ enum CommunityRole {
 
 enum IdentityProvider {
   Discord
-  GitHub
-  Google
   Solana
-  Twitter
 }
 
 enum LogLevel {

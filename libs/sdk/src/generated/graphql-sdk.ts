@@ -359,10 +359,7 @@ export type IdentityChallenge = {
 
 export enum IdentityProvider {
   Discord = 'Discord',
-  GitHub = 'GitHub',
-  Google = 'Google',
   Solana = 'Solana',
-  Twitter = 'Twitter',
 }
 
 export type LinkIdentityInput = {

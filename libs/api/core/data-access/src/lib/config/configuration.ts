@@ -26,24 +26,6 @@ export interface ApiCoreConfig {
   authDiscordClientSecret: string
   authDiscordLinkEnabled: boolean
   authDiscordLoginEnabled: boolean
-  // GitHub Authentication
-  authGithubAdminIds: string[]
-  authGithubClientId: string
-  authGithubClientSecret: string
-  authGithubLinkEnabled: boolean
-  authGithubLoginEnabled: boolean
-  // Google Authentication
-  authGoogleAdminIds: string[]
-  authGoogleClientId: string
-  authGoogleClientSecret: string
-  authGoogleLinkEnabled: boolean
-  authGoogleLoginEnabled: boolean
-  // Twitter Authentication
-  authTwitterAdminIds: string[]
-  authTwitterConsumerKey: string
-  authTwitterConsumerSecret: string
-  authTwitterLinkEnabled: boolean
-  authTwitterLoginEnabled: boolean
   // Username and Password Authentication
   authPasswordEnabled: boolean
   authRegisterEnabled: boolean
@@ -79,21 +61,6 @@ export function configuration(): ApiCoreConfig {
     authDiscordClientSecret: process.env['AUTH_DISCORD_CLIENT_SECRET'] as string,
     authDiscordLinkEnabled: process.env['AUTH_DISCORD_LINK_ENABLED'] === 'true',
     authDiscordLoginEnabled: process.env['AUTH_DISCORD_LOGIN_ENABLED'] === 'true',
-    authGithubAdminIds: getFromEnvironment('AUTH_GITHUB_ADMIN_IDS'),
-    authGithubClientId: process.env['AUTH_GITHUB_CLIENT_ID'] as string,
-    authGithubClientSecret: process.env['AUTH_GITHUB_CLIENT_SECRET'] as string,
-    authGithubLinkEnabled: process.env['AUTH_GITHUB_LINK_ENABLED'] === 'true',
-    authGithubLoginEnabled: process.env['AUTH_GITHUB_LOGIN_ENABLED'] === 'true',
-    authGoogleAdminIds: getFromEnvironment('AUTH_GOOGLE_ADMIN_IDS'),
-    authGoogleClientId: process.env['AUTH_GOOGLE_CLIENT_ID'] as string,
-    authGoogleClientSecret: process.env['AUTH_GOOGLE_CLIENT_SECRET'] as string,
-    authGoogleLinkEnabled: process.env['AUTH_GOOGLE_LINK_ENABLED'] === 'true',
-    authGoogleLoginEnabled: process.env['AUTH_GOOGLE_LOGIN_ENABLED'] === 'true',
-    authTwitterAdminIds: getFromEnvironment('AUTH_TWITTER_ADMIN_IDS'),
-    authTwitterConsumerKey: process.env['AUTH_TWITTER_CONSUMER_KEY'] as string,
-    authTwitterConsumerSecret: process.env['AUTH_TWITTER_CONSUMER_SECRET'] as string,
-    authTwitterLinkEnabled: process.env['AUTH_TWITTER_LINK_ENABLED'] === 'true',
-    authTwitterLoginEnabled: process.env['AUTH_TWITTER_LOGIN_ENABLED'] === 'true',
     authPasswordEnabled: process.env['AUTH_PASSWORD_ENABLED'] === 'true',
     authRegisterEnabled: process.env['AUTH_REGISTER_ENABLED'] === 'true',
     authSolanaAdminIds: getFromEnvironment('AUTH_SOLANA_ADMIN_IDS'),
