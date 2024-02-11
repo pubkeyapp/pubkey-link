@@ -1,5 +1,5 @@
 import { ActionIcon, Badge, Code, Group, Menu, Text } from '@mantine/core'
-import { ellipsify, Identity } from '@pubkey-link/sdk'
+import { ellipsify, Identity, IdentityProvider } from '@pubkey-link/sdk'
 import { IdentityUiAvatar } from '@pubkey-link/web-ui-core'
 import { UiCard, UiDebugModal, UiGroup, UiStack } from '@pubkey-ui/core'
 import { IconDotsVertical, IconTrash } from '@tabler/icons-react'
@@ -55,6 +55,7 @@ export function IdentityUiList({
                   <Menu.Dropdown>
                     <Menu.Label>Danger zone</Menu.Label>
                     <Menu.Item
+                      disabled={item.provider === IdentityProvider.Discord}
                       color="red"
                       leftSection={<IconTrash size={14} />}
                       onClick={() => deleteIdentity(item.id)}

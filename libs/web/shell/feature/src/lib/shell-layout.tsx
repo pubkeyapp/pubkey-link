@@ -1,16 +1,11 @@
-import { Group } from '@mantine/core'
+import { Button, Group } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
-import {
-  SolanaUiAccountBalanceButton,
-  SolanaUiAccountChecker,
-  SolanaUiClusterChecker,
-  SolanaUiClusterSelect,
-  WalletIcon,
-} from '@pubkey-link/web-solana-ui'
 import { UiHeaderProfile } from '@pubkey-link/web-ui-core'
 import { UiHeader, UiLayout, UiLoader } from '@pubkey-ui/core'
+import { IconSettings } from '@tabler/icons-react'
 import { ReactNode, Suspense } from 'react'
+import { Link } from 'react-router-dom'
 
 export function ShellLayout({ children }: { children: ReactNode }) {
   const { user, logout } = useAuth()
@@ -28,18 +23,15 @@ export function ShellLayout({ children }: { children: ReactNode }) {
           ]}
           profile={
             <Group gap="xs">
-              <SolanaUiAccountBalanceButton />
-              <SolanaUiClusterSelect />
-              <WalletIcon />
+              <Button component={Link} to="/settings" variant="light" leftSection={<IconSettings size={20} />}>
+                Settings
+              </Button>
               <UiHeaderProfile user={user} logout={logout} />
             </Group>
           }
         />
       }
     >
-      <SolanaUiClusterChecker>
-        <SolanaUiAccountChecker />
-      </SolanaUiClusterChecker>
       <Suspense fallback={<UiLoader mt="xl" size="xl" type="dots" />}>{children}</Suspense>
     </UiLayout>
   )

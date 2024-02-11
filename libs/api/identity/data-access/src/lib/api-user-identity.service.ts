@@ -27,6 +27,9 @@ export class ApiUserIdentityService {
     if (!found) {
       throw new Error(`Identity ${identityId} not found`)
     }
+    if (found.provider === IdentityProvider.Discord) {
+      throw new Error(`Cannot delete Discord identity`)
+    }
     if (found.owner.identities.length === 1 && !found.owner.password) {
       throw new Error(`Cannot delete last identity`)
     }
@@ -160,6 +163,18 @@ export class ApiUserIdentityService {
     })
     if (found) {
       throw new Error(`Identity ${provider} ${providerId} already linked`)
+    }
+
+    if (provider === IdentityProvider.Discord) {
+      const existing = await this.core.data.identity.findFirst({
+        where: {
+          provider,
+          ownerId: userId,
+        },
+      })
+      if (existing) {
+        throw new Error(`Discord identity already linked`)
+      }
     }
 
     // Create the identity

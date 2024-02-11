@@ -1,8 +1,7 @@
 import { Button } from '@mantine/core'
-import { UiGrid } from '@pubkey-link/web-ui-core'
 import { useUserProfile } from '@pubkey-link/web-user-data-access'
 import { UserUiProfile, UserUiUpdateForm } from '@pubkey-link/web-user-ui'
-import { UiCard, UiContainer, UiLoader, UiTabRoutes, UiWarning } from '@pubkey-ui/core'
+import { UiCard, UiContainer, UiGridRoutes, UiLoader, UiStack, UiWarning } from '@pubkey-ui/core'
 import { Link } from 'react-router-dom'
 import { SettingsIdentityFeature } from './settings-identity-feature'
 
@@ -19,23 +18,22 @@ export default function SettingsFeature() {
 
   return (
     <UiContainer>
-      <UiGrid
-        sidebar={
-          <UserUiProfile
-            user={user}
-            action={
-              <Button size="xs" variant="light" component={Link} to={user.profileUrl}>
-                View profile
-              </Button>
-            }
-          />
-        }
-      >
-        <UiTabRoutes
-          tabs={[
+      <UiStack>
+        <UserUiProfile
+          user={user}
+          action={
+            <Button size="xs" variant="light" component={Link} to={user.profileUrl}>
+              View profile
+            </Button>
+          }
+        />
+
+        <UiGridRoutes
+          basePath={`/settings`}
+          routes={[
             {
+              label: 'Profile',
               path: 'profile',
-              label: 'Edit profile',
               element: (
                 <UiCard>
                   <UserUiUpdateForm user={user} submit={updateUser} />
@@ -43,8 +41,8 @@ export default function SettingsFeature() {
               ),
             },
             {
+              label: 'Identities',
               path: 'identities',
-              label: 'Manage Identities',
               element: (
                 <UiCard>
                   <SettingsIdentityFeature />
@@ -53,7 +51,7 @@ export default function SettingsFeature() {
             },
           ]}
         />
-      </UiGrid>
+      </UiStack>
     </UiContainer>
   )
 }
