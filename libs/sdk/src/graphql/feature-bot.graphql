@@ -38,10 +38,10 @@ fragment BotPermissionDetails on BotPermission {
   botId
   createdAt
   id
-  roleId
   serverId
   updatedAt
-  role {
+  serverRoleId
+  serverRole {
     ...DiscordRoleDetails
   }
   server {

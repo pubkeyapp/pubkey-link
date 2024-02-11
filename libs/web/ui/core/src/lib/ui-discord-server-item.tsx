@@ -38,7 +38,7 @@ export function UiDiscordServerItem({
             <Text size="sm" c="dimmed" span>
               <Group gap={4}>
                 <IconBrandDiscord size={16} />
-                Discord
+                Discord Server
               </Group>
             </Text>
           )}

@@ -34,7 +34,6 @@ export class ApiRoleResolverService {
 
   @Cron(CronExpression.EVERY_MINUTE)
   async validateAllRoles() {
-    this.logger.log(`Validating roles of all communities`)
     const communities = await this.core.data.community.findMany({
       where: {
         bot: {
@@ -42,6 +41,7 @@ export class ApiRoleResolverService {
         },
       },
     })
+    this.logger.log(`Validating roles of ${communities.length} communities`)
     for (const community of communities) {
       await this.validateRoles(community.id)
     }
@@ -57,7 +57,7 @@ export class ApiRoleResolverService {
 
     const result = {
       duration: Date.now() - startedAt,
-      contextsCount: users?.length,
+      userCounts: users?.length,
       totalRevoked: 0,
       totalGranted: 0,
     }
@@ -96,13 +96,15 @@ export class ApiRoleResolverService {
       }
     }
 
-    await this.core.logVerbose(
-      `Validated ${conditions?.length} roles in ${result.duration}ms, ${result.totalGranted} granted, ${result.totalRevoked} revoked`,
-      {
-        communityId,
-        data: result as unknown as Prisma.InputJsonValue,
-      },
-    )
+    if (result.totalGranted || result.totalRevoked) {
+      await this.core.logVerbose(
+        `Validated ${conditions?.length} roles in ${result.duration}ms, ${result.totalGranted} granted, ${result.totalRevoked} revoked`,
+        {
+          communityId,
+          data: result as unknown as Prisma.InputJsonValue,
+        },
+      )
+    }
     return Promise.resolve(result)
   }
 

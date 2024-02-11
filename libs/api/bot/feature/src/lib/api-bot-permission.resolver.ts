@@ -6,11 +6,6 @@ import { Role, RolePermission } from '@pubkey-link/api-role-data-access'
 export class ApiBotPermissionResolver {
   constructor(private readonly service: ApiBotService) {}
 
-  @ResolveField(() => DiscordRole, { nullable: true })
-  role(@Parent() permission: BotPermission) {
-    return this.service.manager.getBotRole(permission.botId, permission.serverId, permission.roleId)
-  }
-
   @ResolveField(() => [Role], { nullable: true })
   roles(@Parent() permission: BotPermission) {
     if (!permission.roles?.length) {
@@ -22,5 +17,10 @@ export class ApiBotPermissionResolver {
   @ResolveField(() => DiscordServer, { nullable: true })
   server(@Parent() permission: BotPermission) {
     return this.service.manager.getBotServer(permission.botId, permission.serverId)
+  }
+
+  @ResolveField(() => DiscordRole, { nullable: true })
+  serverRole(@Parent() permission: BotPermission) {
+    return this.service.manager.getBotRole(permission.botId, permission.serverId, permission.serverRoleId)
   }
 }

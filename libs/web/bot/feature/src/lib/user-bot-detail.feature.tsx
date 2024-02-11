@@ -61,14 +61,14 @@ export function UserBotDetailFeature({ community }: { community: Community }) {
         <UiTabRoutes
           tabs={[
             {
-              path: 'permissions',
-              label: 'Permissions',
-              element: <UserBotDetailPermissionsTab bot={item} />,
-            },
-            {
               path: 'servers',
               label: 'Servers',
               element: <UserBotDetailServerList bot={item} />,
+            },
+            {
+              path: 'permissions',
+              label: 'Permissions',
+              element: <UserBotDetailPermissionsTab bot={item} />,
             },
             {
               path: 'settings',

@@ -1,7 +1,8 @@
-import { Table, Text } from '@mantine/core'
+import { Group, Stack, Table, Text } from '@mantine/core'
 import { useUserGetBotRoles } from '@pubkey-link/web-bot-data-access'
 import { UiDiscordRoleColor } from '@pubkey-link/web-ui-core'
 import { UiAlert, UiCard, UiDebug, UiDebugModal, UiLoader, UiStack } from '@pubkey-ui/core'
+import { IconBrandDiscord } from '@tabler/icons-react'
 
 export function UserBotDetailServerRoles({ botId, serverId }: { botId: string; serverId: string }) {
   const query = useUserGetBotRoles({ botId, serverId })
@@ -24,16 +25,24 @@ export function UserBotDetailServerRoles({ botId, serverId }: { botId: string; s
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>Name</Table.Th>
-                <Table.Th align="right">Managed</Table.Th>
+                <Table.Th align="right"></Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
               {items.map((item) => (
                 <Table.Tr key={item.id}>
                   <Table.Td>
-                    <Text size="xl">
-                      <UiDiscordRoleColor color={item.color}>{item.name}</UiDiscordRoleColor>
-                    </Text>
+                    <Stack gap={1}>
+                      <Text size="xl">
+                        <UiDiscordRoleColor color={item.color}>{item.name}</UiDiscordRoleColor>
+                      </Text>
+                      <Text size="sm" c="dimmed" span>
+                        <Group gap={4}>
+                          <IconBrandDiscord size={16} />
+                          Discord Role
+                        </Group>
+                      </Text>
+                    </Stack>
                   </Table.Td>
                   <Table.Td align="right">
                     <UiDebugModal data={item} />

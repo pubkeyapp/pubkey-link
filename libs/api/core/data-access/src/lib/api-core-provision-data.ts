@@ -163,7 +163,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
               {
                 type: NetworkTokenType.Fungible,
                 name: '$DEAN token holder',
-                amount: '1000',
+                amount: '100',
                 token: {
                   connect: { account_cluster: { cluster, account: 'Ds52CDgqdWbTWsua1hgT3AuSSy4FNx2Ezge1br3jQ14a' } },
                 },

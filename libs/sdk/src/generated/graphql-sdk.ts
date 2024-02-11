@@ -248,11 +248,11 @@ export type BotPermission = {
   botId?: Maybe<Scalars['String']['output']>
   createdAt?: Maybe<Scalars['DateTime']['output']>
   id: Scalars['String']['output']
-  role?: Maybe<DiscordRole>
-  roleId?: Maybe<Scalars['String']['output']>
   roles?: Maybe<Array<Role>>
   server?: Maybe<DiscordServer>
   serverId?: Maybe<Scalars['String']['output']>
+  serverRole?: Maybe<DiscordRole>
+  serverRoleId?: Maybe<Scalars['String']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
@@ -1450,10 +1450,10 @@ export type BotDetailsFragment = {
     botId?: string | null
     createdAt?: Date | null
     id: string
-    roleId?: string | null
     serverId?: string | null
     updatedAt?: Date | null
-    role?: {
+    serverRoleId?: string | null
+    serverRole?: {
       __typename?: 'DiscordRole'
       id: string
       name: string
@@ -1517,10 +1517,10 @@ export type BotPermissionDetailsFragment = {
   botId?: string | null
   createdAt?: Date | null
   id: string
-  roleId?: string | null
   serverId?: string | null
   updatedAt?: Date | null
-  role?: {
+  serverRoleId?: string | null
+  serverRole?: {
     __typename?: 'DiscordRole'
     id: string
     name: string
@@ -1583,10 +1583,10 @@ export type AdminFindManyBotQuery = {
         botId?: string | null
         createdAt?: Date | null
         id: string
-        roleId?: string | null
         serverId?: string | null
         updatedAt?: Date | null
-        role?: {
+        serverRoleId?: string | null
+        serverRole?: {
           __typename?: 'DiscordRole'
           id: string
           name: string
@@ -1643,10 +1643,10 @@ export type AdminFindOneBotQuery = {
       botId?: string | null
       createdAt?: Date | null
       id: string
-      roleId?: string | null
       serverId?: string | null
       updatedAt?: Date | null
-      role?: {
+      serverRoleId?: string | null
+      serverRole?: {
         __typename?: 'DiscordRole'
         id: string
         name: string
@@ -1692,10 +1692,10 @@ export type AdminCreateBotMutation = {
       botId?: string | null
       createdAt?: Date | null
       id: string
-      roleId?: string | null
       serverId?: string | null
       updatedAt?: Date | null
-      role?: {
+      serverRoleId?: string | null
+      serverRole?: {
         __typename?: 'DiscordRole'
         id: string
         name: string
@@ -1742,10 +1742,10 @@ export type AdminUpdateBotMutation = {
       botId?: string | null
       createdAt?: Date | null
       id: string
-      roleId?: string | null
       serverId?: string | null
       updatedAt?: Date | null
-      role?: {
+      serverRoleId?: string | null
+      serverRole?: {
         __typename?: 'DiscordRole'
         id: string
         name: string
@@ -1797,9 +1797,9 @@ export type UserFindOneBotQuery = {
       botId?: string | null
       createdAt?: Date | null
       id: string
-      roleId?: string | null
       serverId?: string | null
       updatedAt?: Date | null
+      serverRoleId?: string | null
       roles?: Array<{
         __typename?: 'Role'
         createdAt?: Date | null
@@ -1851,10 +1851,10 @@ export type UserFindOneBotQuery = {
             botId?: string | null
             createdAt?: Date | null
             id: string
-            roleId?: string | null
             serverId?: string | null
             updatedAt?: Date | null
-            role?: {
+            serverRoleId?: string | null
+            serverRole?: {
               __typename?: 'DiscordRole'
               id: string
               name: string
@@ -1872,7 +1872,7 @@ export type UserFindOneBotQuery = {
           } | null
         }> | null
       }> | null
-      role?: {
+      serverRole?: {
         __typename?: 'DiscordRole'
         id: string
         name: string
@@ -1918,10 +1918,10 @@ export type UserCreateBotMutation = {
       botId?: string | null
       createdAt?: Date | null
       id: string
-      roleId?: string | null
       serverId?: string | null
       updatedAt?: Date | null
-      role?: {
+      serverRoleId?: string | null
+      serverRole?: {
         __typename?: 'DiscordRole'
         id: string
         name: string
@@ -1968,10 +1968,10 @@ export type UserUpdateBotMutation = {
       botId?: string | null
       createdAt?: Date | null
       id: string
-      roleId?: string | null
       serverId?: string | null
       updatedAt?: Date | null
-      role?: {
+      serverRoleId?: string | null
+      serverRole?: {
         __typename?: 'DiscordRole'
         id: string
         name: string
@@ -2191,10 +2191,10 @@ export type CommunityMemberDetailsFragment = {
         botId?: string | null
         createdAt?: Date | null
         id: string
-        roleId?: string | null
         serverId?: string | null
         updatedAt?: Date | null
-        role?: {
+        serverRoleId?: string | null
+        serverRole?: {
           __typename?: 'DiscordRole'
           id: string
           name: string
@@ -2294,10 +2294,10 @@ export type AdminFindManyCommunityMemberQuery = {
             botId?: string | null
             createdAt?: Date | null
             id: string
-            roleId?: string | null
             serverId?: string | null
             updatedAt?: Date | null
-            role?: {
+            serverRoleId?: string | null
+            serverRole?: {
               __typename?: 'DiscordRole'
               id: string
               name: string
@@ -2407,10 +2407,10 @@ export type AdminFindOneCommunityMemberQuery = {
           botId?: string | null
           createdAt?: Date | null
           id: string
-          roleId?: string | null
           serverId?: string | null
           updatedAt?: Date | null
-          role?: {
+          serverRoleId?: string | null
+          serverRole?: {
             __typename?: 'DiscordRole'
             id: string
             name: string
@@ -2510,10 +2510,10 @@ export type AdminUpdateCommunityMemberMutation = {
           botId?: string | null
           createdAt?: Date | null
           id: string
-          roleId?: string | null
           serverId?: string | null
           updatedAt?: Date | null
-          role?: {
+          serverRoleId?: string | null
+          serverRole?: {
             __typename?: 'DiscordRole'
             id: string
             name: string
@@ -2620,10 +2620,10 @@ export type UserFindManyCommunityMemberQuery = {
             botId?: string | null
             createdAt?: Date | null
             id: string
-            roleId?: string | null
             serverId?: string | null
             updatedAt?: Date | null
-            role?: {
+            serverRoleId?: string | null
+            serverRole?: {
               __typename?: 'DiscordRole'
               id: string
               name: string
@@ -2733,10 +2733,10 @@ export type UserFindOneCommunityMemberQuery = {
           botId?: string | null
           createdAt?: Date | null
           id: string
-          roleId?: string | null
           serverId?: string | null
           updatedAt?: Date | null
-          role?: {
+          serverRoleId?: string | null
+          serverRole?: {
             __typename?: 'DiscordRole'
             id: string
             name: string
@@ -2836,10 +2836,10 @@ export type UserUpdateCommunityMemberMutation = {
           botId?: string | null
           createdAt?: Date | null
           id: string
-          roleId?: string | null
           serverId?: string | null
           updatedAt?: Date | null
-          role?: {
+          serverRoleId?: string | null
+          serverRole?: {
             __typename?: 'DiscordRole'
             id: string
             name: string
@@ -3515,10 +3515,10 @@ export type LogDetailsFragment = {
       botId?: string | null
       createdAt?: Date | null
       id: string
-      roleId?: string | null
       serverId?: string | null
       updatedAt?: Date | null
-      role?: {
+      serverRoleId?: string | null
+      serverRole?: {
         __typename?: 'DiscordRole'
         id: string
         name: string
@@ -3603,10 +3603,10 @@ export type LogDetailsFragment = {
         botId?: string | null
         createdAt?: Date | null
         id: string
-        roleId?: string | null
         serverId?: string | null
         updatedAt?: Date | null
-        role?: {
+        serverRoleId?: string | null
+        serverRole?: {
           __typename?: 'DiscordRole'
           id: string
           name: string
@@ -3685,10 +3685,10 @@ export type UserFindManyLogQuery = {
           botId?: string | null
           createdAt?: Date | null
           id: string
-          roleId?: string | null
           serverId?: string | null
           updatedAt?: Date | null
-          role?: {
+          serverRoleId?: string | null
+          serverRole?: {
             __typename?: 'DiscordRole'
             id: string
             name: string
@@ -3773,10 +3773,10 @@ export type UserFindManyLogQuery = {
             botId?: string | null
             createdAt?: Date | null
             id: string
-            roleId?: string | null
             serverId?: string | null
             updatedAt?: Date | null
-            role?: {
+            serverRoleId?: string | null
+            serverRole?: {
               __typename?: 'DiscordRole'
               id: string
               name: string
@@ -3865,10 +3865,10 @@ export type UserFindOneLogQuery = {
         botId?: string | null
         createdAt?: Date | null
         id: string
-        roleId?: string | null
         serverId?: string | null
         updatedAt?: Date | null
-        role?: {
+        serverRoleId?: string | null
+        serverRole?: {
           __typename?: 'DiscordRole'
           id: string
           name: string
@@ -3953,10 +3953,10 @@ export type UserFindOneLogQuery = {
           botId?: string | null
           createdAt?: Date | null
           id: string
-          roleId?: string | null
           serverId?: string | null
           updatedAt?: Date | null
-          role?: {
+          serverRoleId?: string | null
+          serverRole?: {
             __typename?: 'DiscordRole'
             id: string
             name: string
@@ -4036,10 +4036,10 @@ export type AdminFindManyLogQuery = {
           botId?: string | null
           createdAt?: Date | null
           id: string
-          roleId?: string | null
           serverId?: string | null
           updatedAt?: Date | null
-          role?: {
+          serverRoleId?: string | null
+          serverRole?: {
             __typename?: 'DiscordRole'
             id: string
             name: string
@@ -4124,10 +4124,10 @@ export type AdminFindManyLogQuery = {
             botId?: string | null
             createdAt?: Date | null
             id: string
-            roleId?: string | null
             serverId?: string | null
             updatedAt?: Date | null
-            role?: {
+            serverRoleId?: string | null
+            serverRole?: {
               __typename?: 'DiscordRole'
               id: string
               name: string
@@ -4216,10 +4216,10 @@ export type AdminFindOneLogQuery = {
         botId?: string | null
         createdAt?: Date | null
         id: string
-        roleId?: string | null
         serverId?: string | null
         updatedAt?: Date | null
-        role?: {
+        serverRoleId?: string | null
+        serverRole?: {
           __typename?: 'DiscordRole'
           id: string
           name: string
@@ -4304,10 +4304,10 @@ export type AdminFindOneLogQuery = {
           botId?: string | null
           createdAt?: Date | null
           id: string
-          roleId?: string | null
           serverId?: string | null
           updatedAt?: Date | null
-          role?: {
+          serverRoleId?: string | null
+          serverRole?: {
             __typename?: 'DiscordRole'
             id: string
             name: string
@@ -4902,10 +4902,10 @@ export type RoleDetailsFragment = {
       botId?: string | null
       createdAt?: Date | null
       id: string
-      roleId?: string | null
       serverId?: string | null
       updatedAt?: Date | null
-      role?: {
+      serverRoleId?: string | null
+      serverRole?: {
         __typename?: 'DiscordRole'
         id: string
         name: string
@@ -4967,10 +4967,10 @@ export type RolePermissionDetailsFragment = {
     botId?: string | null
     createdAt?: Date | null
     id: string
-    roleId?: string | null
     serverId?: string | null
     updatedAt?: Date | null
-    role?: {
+    serverRoleId?: string | null
+    serverRole?: {
       __typename?: 'DiscordRole'
       id: string
       name: string
@@ -5047,10 +5047,10 @@ export type AdminFindManyRoleQuery = {
           botId?: string | null
           createdAt?: Date | null
           id: string
-          roleId?: string | null
           serverId?: string | null
           updatedAt?: Date | null
-          role?: {
+          serverRoleId?: string | null
+          serverRole?: {
             __typename?: 'DiscordRole'
             id: string
             name: string
@@ -5138,10 +5138,10 @@ export type AdminFindOneRoleQuery = {
         botId?: string | null
         createdAt?: Date | null
         id: string
-        roleId?: string | null
         serverId?: string | null
         updatedAt?: Date | null
-        role?: {
+        serverRoleId?: string | null
+        serverRole?: {
           __typename?: 'DiscordRole'
           id: string
           name: string
@@ -5218,10 +5218,10 @@ export type AdminCreateRoleMutation = {
         botId?: string | null
         createdAt?: Date | null
         id: string
-        roleId?: string | null
         serverId?: string | null
         updatedAt?: Date | null
-        role?: {
+        serverRoleId?: string | null
+        serverRole?: {
           __typename?: 'DiscordRole'
           id: string
           name: string
@@ -5299,10 +5299,10 @@ export type AdminUpdateRoleMutation = {
         botId?: string | null
         createdAt?: Date | null
         id: string
-        roleId?: string | null
         serverId?: string | null
         updatedAt?: Date | null
-        role?: {
+        serverRoleId?: string | null
+        serverRole?: {
           __typename?: 'DiscordRole'
           id: string
           name: string
@@ -5387,10 +5387,10 @@ export type UserFindManyRoleQuery = {
           botId?: string | null
           createdAt?: Date | null
           id: string
-          roleId?: string | null
           serverId?: string | null
           updatedAt?: Date | null
-          role?: {
+          serverRoleId?: string | null
+          serverRole?: {
             __typename?: 'DiscordRole'
             id: string
             name: string
@@ -5478,10 +5478,10 @@ export type UserFindOneRoleQuery = {
         botId?: string | null
         createdAt?: Date | null
         id: string
-        roleId?: string | null
         serverId?: string | null
         updatedAt?: Date | null
-        role?: {
+        serverRoleId?: string | null
+        serverRole?: {
           __typename?: 'DiscordRole'
           id: string
           name: string
@@ -5558,10 +5558,10 @@ export type UserCreateRoleMutation = {
         botId?: string | null
         createdAt?: Date | null
         id: string
-        roleId?: string | null
         serverId?: string | null
         updatedAt?: Date | null
-        role?: {
+        serverRoleId?: string | null
+        serverRole?: {
           __typename?: 'DiscordRole'
           id: string
           name: string
@@ -5637,10 +5637,10 @@ export type UserCreateRolePermissionMutation = {
       botId?: string | null
       createdAt?: Date | null
       id: string
-      roleId?: string | null
       serverId?: string | null
       updatedAt?: Date | null
-      role?: {
+      serverRoleId?: string | null
+      serverRole?: {
         __typename?: 'DiscordRole'
         id: string
         name: string
@@ -5717,10 +5717,10 @@ export type UserUpdateRoleMutation = {
         botId?: string | null
         createdAt?: Date | null
         id: string
-        roleId?: string | null
         serverId?: string | null
         updatedAt?: Date | null
-        role?: {
+        serverRoleId?: string | null
+        serverRole?: {
           __typename?: 'DiscordRole'
           id: string
           name: string
@@ -6198,10 +6198,10 @@ export const BotPermissionDetailsFragmentDoc = gql`
     botId
     createdAt
     id
-    roleId
     serverId
     updatedAt
-    role {
+    serverRoleId
+    serverRole {
       ...DiscordRoleDetails
     }
     server {

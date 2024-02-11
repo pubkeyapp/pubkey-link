@@ -79,7 +79,7 @@ export function UserBotPermissionUiTable({ permissions = [] }: { permissions: Bo
               justifyContent: 'center',
               alignItems: 'center',
             }),
-            render: (item) => <UiDiscordServerItem server={item?.server} role={item?.role} />,
+            render: (item) => <UiDiscordServerItem server={item?.server} role={item?.serverRole} />,
           },
           {
             accessor: 'role',

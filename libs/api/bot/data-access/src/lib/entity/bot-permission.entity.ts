@@ -12,13 +12,13 @@ export class BotPermission {
   @Field({ nullable: true })
   botId!: string
   @Field({ nullable: true })
-  roleId!: string
+  serverRoleId!: string
   @Field(() => DiscordRole, { nullable: true })
-  role?: DiscordRole | null
+  serverRole?: DiscordRole | null
   @Field(() => DiscordServer, { nullable: true })
   server?: DiscordServer | null
   @Field({ nullable: true })
   serverId!: string
   @HideField()
-  roles: unknown[]
+  roles?: unknown[]
 }

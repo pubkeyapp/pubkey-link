@@ -257,7 +257,7 @@ model RoleCondition {
   name      String
   token     NetworkToken     @relation(fields: [tokenId], references: [id])
   tokenId   String
-  role      Role             @relation(fields: [roleId], references: [id])
+  role      Role             @relation(fields: [roleId], references: [id], onDelete: Cascade)
   roleId    String
 }
 

@@ -38,7 +38,7 @@ export function UserRoleDetailPermissionsTab({ role }: { role: Role }) {
               <UiCard key={permission.id}>
                 <UiStack>
                   <UiGroup align="top">
-                    <UiDiscordServerItem server={permission.bot?.server} role={permission.bot?.role} />
+                    <UiDiscordServerItem server={permission.bot?.server} role={permission.bot?.serverRole} />
                     <ActionIcon
                       size="xs"
                       variant="light"
@@ -52,7 +52,7 @@ export function UserRoleDetailPermissionsTab({ role }: { role: Role }) {
                     </ActionIcon>
                   </UiGroup>
                   <Text size="sm" c="dimmed">
-                    Get the <strong>{permission.bot?.role?.name}</strong> role in the{' '}
+                    Get the <strong>{permission.bot?.serverRole?.name}</strong> role in the{' '}
                     <strong>{permission.bot?.server?.name}</strong> Discord server.
                   </Text>
                 </UiStack>
@@ -128,7 +128,9 @@ function AddPermissionForm({
       <DiscordUiBotSelect botId={botId} value={serverId} setValue={setServerId} />
       {serverId && (
         <DiscordUiRoleSelect
-          filter={role.permissions?.filter((p) => p.bot?.serverId === serverId).map((p) => p.bot?.roleId ?? '') ?? []}
+          filter={
+            role.permissions?.filter((p) => p.bot?.serverId === serverId).map((p) => p.bot?.serverRoleId ?? '') ?? []
+          }
           botId={botId}
           serverId={serverId}
           value={roleId}
