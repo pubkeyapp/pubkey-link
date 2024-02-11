@@ -10,6 +10,8 @@ export class User {
   createdAt?: Date
   @Field({ nullable: true })
   updatedAt?: Date
+  @Field({ nullable: true })
+  lastLogin?: Date
   @Field(() => UserRole, { nullable: true })
   role?: UserRole
   @Field(() => UserStatus, { nullable: true })

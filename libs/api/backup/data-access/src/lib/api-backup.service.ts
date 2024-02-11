@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { Identity } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { existsSync } from 'node:fs'
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises'
@@ -123,9 +124,10 @@ export class ApiBackupService {
   async restoreBackup(name: string) {
     const backup = await this.readBackupFile(name)
 
-    const [usernames, userIds] = await Promise.all([
+    const [usernames, userIds, identities] = await Promise.all([
       this.core.data.user.findMany({ select: { username: true } }).then((users) => users.map((user) => user.username)),
       this.core.data.user.findMany({ select: { id: true } }).then((users) => users.map((user) => user.id)),
+      this.core.data.identity.findMany({ select: { providerId: true, provider: true } }),
     ])
 
     const toCreate = backup.data.users.filter((user: { id: string; username: string }) => {
@@ -138,8 +140,28 @@ export class ApiBackupService {
     for (const user of toCreate) {
       const { identities, ...userData } = user
       try {
+        // Check if one of the identities already exists
+        const found = identities.some((identity: Identity) => {
+          return identities.some((existingIdentity: Identity) => {
+            return (
+              existingIdentity.providerId === identity.providerId && existingIdentity.provider === identity.provider
+            )
+          })
+        })
+        if (found) {
+          this.logger.warn(`One of the identities already exists for user ${user.username}`)
+          continue
+        }
         const newUser = await this.core.data.user.create({
-          data: { ...userData, identities: { create: identities } },
+          data: {
+            ...userData,
+            identities: {
+              create: identities.map((identity: Identity) => ({
+                ...identity,
+                name: identity.name ?? identity.providerId,
+              })),
+            },
+          },
         })
 
         this.logger.verbose(

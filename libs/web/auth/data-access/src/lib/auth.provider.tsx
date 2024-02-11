@@ -1,4 +1,4 @@
-import { AppConfig, IdentityProvider, LoginInput, RegisterInput, User } from '@pubkey-link/sdk'
+import { AppConfig, IdentityProvider, LoginInput, RegisterInput, User, UserRole } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
@@ -18,9 +18,10 @@ export interface AuthProviderContext extends AuthState {
   appConfigLoading: boolean
   authenticated: boolean
   authEnabled: boolean
-  developer: boolean
   enabledProviders: IdentityProvider[]
   error?: unknown | undefined
+  isAdmin: boolean
+  isDeveloper: boolean
   loading: boolean
   login: (input: LoginInput) => Promise<User | undefined>
   logout: () => Promise<boolean | undefined>
@@ -111,9 +112,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     appConfigLoading: configQuery.isLoading,
     authEnabled,
     authenticated: state.status === 'authenticated',
-    developer: state.user?.developer ?? false,
     enabledProviders,
     error: state.error,
+    isAdmin: state.user?.role === UserRole.Admin,
+    isDeveloper: state.user?.developer ?? false,
     user: state.user,
     status: state.status,
     loading: state.status === 'loading',

@@ -277,6 +277,7 @@ model User {
   id          String            @id @default(cuid())
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
+  lastLogin   DateTime?
   avatarUrl   String?
   developer   Boolean           @default(false)
   name        String?

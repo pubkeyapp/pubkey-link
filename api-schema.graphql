@@ -668,6 +668,7 @@ type User {
   developer: Boolean
   id: String!
   identities: [Identity!]
+  lastLogin: DateTime
   name: String
   profileUrl: String!
   role: UserRole

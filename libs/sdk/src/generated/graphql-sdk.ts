@@ -1149,6 +1149,7 @@ export type User = {
   developer?: Maybe<Scalars['Boolean']['output']>
   id: Scalars['String']['output']
   identities?: Maybe<Array<Identity>>
+  lastLogin?: Maybe<Scalars['DateTime']['output']>
   name?: Maybe<Scalars['String']['output']>
   profileUrl: Scalars['String']['output']
   role?: Maybe<UserRole>
@@ -1341,6 +1342,7 @@ export type LoginMutation = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    lastLogin?: Date | null
     id: string
     name?: string | null
     profileUrl: string
@@ -1366,6 +1368,7 @@ export type RegisterMutation = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    lastLogin?: Date | null
     id: string
     name?: string | null
     profileUrl: string
@@ -1385,6 +1388,7 @@ export type MeQuery = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    lastLogin?: Date | null
     id: string
     name?: string | null
     profileUrl: string
@@ -1499,6 +1503,7 @@ export type BotMemberDetailsFragment = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      lastLogin?: Date | null
       id: string
       name?: string | null
       profileUrl: string
@@ -2057,6 +2062,7 @@ export type UserGetBotMembersQuery = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        lastLogin?: Date | null
         id: string
         name?: string | null
         profileUrl: string
@@ -2130,6 +2136,7 @@ export type CommunityMemberDetailsFragment = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    lastLogin?: Date | null
     id: string
     name?: string | null
     profileUrl: string
@@ -2233,6 +2240,7 @@ export type AdminFindManyCommunityMemberQuery = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        lastLogin?: Date | null
         id: string
         name?: string | null
         profileUrl: string
@@ -2346,6 +2354,7 @@ export type AdminFindOneCommunityMemberQuery = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      lastLogin?: Date | null
       id: string
       name?: string | null
       profileUrl: string
@@ -2449,6 +2458,7 @@ export type AdminUpdateCommunityMemberMutation = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      lastLogin?: Date | null
       id: string
       name?: string | null
       profileUrl: string
@@ -2559,6 +2569,7 @@ export type UserFindManyCommunityMemberQuery = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        lastLogin?: Date | null
         id: string
         name?: string | null
         profileUrl: string
@@ -2672,6 +2683,7 @@ export type UserFindOneCommunityMemberQuery = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      lastLogin?: Date | null
       id: string
       name?: string | null
       profileUrl: string
@@ -2775,6 +2787,7 @@ export type UserUpdateCommunityMemberMutation = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      lastLogin?: Date | null
       id: string
       name?: string | null
       profileUrl: string
@@ -3221,6 +3234,7 @@ export type AdminFindManyIdentityQuery = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      lastLogin?: Date | null
       id: string
       name?: string | null
       profileUrl: string
@@ -3316,6 +3330,7 @@ export type UserFindOneIdentityQuery = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      lastLogin?: Date | null
       id: string
       name?: string | null
       profileUrl: string
@@ -3627,6 +3642,7 @@ export type LogDetailsFragment = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    lastLogin?: Date | null
     id: string
     name?: string | null
     profileUrl: string
@@ -3797,6 +3813,7 @@ export type UserFindManyLogQuery = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        lastLogin?: Date | null
         id: string
         name?: string | null
         profileUrl: string
@@ -3977,6 +3994,7 @@ export type UserFindOneLogQuery = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      lastLogin?: Date | null
       id: string
       name?: string | null
       profileUrl: string
@@ -4148,6 +4166,7 @@ export type AdminFindManyLogQuery = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        lastLogin?: Date | null
         id: string
         name?: string | null
         profileUrl: string
@@ -4328,6 +4347,7 @@ export type AdminFindOneLogQuery = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      lastLogin?: Date | null
       id: string
       name?: string | null
       profileUrl: string
@@ -5856,6 +5876,7 @@ export type UserDetailsFragment = {
   avatarUrl?: string | null
   createdAt?: Date | null
   developer?: boolean | null
+  lastLogin?: Date | null
   id: string
   name?: string | null
   profileUrl: string
@@ -5876,6 +5897,7 @@ export type AdminCreateUserMutation = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    lastLogin?: Date | null
     id: string
     name?: string | null
     profileUrl: string
@@ -5905,6 +5927,7 @@ export type AdminFindManyUserQuery = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      lastLogin?: Date | null
       id: string
       name?: string | null
       profileUrl: string
@@ -5954,6 +5977,7 @@ export type AdminFindOneUserQuery = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    lastLogin?: Date | null
     id: string
     name?: string | null
     profileUrl: string
@@ -5976,6 +6000,7 @@ export type AdminUpdateUserMutation = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    lastLogin?: Date | null
     id: string
     name?: string | null
     profileUrl: string
@@ -5999,6 +6024,7 @@ export type UserFindManyUserQuery = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      lastLogin?: Date | null
       id: string
       name?: string | null
       profileUrl: string
@@ -6031,6 +6057,7 @@ export type UserFindOneUserQuery = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    lastLogin?: Date | null
     id: string
     name?: string | null
     profileUrl: string
@@ -6052,6 +6079,7 @@ export type UserFindOneUserByIdQuery = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    lastLogin?: Date | null
     id: string
     name?: string | null
     profileUrl: string
@@ -6073,6 +6101,7 @@ export type UserUpdateUserMutation = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    lastLogin?: Date | null
     id: string
     name?: string | null
     profileUrl: string
@@ -6106,6 +6135,7 @@ export const UserDetailsFragmentDoc = gql`
     avatarUrl
     createdAt
     developer
+    lastLogin
     id
     name
     profileUrl

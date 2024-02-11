@@ -1,14 +1,14 @@
-import { Button, Group } from '@mantine/core'
+import { ActionIcon, Group } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { UiHeaderProfile } from '@pubkey-link/web-ui-core'
 import { UiHeader, UiLayout, UiLoader } from '@pubkey-ui/core'
-import { IconSettings } from '@tabler/icons-react'
+import { IconBug, IconSettings, IconShield } from '@tabler/icons-react'
 import { ReactNode, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 
 export function ShellLayout({ children }: { children: ReactNode }) {
-  const { user, logout } = useAuth()
+  const { isAdmin, isDeveloper, user } = useAuth()
   const [opened, { toggle }] = useDisclosure(false)
   return (
     <UiLayout
@@ -23,10 +23,20 @@ export function ShellLayout({ children }: { children: ReactNode }) {
           ]}
           profile={
             <Group gap="xs">
-              <Button component={Link} to="/settings" variant="light" leftSection={<IconSettings size={20} />}>
-                Settings
-              </Button>
-              <UiHeaderProfile user={user} logout={logout} />
+              {isAdmin && (
+                <ActionIcon component={Link} to="/admin" variant="light" size="lg">
+                  <IconShield />
+                </ActionIcon>
+              )}
+              {isAdmin && isDeveloper && (
+                <ActionIcon component={Link} to="/admin/development" variant="light" size="lg">
+                  <IconBug />
+                </ActionIcon>
+              )}
+              <ActionIcon component={Link} to="/settings" variant="light" size="lg">
+                <IconSettings />
+              </ActionIcon>
+              <UiHeaderProfile />
             </Group>
           }
         />

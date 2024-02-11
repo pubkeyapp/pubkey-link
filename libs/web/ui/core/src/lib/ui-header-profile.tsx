@@ -1,18 +1,19 @@
 import { Button, Menu } from '@mantine/core'
-import { User, UserRole } from '@pubkey-link/sdk'
+import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { useUiColorScheme } from '@pubkey-ui/core'
 import { IconBug, IconLogout, IconMoonStars, IconSettings, IconShield, IconSun, IconUser } from '@tabler/icons-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { UiAvatar } from './ui-avatar'
 
-export function UiHeaderProfile({ user, logout }: { user?: User | null; logout: () => void }) {
+export function UiHeaderProfile() {
+  const { isAdmin, isDeveloper, user, logout } = useAuth()
   const { colorScheme, toggleColorScheme } = useUiColorScheme()
   const [open, setOpen] = useState(false)
-  const isAdmin = user?.role === UserRole.Admin
-  const isDeveloper = user?.developer ?? false
 
-  return user ? (
+  if (!user) return null
+
+  return (
     <Menu
       width={260}
       position="bottom-end"
@@ -71,5 +72,5 @@ export function UiHeaderProfile({ user, logout }: { user?: User | null; logout: 
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>
-  ) : null
+  )
 }

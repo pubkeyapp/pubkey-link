@@ -1,6 +1,7 @@
-import { ActionIcon, Group, ScrollArea } from '@mantine/core'
+import { ActionIcon, Alert, Group, ScrollArea } from '@mantine/core'
 import { User } from '@pubkey-link/sdk'
 import { IdentityUiAvatarGroup } from '@pubkey-link/web-ui-core'
+import { UiTime } from '@pubkey-ui/core'
 import { IconPencil, IconTrash, IconUser } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'
@@ -46,7 +47,13 @@ export function AdminUserUiTable({
             width: '20%',
             render: (item) => (
               <Group justify="right">
-                <IdentityUiAvatarGroup identities={item.identities ?? []} />
+                {item.identities?.length ? (
+                  <IdentityUiAvatarGroup identities={item.identities ?? []} />
+                ) : (
+                  <Alert color="red" py={4} px="xs">
+                    No Identities
+                  </Alert>
+                )}
               </Group>
             ),
           },
@@ -61,6 +68,14 @@ export function AdminUserUiTable({
             textAlign: 'center',
             width: '10%',
             render: (item) => (item.status ? <UserUiStatusBadge status={item.status} /> : null),
+          },
+          {
+            accessor: 'lastLogin',
+            render: (item) => (item.lastLogin ? <UiTime date={new Date(item.lastLogin)} /> : null),
+          },
+          {
+            accessor: 'createdAt',
+            render: (item) => (item.createdAt ? <UiTime date={new Date(item.createdAt)} /> : null),
           },
           {
             accessor: 'actions',

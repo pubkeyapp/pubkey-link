@@ -12,6 +12,7 @@ fragment UserDetails on User {
   avatarUrl
   createdAt
   developer
+  lastLogin
   id
   name
   profileUrl

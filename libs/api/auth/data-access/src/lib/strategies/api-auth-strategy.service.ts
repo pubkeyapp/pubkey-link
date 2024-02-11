@@ -56,21 +56,22 @@ export class ApiAuthStrategyService {
           where: { id: found.id },
           data: { accessToken, refreshToken, verified: true, profile, name: profile.username, syncEnded: new Date() },
         })
-        // We sync the Discord username with the username in the users table
+        // We sync the profile username with the username in the users table
         if (profile.username && found.owner.username !== profile.username) {
-          console.log({
-            owner: found.owner.username,
-            profile: profile.username,
-          })
           // Because this can theoretically be a duplicate username, we need to find a new one
           const newUsername = await this.core.findUsername(profile.username)
           // Update the username in the users table
-          await this.core.data.user.update({ where: { id: found.ownerId }, data: { username: newUsername } })
+          await this.core.data.user.update({
+            where: { id: found.ownerId },
+            data: { username: newUsername, lastLogin: new Date() },
+          })
           await this.core.logInfo(`Updated username for ${found.owner.username} to ${newUsername}`, {
             identityProvider: provider,
             identityProviderId: providerId,
             userId: found.ownerId,
           })
+        } else {
+          await this.core.data.user.update({ where: { id: found.ownerId }, data: { lastLogin: new Date() } })
         }
         return found.owner
       }
@@ -118,6 +119,7 @@ export class ApiAuthStrategyService {
             ...identity,
           },
         },
+        lastLogin: new Date(),
       },
     })
     this.logger.verbose(
