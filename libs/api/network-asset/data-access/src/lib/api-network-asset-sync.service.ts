@@ -17,7 +17,7 @@ import {
 @Injectable()
 export class ApiNetworkAssetSyncService {
   private readonly logger = new Logger(ApiNetworkAssetSyncService.name)
-  private readonly assetTimeout = 1000 * 60 * 5
+  private readonly assetTimeout = 1000 * 60 * 10
 
   constructor(
     @InjectQueue(API_NETWORK_ASSET_SYNC) private networkAssetSyncQueue: Queue,
@@ -28,9 +28,9 @@ export class ApiNetworkAssetSyncService {
   ) {}
 
   async sync(identity: Identity) {
-    // If the last sync was less than 5 minutes ago, do not sync
+    // If the last sync was less than 10 minutes ago, do not sync
     if ((identity.syncEnded?.getTime() ?? 0) > new Date().getTime() - this.assetTimeout) {
-      this.logger.log(`Identity ${identity.id} sync skipped, last sync less than 5 minutes ago`)
+      this.logger.log(`Identity ${identity.id} sync skipped, last sync less than 10 minutes ago`)
       return true
     }
 
@@ -45,7 +45,7 @@ export class ApiNetworkAssetSyncService {
       where: {
         provider: IdentityProvider.Solana,
         OR: [
-          // Sync if the last sync was more than 5 minutes ago
+          // Sync if the last sync was more than 10 minutes ago
           { syncEnded: { lt: new Date(new Date().getTime() - this.assetTimeout) } },
           { syncEnded: null },
         ],
