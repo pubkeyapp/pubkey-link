@@ -141,7 +141,8 @@ export class ApiRoleResolverService {
       await this.core.logInfo(`Role revoked`, {
         userId,
         communityId,
-        roleId: role.id,
+        relatedId: role.id,
+        relatedType: 'Role',
       })
       result.revoked += deleted.count
     }
@@ -155,7 +156,8 @@ export class ApiRoleResolverService {
       await this.core.logInfo(`Role granted`, {
         userId,
         communityId,
-        roleId: role.id,
+        relatedId: role.id,
+        relatedType: 'Role',
       })
       result.granted += created ? 1 : 0
     }
