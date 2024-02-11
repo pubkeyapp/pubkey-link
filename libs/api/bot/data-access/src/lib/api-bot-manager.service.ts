@@ -75,28 +75,42 @@ export class ApiBotManagerService implements OnModuleInit {
   }
 
   async getBotRole(botId: string, serverId: string, roleId: string): Promise<DiscordRole | undefined> {
-    const bot = this.getBotInstance(botId)
-    if (!bot) {
+    try {
+      const bot = this.getBotInstance(botId)
+      if (!bot) {
+        return undefined
+      }
+      const role = await bot.getRole(serverId, roleId)
+      if (!role) {
+        return undefined
+      }
+      return role
+    } catch (e) {
+      console.error(e)
       return undefined
     }
-    return bot.getRole(serverId, roleId)
   }
 
   async getBotServer(botId: string, serverId: string): Promise<DiscordServer | undefined> {
-    const bot = this.getBotInstance(botId)
-    if (!bot) {
-      return undefined
-    }
-    const server = await bot.client?.guilds.fetch({ guild: serverId })
+    try {
+      const bot = this.getBotInstance(botId)
+      if (!bot) {
+        return undefined
+      }
+      const server = await bot.client?.guilds.fetch({ guild: serverId })
 
-    if (!server) {
-      return undefined
-    }
+      if (!server) {
+        return undefined
+      }
 
-    return {
-      id: server.id,
-      name: server.name,
-      icon: server.iconURL(),
+      return {
+        id: server.id,
+        name: server.name,
+        icon: server.iconURL(),
+      }
+    } catch (e) {
+      console.error(e)
+      return undefined
     }
   }
 

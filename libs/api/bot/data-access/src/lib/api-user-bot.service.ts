@@ -50,10 +50,13 @@ export class ApiUserBotService {
     if (!instance) {
       return bot
     }
-
-    const application = await instance.getApplication()
-
-    return { ...bot, application }
+    try {
+      const application = await instance.getApplication()
+      return { ...bot, application }
+    } catch (error) {
+      this.logger.error(`Error getting bot instance ${bot.id}`, error)
+      return bot
+    }
   }
 
   async updateBot(userId: string, botId: string, input: UserUpdateBotInput) {

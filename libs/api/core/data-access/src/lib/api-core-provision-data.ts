@@ -29,7 +29,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
         token: process.env['PUBKEY_BOT_TOKEN'] ?? '',
         avatarUrl:
           'https://cdn.discordapp.com/avatars/1151220382444044298/2b0c80a7bb6ec8970d4953c5621b7d43.png?size=1024',
-        id: '1151220382444044298',
+        id: process.env['PUBKEY_BOT_CLIENT_ID'] ?? '',
         name: 'PubKey Linked Roles',
         status: 'Active',
         permissions: {
@@ -87,7 +87,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
         token: process.env['DEANSLIST_BOT_TOKEN'] ?? '',
         avatarUrl:
           'https://cdn.discordapp.com/avatars/1138462172092039258/2d9f621e44433c97e171bb40ec122b6f.png?size=1024',
-        id: '1138462172092039258',
+        id: process.env['DEANSLIST_BOT_CLIENT_ID'] ?? '',
         name: "Dean's List Projects LOCAL",
         permissions: {
           create: [DL_ROLE_ONE_OF_US, DL_ROLE_BV, DL_ROLE_BV_EXPIRED, DL_ROLE_HOLDER].map((serverRoleId) => ({
