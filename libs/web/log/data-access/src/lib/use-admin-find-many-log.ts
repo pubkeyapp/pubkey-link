@@ -4,13 +4,13 @@ import { toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
-export function useAdminFindManyLog(props: Partial<AdminFindManyLogInput> & { communityId: string }) {
+export function useAdminFindManyLog(props: Partial<AdminFindManyLogInput> & { communityId?: string; userId?: string }) {
   const sdk = useSdk()
-  const [limit, setLimit] = useState(props?.limit ?? 10)
+  const [limit, setLimit] = useState(props?.limit ?? 50)
   const [page, setPage] = useState(props?.page ?? 1)
   const [search, setSearch] = useState<string>(props?.search ?? '')
 
-  const input: AdminFindManyLogInput = { page, limit, search, communityId: props.communityId }
+  const input: AdminFindManyLogInput = { page, limit, search, communityId: props.communityId, userId: props.userId }
   const query = useQuery({
     queryKey: ['admin', 'find-many-log', input],
     queryFn: () => sdk.adminFindManyLog({ input }).then((res) => res.data),

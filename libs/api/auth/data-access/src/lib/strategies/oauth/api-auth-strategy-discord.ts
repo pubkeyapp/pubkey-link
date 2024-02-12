@@ -6,6 +6,7 @@ import { Profile, Strategy } from 'passport-discord'
 import type { ApiAuthRequest } from '../../interfaces/api-auth.request'
 import { ApiAuthStrategyService } from '../api-auth-strategy.service'
 
+export type DiscordProfile = Profile & { global_name: string }
 @Injectable()
 export class ApiAuthStrategyDiscordGuard extends AuthGuard('discord') {}
 
@@ -15,7 +16,7 @@ export class ApiAuthStrategyDiscord extends PassportStrategy(Strategy, 'discord'
     super(core.config.authDiscordStrategyOptions)
   }
 
-  async validate(req: ApiAuthRequest, accessToken: string, refreshToken: string, profile: Profile) {
+  async validate(req: ApiAuthRequest, accessToken: string, refreshToken: string, profile: DiscordProfile) {
     return this.service.validateRequest({
       req,
       providerId: profile.id,
@@ -27,13 +28,14 @@ export class ApiAuthStrategyDiscord extends PassportStrategy(Strategy, 'discord'
   }
 }
 
-function createDiscordProfile(profile: Profile) {
+function createDiscordProfile(profile: DiscordProfile) {
   const avatarUrl = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png?size=512`
   const bannerUrl = `https://cdn.discordapp.com/banners/${profile.id}/${profile.banner}.png?size=512`
 
   return {
     externalId: profile.id,
     username: parseInt(profile.discriminator) > 0 ? `${profile.username}#${profile.discriminator}` : profile.username,
+    name: profile.global_name,
     avatarUrl,
     bannerUrl,
     verified: profile.verified,

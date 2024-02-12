@@ -40,6 +40,10 @@ mutation adminDeleteCommunityMember($communityMemberId: String!) {
   deleted: adminDeleteCommunityMember(communityMemberId: $communityMemberId)
 }
 
+query userGetCommunityRole($communityId: String!) {
+  role: userGetCommunityRole(communityId: $communityId)
+}
+
 query userFindManyCommunityMember($input: UserFindManyCommunityMemberInput!) {
   paging: userFindManyCommunityMember(input: $input) {
     data {

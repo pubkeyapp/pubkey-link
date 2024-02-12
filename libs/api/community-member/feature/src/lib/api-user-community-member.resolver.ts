@@ -5,6 +5,7 @@ import {
   ApiCommunityMemberService,
   CommunityMember,
   CommunityMemberPaging,
+  CommunityRole,
   UserFindManyCommunityMemberInput,
   UserUpdateCommunityMemberInput,
 } from '@pubkey-link/api-community-member-data-access'
@@ -17,6 +18,11 @@ export class ApiUserCommunityMemberResolver {
   @Mutation(() => Boolean, { nullable: true })
   userDeleteCommunityMember(@CtxUserId() userId: string, @Args('communityMemberId') communityMemberId: string) {
     return this.service.user.deleteCommunityMember(userId, communityMemberId)
+  }
+
+  @Query(() => CommunityRole, { nullable: true })
+  userGetCommunityRole(@CtxUserId() userId: string, @Args('communityId') communityId: string) {
+    return this.service.user.getCommunityRole({ communityId, userId })
   }
 
   @Query(() => CommunityMemberPaging)

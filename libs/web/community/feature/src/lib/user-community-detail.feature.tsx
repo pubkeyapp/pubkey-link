@@ -27,53 +27,56 @@ const RouteSettings = lazy(() => import('./user-community-detail-settings.tab'))
 
 export function UserCommunityDetailFeature() {
   const { communityId } = useParams<{ communityId: string }>() as { communityId: string }
-  const { item, query } = useUserFindOneCommunity({ communityId })
+  const { item, isLoading, communityAdmin, role } = useUserFindOneCommunity({ communityId })
 
-  if (query.isLoading) {
+  if (isLoading) {
     return <UiLoader />
   }
   if (!item) {
     return <UiError message="Community not found." />
+  }
+  if (!role) {
+    return <UiError message="You are not a member." />
   }
 
   const routes: UiGridRoute[] = [
     {
       path: 'dashboard',
       label: 'Dashboard',
-      element: <RouteDashboard community={item} />,
+      element: <RouteDashboard community={item} role={role} />,
       leftSection: <UiIcon type="dashboard" size={20} />,
     },
-    {
+    communityAdmin && {
       path: 'discord',
       label: 'Discord',
       element: <UserBotFeature community={item} />,
       leftSection: <IconBrandDiscord size={20} />,
     },
-    {
+    communityAdmin && {
       path: 'roles',
       label: 'Roles',
       element: <UserRoleFeature community={item} />,
       leftSection: <UiIcon type="roles" size={20} />,
     },
-    {
+    communityAdmin && {
       path: 'members',
       label: 'Members',
       element: <UserCommunityMemberFeature community={item} />,
       leftSection: <UiIcon type="users" size={20} />,
     },
-    {
+    communityAdmin && {
       label: 'Logs',
       path: 'logs',
       element: <UserLogFeature communityId={item.id} />,
       leftSection: <UiIcon type="logs" size={20} />,
     },
-    {
+    communityAdmin && {
       path: 'settings',
       label: 'Settings',
       element: <RouteSettings community={item} />,
       leftSection: <UiIcon type="settings" size={20} />,
     },
-  ]
+  ].filter(Boolean) as UiGridRoute[]
 
   return (
     <UiContainer>

@@ -20,6 +20,9 @@ fragment LogDetails on Log {
   identity {
     ...IdentityDetails
   }
+  networkAsset {
+    ...NetworkAssetDetails
+  }
   role {
     ...RoleDetails
   }

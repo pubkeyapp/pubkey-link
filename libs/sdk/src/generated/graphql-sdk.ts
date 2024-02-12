@@ -100,7 +100,7 @@ export type AdminFindManyIdentityInput = {
 
 export type AdminFindManyLogInput = {
   botId?: InputMaybe<Scalars['String']['input']>
-  communityId: Scalars['String']['input']
+  communityId?: InputMaybe<Scalars['String']['input']>
   identityProvider?: InputMaybe<IdentityProvider>
   identityProviderId?: InputMaybe<Scalars['String']['input']>
   level?: InputMaybe<LogLevel>
@@ -380,6 +380,7 @@ export type Log = {
   identityProviderId?: Maybe<Scalars['String']['output']>
   level: LogLevel
   message: Scalars['String']['output']
+  networkAsset?: Maybe<NetworkAsset>
   networkAssetId?: Maybe<Scalars['String']['output']>
   relatedId?: Maybe<Scalars['String']['output']>
   relatedType?: Maybe<LogRelatedType>
@@ -882,6 +883,7 @@ export type Query = {
   userGetBotRoles?: Maybe<Array<DiscordRole>>
   userGetBotServer?: Maybe<DiscordServer>
   userGetBotServers?: Maybe<Array<DiscordServer>>
+  userGetCommunityRole?: Maybe<CommunityRole>
   userGetTokenAccounts?: Maybe<Scalars['JSON']['output']>
   userGetTokenMetadata?: Maybe<Scalars['JSON']['output']>
   userRequestIdentityChallenge?: Maybe<IdentityChallenge>
@@ -1063,6 +1065,10 @@ export type QueryUserGetBotServerArgs = {
 
 export type QueryUserGetBotServersArgs = {
   botId: Scalars['String']['input']
+}
+
+export type QueryUserGetCommunityRoleArgs = {
+  communityId: Scalars['String']['input']
 }
 
 export type QueryUserGetTokenAccountsArgs = {
@@ -2548,6 +2554,12 @@ export type AdminDeleteCommunityMemberMutationVariables = Exact<{
 
 export type AdminDeleteCommunityMemberMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
+export type UserGetCommunityRoleQueryVariables = Exact<{
+  communityId: Scalars['String']['input']
+}>
+
+export type UserGetCommunityRoleQuery = { __typename?: 'Query'; role?: CommunityRole | null }
+
 export type UserFindManyCommunityMemberQueryVariables = Exact<{
   input: UserFindManyCommunityMemberInput
 }>
@@ -3565,6 +3577,27 @@ export type LogDetailsFragment = {
     url?: string | null
     verified?: boolean | null
   } | null
+  networkAsset?: {
+    __typename?: 'NetworkAsset'
+    id: string
+    createdAt?: Date | null
+    updatedAt?: Date | null
+    cluster: NetworkCluster
+    resolver: NetworkResolver
+    type: NetworkTokenType
+    account: string
+    balance?: string | null
+    name: string
+    symbol?: string | null
+    program?: string | null
+    decimals: number
+    mint: string
+    owner: string
+    group?: string | null
+    imageUrl?: string | null
+    metadata?: any | null
+    attributes?: any | null
+  } | null
   role?: {
     __typename?: 'Role'
     createdAt?: Date | null
@@ -3735,6 +3768,27 @@ export type UserFindManyLogQuery = {
         updatedAt?: Date | null
         url?: string | null
         verified?: boolean | null
+      } | null
+      networkAsset?: {
+        __typename?: 'NetworkAsset'
+        id: string
+        createdAt?: Date | null
+        updatedAt?: Date | null
+        cluster: NetworkCluster
+        resolver: NetworkResolver
+        type: NetworkTokenType
+        account: string
+        balance?: string | null
+        name: string
+        symbol?: string | null
+        program?: string | null
+        decimals: number
+        mint: string
+        owner: string
+        group?: string | null
+        imageUrl?: string | null
+        metadata?: any | null
+        attributes?: any | null
       } | null
       role?: {
         __typename?: 'Role'
@@ -3917,6 +3971,27 @@ export type UserFindOneLogQuery = {
       url?: string | null
       verified?: boolean | null
     } | null
+    networkAsset?: {
+      __typename?: 'NetworkAsset'
+      id: string
+      createdAt?: Date | null
+      updatedAt?: Date | null
+      cluster: NetworkCluster
+      resolver: NetworkResolver
+      type: NetworkTokenType
+      account: string
+      balance?: string | null
+      name: string
+      symbol?: string | null
+      program?: string | null
+      decimals: number
+      mint: string
+      owner: string
+      group?: string | null
+      imageUrl?: string | null
+      metadata?: any | null
+      attributes?: any | null
+    } | null
     role?: {
       __typename?: 'Role'
       createdAt?: Date | null
@@ -4088,6 +4163,27 @@ export type AdminFindManyLogQuery = {
         updatedAt?: Date | null
         url?: string | null
         verified?: boolean | null
+      } | null
+      networkAsset?: {
+        __typename?: 'NetworkAsset'
+        id: string
+        createdAt?: Date | null
+        updatedAt?: Date | null
+        cluster: NetworkCluster
+        resolver: NetworkResolver
+        type: NetworkTokenType
+        account: string
+        balance?: string | null
+        name: string
+        symbol?: string | null
+        program?: string | null
+        decimals: number
+        mint: string
+        owner: string
+        group?: string | null
+        imageUrl?: string | null
+        metadata?: any | null
+        attributes?: any | null
       } | null
       role?: {
         __typename?: 'Role'
@@ -4269,6 +4365,27 @@ export type AdminFindOneLogQuery = {
       updatedAt?: Date | null
       url?: string | null
       verified?: boolean | null
+    } | null
+    networkAsset?: {
+      __typename?: 'NetworkAsset'
+      id: string
+      createdAt?: Date | null
+      updatedAt?: Date | null
+      cluster: NetworkCluster
+      resolver: NetworkResolver
+      type: NetworkTokenType
+      account: string
+      balance?: string | null
+      name: string
+      symbol?: string | null
+      program?: string | null
+      decimals: number
+      mint: string
+      owner: string
+      group?: string | null
+      imageUrl?: string | null
+      metadata?: any | null
+      attributes?: any | null
     } | null
     role?: {
       __typename?: 'Role'
@@ -6369,6 +6486,28 @@ export const BotDetailsFragmentDoc = gql`
   }
   ${BotPermissionDetailsFragmentDoc}
 `
+export const NetworkAssetDetailsFragmentDoc = gql`
+  fragment NetworkAssetDetails on NetworkAsset {
+    id
+    createdAt
+    updatedAt
+    cluster
+    resolver
+    type
+    account
+    balance
+    name
+    symbol
+    program
+    decimals
+    mint
+    owner
+    group
+    imageUrl
+    metadata
+    attributes
+  }
+`
 export const LogDetailsFragmentDoc = gql`
   fragment LogDetails on Log {
     createdAt
@@ -6392,6 +6531,9 @@ export const LogDetailsFragmentDoc = gql`
     identity {
       ...IdentityDetails
     }
+    networkAsset {
+      ...NetworkAssetDetails
+    }
     role {
       ...RoleDetails
     }
@@ -6401,30 +6543,9 @@ export const LogDetailsFragmentDoc = gql`
   }
   ${BotDetailsFragmentDoc}
   ${IdentityDetailsFragmentDoc}
+  ${NetworkAssetDetailsFragmentDoc}
   ${RoleDetailsFragmentDoc}
   ${UserDetailsFragmentDoc}
-`
-export const NetworkAssetDetailsFragmentDoc = gql`
-  fragment NetworkAssetDetails on NetworkAsset {
-    id
-    createdAt
-    updatedAt
-    cluster
-    resolver
-    type
-    account
-    balance
-    name
-    symbol
-    program
-    decimals
-    mint
-    owner
-    group
-    imageUrl
-    metadata
-    attributes
-  }
 `
 export const NetworkDetailsFragmentDoc = gql`
   fragment NetworkDetails on Network {
@@ -6675,6 +6796,11 @@ export const AdminUpdateCommunityMemberDocument = gql`
 export const AdminDeleteCommunityMemberDocument = gql`
   mutation adminDeleteCommunityMember($communityMemberId: String!) {
     deleted: adminDeleteCommunityMember(communityMemberId: $communityMemberId)
+  }
+`
+export const UserGetCommunityRoleDocument = gql`
+  query userGetCommunityRole($communityId: String!) {
+    role: userGetCommunityRole(communityId: $communityId)
   }
 `
 export const UserFindManyCommunityMemberDocument = gql`
@@ -7396,6 +7522,7 @@ const AdminFindManyCommunityMemberDocumentString = print(AdminFindManyCommunityM
 const AdminFindOneCommunityMemberDocumentString = print(AdminFindOneCommunityMemberDocument)
 const AdminUpdateCommunityMemberDocumentString = print(AdminUpdateCommunityMemberDocument)
 const AdminDeleteCommunityMemberDocumentString = print(AdminDeleteCommunityMemberDocument)
+const UserGetCommunityRoleDocumentString = print(UserGetCommunityRoleDocument)
 const UserFindManyCommunityMemberDocumentString = print(UserFindManyCommunityMemberDocument)
 const UserFindOneCommunityMemberDocumentString = print(UserFindOneCommunityMemberDocument)
 const UserUpdateCommunityMemberDocumentString = print(UserUpdateCommunityMemberDocument)
@@ -8104,6 +8231,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
           }),
         'adminDeleteCommunityMember',
         'mutation',
+        variables,
+      )
+    },
+    userGetCommunityRole(
+      variables: UserGetCommunityRoleQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserGetCommunityRoleQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserGetCommunityRoleQuery>(UserGetCommunityRoleDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userGetCommunityRole',
+        'query',
         variables,
       )
     },
@@ -9890,7 +10038,7 @@ export function AdminFindManyIdentityInputSchema(): z.ZodObject<Properties<Admin
 export function AdminFindManyLogInputSchema(): z.ZodObject<Properties<AdminFindManyLogInput>> {
   return z.object({
     botId: z.string().nullish(),
-    communityId: z.string(),
+    communityId: z.string().nullish(),
     identityProvider: IdentityProviderSchema.nullish(),
     identityProviderId: z.string().nullish(),
     level: LogLevelSchema.nullish(),

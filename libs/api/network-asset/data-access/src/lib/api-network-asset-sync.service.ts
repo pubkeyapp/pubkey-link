@@ -63,7 +63,7 @@ export class ApiNetworkAssetSyncService {
     return results.every((r) => r)
   }
 
-  async syncIdentity({ cluster, owner }: { cluster: NetworkCluster; owner: string }) {
+  async syncIdentity({ cluster, owner }: { cluster: NetworkCluster; owner: string }): Promise<number> {
     // Get the tokens for the cluster
     const tokens = await this.core.data.networkToken.findMany({ where: { network: { cluster } } })
 
@@ -87,7 +87,7 @@ export class ApiNetworkAssetSyncService {
 
     this.logger.verbose(`Resolved ${assets.length} assets for ${owner} on ${cluster}`)
     if (!assets.length) {
-      return true
+      return 0
     }
     // Upsert the assets
     await this.networkAssetUpsertFlow.add({
@@ -101,7 +101,7 @@ export class ApiNetworkAssetSyncService {
       })),
     })
 
-    return true
+    return assets.length
   }
 
   async upsertAsset({ asset, cluster }: { cluster: NetworkCluster; asset: NetworkAssetInput }) {
@@ -135,7 +135,7 @@ export class ApiNetworkAssetSyncService {
         logs: {
           create: {
             level: LogLevel.Info,
-            message: 'Asset created',
+            message: `Asset created: ${asset.name} (${asset.symbol})`,
             identityProviderId: asset.owner,
             identityProvider: IdentityProvider.Solana,
           },

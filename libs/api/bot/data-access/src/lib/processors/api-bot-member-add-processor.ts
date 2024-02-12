@@ -34,7 +34,7 @@ export class ApiBotMemberAddProcessor extends WorkerHost {
         identityProviderId: job.data.userId,
         relatedId: added.id,
         relatedType: 'BotMember',
-        data: { botId: job.data.botId, serverId: job.data.serverId, userId: job.data.userId },
+        data: { botId: job.data.botId, serverId: job.data.serverId },
       })
       return added
     } else {

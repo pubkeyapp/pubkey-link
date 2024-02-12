@@ -23,9 +23,6 @@ export class ApiBotManagerService implements OnModuleInit {
       this.logger.verbose(`Starting bot ${bot.name}`)
       await this.startBot(bot)
     }
-    this.syncBotServers().then(() => {
-      this.logger.verbose(`Bot servers synced`)
-    })
   }
 
   async getBotUser(token: string) {
@@ -250,7 +247,6 @@ export class ApiBotManagerService implements OnModuleInit {
       return false
     }
     const tag = `[${discordBot.client?.user?.username}] syncBotServerMembers (${serverId})`
-    this.logger.verbose(tag)
 
     const [discordIdentityIds, botMemberIds] = await Promise.all([
       this.botMember.getDiscordIdentityIds(),

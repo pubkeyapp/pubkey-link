@@ -7,15 +7,18 @@ import {
 import { NetworkTokenType } from '@pubkey-link/sdk'
 import { UiIconAvatar } from '@pubkey-link/web-ui-core'
 import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core'
+import { ReactNode } from 'react'
 import { getRoleConditionIconType } from './get-role-condition-icon-type'
 
 export function RoleConditionUiItem({
   anchorProps,
+  children,
   textProps,
   type,
   to,
 }: {
   anchorProps?: UiAnchorProps
+  children?: ReactNode
   textProps?: TextProps
   type?: NetworkTokenType
   to?: string | null
@@ -24,7 +27,7 @@ export function RoleConditionUiItem({
 
   return (
     <UiAnchor to={to ?? undefined} underline="never" {...anchorProps}>
-      <Group gap="sm">
+      <Group gap="sm" wrap="nowrap" align="start">
         <RoleConditionUiAvatar type={type} />
         <Stack gap={0}>
           <Text size="lg" fw={500} {...textProps}>
@@ -33,6 +36,7 @@ export function RoleConditionUiItem({
           <Text size="xs" c="dimmed">
             {getNetworkTokenTypeDescription(type)}
           </Text>
+          {children}
         </Stack>
       </Group>
     </UiAnchor>

@@ -2,6 +2,7 @@ import { Parent, ResolveField, Resolver } from '@nestjs/graphql'
 import { Bot } from '@pubkey-link/api-bot-data-access'
 import { Identity } from '@pubkey-link/api-identity-data-access'
 import { ApiLogService, Log } from '@pubkey-link/api-log-data-access'
+import { NetworkAsset } from '@pubkey-link/api-network-asset-data-access'
 import { Role } from '@pubkey-link/api-role-data-access'
 import { User } from '@pubkey-link/api-user-data-access'
 
@@ -17,6 +18,11 @@ export class ApiLogResolver {
   @ResolveField(() => Identity, { nullable: true })
   identity(@Parent() log: Log) {
     return log.identity
+  }
+
+  @ResolveField(() => NetworkAsset, { nullable: true })
+  networkAsset(@Parent() log: Log) {
+    return log.networkAsset
   }
 
   @ResolveField(() => Role, { nullable: true })

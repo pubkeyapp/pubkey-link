@@ -1,21 +1,43 @@
+import { IdentityProvider } from '@pubkey-link/sdk'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { useUserFindManyIdentity } from '@pubkey-link/web-identity-data-access'
-import { IdentityUiGroupList, IdentityUiLinkList } from '@pubkey-link/web-identity-ui'
-import { UiLoader, UiStack } from '@pubkey-ui/core'
+import { IdentityUiGroupList, IdentityUiList } from '@pubkey-link/web-identity-ui'
+import { UiLoader, UiStack, UiWarning } from '@pubkey-ui/core'
 
 export function SettingsIdentityFeature() {
-  const { user, appConfig } = useAuth()
-  const { deleteIdentity, grouped, query } = useUserFindManyIdentity({ username: user?.username as string })
+  const { user } = useAuth()
+  const { deleteIdentity, grouped, query } = useUserFindManyIdentity({
+    username: user?.username as string,
+    provider: IdentityProvider.Discord,
+  })
 
   return (
     <UiStack>
       {query.isLoading ? (
         <UiLoader />
       ) : (
-        <UiStack>
-          <IdentityUiGroupList grouped={grouped} deleteIdentity={deleteIdentity} refresh={() => query.refetch()} />
-          <IdentityUiLinkList providers={appConfig?.authLinkProviders ?? []} refresh={() => query.refetch()} />
-        </UiStack>
+        <IdentityUiGroupList grouped={grouped} deleteIdentity={deleteIdentity} refresh={() => query.refetch()} />
+      )}
+    </UiStack>
+  )
+}
+
+export function SettingsIdentityDiscordFeature() {
+  const { user } = useAuth()
+  const { deleteIdentity, items, query } = useUserFindManyIdentity({
+    username: user?.username as string,
+    provider: IdentityProvider.Discord,
+  })
+  const identity = items?.length ? items.find((i) => i.provider === IdentityProvider.Discord) : null
+
+  return (
+    <UiStack>
+      {query.isLoading ? (
+        <UiLoader />
+      ) : identity ? (
+        <IdentityUiList items={[identity]} deleteIdentity={deleteIdentity} refresh={() => query.refetch()} />
+      ) : (
+        <UiWarning message="No Discord identity found" />
       )}
     </UiStack>
   )

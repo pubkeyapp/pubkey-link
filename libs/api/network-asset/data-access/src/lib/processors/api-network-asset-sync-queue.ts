@@ -26,17 +26,20 @@ export class ApiNetworkAssetSyncQueue extends WorkerHost {
     }
     const synced = await this.sync.syncIdentity({ cluster: job.data.cluster, owner: job.data.identity.providerId })
 
-    if (synced) {
+    if (synced > 0) {
       await job.log(`Synced ${job.data.identity.provider} identity ${job.data.identity.providerId}`)
-      await this.core.logInfo(`Synced ${job.data.identity.provider} identity ${job.data.identity.providerId}`, {
-        identityProvider: job.data.identity.provider,
-        identityProviderId: job.data.identity.providerId,
-        userId: job.data.identity.ownerId,
-      })
+      await this.core.logVerbose(
+        `Synced ${synced} assets for ${job.data.identity.provider} identity ${job.data.identity.providerId} `,
+        {
+          identityProvider: job.data.identity.provider,
+          identityProviderId: job.data.identity.providerId,
+          userId: job.data.identity.ownerId,
+        },
+      )
     } else {
-      await job.log(`Failed to sync ${job.data.identity.provider} identity ${job.data.identity.providerId}`)
-      await this.core.logError(
-        `Failed to sync ${job.data.identity.provider} identity ${job.data.identity.providerId}`,
+      await job.log(`No identities found for ${job.data.identity.provider} identity ${job.data.identity.providerId}`)
+      await this.core.logWarning(
+        `No identities found for ${job.data.identity.provider} identity ${job.data.identity.providerId}`,
         {
           identityProvider: job.data.identity.provider,
           identityProviderId: job.data.identity.providerId,

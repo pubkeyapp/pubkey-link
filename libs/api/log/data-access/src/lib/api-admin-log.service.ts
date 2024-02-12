@@ -18,12 +18,16 @@ export class ApiAdminLogService {
       .paginate({
         orderBy: { createdAt: 'desc' },
         where: getAdminLogWhereInput(input),
+        include: { bot: true, identity: true, networkAsset: true, role: true, user: true },
       })
       .withPages({ limit: input.limit, page: input.page })
       .then(([data, meta]) => ({ data, meta }))
   }
 
   async findOneLog(logId: string) {
-    return this.core.data.log.findUnique({ where: { id: logId } })
+    return this.core.data.log.findUnique({
+      where: { id: logId },
+      include: { bot: true, identity: true, networkAsset: true, role: true, user: true },
+    })
   }
 }

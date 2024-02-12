@@ -78,7 +78,7 @@ input AdminFindManyIdentityInput {
 
 input AdminFindManyLogInput {
   botId: String
-  communityId: String!
+  communityId: String
   identityProvider: IdentityProvider
   identityProviderId: String
   level: LogLevel
@@ -354,6 +354,7 @@ type Log {
   identityProviderId: String
   level: LogLevel!
   message: String!
+  networkAsset: NetworkAsset
   networkAssetId: String
   relatedId: String
   relatedType: LogRelatedType
@@ -599,6 +600,7 @@ type Query {
   userGetBotRoles(botId: String!, serverId: String!): [DiscordRole!]
   userGetBotServer(botId: String!, serverId: String!): DiscordServer
   userGetBotServers(botId: String!): [DiscordServer!]
+  userGetCommunityRole(communityId: String!): CommunityRole
   userGetTokenAccounts(account: String!, cluster: NetworkCluster!): JSON
   userGetTokenMetadata(account: String!, cluster: NetworkCluster!): JSON
   userRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge

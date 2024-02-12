@@ -1,4 +1,5 @@
 import { Group } from '@mantine/core'
+import { AdminLogFeature } from '@pubkey-link/web-log-feature'
 import { useAdminFindOneUser } from '@pubkey-link/web-user-data-access'
 import { UserUiAvatar } from '@pubkey-link/web-user-ui'
 import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiStack, UiTabRoutes } from '@pubkey-ui/core'
@@ -43,6 +44,11 @@ export function AdminUserDetailFeature() {
               path: 'identities',
               label: 'Identities',
               element: <AdminUserDetailFeatureIdentities userId={userId} />,
+            },
+            {
+              path: 'logs',
+              label: 'Logs',
+              element: <AdminLogFeature userId={userId} />,
             },
           ]}
         />

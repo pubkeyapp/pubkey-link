@@ -1,5 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
-import { Prisma, UserStatus } from '@prisma/client'
+import { LogLevel, Prisma, UserStatus } from '@prisma/client'
 import { fakeUsers, provisionCommunities, provisionUsers } from './api-core-provision-data'
 import { provisionNetworks } from './api-core-provision-data-networks'
 import { ApiCoreService } from './api-core.service'
@@ -76,13 +76,33 @@ export class ApiCoreProvisionService implements OnModuleInit {
     const username = slugifyUsername(input.username)
     const existing = await this.core.data.user.count({ where: { username } })
     if (existing < 1) {
+      const identities = (input.identities?.create as Prisma.IdentityCreateInput[]) ?? []
       await this.core.data.user.create({
         data: {
           ...input,
           id: username,
           password: input.password ? hashPassword(input.password) : undefined,
           status: input.status ?? UserStatus.Active,
+          logs: {
+            create: [
+              {
+                message: `Provisioned ${input.role} ${input.username} with ${identities?.length} identities`,
+                level: LogLevel.Info,
+              },
+              ...(identities.length
+                ? [
+                    ...identities.map((identity) => ({
+                      message: `Provisioned ${identity.provider} identity ${identity.providerId}`,
+                      level: LogLevel.Info,
+                      identityProvider: identity.provider,
+                      identityProviderId: identity.providerId,
+                    })),
+                  ]
+                : []),
+            ],
+          },
         },
+        include: { logs: true },
       })
       this.logger.verbose(
         `Provisioned ${input.role} ${input.username} ${input.password ? 'and password' : 'and external provider'}`,

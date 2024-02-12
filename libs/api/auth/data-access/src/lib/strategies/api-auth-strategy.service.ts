@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { IdentityProvider, Prisma, UserRole, UserStatus } from '@prisma/client'
+import { IdentityProvider, LogLevel, Prisma, UserRole, UserStatus } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 
 import type { ApiAuthRequest } from '../interfaces/api-auth.request'
@@ -54,7 +54,21 @@ export class ApiAuthStrategyService {
       if (found && canLogin) {
         await this.core.data.identity.update({
           where: { id: found.id },
-          data: { accessToken, refreshToken, verified: true, profile, name: profile.username, syncEnded: new Date() },
+          data: {
+            accessToken,
+            refreshToken,
+            verified: true,
+            profile,
+            name: profile.username,
+            syncEnded: new Date(),
+            owner: {
+              update: {
+                lastLogin: new Date(),
+                avatarUrl: profile.avatarUrl,
+                name: profile.name,
+              },
+            },
+          },
         })
         // We sync the profile username with the username in the users table
         if (profile.username && found.owner.username !== profile.username) {
@@ -70,8 +84,6 @@ export class ApiAuthStrategyService {
             identityProviderId: providerId,
             userId: found.ownerId,
           })
-        } else {
-          await this.core.data.user.update({ where: { id: found.ownerId }, data: { lastLogin: new Date() } })
         }
         return found.owner
       }
@@ -120,6 +132,16 @@ export class ApiAuthStrategyService {
           },
         },
         lastLogin: new Date(),
+        logs: {
+          create: [
+            {
+              message: `Created user ${username} with ${identity.provider} identity`,
+              level: LogLevel.Info,
+              identityProvider: identity.provider,
+              identityProviderId: identity.providerId,
+            },
+          ],
+        },
       },
     })
     this.logger.verbose(

@@ -1,4 +1,4 @@
-import { UserCreateRoleInput, UserFindManyRoleInput } from '@pubkey-link/sdk'
+import { Role, UserCreateRoleInput, UserFindManyRoleInput } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
@@ -16,7 +16,7 @@ export function useUserFindManyRole(props: Partial<UserFindManyRoleInput> & { co
     queryFn: () => sdk.userFindManyRole({ input }).then((res) => res.data),
   })
   const total = query.data?.paging?.meta?.totalCount ?? 0
-  const items = query.data?.paging.data ?? []
+  const items: Role[] = query.data?.paging.data ?? []
 
   return {
     items,

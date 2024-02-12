@@ -1,5 +1,5 @@
 import { Group, Paper } from '@mantine/core'
-import { Community } from '@pubkey-link/sdk'
+import { Community, CommunityRole } from '@pubkey-link/sdk'
 import { UserBotFeature } from '@pubkey-link/web-bot-feature'
 import { useUserFindOneCommunity } from '@pubkey-link/web-community-data-access'
 import { UserCommunityUiUpdateForm } from '@pubkey-link/web-community-ui'
@@ -7,13 +7,18 @@ import { UiCard, UiCardTitle, UiError, UiLoader, UiStack, UiTabRoutes } from '@p
 import { IconSettings } from '@tabler/icons-react'
 
 export default function UserCommunityDetailSettingsTab({ community }: { community: Community }) {
-  const { item, query, updateCommunity } = useUserFindOneCommunity({ communityId: community.id })
+  const { isLoading, item, role, updateCommunity } = useUserFindOneCommunity({ communityId: community.id })
 
-  if (query.isLoading) {
+  if (isLoading) {
     return <UiLoader />
   }
+
   if (!item) {
     return <UiError message="Community not found." />
+  }
+
+  if (role !== CommunityRole.Admin) {
+    return <UiError message="You are not an admin." />
   }
 
   return (

@@ -202,6 +202,7 @@ export const provisionUsers: Prisma.UserCreateInput[] = [
   {
     id: 'beeman.dev',
     username: 'beeman.dev',
+    name: 'beeman',
     avatarUrl: 'https://avatars.githubusercontent.com/u/36491?v=4',
     role: UserRole.Admin,
     developer: true,

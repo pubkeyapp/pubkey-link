@@ -3,40 +3,32 @@ import { AdminFindManyLogInput } from '../dto/admin-find-many-log.input'
 
 export function getAdminLogWhereInput(input: AdminFindManyLogInput): Prisma.LogWhereInput {
   const where: Prisma.LogWhereInput = {
-    communityId: input.communityId,
+    communityId: input.communityId ?? undefined,
+    level: input.level ?? undefined,
+    relatedId: input.relatedId ?? undefined,
+    relatedType: input.relatedType ?? undefined,
+    identityProvider: input.identityProvider ?? undefined,
+    identityProviderId: input.identityProviderId ?? undefined,
+    botId: input.botId ?? undefined,
+    roleId: input.roleId ?? undefined,
   }
 
-  if (input.level) {
-    where.level = input.level
-  }
-  if (input.relatedId) {
-    where.relatedId = input.relatedId
-  }
-  if (input.relatedType) {
-    where.relatedType = input.relatedType
-  }
-  if (input.identityProvider) {
-    where.identityProvider = input.identityProvider
-  }
-  if (input.identityProviderId) {
-    where.identityProviderId = input.identityProviderId
-  }
-  if (input.botId) {
-    where.botId = input.botId
-  }
-  if (input.userId) {
-    where.userId = input.userId
-  }
-  if (input.roleId) {
-    where.roleId = input.roleId
-  }
+  const OR: Prisma.LogWhereInput[] = []
 
   if (input.search) {
-    where.OR = [
+    OR.push(
       { id: { contains: input.search, mode: 'insensitive' } },
       { message: { contains: input.search, mode: 'insensitive' } },
-    ]
+    )
   }
 
-  return where
+  if (input.userId) {
+    OR.push(
+      // Either the user is the owner of the identity or the user is the owner of the log
+      { userId: input.userId },
+      { identity: { ownerId: input.userId } },
+    )
+  }
+
+  return { ...where, OR: OR.length > 0 ? OR : undefined }
 }

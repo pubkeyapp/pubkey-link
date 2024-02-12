@@ -2,26 +2,20 @@ import { Group } from '@mantine/core'
 import { useAdminFindManyLog } from '@pubkey-link/web-log-data-access'
 import { AdminLogUiTable } from '@pubkey-link/web-log-ui'
 import { UiPageLimit, UiSearchField } from '@pubkey-link/web-ui-core'
-import { UiBack, UiDebugModal, UiInfo, UiLoader, UiPage } from '@pubkey-ui/core'
+import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
-export function AdminLogListFeature({ communityId }: { communityId: string }) {
+export function AdminLogListFeature({ communityId, userId }: { communityId?: string; userId?: string }) {
   const { deleteLog, items, pagination, query, setSearch } = useAdminFindManyLog({
-    limit: 10,
+    limit: 50,
     communityId,
+    userId,
   })
 
   return (
-    <UiPage
-      title="Logs"
-      leftAction={<UiBack />}
-      rightAction={
-        <Group>
-          <UiDebugModal data={items} />
-        </Group>
-      }
-    >
+    <UiStack>
       <Group>
         <UiSearchField placeholder="Search log" setSearch={setSearch} />
+        <UiDebugModal data={items} />
         <UiPageLimit limit={pagination.limit} setLimit={pagination.setLimit} setPage={pagination.setPage} />
       </Group>
 
@@ -42,6 +36,6 @@ export function AdminLogListFeature({ communityId }: { communityId: string }) {
       ) : (
         <UiInfo message="No logs found" />
       )}
-    </UiPage>
+    </UiStack>
   )
 }

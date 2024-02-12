@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Identity } from '@prisma/client'
+import { Identity, LogLevel, Prisma, UserRole, UserStatus } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { existsSync } from 'node:fs'
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises'
@@ -24,11 +24,8 @@ export class ApiBackupService {
     }
 
     // Generate a secret that will be used to download the backup
-    const secret = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-    const timestamp = getBackupTimestamp()
-    const backupName = `${timestamp}${'.backup.json'}`
-    const backupPath = `${this.backupLocation}/${backupName}`
-    // await this.core.exec(`pg_dump -Fc > ${backupPath}`)
+    const { secret, timestamp, backupName, backupPath } = getBackupMetadata(this.backupLocation)
+
     this.logger.verbose(`Backup created at ${backupPath}`)
 
     const users = await this.core.data.user.findMany({
@@ -39,8 +36,6 @@ export class ApiBackupService {
         name: true,
         avatarUrl: true,
         id: true,
-        role: true,
-        developer: true,
         status: true,
         createdAt: true,
         updatedAt: true,
@@ -123,15 +118,27 @@ export class ApiBackupService {
 
   async restoreBackup(name: string) {
     const backup = await this.readBackupFile(name)
+    const backupUsers: BackupUser[] = backup.data.users ?? []
 
-    const [usernames, userIds, identities] = await Promise.all([
+    const [existingUsernames, existingUserIds, existingUserIdentities] = await Promise.all([
       this.core.data.user.findMany({ select: { username: true } }).then((users) => users.map((user) => user.username)),
       this.core.data.user.findMany({ select: { id: true } }).then((users) => users.map((user) => user.id)),
-      this.core.data.identity.findMany({ select: { providerId: true, provider: true } }),
+      this.core.data.identity.findMany().then((res) => res ?? ([] as Identity[])),
     ])
 
-    const toCreate = backup.data.users.filter((user: { id: string; username: string }) => {
-      return !userIds.includes(user.id) && !usernames.includes(user.username)
+    const toCreate = backupUsers.filter((backupUser: BackupUser) => {
+      // Check if one of the identities of this user already exists
+      const found = existingUserIdentities.some((identity) =>
+        backupUser.identities.some(
+          ({ provider, providerId }) => providerId === identity.providerId && provider === identity.provider,
+        ),
+      )
+      if (found) {
+        this.logger.warn(`One of the identities already exists for user ${backupUser.username}`)
+        return false
+      }
+      // Check if the user id or username already exists
+      return !existingUserIds.includes(backupUser.id) && !existingUsernames.includes(backupUser.username)
     })
     if (!toCreate.length) {
       this.logger.verbose(`No new users to create`)
@@ -140,30 +147,30 @@ export class ApiBackupService {
     for (const user of toCreate) {
       const { identities, ...userData } = user
       try {
-        // Check if one of the identities already exists
-        const found = identities.some((identity: Identity) => {
-          return identities.some((existingIdentity: Identity) => {
-            return (
-              existingIdentity.providerId === identity.providerId && existingIdentity.provider === identity.provider
-            )
-          })
-        })
-        if (found) {
-          this.logger.warn(`One of the identities already exists for user ${user.username}`)
-          continue
-        }
         const newUser = await this.core.data.user.create({
           data: {
-            ...userData,
-            identities: {
-              create: identities.map((identity: Identity) => ({
-                ...identity,
-                name: identity.name ?? identity.providerId,
-              })),
+            ...restoreUserFields(userData),
+            identities: { create: identities.map(restoreIdentityFields) },
+            logs: {
+              create: [
+                {
+                  message: `Restored ${user.username} with ${identities?.length}`,
+                  level: LogLevel.Info,
+                },
+                ...(identities.length
+                  ? [
+                      ...identities.map((identity) => ({
+                        message: `Restored ${identity.provider} identity ${identity.providerId}`,
+                        level: LogLevel.Info,
+                        identityProvider: identity.provider,
+                        identityProviderId: identity.providerId,
+                      })),
+                    ]
+                  : []),
+              ],
             },
           },
         })
-
         this.logger.verbose(
           `Created user ${newUser.username} with id ${newUser.id} and ${identities.length} identities`,
         )
@@ -225,4 +232,42 @@ function isValidFilename(filename: string) {
 
 function getBackupTimestamp() {
   return new Date().toISOString().replace(/:/g, '-').replace(/\./, '-')
+}
+
+function getBackupMetadata(backupLocation: string) {
+  const secret = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+  const timestamp = getBackupTimestamp()
+  const backupName = `${timestamp}${'.backup.json'}`
+  const backupPath = `${backupLocation}/${backupName}`
+
+  return { secret, timestamp, backupName, backupPath }
+}
+
+type BackupUser = { id: string; username: string; identities: Prisma.IdentityCreateInput[] }
+
+function restoreUserFields(item: Record<string, string>): Prisma.UserCreateInput {
+  return {
+    id: item['id'] ?? undefined,
+    username: item['username'],
+    name: item['name'] ?? undefined,
+    avatarUrl: item['avatarUrl'] ?? undefined,
+    createdAt: item['createdAt'] ?? undefined,
+    updatedAt: item['updatedAt'] ?? undefined,
+    role: UserRole.User,
+    status: (item['status'] ? item['status'] : UserStatus.Active) as UserStatus,
+  }
+}
+
+function restoreIdentityFields(item: Prisma.IdentityCreateInput): Prisma.IdentityCreateWithoutOwnerInput {
+  return {
+    name: item['name'] ?? item['providerId'],
+    profile: item['profile'] ?? undefined,
+    id: item['id'] ?? undefined,
+    createdAt: item['createdAt'] ?? undefined,
+    updatedAt: item['updatedAt'] ?? undefined,
+    syncEnded: item['syncEnded'] ?? undefined,
+    verified: item['verified'] ? Boolean(item['verified']) : undefined,
+    provider: item['provider'],
+    providerId: item['providerId'],
+  }
 }

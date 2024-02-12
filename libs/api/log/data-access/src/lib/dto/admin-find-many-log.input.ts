@@ -5,8 +5,8 @@ import { LogRelatedType } from '../entity/log-related-type.enum'
 
 @InputType()
 export class AdminFindManyLogInput extends PagingInput() {
-  @Field()
-  communityId!: string
+  @Field({ nullable: true })
+  communityId?: string
   @Field(() => LogLevel, { nullable: true })
   level?: LogLevel
   @Field({ nullable: true })
