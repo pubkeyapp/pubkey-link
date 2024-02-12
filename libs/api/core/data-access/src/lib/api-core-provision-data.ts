@@ -22,6 +22,11 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     name: 'PubKey',
     description: 'Decentralized identities on Solana',
     avatarUrl: 'https://avatars.githubusercontent.com/u/125477168?v=4',
+    discordUrl: 'https://discord.gg/XxuZQeDPNf',
+    githubUrl: 'https://github.com/PubKeyApp',
+    telegramUrl: 'https://t.me/beemandev',
+    twitterUrl: 'https://twitter.com/PubKeyApp',
+    websiteUrl: 'https://app.pubkey.link',
     bot: {
       create: {
         clientId: process.env['PUBKEY_BOT_CLIENT_ID'] ?? '',
@@ -80,6 +85,8 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     name: "Dean's List DAO",
     description: 'A DAO turned Network State',
     avatarUrl: 'https://avatars.githubusercontent.com/u/137821488?v=4',
+    twitterUrl: 'https://twitter.com/deanslistDAO',
+    websiteUrl: 'https://deanslist.services',
     bot: {
       create: {
         clientId: process.env['DEANSLIST_BOT_CLIENT_ID'] ?? '',

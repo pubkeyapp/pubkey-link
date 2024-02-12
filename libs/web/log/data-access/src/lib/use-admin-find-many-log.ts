@@ -1,4 +1,4 @@
-import { AdminFindManyLogInput } from '@pubkey-link/sdk'
+import { AdminFindManyLogInput, LogLevel } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
@@ -8,12 +8,21 @@ export function useAdminFindManyLog(props: Partial<AdminFindManyLogInput> & { co
   const sdk = useSdk()
   const [limit, setLimit] = useState(props?.limit ?? 50)
   const [page, setPage] = useState(props?.page ?? 1)
+  const [level, setLevel] = useState<LogLevel | undefined>(undefined)
   const [search, setSearch] = useState<string>(props?.search ?? '')
-
-  const input: AdminFindManyLogInput = { page, limit, search, communityId: props.communityId, userId: props.userId }
+  const [interval, setInterval] = useState<number>(60)
+  const input: AdminFindManyLogInput = {
+    page,
+    limit,
+    search,
+    communityId: props.communityId,
+    userId: props.userId,
+    level,
+  }
   const query = useQuery({
     queryKey: ['admin', 'find-many-log', input],
     queryFn: () => sdk.adminFindManyLog({ input }).then((res) => res.data),
+    refetchInterval: 1000 * interval,
   })
   const total = query.data?.paging?.meta?.totalCount ?? 0
   const items = query.data?.paging.data ?? []
@@ -21,6 +30,10 @@ export function useAdminFindManyLog(props: Partial<AdminFindManyLogInput> & { co
   return {
     items,
     query,
+    interval,
+    setInterval,
+    level,
+    setLevel,
     pagination: {
       page,
       setPage,

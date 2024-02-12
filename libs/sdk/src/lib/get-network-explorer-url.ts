@@ -1,4 +1,4 @@
-import { NetworkCluster } from '../generated/graphql-sdk'
+import { NetworkCluster, NetworkToken } from '../generated/graphql-sdk'
 
 export function getNetworkExplorerUrl(cluster: NetworkCluster, endpoint: string = 'http://localost:8899') {
   const base = 'https://solana.fm/{path}'
@@ -14,4 +14,8 @@ export function getNetworkExplorerUrl(cluster: NetworkCluster, endpoint: string 
     default:
       throw new Error(`Unknown network cluster: ${cluster}`)
   }
+}
+
+export function getNetworkTokenUrl(token: Pick<NetworkToken, 'account' | 'cluster'>): string {
+  return getNetworkExplorerUrl(token.cluster).replace('{path}', `account/${token.account}`)
 }

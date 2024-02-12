@@ -117,3 +117,23 @@ function getClusterUrlParam(cluster: Cluster): string {
 
   return suffix.length ? `?cluster=${suffix}` : ''
 }
+
+export function getExplorerUrl(cluster: Cluster, path: string): string {
+  let suffix = ''
+  switch (cluster.network) {
+    case ClusterNetwork.Devnet:
+      suffix = 'devnet-solana'
+      break
+    case ClusterNetwork.Mainnet:
+      suffix = ''
+      break
+    case ClusterNetwork.Testnet:
+      suffix = 'testnet-solana'
+      break
+    default:
+      suffix = `custom&customUrl=${encodeURIComponent(cluster.endpoint)}`
+      break
+  }
+
+  return `https://solana.fm/${path}${suffix.length ? `?cluster=${suffix}` : ''}`
+}

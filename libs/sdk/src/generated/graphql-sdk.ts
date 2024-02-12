@@ -271,6 +271,7 @@ export type Community = {
   githubUrl?: Maybe<Scalars['String']['output']>
   id: Scalars['String']['output']
   name: Scalars['String']['output']
+  roles?: Maybe<Array<Role>>
   telegramUrl?: Maybe<Scalars['String']['output']>
   twitterUrl?: Maybe<Scalars['String']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
@@ -883,6 +884,7 @@ export type Query = {
   userGetBotRoles?: Maybe<Array<DiscordRole>>
   userGetBotServer?: Maybe<DiscordServer>
   userGetBotServers?: Maybe<Array<DiscordServer>>
+  userGetCommunities: Array<Community>
   userGetCommunityRole?: Maybe<CommunityRole>
   userGetTokenAccounts?: Maybe<Scalars['JSON']['output']>
   userGetTokenMetadata?: Maybe<Scalars['JSON']['output']>
@@ -1065,6 +1067,10 @@ export type QueryUserGetBotServerArgs = {
 
 export type QueryUserGetBotServersArgs = {
   botId: Scalars['String']['input']
+}
+
+export type QueryUserGetCommunitiesArgs = {
+  username: Scalars['String']['input']
 }
 
 export type QueryUserGetCommunityRoleArgs = {
@@ -3016,6 +3022,101 @@ export type AdminDeleteCommunityMutationVariables = Exact<{
 }>
 
 export type AdminDeleteCommunityMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
+export type UserGetCommunitiesQueryVariables = Exact<{
+  username: Scalars['String']['input']
+}>
+
+export type UserGetCommunitiesQuery = {
+  __typename?: 'Query'
+  items: Array<{
+    __typename?: 'Community'
+    createdAt?: Date | null
+    id: string
+    name: string
+    avatarUrl?: string | null
+    description?: string | null
+    websiteUrl?: string | null
+    discordUrl?: string | null
+    githubUrl?: string | null
+    twitterUrl?: string | null
+    telegramUrl?: string | null
+    updatedAt?: Date | null
+    cluster: NetworkCluster
+    roles?: Array<{
+      __typename?: 'Role'
+      createdAt?: Date | null
+      id: string
+      communityId: string
+      name: string
+      description?: string | null
+      updatedAt?: Date | null
+      viewUrl?: string | null
+      conditions?: Array<{
+        __typename?: 'RoleCondition'
+        createdAt?: Date | null
+        id: string
+        type: NetworkTokenType
+        amount?: string | null
+        filters?: any | null
+        config?: any | null
+        tokenId?: string | null
+        updatedAt?: Date | null
+        valid?: boolean | null
+        token?: {
+          __typename?: 'NetworkToken'
+          id: string
+          createdAt?: Date | null
+          updatedAt?: Date | null
+          cluster: NetworkCluster
+          type: NetworkTokenType
+          account: string
+          program: string
+          name: string
+          vault?: string | null
+          symbol?: string | null
+          description?: string | null
+          imageUrl?: string | null
+          metadataUrl?: string | null
+          raw?: any | null
+        } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      }> | null
+      permissions?: Array<{
+        __typename?: 'RolePermission'
+        createdAt?: Date | null
+        id: string
+        updatedAt?: Date | null
+        botId?: string | null
+        roleId?: string | null
+        bot?: {
+          __typename?: 'BotPermission'
+          botId?: string | null
+          createdAt?: Date | null
+          id: string
+          serverId?: string | null
+          updatedAt?: Date | null
+          serverRoleId?: string | null
+          serverRole?: {
+            __typename?: 'DiscordRole'
+            id: string
+            name: string
+            managed: boolean
+            color: number
+            position: number
+          } | null
+          server?: {
+            __typename?: 'DiscordServer'
+            id: string
+            name: string
+            icon?: string | null
+            permissions?: Array<string> | null
+          } | null
+        } | null
+      }> | null
+    }> | null
+  }>
+}
 
 export type UserFindManyCommunityQueryVariables = Exact<{
   input: UserFindManyCommunityInput
@@ -6881,6 +6982,18 @@ export const AdminDeleteCommunityDocument = gql`
     deleted: adminDeleteCommunity(communityId: $communityId)
   }
 `
+export const UserGetCommunitiesDocument = gql`
+  query userGetCommunities($username: String!) {
+    items: userGetCommunities(username: $username) {
+      ...CommunityDetails
+      roles {
+        ...RoleDetails
+      }
+    }
+  }
+  ${CommunityDetailsFragmentDoc}
+  ${RoleDetailsFragmentDoc}
+`
 export const UserFindManyCommunityDocument = gql`
   query userFindManyCommunity($input: UserFindManyCommunityInput!) {
     paging: userFindManyCommunity(input: $input) {
@@ -7532,6 +7645,7 @@ const AdminFindOneCommunityDocumentString = print(AdminFindOneCommunityDocument)
 const AdminCreateCommunityDocumentString = print(AdminCreateCommunityDocument)
 const AdminUpdateCommunityDocumentString = print(AdminUpdateCommunityDocument)
 const AdminDeleteCommunityDocumentString = print(AdminDeleteCommunityDocument)
+const UserGetCommunitiesDocumentString = print(UserGetCommunitiesDocument)
 const UserFindManyCommunityDocumentString = print(UserFindManyCommunityDocument)
 const UserFindOneCommunityDocumentString = print(UserFindOneCommunityDocument)
 const UserCreateCommunityDocumentString = print(UserCreateCommunityDocument)
@@ -8441,6 +8555,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
           }),
         'adminDeleteCommunity',
         'mutation',
+        variables,
+      )
+    },
+    userGetCommunities(
+      variables: UserGetCommunitiesQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserGetCommunitiesQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserGetCommunitiesQuery>(UserGetCommunitiesDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userGetCommunities',
+        'query',
         variables,
       )
     },

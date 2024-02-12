@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Identity, LogLevel, Prisma, UserRole, UserStatus } from '@prisma/client'
+import { Identity, IdentityProvider, LogLevel, Prisma, UserRole, UserStatus } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { existsSync } from 'node:fs'
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises'
@@ -147,14 +147,17 @@ export class ApiBackupService {
     for (const user of toCreate) {
       const { identities, ...userData } = user
       try {
+        const discordIdentity = identities.find((identity) => identity.provider === IdentityProvider.Discord)
+        const avatarUrl = (discordIdentity?.profile as { avatarUrl?: string })?.avatarUrl
         const newUser = await this.core.data.user.create({
           data: {
             ...restoreUserFields(userData),
+            avatarUrl,
             identities: { create: identities.map(restoreIdentityFields) },
             logs: {
               create: [
                 {
-                  message: `Restored ${user.username} with ${identities?.length}`,
+                  message: `Restored ${user.username} with ${identities?.length} identities`,
                   level: LogLevel.Info,
                 },
                 ...(identities.length

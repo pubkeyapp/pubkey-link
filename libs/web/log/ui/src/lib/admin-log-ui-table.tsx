@@ -1,7 +1,8 @@
-import { ActionIcon, Anchor, Group, ScrollArea } from '@mantine/core'
-import { Log } from '@pubkey-link/sdk'
+import { ActionIcon, Anchor, Box, Group, ScrollArea, Tooltip } from '@mantine/core'
+import { getEnumOptions, Log, LogLevel } from '@pubkey-link/sdk'
+import { UiSelectEnumOption } from '@pubkey-link/web-ui-core'
 import { UiDebugModal, UiTime } from '@pubkey-ui/core'
-import { IconTrash } from '@tabler/icons-react'
+import { IconTrash, IconUser, IconUsers } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'
 import { LogUiLevelBadge } from './user-log-ui-table'
@@ -35,7 +36,7 @@ export function AdminLogUiTable({
           {
             accessor: 'message',
             render: (item) => (
-              <Anchor component={Link} to={`./${item.id}`} size="sm" fw={500}>
+              <Anchor component={Link} to={`./${item.id}`} fz="xs">
                 {item.message}
               </Anchor>
             ),
@@ -45,22 +46,50 @@ export function AdminLogUiTable({
             accessor: 'createdAt',
             textAlign: 'right',
             title: 'Created',
-            render: (item) => (item.createdAt ? <UiTime date={new Date(item.createdAt)} /> : null),
+            render: (item) => (item.createdAt ? <UiTime fz="xs" date={new Date(item.createdAt)} /> : null),
           },
           {
             accessor: 'level',
-            width: '5%',
-            textAlign: 'right',
+            width: '0%',
+            title: <Box>Level</Box>,
+            textAlign: 'center',
             render: (item) => <LogUiLevelBadge level={item.level} />,
           },
           {
-            width: '10%',
+            width: '0%',
             accessor: 'actions',
-            title: 'Actions',
+            title: <Box mr={6}>Actions</Box>,
             textAlign: 'right',
             render: (item) => (
-              <Group gap="xs" justify="right">
+              <Group gap={4} wrap="nowrap">
+                <Tooltip label={item.communityId ? `View Community Logs` : 'No Community ID'} position="left" withArrow>
+                  <ActionIcon
+                    disabled={!item.communityId}
+                    component={Link}
+                    to={`/admin/communities/${item.communityId}/logs`}
+                    variant="light"
+                    size="sm"
+                  >
+                    <IconUsers size={16} />
+                  </ActionIcon>
+                </Tooltip>
+                <Tooltip
+                  label={item.userId ? `View ${item.user?.username ?? 'User'} Logs` : 'No User ID'}
+                  position="left"
+                  withArrow
+                >
+                  <ActionIcon
+                    disabled={!item.userId}
+                    component={Link}
+                    to={`/admin/users/${item.userId}/logs`}
+                    variant="light"
+                    size="sm"
+                  >
+                    <IconUser size={16} />
+                  </ActionIcon>
+                </Tooltip>
                 <UiDebugModal disabled={!item.data} data={item.data} />
+                <UiDebugModal data={item} />
                 <ActionIcon color="red" variant="light" size="sm" onClick={() => deleteLog(item)}>
                   <IconTrash size={16} />
                 </ActionIcon>
@@ -71,5 +100,21 @@ export function AdminLogUiTable({
         records={logs}
       />
     </ScrollArea>
+  )
+}
+
+export function AdminLogUiSelectLevel({
+  value,
+  setValue,
+}: {
+  value: LogLevel | undefined
+  setValue: (value: LogLevel | undefined) => void
+}) {
+  return (
+    <UiSelectEnumOption<LogLevel>
+      value={value}
+      setValue={setValue}
+      options={[{ value: '', label: 'Filter by level' }, ...getEnumOptions(LogLevel)]}
+    />
   )
 }

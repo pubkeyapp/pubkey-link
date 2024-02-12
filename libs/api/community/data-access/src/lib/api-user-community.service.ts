@@ -45,4 +45,21 @@ export class ApiUserCommunityService {
     await this.core.ensureCommunityAdmin({ communityId, userId })
     return this.core.data.community.update({ where: { id: communityId }, data: input })
   }
+
+  async getCommunities(username: string) {
+    return this.core.data.community.findMany({
+      where: {
+        roles: {
+          some: { members: { some: { member: { user: { username } } } } },
+        },
+      },
+      include: {
+        roles: {
+          where: { members: { some: { member: { user: { username } } } } },
+          include: { conditions: { include: { token: true } } },
+          orderBy: { name: 'asc' },
+        },
+      },
+    })
+  }
 }

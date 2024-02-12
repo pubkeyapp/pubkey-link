@@ -19,6 +19,7 @@ import {
   UiWarning,
 } from '@pubkey-ui/core'
 import { Link, useParams } from 'react-router-dom'
+import { UserUserDetailCommunityFeature } from './user-user-detail-community-feature'
 
 export function UserUserDetailFeature() {
   const { user: authUser } = useAuth()
@@ -91,6 +92,11 @@ export function UserUserDetailFeature() {
         <UiStack>
           <UiTabRoutes
             tabs={[
+              {
+                path: 'communities',
+                label: 'Communities',
+                element: <UserUserDetailCommunityFeature username={username} />,
+              },
               {
                 path: 'assets',
                 label: 'Assets',

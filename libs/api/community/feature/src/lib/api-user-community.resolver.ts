@@ -24,6 +24,10 @@ export class ApiUserCommunityResolver {
   userDeleteCommunity(@CtxUserId() userId: string, @Args('communityId') communityId: string) {
     return this.service.user.deleteCommunity(userId, communityId)
   }
+  @Query(() => [Community])
+  userGetCommunities(@Args('username') username: string) {
+    return this.service.user.getCommunities(username)
+  }
 
   @Query(() => CommunityPaging)
   userFindManyCommunity(@CtxUserId() userId: string, @Args('input') input: UserFindManyCommunityInput) {

@@ -22,7 +22,7 @@ async function bootstrap() {
 
   const host = `http://${core.config.host}:${core.config.port}`
   await app.listen(core.config.port, core.config.host)
-  Logger.log(`🚀 RestAPI is running on: ${host}/${core.config.prefix}.`)
+  Logger.log(`🚀 RestAPI is running on: ${host}${core.config.prefix}.`)
   Logger.log(`🚀 GraphQL is running on: ${host}/graphql.`)
   Logger.log(`🔋 API_URL: ${core.config.apiUrl}`)
   Logger.log(`🔋 WEB_URL: ${core.config.webUrl}`)

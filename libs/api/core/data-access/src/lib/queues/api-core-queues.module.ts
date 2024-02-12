@@ -26,7 +26,7 @@ const logoUrl = 'https://avatars.githubusercontent.com/u/125477168?v=4'
       route: '/queues',
       boardOptions: {
         uiConfig: {
-          boardTitle: 'PubKey API',
+          boardTitle: 'PubKey Link',
           boardLogo: { path: logoUrl },
           favIcon: { default: logoUrl, alternative: logoUrl },
         },

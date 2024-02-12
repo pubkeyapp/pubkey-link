@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql'
 import { NetworkCluster } from '@pubkey-link/api-network-data-access'
+import { Role } from '@pubkey-link/api-role-data-access'
 
 @ObjectType()
 export class Community {
@@ -28,4 +29,6 @@ export class Community {
   telegramUrl?: string | null
   @Field(() => NetworkCluster)
   cluster!: NetworkCluster
+  @Field(() => [Role], { nullable: true })
+  roles?: Role[]
 }
