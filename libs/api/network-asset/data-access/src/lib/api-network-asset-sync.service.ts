@@ -97,7 +97,6 @@ export class ApiNetworkAssetSyncService {
         queueName: API_NETWORK_ASSET_UPSERT_QUEUE,
         name: ASSET_UPSERT_QUEUE,
         data: { cluster, asset },
-        opts: { delay: 1000 },
       })),
     })
 

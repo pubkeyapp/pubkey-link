@@ -204,6 +204,27 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
       create: [{ name: 'MNDE Holders' }, { name: 'MNDE Holders (Shark)' }, { name: 'MNDE Holders (Whale)' }],
     },
   },
+  {
+    cluster,
+    name: 'Tatami',
+    description: 'A complete token launch suite',
+    avatarUrl: 'https://avatars.githubusercontent.com/u/147077786?v=4',
+    members: {
+      create: [{ user: { connect: { id: 'beeman.dev' } }, role: CommunityRole.Admin }],
+    },
+    roles: { create: [{ name: 'NFT Holders' }] },
+  },
+  {
+    cluster,
+    name: 'Legends of SOL',
+    description: 'A digital art project',
+    avatarUrl:
+      'https://waq26xbzlmlh6koszuoh5k3ttw4op5fp3teymntjv5drqlkxlepq.arweave.net/sCGvXDlbFn8p0s0cfqtznbjn9K_cyYY2aa9HGC1XWR8',
+    members: {
+      create: [{ user: { connect: { id: 'beeman.dev' } }, role: CommunityRole.Admin }],
+    },
+    roles: { create: [{ name: 'LEGENDS' }] },
+  },
 ]
 export const provisionUsers: Prisma.UserCreateInput[] = [
   {
@@ -218,12 +239,12 @@ export const provisionUsers: Prisma.UserCreateInput[] = [
         //
         { provider: IdentityProvider.Discord, providerId: '386584531353862154', name: 'beeman.dev' },
         ...[
-          { providerId: '3XN71ShwyPNYZ22fV4phQCnyPj6E6EbMLAD5ReLRvdRP', name: '3XN71S..LRvdRP' },
-          { providerId: '9VyTdXMBXXPaEcCXjhCqicLF975Ji2zz4SwMSvCYe9ks', name: '9VyTdX..CYe9ks' },
-          { providerId: 'BeEMuaaQCQPodQdaA7W6Rmsu7761vCabN4Tth6jA4VCP', name: 'BeEMua..jA4VCP' },
-          { providerId: 'BumrJWH5kf4MXZ5bEg7VyZY6oXAMr78jXC1mFiDAE3u3', name: 'BumrJW..DAE3u3' },
-          { providerId: 'CdrFwyi78fjEN3WFUc72KUxewFdxv1SUSaKAMVkPHQyd', name: 'CdrFwy..kPHQyd' },
-          { providerId: 'Dd1JSwojUsptwFa97A3WRZU1SijCWYo9Qa3xLxT8yzb7', name: 'Dd1JSw..T8yzb7' },
+          { providerId: '3XN71ShwyPNYZ22fV4phQCnyPj6E6EbMLAD5ReLRvdRP', name: 'BEEMAN#8333' },
+          { providerId: '9VyTdXMBXXPaEcCXjhCqicLF975Ji2zz4SwMSvCYe9ks', name: 'SAGA' },
+          { providerId: 'BeEMuaaQCQPodQdaA7W6Rmsu7761vCabN4Tth6jA4VCP', name: '🌶️ WALLET' },
+          { providerId: 'BumrJWH5kf4MXZ5bEg7VyZY6oXAMr78jXC1mFiDAE3u3', name: 'Backpack' },
+          { providerId: 'CdrFwyi78fjEN3WFUc72KUxewFdxv1SUSaKAMVkPHQyd', name: 'Dialect' },
+          { providerId: 'Dd1JSwojUsptwFa97A3WRZU1SijCWYo9Qa3xLxT8yzb7', name: 'Phantom' },
         ].map(({ providerId, name }) => ({ name, provider: IdentityProvider.Solana, providerId, verified: true })),
       ],
     },
