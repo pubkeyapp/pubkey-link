@@ -229,6 +229,15 @@ type BotPermission {
   updatedAt: DateTime
 }
 
+type BotServer {
+  botId: String!
+  createdAt: DateTime
+  id: String!
+  name: String!
+  serverId: String!
+  updatedAt: DateTime
+}
+
 enum BotStatus {
   Active
   Inactive
@@ -445,6 +454,7 @@ type Mutation {
   userStopBot(botId: String!): Boolean
   userSyncBotServer(botId: String!, serverId: String!): Boolean
   userUpdateBot(botId: String!, input: UserUpdateBotInput!): Bot
+  userUpdateBotServer(botId: String!, input: UserUpdateBotServerInput!, serverId: String!): BotServer
   userUpdateCommunity(communityId: String!, input: UserUpdateCommunityInput!): Community
   userUpdateCommunityMember(communityMemberId: String!, input: UserUpdateCommunityMemberInput!): CommunityMember
   userUpdateRole(input: UserUpdateRoleInput!, roleId: String!): Role
@@ -589,6 +599,7 @@ type Query {
   userFindManyRole(input: UserFindManyRoleInput!): RolePaging!
   userFindManyUser(input: UserFindManyUserInput!): UserPaging!
   userFindOneBot(communityId: String!): Bot
+  userFindOneBotServer(botId: String!, serverId: String!): BotServer
   userFindOneCommunity(communityId: String!): Community
   userFindOneCommunityMember(communityMemberId: String!): CommunityMember
   userFindOneIdentity(provider: IdentityProvider!, providerId: String!): Identity
@@ -811,6 +822,10 @@ input UserUpdateBotInput {
   clientSecret: String
   name: String
   token: String
+}
+
+input UserUpdateBotServerInput {
+  name: String
 }
 
 input UserUpdateCommunityInput {

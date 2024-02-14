@@ -6,6 +6,7 @@ import { UiAlert, UiCard, UiDebug, UiGroup, UiLoader, UiStack, UiTabRoutes } fro
 import { useNavigate, useParams } from 'react-router-dom'
 import { UserBotDetailServerMembers } from './user-bot-detail-server-members'
 import { UserBotDetailServerRoles } from './user-bot-detail-server-roles'
+import { UserBotDetailServerSettings } from './user-bot-detail-server-settings'
 
 export function UserBotDetailServerDetail({ bot }: { bot: Bot }) {
   const { serverId } = useParams() as { serverId: string }
@@ -33,6 +34,11 @@ export function UserBotDetailServerDetail({ bot }: { bot: Bot }) {
       </UiCard>
       <UiTabRoutes
         tabs={[
+          {
+            path: 'settings',
+            label: 'Settings',
+            element: <UserBotDetailServerSettings botId={bot.id} serverId={serverId} />,
+          },
           { path: 'roles', label: 'Roles', element: <UserBotDetailServerRoles botId={bot.id} serverId={serverId} /> },
           {
             path: 'members',

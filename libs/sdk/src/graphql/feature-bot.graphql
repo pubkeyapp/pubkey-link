@@ -34,6 +34,15 @@ fragment BotMemberDetails on BotMember {
   identityProvider
 }
 
+fragment BotServerDetails on BotServer {
+  id
+  createdAt
+  updatedAt
+  botId
+  serverId
+  name
+}
+
 fragment BotPermissionDetails on BotPermission {
   botId
   createdAt
@@ -109,6 +118,12 @@ query userFindOneBot($communityId: String!) {
   }
 }
 
+query userFindOneBotServer($botId: String!, $serverId: String!) {
+  item: userFindOneBotServer(botId: $botId, serverId: $serverId) {
+    ...BotServerDetails
+  }
+}
+
 mutation userCreateBot($input: UserCreateBotInput!) {
   created: userCreateBot(input: $input) {
     ...BotDetails
@@ -118,6 +133,11 @@ mutation userCreateBot($input: UserCreateBotInput!) {
 mutation userUpdateBot($botId: String!, $input: UserUpdateBotInput!) {
   updated: userUpdateBot(botId: $botId, input: $input) {
     ...BotDetails
+  }
+}
+mutation userUpdateBotServer($botId: String!, $serverId: String!, $input: UserUpdateBotServerInput!) {
+  updated: userUpdateBotServer(botId: $botId, serverId: $serverId, input: $input) {
+    ...BotServerDetails
   }
 }
 

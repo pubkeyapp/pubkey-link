@@ -4,6 +4,7 @@ import { User as DiscordUser } from 'discord.js'
 import { ApiBotManagerService } from './api-bot-manager.service'
 import { ApiBotMemberService } from './api-bot-member.service'
 import { UserCreateBotInput } from './dto/user-create-bot.input'
+import { UserUpdateBotServerInput } from './dto/user-update-bot-server.input'
 import { UserUpdateBotInput } from './dto/user-update-bot.input'
 
 @Injectable()
@@ -59,8 +60,27 @@ export class ApiUserBotService {
     }
   }
 
+  async findOneBotServer(userId: string, botId: string, serverId: string) {
+    const botServer = await this.core.data.botServer.findUnique({
+      where: {
+        botId_serverId: { botId: botId, serverId },
+      },
+    })
+    if (!botServer) {
+      throw new Error(`Bot server not found ${serverId}`)
+    }
+    await this.member.ensureBotAdmin({ botId: botServer.botId, userId })
+    return botServer
+  }
+
   async updateBot(userId: string, botId: string, input: UserUpdateBotInput) {
     await this.member.ensureBotAdmin({ botId, userId })
     return this.core.data.bot.update({ where: { id: botId }, data: input })
+  }
+
+  async updateBotServer(userId: string, botId: string, serverId: string, input: UserUpdateBotServerInput) {
+    // This call makes sure the user is an admin of the bot
+    await this.findOneBotServer(userId, botId, serverId)
+    return this.core.data.botServer.update({ where: { botId_serverId: { botId, serverId } }, data: input })
   }
 }

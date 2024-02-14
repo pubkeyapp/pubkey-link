@@ -256,6 +256,16 @@ export type BotPermission = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
+export type BotServer = {
+  __typename?: 'BotServer'
+  botId: Scalars['String']['output']
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  id: Scalars['String']['output']
+  name: Scalars['String']['output']
+  serverId: Scalars['String']['output']
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
 export enum BotStatus {
   Active = 'Active',
   Inactive = 'Inactive',
@@ -473,6 +483,7 @@ export type Mutation = {
   userStopBot?: Maybe<Scalars['Boolean']['output']>
   userSyncBotServer?: Maybe<Scalars['Boolean']['output']>
   userUpdateBot?: Maybe<Bot>
+  userUpdateBotServer?: Maybe<BotServer>
   userUpdateCommunity?: Maybe<Community>
   userUpdateCommunityMember?: Maybe<CommunityMember>
   userUpdateRole?: Maybe<Role>
@@ -693,6 +704,12 @@ export type MutationUserUpdateBotArgs = {
   input: UserUpdateBotInput
 }
 
+export type MutationUserUpdateBotServerArgs = {
+  botId: Scalars['String']['input']
+  input: UserUpdateBotServerInput
+  serverId: Scalars['String']['input']
+}
+
 export type MutationUserUpdateCommunityArgs = {
   communityId: Scalars['String']['input']
   input: UserUpdateCommunityInput
@@ -872,6 +889,7 @@ export type Query = {
   userFindManyRole: RolePaging
   userFindManyUser: UserPaging
   userFindOneBot?: Maybe<Bot>
+  userFindOneBotServer?: Maybe<BotServer>
   userFindOneCommunity?: Maybe<Community>
   userFindOneCommunityMember?: Maybe<CommunityMember>
   userFindOneIdentity?: Maybe<Identity>
@@ -1014,6 +1032,11 @@ export type QueryUserFindManyUserArgs = {
 
 export type QueryUserFindOneBotArgs = {
   communityId: Scalars['String']['input']
+}
+
+export type QueryUserFindOneBotServerArgs = {
+  botId: Scalars['String']['input']
+  serverId: Scalars['String']['input']
 }
 
 export type QueryUserFindOneCommunityArgs = {
@@ -1303,6 +1326,10 @@ export type UserUpdateBotInput = {
   token?: InputMaybe<Scalars['String']['input']>
 }
 
+export type UserUpdateBotServerInput = {
+  name?: InputMaybe<Scalars['String']['input']>
+}
+
 export type UserUpdateCommunityInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>
   description?: InputMaybe<Scalars['String']['input']>
@@ -1525,6 +1552,16 @@ export type BotMemberDetailsFragment = {
       username?: string | null
     } | null
   } | null
+}
+
+export type BotServerDetailsFragment = {
+  __typename?: 'BotServer'
+  id: string
+  createdAt?: Date | null
+  updatedAt?: Date | null
+  botId: string
+  serverId: string
+  name: string
 }
 
 export type BotPermissionDetailsFragment = {
@@ -1906,6 +1943,24 @@ export type UserFindOneBotQuery = {
   } | null
 }
 
+export type UserFindOneBotServerQueryVariables = Exact<{
+  botId: Scalars['String']['input']
+  serverId: Scalars['String']['input']
+}>
+
+export type UserFindOneBotServerQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'BotServer'
+    id: string
+    createdAt?: Date | null
+    updatedAt?: Date | null
+    botId: string
+    serverId: string
+    name: string
+  } | null
+}
+
 export type UserCreateBotMutationVariables = Exact<{
   input: UserCreateBotInput
 }>
@@ -2002,6 +2057,25 @@ export type UserUpdateBotMutation = {
         permissions?: Array<string> | null
       } | null
     }> | null
+  } | null
+}
+
+export type UserUpdateBotServerMutationVariables = Exact<{
+  botId: Scalars['String']['input']
+  serverId: Scalars['String']['input']
+  input: UserUpdateBotServerInput
+}>
+
+export type UserUpdateBotServerMutation = {
+  __typename?: 'Mutation'
+  updated?: {
+    __typename?: 'BotServer'
+    id: string
+    createdAt?: Date | null
+    updatedAt?: Date | null
+    botId: string
+    serverId: string
+    name: string
   } | null
 }
 
@@ -6382,6 +6456,16 @@ export const BotMemberDetailsFragmentDoc = gql`
   ${IdentityDetailsFragmentDoc}
   ${UserDetailsFragmentDoc}
 `
+export const BotServerDetailsFragmentDoc = gql`
+  fragment BotServerDetails on BotServer {
+    id
+    createdAt
+    updatedAt
+    botId
+    serverId
+    name
+  }
+`
 export const NetworkTokenDetailsFragmentDoc = gql`
   fragment NetworkTokenDetails on NetworkToken {
     id
@@ -6791,6 +6875,14 @@ export const UserFindOneBotDocument = gql`
   ${BotPermissionDetailsFragmentDoc}
   ${RoleDetailsFragmentDoc}
 `
+export const UserFindOneBotServerDocument = gql`
+  query userFindOneBotServer($botId: String!, $serverId: String!) {
+    item: userFindOneBotServer(botId: $botId, serverId: $serverId) {
+      ...BotServerDetails
+    }
+  }
+  ${BotServerDetailsFragmentDoc}
+`
 export const UserCreateBotDocument = gql`
   mutation userCreateBot($input: UserCreateBotInput!) {
     created: userCreateBot(input: $input) {
@@ -6806,6 +6898,14 @@ export const UserUpdateBotDocument = gql`
     }
   }
   ${BotDetailsFragmentDoc}
+`
+export const UserUpdateBotServerDocument = gql`
+  mutation userUpdateBotServer($botId: String!, $serverId: String!, $input: UserUpdateBotServerInput!) {
+    updated: userUpdateBotServer(botId: $botId, serverId: $serverId, input: $input) {
+      ...BotServerDetails
+    }
+  }
+  ${BotServerDetailsFragmentDoc}
 `
 export const UserDeleteBotDocument = gql`
   mutation userDeleteBot($botId: String!) {
@@ -7620,8 +7720,10 @@ const AdminCreateBotDocumentString = print(AdminCreateBotDocument)
 const AdminUpdateBotDocumentString = print(AdminUpdateBotDocument)
 const AdminDeleteBotDocumentString = print(AdminDeleteBotDocument)
 const UserFindOneBotDocumentString = print(UserFindOneBotDocument)
+const UserFindOneBotServerDocumentString = print(UserFindOneBotServerDocument)
 const UserCreateBotDocumentString = print(UserCreateBotDocument)
 const UserUpdateBotDocumentString = print(UserUpdateBotDocument)
+const UserUpdateBotServerDocumentString = print(UserUpdateBotServerDocument)
 const UserDeleteBotDocumentString = print(UserDeleteBotDocument)
 const UserStartBotDocumentString = print(UserStartBotDocument)
 const UserStopBotDocumentString = print(UserStopBotDocument)
@@ -8033,6 +8135,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
+    userFindOneBotServer(
+      variables: UserFindOneBotServerQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserFindOneBotServerQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserFindOneBotServerQuery>(UserFindOneBotServerDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userFindOneBotServer',
+        'query',
+        variables,
+      )
+    },
     userCreateBot(
       variables: UserCreateBotMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -8071,6 +8194,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'userUpdateBot',
+        'mutation',
+        variables,
+      )
+    },
+    userUpdateBotServer(
+      variables: UserUpdateBotServerMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserUpdateBotServerMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserUpdateBotServerMutation>(UserUpdateBotServerDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userUpdateBotServer',
         'mutation',
         variables,
       )
@@ -10464,6 +10608,12 @@ export function UserUpdateBotInputSchema(): z.ZodObject<Properties<UserUpdateBot
     clientSecret: z.string().nullish(),
     name: z.string().nullish(),
     token: z.string().nullish(),
+  })
+}
+
+export function UserUpdateBotServerInputSchema(): z.ZodObject<Properties<UserUpdateBotServerInput>> {
+  return z.object({
+    name: z.string().nullish(),
   })
 }
 

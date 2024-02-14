@@ -5,10 +5,12 @@ import {
   ApiBotService,
   Bot,
   BotMember,
+  BotServer,
   DiscordRole,
   DiscordServer,
   UserCreateBotInput,
   UserUpdateBotInput,
+  UserUpdateBotServerInput,
 } from '@pubkey-link/api-bot-data-access'
 
 @Resolver()
@@ -30,10 +32,24 @@ export class ApiUserBotResolver {
   userFindOneBot(@CtxUserId() userId: string, @Args('communityId') communityId: string) {
     return this.service.user.findOneBot(userId, communityId)
   }
+  @Query(() => BotServer, { nullable: true })
+  userFindOneBotServer(@CtxUserId() userId: string, @Args('botId') botId: string, @Args('serverId') serverId: string) {
+    return this.service.user.findOneBotServer(userId, botId, serverId)
+  }
 
   @Mutation(() => Bot, { nullable: true })
   userUpdateBot(@CtxUserId() userId: string, @Args('botId') botId: string, @Args('input') input: UserUpdateBotInput) {
     return this.service.user.updateBot(userId, botId, input)
+  }
+
+  @Mutation(() => BotServer, { nullable: true })
+  userUpdateBotServer(
+    @CtxUserId() userId: string,
+    @Args('botId') botId: string,
+    @Args('serverId') serverId: string,
+    @Args('input') input: UserUpdateBotServerInput,
+  ) {
+    return this.service.user.updateBotServer(userId, botId, serverId, input)
   }
 
   @Query(() => [DiscordServer], { nullable: true })
