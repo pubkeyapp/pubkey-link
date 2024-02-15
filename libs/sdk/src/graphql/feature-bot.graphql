@@ -40,7 +40,10 @@ fragment BotServerDetails on BotServer {
   updatedAt
   botId
   serverId
-  name
+  adminRole
+  commandChannel
+  dryRun
+  verbose
 }
 
 fragment BotPermissionDetails on BotPermission {
@@ -63,6 +66,13 @@ fragment DiscordServerDetails on DiscordServer {
   name
   icon
   permissions
+}
+
+fragment DiscordChannelDetails on DiscordChannel {
+  id
+  name
+  parentId
+  type
 }
 
 fragment DiscordRoleDetails on DiscordRole {
@@ -135,6 +145,13 @@ mutation userUpdateBot($botId: String!, $input: UserUpdateBotInput!) {
     ...BotDetails
   }
 }
+
+mutation userTestBotServerConfig($botId: String!, $serverId: String!) {
+  tested: userTestBotServerConfig(botId: $botId, serverId: $serverId) {
+    ...BotServerDetails
+  }
+}
+
 mutation userUpdateBotServer($botId: String!, $serverId: String!, $input: UserUpdateBotServerInput!) {
   updated: userUpdateBotServer(botId: $botId, serverId: $serverId, input: $input) {
     ...BotServerDetails
@@ -167,6 +184,11 @@ query userGetBotMembers($botId: String!, $serverId: String!) {
   }
 }
 
+query userGetBotChannels($botId: String!, $serverId: String!) {
+  items: userGetBotChannels(botId: $botId, serverId: $serverId) {
+    ...DiscordChannelDetails
+  }
+}
 query userGetBotRoles($botId: String!, $serverId: String!) {
   items: userGetBotRoles(botId: $botId, serverId: $serverId) {
     ...DiscordRoleDetails

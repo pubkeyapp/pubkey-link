@@ -258,12 +258,15 @@ export type BotPermission = {
 
 export type BotServer = {
   __typename?: 'BotServer'
+  adminRole?: Maybe<Scalars['String']['output']>
   botId: Scalars['String']['output']
+  commandChannel?: Maybe<Scalars['String']['output']>
   createdAt?: Maybe<Scalars['DateTime']['output']>
+  dryRun?: Maybe<Scalars['Boolean']['output']>
   id: Scalars['String']['output']
-  name: Scalars['String']['output']
   serverId: Scalars['String']['output']
   updatedAt?: Maybe<Scalars['DateTime']['output']>
+  verbose?: Maybe<Scalars['Boolean']['output']>
 }
 
 export enum BotStatus {
@@ -315,6 +318,14 @@ export type CommunityPaging = {
 export enum CommunityRole {
   Admin = 'Admin',
   Member = 'Member',
+}
+
+export type DiscordChannel = {
+  __typename?: 'DiscordChannel'
+  id: Scalars['String']['output']
+  name: Scalars['String']['output']
+  parentId?: Maybe<Scalars['String']['output']>
+  type: Scalars['String']['output']
 }
 
 export type DiscordRole = {
@@ -482,6 +493,7 @@ export type Mutation = {
   userStartBot?: Maybe<Scalars['Boolean']['output']>
   userStopBot?: Maybe<Scalars['Boolean']['output']>
   userSyncBotServer?: Maybe<Scalars['Boolean']['output']>
+  userTestBotServerConfig?: Maybe<BotServer>
   userUpdateBot?: Maybe<Bot>
   userUpdateBotServer?: Maybe<BotServer>
   userUpdateCommunity?: Maybe<Community>
@@ -699,6 +711,11 @@ export type MutationUserSyncBotServerArgs = {
   serverId: Scalars['String']['input']
 }
 
+export type MutationUserTestBotServerConfigArgs = {
+  botId: Scalars['String']['input']
+  serverId: Scalars['String']['input']
+}
+
 export type MutationUserUpdateBotArgs = {
   botId: Scalars['String']['input']
   input: UserUpdateBotInput
@@ -898,6 +915,7 @@ export type Query = {
   userFindOneRole?: Maybe<Role>
   userFindOneUser?: Maybe<User>
   userFindOneUserById?: Maybe<User>
+  userGetBotChannels?: Maybe<Array<DiscordChannel>>
   userGetBotMembers?: Maybe<Array<BotMember>>
   userGetBotRoles?: Maybe<Array<DiscordRole>>
   userGetBotServer?: Maybe<DiscordServer>
@@ -1071,6 +1089,11 @@ export type QueryUserFindOneUserArgs = {
 
 export type QueryUserFindOneUserByIdArgs = {
   userId: Scalars['String']['input']
+}
+
+export type QueryUserGetBotChannelsArgs = {
+  botId: Scalars['String']['input']
+  serverId: Scalars['String']['input']
 }
 
 export type QueryUserGetBotMembersArgs = {
@@ -1327,7 +1350,10 @@ export type UserUpdateBotInput = {
 }
 
 export type UserUpdateBotServerInput = {
-  name?: InputMaybe<Scalars['String']['input']>
+  adminRole?: InputMaybe<Scalars['String']['input']>
+  commandChannel?: InputMaybe<Scalars['String']['input']>
+  dryRun?: InputMaybe<Scalars['Boolean']['input']>
+  verbose?: InputMaybe<Scalars['Boolean']['input']>
 }
 
 export type UserUpdateCommunityInput = {
@@ -1561,7 +1587,10 @@ export type BotServerDetailsFragment = {
   updatedAt?: Date | null
   botId: string
   serverId: string
-  name: string
+  adminRole?: string | null
+  commandChannel?: string | null
+  dryRun?: boolean | null
+  verbose?: boolean | null
 }
 
 export type BotPermissionDetailsFragment = {
@@ -1595,6 +1624,14 @@ export type DiscordServerDetailsFragment = {
   name: string
   icon?: string | null
   permissions?: Array<string> | null
+}
+
+export type DiscordChannelDetailsFragment = {
+  __typename?: 'DiscordChannel'
+  id: string
+  name: string
+  parentId?: string | null
+  type: string
 }
 
 export type DiscordRoleDetailsFragment = {
@@ -1957,7 +1994,10 @@ export type UserFindOneBotServerQuery = {
     updatedAt?: Date | null
     botId: string
     serverId: string
-    name: string
+    adminRole?: string | null
+    commandChannel?: string | null
+    dryRun?: boolean | null
+    verbose?: boolean | null
   } | null
 }
 
@@ -2060,6 +2100,27 @@ export type UserUpdateBotMutation = {
   } | null
 }
 
+export type UserTestBotServerConfigMutationVariables = Exact<{
+  botId: Scalars['String']['input']
+  serverId: Scalars['String']['input']
+}>
+
+export type UserTestBotServerConfigMutation = {
+  __typename?: 'Mutation'
+  tested?: {
+    __typename?: 'BotServer'
+    id: string
+    createdAt?: Date | null
+    updatedAt?: Date | null
+    botId: string
+    serverId: string
+    adminRole?: string | null
+    commandChannel?: string | null
+    dryRun?: boolean | null
+    verbose?: boolean | null
+  } | null
+}
+
 export type UserUpdateBotServerMutationVariables = Exact<{
   botId: Scalars['String']['input']
   serverId: Scalars['String']['input']
@@ -2075,7 +2136,10 @@ export type UserUpdateBotServerMutation = {
     updatedAt?: Date | null
     botId: string
     serverId: string
-    name: string
+    adminRole?: string | null
+    commandChannel?: string | null
+    dryRun?: boolean | null
+    verbose?: boolean | null
   } | null
 }
 
@@ -2158,6 +2222,22 @@ export type UserGetBotMembersQuery = {
         username?: string | null
       } | null
     } | null
+  }> | null
+}
+
+export type UserGetBotChannelsQueryVariables = Exact<{
+  botId: Scalars['String']['input']
+  serverId: Scalars['String']['input']
+}>
+
+export type UserGetBotChannelsQuery = {
+  __typename?: 'Query'
+  items?: Array<{
+    __typename?: 'DiscordChannel'
+    id: string
+    name: string
+    parentId?: string | null
+    type: string
   }> | null
 }
 
@@ -6463,7 +6543,18 @@ export const BotServerDetailsFragmentDoc = gql`
     updatedAt
     botId
     serverId
+    adminRole
+    commandChannel
+    dryRun
+    verbose
+  }
+`
+export const DiscordChannelDetailsFragmentDoc = gql`
+  fragment DiscordChannelDetails on DiscordChannel {
+    id
     name
+    parentId
+    type
   }
 `
 export const NetworkTokenDetailsFragmentDoc = gql`
@@ -6899,6 +6990,14 @@ export const UserUpdateBotDocument = gql`
   }
   ${BotDetailsFragmentDoc}
 `
+export const UserTestBotServerConfigDocument = gql`
+  mutation userTestBotServerConfig($botId: String!, $serverId: String!) {
+    tested: userTestBotServerConfig(botId: $botId, serverId: $serverId) {
+      ...BotServerDetails
+    }
+  }
+  ${BotServerDetailsFragmentDoc}
+`
 export const UserUpdateBotServerDocument = gql`
   mutation userUpdateBotServer($botId: String!, $serverId: String!, $input: UserUpdateBotServerInput!) {
     updated: userUpdateBotServer(botId: $botId, serverId: $serverId, input: $input) {
@@ -6939,6 +7038,14 @@ export const UserGetBotMembersDocument = gql`
     }
   }
   ${BotMemberDetailsFragmentDoc}
+`
+export const UserGetBotChannelsDocument = gql`
+  query userGetBotChannels($botId: String!, $serverId: String!) {
+    items: userGetBotChannels(botId: $botId, serverId: $serverId) {
+      ...DiscordChannelDetails
+    }
+  }
+  ${DiscordChannelDetailsFragmentDoc}
 `
 export const UserGetBotRolesDocument = gql`
   query userGetBotRoles($botId: String!, $serverId: String!) {
@@ -7723,6 +7830,7 @@ const UserFindOneBotDocumentString = print(UserFindOneBotDocument)
 const UserFindOneBotServerDocumentString = print(UserFindOneBotServerDocument)
 const UserCreateBotDocumentString = print(UserCreateBotDocument)
 const UserUpdateBotDocumentString = print(UserUpdateBotDocument)
+const UserTestBotServerConfigDocumentString = print(UserTestBotServerConfigDocument)
 const UserUpdateBotServerDocumentString = print(UserUpdateBotServerDocument)
 const UserDeleteBotDocumentString = print(UserDeleteBotDocument)
 const UserStartBotDocumentString = print(UserStartBotDocument)
@@ -7730,6 +7838,7 @@ const UserStopBotDocumentString = print(UserStopBotDocument)
 const UserLeaveBotServerDocumentString = print(UserLeaveBotServerDocument)
 const UserSyncBotServerDocumentString = print(UserSyncBotServerDocument)
 const UserGetBotMembersDocumentString = print(UserGetBotMembersDocument)
+const UserGetBotChannelsDocumentString = print(UserGetBotChannelsDocument)
 const UserGetBotRolesDocumentString = print(UserGetBotRolesDocument)
 const UserGetBotServersDocumentString = print(UserGetBotServersDocument)
 const UserGetBotServerDocumentString = print(UserGetBotServerDocument)
@@ -8198,6 +8307,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
+    userTestBotServerConfig(
+      variables: UserTestBotServerConfigMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserTestBotServerConfigMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserTestBotServerConfigMutation>(UserTestBotServerConfigDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userTestBotServerConfig',
+        'mutation',
+        variables,
+      )
+    },
     userUpdateBotServer(
       variables: UserUpdateBotServerMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -8341,6 +8471,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'userGetBotMembers',
+        'query',
+        variables,
+      )
+    },
+    userGetBotChannels(
+      variables: UserGetBotChannelsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserGetBotChannelsQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserGetBotChannelsQuery>(UserGetBotChannelsDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userGetBotChannels',
         'query',
         variables,
       )
@@ -10613,7 +10764,10 @@ export function UserUpdateBotInputSchema(): z.ZodObject<Properties<UserUpdateBot
 
 export function UserUpdateBotServerInputSchema(): z.ZodObject<Properties<UserUpdateBotServerInput>> {
   return z.object({
-    name: z.string().nullish(),
+    adminRole: z.string().nullish(),
+    commandChannel: z.string().nullish(),
+    dryRun: z.boolean().nullish(),
+    verbose: z.boolean().nullish(),
   })
 }
 

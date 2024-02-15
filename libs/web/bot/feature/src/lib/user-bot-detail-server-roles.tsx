@@ -5,7 +5,7 @@ import { UiAlert, UiCard, UiDebug, UiDebugModal, UiLoader, UiStack } from '@pubk
 import { IconBrandDiscord } from '@tabler/icons-react'
 
 export function UserBotDetailServerRoles({ botId, serverId }: { botId: string; serverId: string }) {
-  const query = useUserGetBotRoles({ botId, serverId })
+  const { query } = useUserGetBotRoles({ botId, serverId })
 
   if (query.isLoading) {
     return <UiLoader />

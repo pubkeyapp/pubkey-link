@@ -1,14 +1,12 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { Bot } from '@prisma/client'
-
 import { createDiscordRestClient, DiscordBot } from '@pubkey-link/api-bot-util'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-
-import { PermissionsString, User } from 'discord.js'
+import { ChannelType, PermissionsString, User } from 'discord.js'
 import { ApiBotMemberService } from './api-bot-member.service'
 import { BotStatus } from './entity/bot-status.enum'
-import { DiscordRole, DiscordServer } from './entity/discord-server.entity'
+import { DiscordChannel, DiscordRole, DiscordServer } from './entity/discord-server.entity'
 
 @Injectable()
 export class ApiBotManagerService implements OnModuleInit {
@@ -42,8 +40,32 @@ export class ApiBotManagerService implements OnModuleInit {
   developersUrl(botId: string) {
     return `https://discord.com/developers/applications/${botId}`
   }
+  async getBotChannels(userId: string, botId: string, serverId: string): Promise<DiscordChannel[]> {
+    await this.botMember.ensureBotAdmin({ botId, userId })
+    const bot = this.getBotInstance(botId)
+    if (!bot) {
+      return []
+    }
+    const channels = await bot.getDiscordServerChannels(serverId)
+
+    return channels
+      .filter(({ type }) =>
+        [
+          // TODO: Add ChannelType.GuildCategory and link to the guilds, so we can group channels in the UI
+          ChannelType.GuildCategory,
+          ChannelType.GuildText,
+        ].includes(type),
+      )
+      .map((channel) => ({
+        id: channel.id,
+        name: channel.name,
+        type: ChannelType[channel.type],
+        parentId: channel.parentId,
+      }))
+  }
 
   async getBotRoles(userId: string, botId: string, serverId: string): Promise<DiscordRole[]> {
+    await this.botMember.ensureBotAdmin({ botId, userId })
     const bot = this.getBotInstance(botId)
     if (!bot) {
       return []
@@ -52,6 +74,7 @@ export class ApiBotManagerService implements OnModuleInit {
   }
 
   async getBotServers(userId: string, botId: string): Promise<DiscordServer[]> {
+    await this.botMember.ensureBotAdmin({ botId, userId })
     const bot = this.getBotInstance(botId)
 
     if (!bot) {
@@ -124,6 +147,7 @@ export class ApiBotManagerService implements OnModuleInit {
   }
 
   async leaveBotServer(userId: string, botId: string, serverId: string) {
+    await this.botMember.ensureBotAdmin({ botId, userId })
     return this.ensureBotInstance(botId).leaveServer(serverId)
   }
 
@@ -226,12 +250,12 @@ export class ApiBotManagerService implements OnModuleInit {
         data: {
           bot: { connect: { id: bot.id } },
           serverId: server.id,
-          name: server.name,
         },
       })
     }
     return found
   }
+
   async syncBotServerMembers({
     botId,
     communityId,
@@ -300,6 +324,69 @@ export class ApiBotManagerService implements OnModuleInit {
       `${tag}: Found ${members.length} members to process (filtered ${filtered.length}) (linked ${linkedCount})`,
     )
     return true
+  }
+
+  async userTestBotServerConfig(userId: string, botId: string, serverId: string) {
+    const bot = await this.botMember.ensureBotAdmin({ botId, userId })
+
+    const discordBot = this.getBotInstance(botId)
+    if (!discordBot) {
+      throw new Error(`Bot ${botId} not started`)
+    }
+
+    const discordServer = await discordBot.client?.guilds.fetch(serverId)
+    if (!discordServer) {
+      throw new Error(`Server ${serverId} not found`)
+    }
+
+    const botServer = await this.core.data.botServer.findUnique({ where: { botId_serverId: { botId, serverId } } })
+    if (!botServer) {
+      throw new Error(`Bot server ${serverId} not found`)
+    }
+    if (!botServer.commandChannel) {
+      throw new Error(`This bot does not have a command channel set`)
+    }
+
+    const summary = await this.getCommunityRoleSummary(bot.communityId)
+
+    await discordBot.sendChannel(botServer.commandChannel, {
+      embeds: [
+        {
+          title: `Configuration for ${discordBot.client?.user?.username} in ${bot.community.name} (${bot.community.cluster})`,
+          fields: [
+            { name: `Admin Role`, value: botServer.adminRole ? `<@&${botServer.adminRole}>` : 'Not set' },
+            { name: `Command Channel`, value: `<#${botServer.commandChannel}>` },
+            { name: 'Roles:', value: `There are ${summary.length} roles in this community` },
+            ...summary.map((role) => ({
+              name: `${role.name}`,
+              value: `Conditions (**${role.conditions.length}**):
+               ${role.conditions.map(
+                 (condition) =>
+                   ` - ${condition.amount} [${condition.token?.symbol}](https://solana.fm/address/${condition.token?.account}) ${condition.token?.name} (${condition.type})\n`,
+               )}Permissions (**${role.permissions.length}**):
+                ${role.permissions.map(
+                  (permission) => ` - <@&${permission.bot?.serverRoleId}>\n`,
+                )}Members with this role: **${role.members.length}**.
+            `,
+            })),
+          ],
+          url: `${this.core.config.webUrl}/c/${bot.communityId}/discord/servers/${serverId}`,
+        },
+      ],
+    })
+
+    return botServer
+  }
+
+  private getCommunityRoleSummary(communityId: string) {
+    return this.core.data.role.findMany({
+      where: { communityId },
+      include: {
+        conditions: { include: { token: true } },
+        permissions: { include: { bot: true } },
+        members: true,
+      },
+    })
   }
 }
 

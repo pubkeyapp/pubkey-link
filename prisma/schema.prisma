@@ -26,14 +26,17 @@ model Bot {
 }
 
 model BotServer {
-  id        String      @id @default(cuid())
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  bot       Bot         @relation(fields: [botId], references: [id], onDelete: Cascade)
-  botId     String
-  serverId  String
-  name      String
-  member    BotMember[]
+  id             String      @id @default(cuid())
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  bot            Bot         @relation(fields: [botId], references: [id], onDelete: Cascade)
+  botId          String
+  serverId       String
+  dryRun         Boolean     @default(false)
+  verbose        Boolean     @default(false)
+  adminRole      String?
+  commandChannel String?
+  member         BotMember[]
 
   @@unique([botId, serverId])
 }

@@ -129,7 +129,7 @@ export class ApiBotMemberService {
   }
 
   async ensureBotAdmin({ botId, userId }: { botId: string; userId: string }) {
-    const bot = await this.core.data.bot.findUnique({ where: { id: botId } })
+    const bot = await this.core.data.bot.findUnique({ where: { id: botId }, include: { community: true } })
     if (!bot) {
       throw new Error(`Bot with id ${botId} not found`)
     }

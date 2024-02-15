@@ -9,9 +9,15 @@ export class BotServer {
   @Field({ nullable: true })
   updatedAt?: Date
   @Field()
-  name!: string
-  @Field()
   serverId!: string
   @Field()
   botId!: string
+  @Field({ nullable: true })
+  adminRole?: string
+  @Field({ nullable: true })
+  commandChannel?: string
+  @Field({ nullable: true })
+  dryRun?: boolean
+  @Field({ nullable: true })
+  verbose?: boolean
 }

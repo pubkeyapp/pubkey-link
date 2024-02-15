@@ -191,7 +191,7 @@ function DiscordUiRoleSelect({
   value: string | null
   setValue: (value: string | null) => void
 }) {
-  const query = useUserGetBotRoles({ botId, serverId })
+  const { query } = useUserGetBotRoles({ botId, serverId })
   const options = useMemo(() => {
     return query.data?.items?.map((role) => ({
       value: role.id,

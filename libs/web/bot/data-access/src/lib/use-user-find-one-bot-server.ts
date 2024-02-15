@@ -32,5 +32,22 @@ export function useUserFindOneBotServer({ botId, serverId }: { botId: string; se
           toastError(err.message)
           return false
         }),
+    testBotServerConfig: async () =>
+      sdk
+        .userTestBotServerConfig({ botId, serverId })
+        .then((res) => res.data)
+        .then(async (res) => {
+          if (res) {
+            toastSuccess('Bot Server Config tested')
+            await query.refetch()
+            return true
+          }
+          toastError('Bot Server Config not tested')
+          return false
+        })
+        .catch((err) => {
+          toastError(err.message)
+          return false
+        }),
   }
 }

@@ -6,6 +6,7 @@ import {
   Bot,
   BotMember,
   BotServer,
+  DiscordChannel,
   DiscordRole,
   DiscordServer,
   UserCreateBotInput,
@@ -57,6 +58,19 @@ export class ApiUserBotResolver {
     return this.service.manager.getBotServers(userId, botId)
   }
 
+  @Query(() => [DiscordChannel], { nullable: true })
+  userGetBotChannels(@CtxUserId() userId: string, @Args('botId') botId: string, @Args('serverId') serverId: string) {
+    return this.service.manager.getBotChannels(userId, botId, serverId)
+  }
+
+  @Mutation(() => BotServer, { nullable: true })
+  userTestBotServerConfig(
+    @CtxUserId() userId: string,
+    @Args('botId') botId: string,
+    @Args('serverId') serverId: string,
+  ) {
+    return this.service.manager.userTestBotServerConfig(userId, botId, serverId)
+  }
   @Query(() => DiscordServer, { nullable: true })
   userGetBotServer(@CtxUserId() userId: string, @Args('botId') botId: string, @Args('serverId') serverId: string) {
     return this.service.manager.getBotServer(botId, serverId)

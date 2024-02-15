@@ -1,6 +1,6 @@
 import { REST } from '@discordjs/rest'
 import { Logger } from '@nestjs/common'
-import { Client, Guild, GuildMember } from 'discord.js'
+import { ChannelType, Client, Guild, GuildMember, MessageCreateOptions, NonThreadGuildBasedChannel } from 'discord.js'
 import { createDiscordClient } from './discord/client'
 
 export interface RESTDiscordRoleConnection {
@@ -71,6 +71,15 @@ export class DiscordBot {
 
     const members = await this.getEachMember(guild)
     return members.map((member) => member)
+  }
+
+  async getDiscordServerChannels(guildId: string) {
+    const guild = await this.getServer(guildId)
+    if (!guild) {
+      throw new Error(`Could not fetch guild with id ${guildId}`)
+    }
+
+    return guild.channels.fetch().then((res) => res.map((channel) => channel as NonThreadGuildBasedChannel))
   }
 
   private async getEachMember(guild: Guild): Promise<GuildMember[]> {
@@ -153,6 +162,28 @@ export class DiscordBot {
     const result = await server.leave()
     this.logger.verbose(`Bot ${this.client?.user?.username} left server ${result.name}`)
     return true
+  }
+
+  async sendChannel(channelId: string, content: string | MessageCreateOptions) {
+    const channel = this.ensureDiscordServerChannel(channelId)
+    if (channel.isTextBased()) {
+      if (typeof content == 'string') {
+        await channel.send({ content })
+      } else {
+        await channel.send(content)
+      }
+    } else {
+      throw new Error('Channel not text based')
+    }
+  }
+
+  ensureDiscordServerChannel(channelId: string) {
+    const found = this.client?.channels.cache.get(channelId)
+
+    if (!found) {
+      throw new Error('Channel not found')
+    }
+    return found
   }
 
   async removeRoleConnection(key: string): Promise<RESTDiscordRoleConnection[]> {

@@ -24,3 +24,15 @@ export class DiscordRole {
   @Field(() => Int)
   position!: number
 }
+
+@ObjectType()
+export class DiscordChannel {
+  @Field()
+  id!: string
+  @Field()
+  name!: string
+  @Field()
+  type!: string
+  @Field({ nullable: true })
+  parentId!: string | null
+}
