@@ -16,6 +16,8 @@ export class BotMember {
   userId!: string
   @Field()
   serverId!: string
+  @Field(() => [String], { nullable: true })
+  roleIds!: string[]
   @Field(() => Identity, { nullable: true })
   identity?: Identity
   @Field(() => IdentityProvider)

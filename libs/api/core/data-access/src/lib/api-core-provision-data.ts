@@ -185,7 +185,6 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
       create: [
         { user: { connect: { id: 'beeman.dev' } }, role: CommunityRole.Admin },
         { user: { connect: { id: 'alice' } }, role: CommunityRole.Admin },
-        { user: { connect: { id: 'bob' } }, role: CommunityRole.Member },
       ],
     },
   },

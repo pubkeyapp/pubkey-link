@@ -1,18 +1,32 @@
-import { Button, Group, Table, Text } from '@mantine/core'
+import { Group, Table, Text } from '@mantine/core'
 import { Bot } from '@pubkey-link/sdk'
-import { useUserGetBotMembers, useUserManageBot } from '@pubkey-link/web-bot-data-access'
+import { useUserGetBotMembers, useUserGetBotRoles } from '@pubkey-link/web-bot-data-access'
+import { UiDiscordRoleColor } from '@pubkey-link/web-ui-core'
 import { UserUiItem } from '@pubkey-link/web-user-ui'
-import { UiAlert, UiCard, UiDebug, UiDebugModal, UiLoader, UiStack } from '@pubkey-ui/core'
+import { UiAlert, UiCard, UiDebug, UiDebugModal, UiGroup, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function UserBotDetailServerMembers({ bot, serverId }: { bot: Bot; serverId: string }) {
-  const { syncServer } = useUserManageBot({ bot })
+  const { query: rolesQuery } = useUserGetBotRoles({ botId: bot.id, serverId })
   const query = useUserGetBotMembers({ botId: bot.id, serverId })
 
-  if (query.isLoading) {
+  if (query.isLoading || rolesQuery.isLoading) {
     return <UiLoader />
   }
 
+  const roles = rolesQuery.data?.items ?? []
   const items = query.data?.items ?? []
+
+  function ShowRole({ roleId }: { roleId: string }) {
+    const role = roles.find((role) => role.id === roleId)
+    if (!role) {
+      return <Text c="danger">Role not found</Text>
+    }
+    return (
+      <Text size="sm">
+        <UiDiscordRoleColor color={role.color}>{role.name}</UiDiscordRoleColor>
+      </Text>
+    )
+  }
 
   return (
     <UiStack>
@@ -21,23 +35,8 @@ export function UserBotDetailServerMembers({ bot, serverId }: { bot: Bot; server
           <Table>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th>Name</Table.Th>
-                <Table.Th align={'right'}>
-                  <Group justify="end">
-                    <Text c="dimmed" size="xs">
-                      {items.length} members
-                    </Text>
-                    <Button
-                      loading={query.isLoading}
-                      size="xs"
-                      color="brand"
-                      variant="light"
-                      onClick={() => syncServer(serverId).then(() => query.refetch())}
-                    >
-                      Sync Server
-                    </Button>
-                  </Group>
-                </Table.Th>
+                <Table.Th>{items.length} members</Table.Th>
+                <Table.Th>Roles</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
@@ -50,7 +49,14 @@ export function UserBotDetailServerMembers({ bot, serverId }: { bot: Bot; server
                       ) : null}
                     </Table.Td>
                     <Table.Td align="right">
-                      <UiDebugModal data={item} />
+                      <UiGroup>
+                        <Group gap="xs" justify="end">
+                          {item.roleIds?.length
+                            ? item.roleIds.map((roleId) => <ShowRole roleId={roleId} key={roleId} />)
+                            : null}
+                        </Group>
+                        <UiDebugModal data={item} />
+                      </UiGroup>
                     </Table.Td>
                   </Table.Tr>
                 ))

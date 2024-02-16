@@ -134,6 +134,12 @@ export class ApiUserBotService {
     return this.manager.syncBotServer(botId, serverId)
   }
 
+  async userSyncBotServerRoles(userId: string, botId: string, serverId: string) {
+    await this.botMember.ensureBotAdmin({ botId, userId })
+
+    return this.manager.syncBotServerRoles(botId, serverId)
+  }
+
   async userTestBotServerConfig(userId: string, botId: string, serverId: string) {
     await this.botMember.ensureBotAdmin({ botId, userId })
 

@@ -122,7 +122,7 @@ function AddPermissionForm({
   create: (permission: UserCreateRolePermissionInput) => Promise<boolean>
 }) {
   const [serverId, setServerId] = useState<string | null>(null)
-  const [roleId, setRoleId] = useState<string | null>(null)
+  const [serverRoleId, setServerRoleId] = useState<string | null>(null)
   return (
     <UiStack>
       <DiscordUiBotSelect botId={botId} value={serverId} setValue={setServerId} />
@@ -133,16 +133,16 @@ function AddPermissionForm({
           }
           botId={botId}
           serverId={serverId}
-          value={roleId}
-          setValue={setRoleId}
+          value={serverRoleId}
+          setValue={setServerRoleId}
         />
       )}
       <Group justify="end">
         <Button
-          disabled={!serverId || !roleId}
+          disabled={!serverId || !serverRoleId}
           onClick={() => {
-            if (!serverId || !roleId) return
-            return create({ botId, roleId, serverId, serverRoleId: role.id })
+            if (!serverId || !serverRoleId) return
+            return create({ botId, roleId: role.id, serverId, serverRoleId: serverRoleId })
           }}
         >
           Create

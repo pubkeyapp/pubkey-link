@@ -5,14 +5,14 @@ import { Bot, CommunityRole } from '@prisma/client'
 import { DiscordBot } from '@pubkey-link/api-bot-util'
 import { ApiCoreService, IdentityProvider } from '@pubkey-link/api-core-data-access'
 import { Queue } from 'bullmq'
-import { API_BOT_MEMBER_ADD, API_BOT_MEMBER_REMOVE } from './helpers/api-bot.constants'
+import { API_BOT_MEMBER_REMOVE, API_BOT_MEMBER_UPSERT } from './helpers/api-bot.constants'
 
 @Injectable()
 export class ApiBotMemberService {
   private readonly logger = new Logger(ApiBotMemberService.name)
 
   constructor(
-    @InjectQueue(API_BOT_MEMBER_ADD) private botMemberAddQueue: Queue,
+    @InjectQueue(API_BOT_MEMBER_UPSERT) private botMemberAddQueue: Queue,
     @InjectQueue(API_BOT_MEMBER_REMOVE) private botMemberRemoveQueue: Queue,
     private readonly core: ApiCoreService,
   ) {}
@@ -24,11 +24,12 @@ export class ApiBotMemberService {
     }
     this.logger.verbose(`Setting up listeners for bot ${bot.name}`)
     instance.client.on('guildMemberAdd', (member) =>
-      this.scheduleAddMember({
+      this.scheduleUpsertMember({
         botId: bot.id,
         communityId: bot.communityId,
         serverId: member.guild.id,
         userId: member.id,
+        roleIds: member.roles.cache.map((role) => role.id),
       }),
     )
     instance.client.on('guildMemberRemove', (member) =>
@@ -46,12 +47,15 @@ export class ApiBotMemberService {
     communityId,
     serverId,
     userId,
+    roleIds = [],
   }: {
     botId: string
     communityId: string
     serverId: string
     userId: string
+    roleIds: string[]
   }) {
+    console.log('roleIds', roleIds)
     const identity = await this.core.findUserByIdentity({
       provider: IdentityProvider.Discord,
       providerId: userId,
@@ -69,8 +73,8 @@ export class ApiBotMemberService {
     return this.core.data.botMember
       .upsert({
         where: { botId_userId_serverId: { botId, userId, serverId } },
-        update: { botId, serverId, userId },
-        create: { botId, serverId, userId },
+        update: { botId, serverId, userId, roleIds },
+        create: { botId, serverId, userId, roleIds },
         include: { bot: { select: { id: true, communityId: true } }, identity: { select: { ownerId: true } } },
       })
       .then(async (created) => {
@@ -137,10 +141,10 @@ export class ApiBotMemberService {
     return bot
   }
 
-  async getBotMemberIds(botId: string, serverId: string) {
+  async getBotMemberRoleIds(botId: string, serverId: string) {
     return this.core.data.botMember
       .findMany({ where: { botId, serverId } })
-      .then((items) => items.map(({ userId }) => userId))
+      .then((items) => items.map(({ userId: memberId, roleIds }) => ({ memberId, roleIds })))
   }
 
   async getDiscordIdentityIds() {
@@ -160,19 +164,21 @@ export class ApiBotMemberService {
     })
   }
 
-  async scheduleAddMember({
+  async scheduleUpsertMember({
     botId,
     communityId,
     serverId,
     userId,
+    roleIds,
   }: {
     botId: string
     communityId: string
     serverId: string
     userId: string
+    roleIds: string[]
   }) {
     const jobId = `${botId}-${serverId}-${userId}`
-    await this.botMemberAddQueue.add('member-add', { botId, communityId, serverId, userId }).catch((err) => {
+    await this.botMemberAddQueue.add('member-add', { botId, communityId, serverId, userId, roleIds }).catch((err) => {
       this.logger.error(`scheduleAddMember error: ${jobId}: ${err}`)
     })
   }

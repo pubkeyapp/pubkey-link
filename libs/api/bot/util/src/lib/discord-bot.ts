@@ -1,6 +1,6 @@
 import { REST } from '@discordjs/rest'
 import { Logger } from '@nestjs/common'
-import { ChannelType, Client, Guild, GuildMember, MessageCreateOptions, NonThreadGuildBasedChannel } from 'discord.js'
+import { Client, Guild, GuildMember, MessageCreateOptions, NonThreadGuildBasedChannel } from 'discord.js'
 import { createDiscordClient } from './discord/client'
 
 export interface RESTDiscordRoleConnection {
@@ -70,7 +70,7 @@ export class DiscordBot {
     }
 
     const members = await this.getEachMember(guild)
-    return members.map((member) => member)
+    return members.map((member) => ({ id: member.id, roleIds: member.roles.cache.map((role) => role.id) }))
   }
 
   async getDiscordServerChannels(guildId: string) {

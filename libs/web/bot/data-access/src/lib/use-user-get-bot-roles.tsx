@@ -16,13 +16,13 @@ export function useUserGetBotRoles({ botId, serverId }: { botId: string; serverI
   }
 }
 
-export function useUserSyncBotServer({ botId, serverId }: { botId: string; serverId: string }) {
+export function useUserSyncBotServerRoles({ botId, serverId }: { botId: string; serverId: string }) {
   const sdk = useSdk()
   return useMutation({
-    mutationKey: ['user', 'sync-server'],
+    mutationKey: ['user', 'sync-server-roles', { botId, serverId }],
     mutationFn: (serverId: string) =>
       sdk
-        .userSyncBotServer({ botId, serverId })
+        .userSyncBotServerRoles({ botId, serverId })
         .then((res) => res.data)
         .then(async (res) => {
           if (res) {

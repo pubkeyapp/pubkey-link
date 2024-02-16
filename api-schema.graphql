@@ -207,6 +207,7 @@ type BotMember {
   id: String!
   identity: Identity
   identityProvider: IdentityProvider!
+  roleIds: [String!]
   serverId: String!
   updatedAt: DateTime
   userId: String!
@@ -463,6 +464,7 @@ type Mutation {
   userStartBot(botId: String!): Boolean
   userStopBot(botId: String!): Boolean
   userSyncBotServer(botId: String!, serverId: String!): Boolean
+  userSyncBotServerRoles(botId: String!, serverId: String!): Boolean
   userTestBotServerConfig(botId: String!, serverId: String!): BotServer
   userUpdateBot(botId: String!, input: UserUpdateBotInput!): Bot
   userUpdateBotServer(botId: String!, input: UserUpdateBotServerInput!, serverId: String!): BotServer

@@ -1,7 +1,7 @@
 import { Group } from '@mantine/core'
 import { useUserFindManyLog } from '@pubkey-link/web-log-data-access'
 import { UserLogUiTable } from '@pubkey-link/web-log-ui'
-import { UiSearchField } from '@pubkey-link/web-ui-core'
+import { UiPageLimit, UiSearchField } from '@pubkey-link/web-ui-core'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function UserLogListFeature({ communityId, networkAssetId }: { communityId?: string; networkAssetId?: string }) {
@@ -15,6 +15,7 @@ export function UserLogListFeature({ communityId, networkAssetId }: { communityI
       <Group>
         <UiSearchField placeholder="Search logs" setSearch={setSearch} />
         <UiDebugModal data={items} />
+        <UiPageLimit limit={pagination.limit} setLimit={pagination.setLimit} setPage={pagination.setPage} />
       </Group>
 
       {query.isLoading ? (

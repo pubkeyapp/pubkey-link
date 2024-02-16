@@ -4,13 +4,15 @@ import {
   useUserGetBotChannels,
   useUserGetBotRoles,
   useUserSyncBotServer,
+  useUserSyncBotServerRoles,
 } from '@pubkey-link/web-bot-data-access'
 import { UserBotServerUiUpdateForm } from '@pubkey-link/web-bot-ui'
-import { UiAlert, UiCard, UiDebug, UiLoader, UiStack } from '@pubkey-ui/core'
+import { UiAlert, UiCard, UiDebugModal, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function UserBotDetailServerSettings({ botId, serverId }: { botId: string; serverId: string }) {
   const { query, updateBotServer, testBotServerConfig } = useUserFindOneBotServer({ botId, serverId })
   const syncServerMutation = useUserSyncBotServer({ botId, serverId })
+  const syncServerRolesMutation = useUserSyncBotServerRoles({ botId, serverId })
   const { query: channelsQuery, channelOptions } = useUserGetBotChannels({ botId, serverId })
   const { query: rolesQuery, roleOptions } = useUserGetBotRoles({ botId, serverId })
 
@@ -42,6 +44,14 @@ export function UserBotDetailServerSettings({ botId, serverId }: { botId: string
             roles={roleOptions}
             submit={updateBotServer}
           >
+            <UiDebugModal data={{ item, channelOptions, roleOptions }} />
+            <Button
+              loading={syncServerRolesMutation.isPending}
+              onClick={() => syncServerRolesMutation.mutate(serverId)}
+              variant={'light'}
+            >
+              Sync Server Roles
+            </Button>
             <Button
               loading={syncServerMutation.isPending}
               onClick={() => syncServerMutation.mutate(serverId)}
@@ -54,8 +64,6 @@ export function UserBotDetailServerSettings({ botId, serverId }: { botId: string
               Test Bot Server Config
             </Button>
           </UserBotServerUiUpdateForm>
-
-          <UiDebug data={{ item, channelOptions, roleOptions }} />
         </UiStack>
       </UiCard>
     </UiStack>

@@ -25,6 +25,7 @@ fragment BotMemberDetails on BotMember {
   botId
   userId
   serverId
+  roleIds
   identity {
     ...IdentityDetails
     owner {
@@ -176,6 +177,9 @@ mutation userLeaveBotServer($botId: String!, $serverId: String!) {
 
 mutation userSyncBotServer($botId: String!, $serverId: String!) {
   synced: userSyncBotServer(botId: $botId, serverId: $serverId)
+}
+mutation userSyncBotServerRoles($botId: String!, $serverId: String!) {
+  synced: userSyncBotServerRoles(botId: $botId, serverId: $serverId)
 }
 
 query userGetBotMembers($botId: String!, $serverId: String!) {

@@ -106,4 +106,13 @@ export class ApiUserBotResolver {
   userSyncBotServer(@CtxUserId() userId: string, @Args('botId') botId: string, @Args('serverId') serverId: string) {
     return this.service.user.userSyncBotServer(userId, botId, serverId)
   }
+
+  @Mutation(() => Boolean, { nullable: true })
+  userSyncBotServerRoles(
+    @CtxUserId() userId: string,
+    @Args('botId') botId: string,
+    @Args('serverId') serverId: string,
+  ) {
+    return this.service.user.userSyncBotServerRoles(userId, botId, serverId)
+  }
 }

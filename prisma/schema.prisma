@@ -32,7 +32,7 @@ model BotServer {
   bot            Bot         @relation(fields: [botId], references: [id], onDelete: Cascade)
   botId          String
   serverId       String
-  dryRun         Boolean     @default(false)
+  dryRun         Boolean     @default(true)
   verbose        Boolean     @default(false)
   adminRole      String?
   commandChannel String?
@@ -50,6 +50,7 @@ model BotMember {
   userId    String
   server    BotServer @relation(fields: [botId, serverId], references: [botId, serverId])
   serverId  String
+  roleIds   String[]
 
   identity         Identity         @relation(fields: [identityProvider, userId], references: [provider, providerId], onDelete: Cascade)
   identityProvider IdentityProvider @default(Discord)

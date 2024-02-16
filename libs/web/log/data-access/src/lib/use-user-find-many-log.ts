@@ -5,7 +5,7 @@ import { useState } from 'react'
 
 export function useUserFindManyLog(props: Partial<UserFindManyLogInput>) {
   const sdk = useSdk()
-  const [limit, setLimit] = useState(props?.limit ?? 10)
+  const [limit, setLimit] = useState(props?.limit ?? 20)
   const [page, setPage] = useState(props?.page ?? 1)
   const [search, setSearch] = useState<string>(props?.search ?? '')
 

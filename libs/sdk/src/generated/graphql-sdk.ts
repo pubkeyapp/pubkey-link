@@ -232,6 +232,7 @@ export type BotMember = {
   id: Scalars['String']['output']
   identity?: Maybe<Identity>
   identityProvider: IdentityProvider
+  roleIds?: Maybe<Array<Scalars['String']['output']>>
   serverId: Scalars['String']['output']
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   userId: Scalars['String']['output']
@@ -493,6 +494,7 @@ export type Mutation = {
   userStartBot?: Maybe<Scalars['Boolean']['output']>
   userStopBot?: Maybe<Scalars['Boolean']['output']>
   userSyncBotServer?: Maybe<Scalars['Boolean']['output']>
+  userSyncBotServerRoles?: Maybe<Scalars['Boolean']['output']>
   userTestBotServerConfig?: Maybe<BotServer>
   userUpdateBot?: Maybe<Bot>
   userUpdateBotServer?: Maybe<BotServer>
@@ -707,6 +709,11 @@ export type MutationUserStopBotArgs = {
 }
 
 export type MutationUserSyncBotServerArgs = {
+  botId: Scalars['String']['input']
+  serverId: Scalars['String']['input']
+}
+
+export type MutationUserSyncBotServerRolesArgs = {
   botId: Scalars['String']['input']
   serverId: Scalars['String']['input']
 }
@@ -1546,6 +1553,7 @@ export type BotMemberDetailsFragment = {
   botId: string
   userId: string
   serverId: string
+  roleIds?: Array<string> | null
   identityProvider: IdentityProvider
   identity?: {
     __typename?: 'Identity'
@@ -2175,6 +2183,13 @@ export type UserSyncBotServerMutationVariables = Exact<{
 
 export type UserSyncBotServerMutation = { __typename?: 'Mutation'; synced?: boolean | null }
 
+export type UserSyncBotServerRolesMutationVariables = Exact<{
+  botId: Scalars['String']['input']
+  serverId: Scalars['String']['input']
+}>
+
+export type UserSyncBotServerRolesMutation = { __typename?: 'Mutation'; synced?: boolean | null }
+
 export type UserGetBotMembersQueryVariables = Exact<{
   botId: Scalars['String']['input']
   serverId: Scalars['String']['input']
@@ -2190,6 +2205,7 @@ export type UserGetBotMembersQuery = {
     botId: string
     userId: string
     serverId: string
+    roleIds?: Array<string> | null
     identityProvider: IdentityProvider
     identity?: {
       __typename?: 'Identity'
@@ -6525,6 +6541,7 @@ export const BotMemberDetailsFragmentDoc = gql`
     botId
     userId
     serverId
+    roleIds
     identity {
       ...IdentityDetails
       owner {
@@ -7029,6 +7046,11 @@ export const UserLeaveBotServerDocument = gql`
 export const UserSyncBotServerDocument = gql`
   mutation userSyncBotServer($botId: String!, $serverId: String!) {
     synced: userSyncBotServer(botId: $botId, serverId: $serverId)
+  }
+`
+export const UserSyncBotServerRolesDocument = gql`
+  mutation userSyncBotServerRoles($botId: String!, $serverId: String!) {
+    synced: userSyncBotServerRoles(botId: $botId, serverId: $serverId)
   }
 `
 export const UserGetBotMembersDocument = gql`
@@ -7837,6 +7859,7 @@ const UserStartBotDocumentString = print(UserStartBotDocument)
 const UserStopBotDocumentString = print(UserStopBotDocument)
 const UserLeaveBotServerDocumentString = print(UserLeaveBotServerDocument)
 const UserSyncBotServerDocumentString = print(UserSyncBotServerDocument)
+const UserSyncBotServerRolesDocumentString = print(UserSyncBotServerRolesDocument)
 const UserGetBotMembersDocumentString = print(UserGetBotMembersDocument)
 const UserGetBotChannelsDocumentString = print(UserGetBotChannelsDocument)
 const UserGetBotRolesDocumentString = print(UserGetBotRolesDocument)
@@ -8450,6 +8473,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'userSyncBotServer',
+        'mutation',
+        variables,
+      )
+    },
+    userSyncBotServerRoles(
+      variables: UserSyncBotServerRolesMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserSyncBotServerRolesMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserSyncBotServerRolesMutation>(UserSyncBotServerRolesDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userSyncBotServerRoles',
         'mutation',
         variables,
       )

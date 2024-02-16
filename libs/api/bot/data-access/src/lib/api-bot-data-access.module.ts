@@ -8,18 +8,18 @@ import { ApiBotManagerService } from './api-bot-manager.service'
 import { ApiBotMemberService } from './api-bot-member.service'
 import { ApiBotService } from './api-bot.service'
 import { ApiUserBotService } from './api-user-bot.service'
-import { API_BOT_MEMBER_ADD, API_BOT_MEMBER_REMOVE } from './helpers/api-bot.constants'
-import { ApiBotMemberAddProcessor } from './processors/api-bot-member-add-processor'
+import { API_BOT_MEMBER_REMOVE, API_BOT_MEMBER_UPSERT } from './helpers/api-bot.constants'
 import { ApiBotMemberRemoveProcessor } from './processors/api-bot-member-remove-processor'
+import { ApiBotMemberUpsertProcessor } from './processors/api-bot-member-upsert-processor'
 
-const processors = [ApiBotMemberAddProcessor, ApiBotMemberRemoveProcessor]
+const processors = [ApiBotMemberUpsertProcessor, ApiBotMemberRemoveProcessor]
 
 @Module({
   imports: [
     ApiCoreDataAccessModule,
-    BullModule.registerQueue({ name: API_BOT_MEMBER_ADD }),
+    BullModule.registerQueue({ name: API_BOT_MEMBER_UPSERT }),
     BullModule.registerQueue({ name: API_BOT_MEMBER_REMOVE }),
-    BullBoardModule.forFeature({ name: API_BOT_MEMBER_ADD, adapter: BullMQAdapter }),
+    BullBoardModule.forFeature({ name: API_BOT_MEMBER_UPSERT, adapter: BullMQAdapter }),
     BullBoardModule.forFeature({ name: API_BOT_MEMBER_REMOVE, adapter: BullMQAdapter }),
   ],
   providers: [
