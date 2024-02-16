@@ -55,12 +55,12 @@ export class ApiUserBotResolver {
 
   @Query(() => [DiscordServer], { nullable: true })
   userGetBotServers(@CtxUserId() userId: string, @Args('botId') botId: string) {
-    return this.service.manager.getBotServers(userId, botId)
+    return this.service.user.userGetBotServers(userId, botId)
   }
 
   @Query(() => [DiscordChannel], { nullable: true })
   userGetBotChannels(@CtxUserId() userId: string, @Args('botId') botId: string, @Args('serverId') serverId: string) {
-    return this.service.manager.getBotChannels(userId, botId, serverId)
+    return this.service.user.userGetBotChannels(userId, botId, serverId)
   }
 
   @Mutation(() => BotServer, { nullable: true })
@@ -69,40 +69,41 @@ export class ApiUserBotResolver {
     @Args('botId') botId: string,
     @Args('serverId') serverId: string,
   ) {
-    return this.service.manager.userTestBotServerConfig(userId, botId, serverId)
-  }
-  @Query(() => DiscordServer, { nullable: true })
-  userGetBotServer(@CtxUserId() userId: string, @Args('botId') botId: string, @Args('serverId') serverId: string) {
-    return this.service.manager.getBotServer(botId, serverId)
+    return this.service.user.userTestBotServerConfig(userId, botId, serverId)
   }
 
   @Query(() => [DiscordRole], { nullable: true })
   userGetBotRoles(@CtxUserId() userId: string, @Args('botId') botId: string, @Args('serverId') serverId: string) {
-    return this.service.manager.getBotRoles(userId, botId, serverId)
+    return this.service.user.userGetBotRoles(userId, botId, serverId)
   }
 
   @Query(() => [BotMember], { nullable: true })
   userGetBotMembers(@CtxUserId() userId: string, @Args('botId') botId: string, @Args('serverId') serverId: string) {
-    return this.service.member.getBotMembers(userId, botId, serverId)
+    return this.service.user.userGetBotMembers(userId, botId, serverId)
+  }
+
+  @Query(() => DiscordServer, { nullable: true })
+  userGetBotServer(@CtxUserId() userId: string, @Args('botId') botId: string, @Args('serverId') serverId: string) {
+    return this.service.user.userGetBotServer(userId, botId, serverId)
   }
 
   @Mutation(() => Boolean, { nullable: true })
   userLeaveBotServer(@CtxUserId() userId: string, @Args('botId') botId: string, @Args('serverId') serverId: string) {
-    return this.service.manager.leaveBotServer(userId, botId, serverId)
-  }
-
-  @Mutation(() => Boolean, { nullable: true })
-  userSyncBotServer(@CtxUserId() userId: string, @Args('botId') botId: string, @Args('serverId') serverId: string) {
-    return this.service.manager.syncBotServer(userId, botId, serverId)
+    return this.service.user.userLeaveBotServer(userId, botId, serverId)
   }
 
   @Mutation(() => Boolean, { nullable: true })
   userStartBot(@CtxUserId() userId: string, @Args('botId') botId: string) {
-    return this.service.manager.userStartBot(userId, botId)
+    return this.service.user.userStartBot(userId, botId)
   }
 
   @Mutation(() => Boolean, { nullable: true })
   userStopBot(@CtxUserId() userId: string, @Args('botId') botId: string) {
-    return this.service.manager.userStopBot(userId, botId)
+    return this.service.user.userStopBot(userId, botId)
+  }
+
+  @Mutation(() => Boolean, { nullable: true })
+  userSyncBotServer(@CtxUserId() userId: string, @Args('botId') botId: string, @Args('serverId') serverId: string) {
+    return this.service.user.userSyncBotServer(userId, botId, serverId)
   }
 }

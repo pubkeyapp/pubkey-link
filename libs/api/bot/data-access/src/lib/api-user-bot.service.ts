@@ -6,6 +6,7 @@ import { ApiBotMemberService } from './api-bot-member.service'
 import { UserCreateBotInput } from './dto/user-create-bot.input'
 import { UserUpdateBotServerInput } from './dto/user-update-bot-server.input'
 import { UserUpdateBotInput } from './dto/user-update-bot.input'
+import { DiscordRole, DiscordServer } from './entity/discord-server.entity'
 
 @Injectable()
 export class ApiUserBotService {
@@ -13,7 +14,7 @@ export class ApiUserBotService {
   constructor(
     private readonly core: ApiCoreService,
     private readonly manager: ApiBotManagerService,
-    private readonly member: ApiBotMemberService,
+    private readonly botMember: ApiBotMemberService,
   ) {}
 
   async createBot(userId: string, input: UserCreateBotInput) {
@@ -32,7 +33,7 @@ export class ApiUserBotService {
   }
 
   async deleteBot(userId: string, botId: string) {
-    await this.member.ensureBotAdmin({ botId, userId })
+    await this.botMember.ensureBotAdmin({ botId, userId })
     const deleted = await this.core.data.bot.delete({ where: { id: botId } })
     return !!deleted
   }
@@ -69,12 +70,12 @@ export class ApiUserBotService {
     if (!botServer) {
       throw new Error(`Bot server not found ${serverId}`)
     }
-    await this.member.ensureBotAdmin({ botId: botServer.botId, userId })
+    await this.botMember.ensureBotAdmin({ botId: botServer.botId, userId })
     return botServer
   }
 
   async updateBot(userId: string, botId: string, input: UserUpdateBotInput) {
-    await this.member.ensureBotAdmin({ botId, userId })
+    await this.botMember.ensureBotAdmin({ botId, userId })
     return this.core.data.bot.update({ where: { id: botId }, data: input })
   }
 
@@ -82,5 +83,60 @@ export class ApiUserBotService {
     // This call makes sure the user is an admin of the bot
     await this.findOneBotServer(userId, botId, serverId)
     return this.core.data.botServer.update({ where: { botId_serverId: { botId, serverId } }, data: input })
+  }
+
+  async userGetBotChannels(userId: string, botId: string, serverId: string) {
+    await this.botMember.ensureBotAdmin({ botId, userId })
+    return this.manager.getBotChannels(botId, serverId)
+  }
+
+  async userGetBotMembers(userId: string, botId: string, serverId: string) {
+    await this.botMember.ensureBotAdmin({ botId, userId })
+    return this.botMember.getBotMembers(botId, serverId)
+  }
+
+  async userGetBotRoles(userId: string, botId: string, serverId: string): Promise<DiscordRole[]> {
+    await this.botMember.ensureBotAdmin({ botId, userId })
+
+    return this.manager.getBotRoles(botId, serverId)
+  }
+
+  async userGetBotServers(userId: string, botId: string): Promise<DiscordServer[]> {
+    await this.botMember.ensureBotAdmin({ botId, userId })
+    return this.manager.getBotServers(botId)
+  }
+  async userGetBotServer(userId: string, botId: string, serverId: string) {
+    await this.botMember.ensureBotAdmin({ botId, userId })
+
+    return this.manager.getBotServer(botId, serverId)
+  }
+
+  async userLeaveBotServer(userId: string, botId: string, serverId: string) {
+    await this.botMember.ensureBotAdmin({ botId, userId })
+    return this.manager.leaveBotServer(botId, serverId)
+  }
+
+  async userStartBot(userId: string, botId: string) {
+    const bot = await this.botMember.ensureBotAdmin({ botId, userId })
+
+    return this.manager.startBot(bot)
+  }
+
+  async userStopBot(userId: string, botId: string) {
+    const bot = await this.botMember.ensureBotAdmin({ botId, userId })
+
+    return this.manager.stopBot(bot)
+  }
+
+  async userSyncBotServer(userId: string, botId: string, serverId: string) {
+    await this.botMember.ensureBotAdmin({ botId, userId })
+
+    return this.manager.syncBotServer(botId, serverId)
+  }
+
+  async userTestBotServerConfig(userId: string, botId: string, serverId: string) {
+    await this.botMember.ensureBotAdmin({ botId, userId })
+
+    return this.manager.testBotServerConfig(botId, serverId)
   }
 }

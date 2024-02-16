@@ -149,7 +149,7 @@ export class ApiBotMemberService {
       .then((items) => items.map((item) => item.providerId))
   }
 
-  async getBotMembers(userId: string, botId: string, serverId: string) {
+  async getBotMembers(botId: string, serverId: string) {
     return this.core.data.botMember.findMany({
       where: {
         botId,

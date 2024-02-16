@@ -1,11 +1,16 @@
 import { Button } from '@mantine/core'
-import { useUserFindOneBotServer, useUserGetBotChannels, useUserGetBotRoles } from '@pubkey-link/web-bot-data-access'
+import {
+  useUserFindOneBotServer,
+  useUserGetBotChannels,
+  useUserGetBotRoles,
+  useUserSyncBotServer,
+} from '@pubkey-link/web-bot-data-access'
 import { UserBotServerUiUpdateForm } from '@pubkey-link/web-bot-ui'
 import { UiAlert, UiCard, UiDebug, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function UserBotDetailServerSettings({ botId, serverId }: { botId: string; serverId: string }) {
   const { query, updateBotServer, testBotServerConfig } = useUserFindOneBotServer({ botId, serverId })
-
+  const syncServerMutation = useUserSyncBotServer({ botId, serverId })
   const { query: channelsQuery, channelOptions } = useUserGetBotChannels({ botId, serverId })
   const { query: rolesQuery, roleOptions } = useUserGetBotRoles({ botId, serverId })
 
@@ -37,6 +42,14 @@ export function UserBotDetailServerSettings({ botId, serverId }: { botId: string
             roles={roleOptions}
             submit={updateBotServer}
           >
+            <Button
+              loading={syncServerMutation.isPending}
+              onClick={() => syncServerMutation.mutate(serverId)}
+              variant={'light'}
+            >
+              Sync Server
+            </Button>
+
             <Button variant={'light'} onClick={testBotServerConfig}>
               Test Bot Server Config
             </Button>

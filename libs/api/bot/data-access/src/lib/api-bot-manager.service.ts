@@ -40,8 +40,7 @@ export class ApiBotManagerService implements OnModuleInit {
   developersUrl(botId: string) {
     return `https://discord.com/developers/applications/${botId}`
   }
-  async getBotChannels(userId: string, botId: string, serverId: string): Promise<DiscordChannel[]> {
-    await this.botMember.ensureBotAdmin({ botId, userId })
+  async getBotChannels(botId: string, serverId: string): Promise<DiscordChannel[]> {
     const bot = this.getBotInstance(botId)
     if (!bot) {
       return []
@@ -64,8 +63,7 @@ export class ApiBotManagerService implements OnModuleInit {
       }))
   }
 
-  async getBotRoles(userId: string, botId: string, serverId: string): Promise<DiscordRole[]> {
-    await this.botMember.ensureBotAdmin({ botId, userId })
+  async getBotRoles(botId: string, serverId: string): Promise<DiscordRole[]> {
     const bot = this.getBotInstance(botId)
     if (!bot) {
       return []
@@ -73,8 +71,7 @@ export class ApiBotManagerService implements OnModuleInit {
     return bot.getRoles(serverId)
   }
 
-  async getBotServers(userId: string, botId: string): Promise<DiscordServer[]> {
-    await this.botMember.ensureBotAdmin({ botId, userId })
+  async getBotServers(botId: string): Promise<DiscordServer[]> {
     const bot = this.getBotInstance(botId)
 
     if (!bot) {
@@ -146,8 +143,7 @@ export class ApiBotManagerService implements OnModuleInit {
     return url.toString()
   }
 
-  async leaveBotServer(userId: string, botId: string, serverId: string) {
-    await this.botMember.ensureBotAdmin({ botId, userId })
+  async leaveBotServer(botId: string, serverId: string) {
     return this.ensureBotInstance(botId).leaveServer(serverId)
   }
 
@@ -156,19 +152,7 @@ export class ApiBotManagerService implements OnModuleInit {
     // return `${this.core.config.apiUrl}/bot/${botId}/callback`
   }
 
-  async userStartBot(userId: string, botId: string) {
-    const bot = await this.botMember.ensureBotAdmin({ botId, userId })
-
-    return this.startBot(bot)
-  }
-
-  async userStopBot(userId: string, botId: string) {
-    const bot = await this.botMember.ensureBotAdmin({ botId, userId })
-
-    return this.stopBot(bot)
-  }
-
-  private async startBot(bot: Bot) {
+  async startBot(bot: Bot) {
     if (this.bots.get(bot.id)) {
       throw new Error(`Bot ${bot.name} already started`)
     }
@@ -181,7 +165,7 @@ export class ApiBotManagerService implements OnModuleInit {
     return true
   }
 
-  private async stopBot(bot: Bot) {
+  async stopBot(bot: Bot) {
     const instance = this.bots.get(bot.id)
     if (!instance) {
       throw new Error(`Bot ${bot.name} not started`)
@@ -208,7 +192,7 @@ export class ApiBotManagerService implements OnModuleInit {
     return instance
   }
 
-  async syncBotServer(userId: string, botId: string, serverId: string) {
+  async syncBotServer(botId: string, serverId: string) {
     const community = await this.core.data.community.findFirst({
       where: { bot: { id: botId } },
       include: { bot: true },
@@ -217,7 +201,7 @@ export class ApiBotManagerService implements OnModuleInit {
       console.log(`Can't find community.`, botId, serverId)
       return false
     }
-    await this.core.ensureCommunityAdmin({ userId, communityId: community.id })
+
     await this.syncBotServerMembers({
       communityId: community.id,
       botId,
@@ -231,7 +215,7 @@ export class ApiBotManagerService implements OnModuleInit {
     const bots = await this.core.data.bot.findMany({ where: { status: BotStatus.Active } })
 
     for (const bot of bots) {
-      const servers = await this.getBotServers('-no-user-id-', bot.id)
+      const servers = await this.getBotServers(bot.id)
       for (const server of servers) {
         await this.ensureBotServer({ bot, server })
         await this.syncBotServerMembers({ botId: bot.id, communityId: bot.communityId, serverId: server.id })
@@ -293,9 +277,9 @@ export class ApiBotManagerService implements OnModuleInit {
 
     if (toBeDeleted.length) {
       this.logger.warn(`${tag}: Found ${toBeDeleted.length} members to delete`)
-      for (const userId of toBeDeleted) {
-        this.logger.verbose(`${tag}: Removing member ${userId} from bot ${botId} server ${serverId}...`)
-        await this.botMember.scheduleRemoveMember({ communityId, botId, serverId, userId })
+      for (const memberId of toBeDeleted) {
+        this.logger.verbose(`${tag}: Removing member ${memberId} from bot ${botId} server ${serverId}...`)
+        await this.botMember.scheduleRemoveMember({ communityId, botId, serverId, userId: memberId })
       }
     }
 
@@ -303,8 +287,8 @@ export class ApiBotManagerService implements OnModuleInit {
     if (filtered.length) {
       this.logger.verbose(`${tag}: Found ${filtered.length} members to process`)
       for (const member of filtered) {
-        const userId = member.id
-        await this.botMember.scheduleAddMember({ communityId, botId: botId, serverId, userId })
+        const memberId = member.id
+        await this.botMember.scheduleAddMember({ communityId, botId: botId, serverId, userId: memberId })
         if (member.id) {
           linkedCount++
         }
@@ -326,8 +310,11 @@ export class ApiBotManagerService implements OnModuleInit {
     return true
   }
 
-  async userTestBotServerConfig(userId: string, botId: string, serverId: string) {
-    const bot = await this.botMember.ensureBotAdmin({ botId, userId })
+  async testBotServerConfig(botId: string, serverId: string) {
+    const bot = await this.core.data.bot.findUnique({ where: { id: botId }, include: { community: true } })
+    if (!bot) {
+      throw new Error(`Bot ${botId} not found`)
+    }
 
     const discordBot = this.getBotInstance(botId)
     if (!discordBot) {
