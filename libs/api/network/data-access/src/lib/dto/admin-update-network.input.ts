@@ -6,4 +6,6 @@ export class AdminUpdateNetworkInput {
   name?: string
   @Field({ nullable: true })
   endpoint?: string
+  @Field({ nullable: true })
+  enableSync?: boolean
 }

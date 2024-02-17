@@ -44,6 +44,7 @@ model BotServer {
   bot            Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
   botId          String
   serverId       String
+  enableSync     Boolean  @default(false)
   dryRun         Boolean  @default(true)
   verbose        Boolean  @default(false)
   adminRole      String?
@@ -64,6 +65,7 @@ model Community {
   githubUrl   String?
   twitterUrl  String?
   telegramUrl String?
+  enableSync  Boolean           @default(false)
   members     CommunityMember[]
   roles       Role[]
   cluster     NetworkCluster
@@ -158,15 +160,16 @@ model Log {
 }
 
 model Network {
-  id        String         @id @default(cuid())
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @default(now()) @updatedAt
-  cluster   NetworkCluster @unique
-  type      NetworkType
-  name      String         @unique
-  endpoint  String
-  assets    NetworkAsset[]
-  tokens    NetworkToken[]
+  id         String         @id @default(cuid())
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @default(now()) @updatedAt
+  cluster    NetworkCluster @unique
+  type       NetworkType
+  enableSync Boolean        @default(true)
+  name       String         @unique
+  endpoint   String
+  assets     NetworkAsset[]
+  tokens     NetworkToken[]
 }
 
 model NetworkAsset {

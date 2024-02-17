@@ -5,6 +5,7 @@ fragment NetworkDetails on Network {
   type
   name
   decimals
+  enableSync
   endpoint
   explorerUrl
   symbol

@@ -35,13 +35,21 @@ export function UserRoleUiTable({
             accessor: 'name',
             render: (item) => <RoleUiItem role={item} to={`./${item.id}`} />,
           },
-          { accessor: 'description' },
           {
             textAlign: 'center',
-            accessor: 'Conditions',
+            accessor: 'conditions',
             render: (item) => (
               <Badge variant="light" color={item?.conditions?.length ? 'brand' : 'yellow'}>
                 {item.conditions?.length ?? 0}
+              </Badge>
+            ),
+          },
+          {
+            textAlign: 'center',
+            accessor: 'permissions',
+            render: (item) => (
+              <Badge variant="light" color={item?.permissions?.length ? 'brand' : 'yellow'}>
+                {item.permissions?.length ?? 0}
               </Badge>
             ),
           },

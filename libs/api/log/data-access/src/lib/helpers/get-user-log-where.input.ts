@@ -19,6 +19,8 @@ export function getUserLogWhereInput(input: UserFindManyLogInput): Prisma.LogWhe
     where.OR = [
       { id: { contains: input.search, mode: 'insensitive' } },
       { message: { contains: input.search, mode: 'insensitive' } },
+      { identityProviderId: { contains: input.search, mode: 'insensitive' } },
+      { user: { username: { contains: input.search, mode: 'insensitive' } } },
     ]
   }
 

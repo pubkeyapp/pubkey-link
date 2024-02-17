@@ -39,12 +39,19 @@ export class ApiNetworkAssetSyncService {
     return !!job.id
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
-  async syncAll(cluster: NetworkCluster = NetworkCluster.SolanaMainnet, { force = false } = {}) {
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  async syncAllNetworkAssets(cluster: NetworkCluster = NetworkCluster.SolanaMainnet, { force = false } = {}) {
     if (!this.core.config.syncNetworkAssets && !force) {
       this.logger.log(`Network asset sync is disabled`)
       return true
     }
+    const network = await this.core.data.network.findUnique({ where: { cluster } })
+
+    if (!network?.enableSync && !force) {
+      this.logger.debug(`Network asset sync is disabled for ${cluster}`)
+      return true
+    }
+
     const identities = await this.core.data.identity.findMany({
       where: {
         provider: IdentityProvider.Solana,

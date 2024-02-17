@@ -33,5 +33,5 @@ export const validationSchema = Joi.object({
   SESSION_SECRET: Joi.string().required(),
   SYNC_BOT_SERVERS: Joi.boolean().default(true),
   SYNC_NETWORK_ASSETS: Joi.boolean().default(true),
-  SYNC_VALIDATE_ROLES: Joi.boolean().default(true),
+  SYNC_COMMUNITY_ROLES: Joi.boolean().default(true),
 })

@@ -1,6 +1,6 @@
 import { Button, Group } from '@mantine/core'
 import { Community, UserUpdateCommunityInput } from '@pubkey-link/sdk'
-import { formFieldText, UiForm, UiFormField } from '@pubkey-ui/core'
+import { formFieldCheckbox, formFieldText, UiForm, UiFormField } from '@pubkey-ui/core'
 
 export function UserCommunityUiUpdateForm({
   submit,
@@ -15,6 +15,7 @@ export function UserCommunityUiUpdateForm({
     discordUrl: community.discordUrl ?? '',
     githubUrl: community.githubUrl ?? '',
     name: community.name ?? '',
+    enableSync: community.enableSync ?? false,
     telegramUrl: community.telegramUrl ?? '',
     twitterUrl: community.twitterUrl ?? '',
     websiteUrl: community.websiteUrl ?? '',
@@ -22,6 +23,10 @@ export function UserCommunityUiUpdateForm({
 
   const fields: UiFormField<UserUpdateCommunityInput>[] = [
     formFieldText('name', { label: 'Name' }),
+    formFieldCheckbox('enableSync', {
+      label: 'Enable Sync',
+      description: 'If enabled, the community roles are synced based on the users assets.',
+    }),
     formFieldText('description', { label: 'Description' }),
     formFieldText('avatarUrl', { label: 'Avatar Url' }),
     formFieldText('websiteUrl', { label: 'Website Url' }),

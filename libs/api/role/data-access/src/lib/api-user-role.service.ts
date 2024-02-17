@@ -132,9 +132,9 @@ export class ApiUserRoleService {
     })
   }
 
-  async validateRoles(userId: string, communityId: string) {
+  async userSyncCommunityRoles(userId: string, communityId: string) {
     await this.core.ensureCommunityAdmin({ communityId, userId })
-    return this.resolver.validateRoles(communityId)
+    return this.resolver.syncCommunityRoles(communityId)
   }
 
   private async ensureRoleAdmin({ userId, roleId }: { userId: string; roleId: string }) {

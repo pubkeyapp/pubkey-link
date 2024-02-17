@@ -16,6 +16,43 @@ const DL_ROLE_BV = '1148950083941961798'
 const DL_ROLE_BV_EXPIRED = '1150017837017084005'
 const DL_ROLE_HOLDER = '1205617205006434384'
 
+const DL_BOT: Prisma.BotCreateWithoutCommunityInput = {
+  clientId: process.env['DEANSLIST_BOT_CLIENT_ID'] ?? '',
+  clientSecret: process.env['DEANSLIST_BOT_CLIENT_SECRET'] ?? '',
+  token: process.env['DEANSLIST_BOT_TOKEN'] ?? '',
+  avatarUrl: 'https://cdn.discordapp.com/avatars/1138462172092039258/2d9f621e44433c97e171bb40ec122b6f.png?size=1024',
+  id: process.env['DEANSLIST_BOT_CLIENT_ID'] ?? '',
+  name: "Dean's List Projects LOCAL",
+  permissions: {
+    create: [DL_ROLE_ONE_OF_US, DL_ROLE_BV, DL_ROLE_BV_EXPIRED, DL_ROLE_HOLDER].map((serverRoleId) => ({
+      id: `${DL_SERVER}-${serverRoleId}`,
+      serverId: DL_SERVER,
+      serverRoleId,
+    })),
+  },
+}
+
+const LOS_SERVER = '1190413756325429268'
+const LOS_LEGEND = 'LGNDeXXXaDDeRerwwHfUtPBNz5s6vrn1NMSt9hdaCwx'
+const LOS_THE_CHOICE = '8fmefJZapGpyVMDzj4MSYQfR7mTET1oV9hXyu1axCjLE'
+const LOS_ROLE_CERTIFIED = '1207141774976614451'
+
+const LOS_BOT: Prisma.BotCreateWithoutCommunityInput = {
+  clientId: process.env['LOS_BOT_CLIENT_ID'] ?? '',
+  clientSecret: process.env['LOS_BOT_CLIENT_SECRET'] ?? '',
+  token: process.env['LOS_BOT_TOKEN'] ?? '',
+  avatarUrl: 'https://cdn.discordapp.com/avatars/1208445127832637451/babbe2d94cc9058e7a66a844a7b15eb5.png?size=1024',
+  id: process.env['LOS_BOT_CLIENT_ID'] ?? '',
+  name: 'Legends of Sol 🅿 Verification',
+  permissions: {
+    create: [LOS_ROLE_CERTIFIED].map((serverRoleId) => ({
+      id: `${LOS_SERVER}-${serverRoleId}`,
+      serverId: LOS_SERVER,
+      serverRoleId,
+    })),
+  },
+}
+
 export const provisionCommunities: Prisma.CommunityCreateInput[] = [
   {
     cluster,
@@ -82,29 +119,13 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
   },
   {
     cluster,
+    id: 'deans-list-dao',
     name: "Dean's List DAO",
     description: 'A DAO turned Network State',
     avatarUrl: 'https://avatars.githubusercontent.com/u/137821488?v=4',
     twitterUrl: 'https://twitter.com/deanslistDAO',
     websiteUrl: 'https://deanslist.services',
-    bot: {
-      create: {
-        clientId: process.env['DEANSLIST_BOT_CLIENT_ID'] ?? '',
-        clientSecret: process.env['DEANSLIST_BOT_CLIENT_SECRET'] ?? '',
-        token: process.env['DEANSLIST_BOT_TOKEN'] ?? '',
-        avatarUrl:
-          'https://cdn.discordapp.com/avatars/1138462172092039258/2d9f621e44433c97e171bb40ec122b6f.png?size=1024',
-        id: process.env['DEANSLIST_BOT_CLIENT_ID'] ?? '',
-        name: "Dean's List Projects LOCAL",
-        permissions: {
-          create: [DL_ROLE_ONE_OF_US, DL_ROLE_BV, DL_ROLE_BV_EXPIRED, DL_ROLE_HOLDER].map((serverRoleId) => ({
-            id: `${DL_SERVER}-${serverRoleId}`,
-            serverId: DL_SERVER,
-            serverRoleId,
-          })),
-        },
-      },
-    },
+    bot: DL_BOT ? { create: DL_BOT } : undefined,
     roles: {
       create: [
         {
@@ -211,10 +232,13 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     members: {
       create: [{ user: { connect: { id: 'beeman.dev' } }, role: CommunityRole.Admin }],
     },
-    roles: { create: [{ name: 'NFT Holders' }] },
+    roles: {
+      create: [{ name: 'NFT Holders' }],
+    },
   },
   {
     cluster,
+    id: 'legends-of-sol',
     name: 'Legends of SOL',
     description: 'A digital art project',
     avatarUrl:
@@ -222,9 +246,41 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     members: {
       create: [{ user: { connect: { id: 'beeman.dev' } }, role: CommunityRole.Admin }],
     },
-    roles: { create: [{ name: 'LEGENDS' }] },
+    bot: LOS_BOT ? { create: LOS_BOT } : undefined,
+    roles: {
+      create: [
+        {
+          name: 'certified legends',
+          conditions: {
+            create: [
+              {
+                type: NetworkTokenType.NonFungible,
+                name: 'The Choice',
+                token: { connect: { account_cluster: { cluster, account: LOS_THE_CHOICE } } },
+                amount: '1',
+              },
+            ],
+          },
+          permissions: { create: { botRoleId: `${LOS_SERVER}-${LOS_ROLE_CERTIFIED}` } },
+        },
+        {
+          name: 'legend holder',
+          conditions: {
+            create: [
+              {
+                type: NetworkTokenType.Fungible,
+                name: 'LEGEND',
+                token: { connect: { account_cluster: { cluster, account: LOS_LEGEND } } },
+                amount: '1',
+              },
+            ],
+          },
+        },
+      ],
+    },
   },
 ]
+
 export const provisionUsers: Prisma.UserCreateInput[] = [
   {
     id: 'beeman.dev',

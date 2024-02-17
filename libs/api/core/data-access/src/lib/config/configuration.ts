@@ -51,8 +51,8 @@ export interface ApiCoreConfig {
   redisUrl: string
   sessionSecret: string
   syncBotServers: boolean
+  syncCommunityRoles: boolean
   syncNetworkAssets: boolean
-  syncValidateRoles: boolean
   webUrl: string
 }
 
@@ -83,8 +83,8 @@ export function configuration(): ApiCoreConfig {
     redisUrl: process.env['REDIS_URL'] as string,
     sessionSecret: process.env['SESSION_SECRET'] as string,
     syncBotServers: process.env['SYNC_BOT_SERVERS'] === 'true',
+    syncCommunityRoles: process.env['SYNC_COMMUNITY_ROLES'] === 'true',
     syncNetworkAssets: process.env['SYNC_NETWORK_ASSETS'] === 'true',
-    syncValidateRoles: process.env['SYNC_VALIDATE_ROLES'] === 'true',
     webUrl: WEB_URL,
   }
 }

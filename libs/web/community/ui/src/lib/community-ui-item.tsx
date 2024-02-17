@@ -1,4 +1,4 @@
-import { AvatarProps, Group, type GroupProps, Stack, Text, TextProps } from '@mantine/core'
+import { AvatarProps, Badge, Group, type GroupProps, Stack, Text, TextProps } from '@mantine/core'
 import { Community } from '@pubkey-link/sdk'
 import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core'
 import { CommunityUiAvatar } from './community-ui-avatar'
@@ -25,9 +25,14 @@ export function CommunityUiItem({
       <Group gap="sm" {...groupProps}>
         <CommunityUiAvatar size="lg" community={community} {...avatarProps} />
         <Stack gap={0}>
-          <Text size="xl" fw="bold" {...textProps}>
-            {community?.name}
-          </Text>
+          <Group gap="xs">
+            <Text size="xl" fw="bold" {...textProps}>
+              {community?.name}
+            </Text>
+            <Badge variant="dot" color={community.enableSync ? 'lime' : 'orange'} size="xs">
+              Sync {community.enableSync ? 'Enabled' : 'Disabled'}
+            </Badge>
+          </Group>
           {community.description ? (
             <Text size="xs" c="dimmed">
               {community?.description}

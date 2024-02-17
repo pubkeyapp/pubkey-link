@@ -151,6 +151,7 @@ input AdminUpdateCommunityMemberInput {
 }
 
 input AdminUpdateNetworkInput {
+  enableSync: Boolean
   endpoint: String
   name: String
 }
@@ -199,11 +200,6 @@ type Bot {
   verificationUrlSet: Boolean
 }
 
-type BotMember {
-  memberId: String!
-  roleIds: [String!]
-}
-
 type BotPaging {
   data: [Bot!]!
   meta: PagingMeta!
@@ -227,6 +223,7 @@ type BotServer {
   commandChannel: String
   createdAt: DateTime
   dryRun: Boolean
+  enableSync: Boolean
   id: String!
   serverId: String!
   updatedAt: DateTime
@@ -244,6 +241,7 @@ type Community {
   createdAt: DateTime
   description: String
   discordUrl: String
+  enableSync: Boolean
   githubUrl: String
   id: String!
   name: String!
@@ -456,6 +454,7 @@ type Mutation {
   userStartBot(botId: String!): Boolean
   userStopBot(botId: String!): Boolean
   userSyncBotServer(botId: String!, serverId: String!): Boolean
+  userSyncCommunityRoles(communityId: String!): JSON
   userTestBotServerConfig(botId: String!, serverId: String!): BotServer
   userUpdateBot(botId: String!, input: UserUpdateBotInput!): Bot
   userUpdateBotServer(botId: String!, input: UserUpdateBotServerInput!, serverId: String!): BotServer
@@ -464,7 +463,6 @@ type Mutation {
   userUpdateRole(input: UserUpdateRoleInput!, roleId: String!): Role
   userUpdateRoleCondition(input: UserUpdateRoleConditionInput!, roleConditionId: String!): RoleCondition
   userUpdateUser(input: UserUpdateUserInput!): User
-  userValidateRoles(communityId: String!): JSON
   userVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
 }
 
@@ -472,6 +470,7 @@ type Network {
   cluster: NetworkCluster!
   createdAt: DateTime
   decimals: Int!
+  enableSync: Boolean
   endpoint: String!
   explorerUrl: String!
   id: String!
@@ -613,7 +612,6 @@ type Query {
   userFindOneUser(username: String!): User
   userFindOneUserById(userId: String!): User
   userGetBotChannels(botId: String!, serverId: String!): [DiscordChannel!]
-  userGetBotMembers(botId: String!, serverId: String!): [BotMember!]
   userGetBotRoles(botId: String!, serverId: String!): [DiscordRole!]
   userGetBotServer(botId: String!, serverId: String!): DiscordServer
   userGetBotServers(botId: String!): [DiscordServer!]
@@ -831,6 +829,7 @@ input UserUpdateBotServerInput {
   adminRole: String
   commandChannel: String
   dryRun: Boolean
+  enableSync: Boolean
   verbose: Boolean
 }
 
@@ -838,6 +837,7 @@ input UserUpdateCommunityInput {
   avatarUrl: String
   description: String
   discordUrl: String
+  enableSync: Boolean
   githubUrl: String
   name: String
   telegramUrl: String

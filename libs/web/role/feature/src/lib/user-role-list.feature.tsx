@@ -1,7 +1,7 @@
 import { Button, Group } from '@mantine/core'
 import { modals } from '@mantine/modals'
 import { Community } from '@pubkey-link/sdk'
-import { useUserFindManyRole, useUserValidateRoles } from '@pubkey-link/web-role-data-access'
+import { userUserSyncCommunityRoles, useUserFindManyRole } from '@pubkey-link/web-role-data-access'
 import { UserRoleUiTable } from '@pubkey-link/web-role-ui'
 import { UiSearchField } from '@pubkey-link/web-ui-core'
 import { UiDebug, UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
@@ -11,7 +11,8 @@ export function UserRoleListFeature({ community }: { community: Community }) {
   const { deleteRole, items, pagination, query, setSearch } = useUserFindManyRole({
     communityId: community.id,
   })
-  const validateRoles = useUserValidateRoles({ communityId: community.id })
+
+  const syncCommunityRoles = userUserSyncCommunityRoles({ communityId: community.id })
 
   return (
     <UiStack>
@@ -20,9 +21,9 @@ export function UserRoleListFeature({ community }: { community: Community }) {
         <UiDebugModal data={items} />
 
         <Button
-          loading={validateRoles.isPending}
+          loading={syncCommunityRoles.isPending}
           onClick={() => {
-            validateRoles.mutateAsync().then((result) => {
+            syncCommunityRoles.mutateAsync().then((result) => {
               modals.open({
                 size: 'xl',
                 children: <UiDebug data={result} open hideButton />,
@@ -30,9 +31,8 @@ export function UserRoleListFeature({ community }: { community: Community }) {
             })
           }}
         >
-          Validate Roles
+          Sync Roles
         </Button>
-
         <Button component={Link} to="create">
           Create
         </Button>

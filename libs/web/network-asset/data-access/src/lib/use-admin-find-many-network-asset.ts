@@ -39,10 +39,5 @@ export function useAdminFindManyNetworkAsset(
         toastSuccess('NetworkAsset deleted')
         return query.refetch()
       }),
-    syncNetworkAssets: () =>
-      sdk.adminSyncNetworkAssets({ cluster: props.cluster }).then(() => {
-        toastSuccess('NetworkAssets synced')
-        return query.refetch()
-      }),
   }
 }

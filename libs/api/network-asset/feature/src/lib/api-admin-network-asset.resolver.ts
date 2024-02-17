@@ -22,7 +22,7 @@ export class ApiAdminNetworkAssetResolver {
   adminSyncNetworkAssets(
     @Args({ name: 'cluster', type: () => NetworkCluster, nullable: true }) cluster: NetworkCluster,
   ) {
-    return this.service.sync.syncAll(cluster, { force: true })
+    return this.service.sync.syncAllNetworkAssets(cluster, { force: true })
   }
 
   @Query(() => NetworkAssetPaging)

@@ -12,7 +12,8 @@ export class Community {
   updatedAt?: Date
   @Field()
   name!: string
-
+  @Field({ nullable: true })
+  enableSync?: boolean
   @Field({ nullable: true })
   avatarUrl?: string | null
   @Field({ nullable: true })

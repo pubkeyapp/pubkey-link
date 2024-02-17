@@ -17,6 +17,7 @@ export function getUserCommunityMemberWhereInput(
       { user: { id: { contains: input.search, mode: 'insensitive' } } },
       { user: { name: { contains: input.search, mode: 'insensitive' } } },
       { user: { username: { contains: input.search, mode: 'insensitive' } } },
+      { user: { identities: { some: { providerId: { contains: input.search, mode: 'insensitive' } } } } },
     ]
   }
 

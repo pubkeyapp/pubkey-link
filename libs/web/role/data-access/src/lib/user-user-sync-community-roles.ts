@@ -2,14 +2,14 @@ import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useMutation } from '@tanstack/react-query'
 
-export function useUserValidateRoles({ communityId }: { communityId: string }) {
+export function userUserSyncCommunityRoles({ communityId }: { communityId: string }) {
   const sdk = useSdk()
 
   return useMutation({
     mutationKey: ['user', 'validateRoles', communityId],
     mutationFn: async () =>
       sdk
-        .userValidateRoles({ communityId })
+        .userSyncCommunityRoles({ communityId })
         .then((res) => res.data?.result)
         .then(async (res) => {
           if (res) {

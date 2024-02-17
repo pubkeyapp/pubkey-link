@@ -204,8 +204,8 @@ export class ApiCoreConfigService {
   get syncNetworkAssets() {
     return this.service.get<boolean>('syncNetworkAssets') ?? false
   }
-  get syncValidateRoles() {
-    return this.service.get<boolean>('syncValidateRoles') ?? false
+  get syncCommunityRoles() {
+    return this.service.get<boolean>('syncCommunityRoles') ?? false
   }
 
   get webUrl(): string {

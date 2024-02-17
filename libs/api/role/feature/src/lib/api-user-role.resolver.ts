@@ -62,8 +62,8 @@ export class ApiUserRoleResolver {
   }
 
   @Mutation(() => GraphQLJSON, { nullable: true })
-  userValidateRoles(@CtxUserId() userId: string, @Args('communityId') communityId: string) {
-    return this.service.user.validateRoles(userId, communityId)
+  userSyncCommunityRoles(@CtxUserId() userId: string, @Args('communityId') communityId: string) {
+    return this.service.user.userSyncCommunityRoles(userId, communityId)
   }
 
   @Mutation(() => Role, { nullable: true })

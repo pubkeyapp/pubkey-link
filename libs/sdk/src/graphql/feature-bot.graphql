@@ -13,14 +13,6 @@ fragment BotDetails on Bot {
   updatedAt
   verificationUrl
   verificationUrlSet
-  #  permissions {
-  #    ...BotRoleDetails
-  #  }
-}
-
-fragment BotMemberDetails on BotMember {
-  memberId
-  roleIds
 }
 
 fragment BotServerDetails on BotServer {
@@ -32,6 +24,7 @@ fragment BotServerDetails on BotServer {
   adminRole
   commandChannel
   dryRun
+  enableSync
   verbose
 }
 
@@ -167,12 +160,6 @@ mutation userLeaveBotServer($botId: String!, $serverId: String!) {
 
 mutation userSyncBotServer($botId: String!, $serverId: String!) {
   synced: userSyncBotServer(botId: $botId, serverId: $serverId)
-}
-
-query userGetBotMembers($botId: String!, $serverId: String!) {
-  items: userGetBotMembers(botId: $botId, serverId: $serverId) {
-    ...BotMemberDetails
-  }
 }
 
 query userGetBotChannels($botId: String!, $serverId: String!) {

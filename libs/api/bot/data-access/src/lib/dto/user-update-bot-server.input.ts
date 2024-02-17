@@ -9,5 +9,7 @@ export class UserUpdateBotServerInput {
   @Field({ nullable: true })
   dryRun?: boolean
   @Field({ nullable: true })
+  enableSync?: boolean
+  @Field({ nullable: true })
   verbose?: boolean
 }

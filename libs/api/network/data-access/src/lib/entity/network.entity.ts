@@ -18,4 +18,6 @@ export class Network {
   name!: string
   @Field()
   endpoint!: string
+  @Field({ nullable: true })
+  enableSync?: boolean
 }

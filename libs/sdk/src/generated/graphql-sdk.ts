@@ -173,6 +173,7 @@ export type AdminUpdateCommunityMemberInput = {
 }
 
 export type AdminUpdateNetworkInput = {
+  enableSync?: InputMaybe<Scalars['Boolean']['input']>
   endpoint?: InputMaybe<Scalars['String']['input']>
   name?: InputMaybe<Scalars['String']['input']>
 }
@@ -223,12 +224,6 @@ export type Bot = {
   verificationUrlSet?: Maybe<Scalars['Boolean']['output']>
 }
 
-export type BotMember = {
-  __typename?: 'BotMember'
-  memberId: Scalars['String']['output']
-  roleIds?: Maybe<Array<Scalars['String']['output']>>
-}
-
 export type BotPaging = {
   __typename?: 'BotPaging'
   data: Array<Bot>
@@ -255,6 +250,7 @@ export type BotServer = {
   commandChannel?: Maybe<Scalars['String']['output']>
   createdAt?: Maybe<Scalars['DateTime']['output']>
   dryRun?: Maybe<Scalars['Boolean']['output']>
+  enableSync?: Maybe<Scalars['Boolean']['output']>
   id: Scalars['String']['output']
   serverId: Scalars['String']['output']
   updatedAt?: Maybe<Scalars['DateTime']['output']>
@@ -273,6 +269,7 @@ export type Community = {
   createdAt?: Maybe<Scalars['DateTime']['output']>
   description?: Maybe<Scalars['String']['output']>
   discordUrl?: Maybe<Scalars['String']['output']>
+  enableSync?: Maybe<Scalars['Boolean']['output']>
   githubUrl?: Maybe<Scalars['String']['output']>
   id: Scalars['String']['output']
   name: Scalars['String']['output']
@@ -486,6 +483,7 @@ export type Mutation = {
   userStartBot?: Maybe<Scalars['Boolean']['output']>
   userStopBot?: Maybe<Scalars['Boolean']['output']>
   userSyncBotServer?: Maybe<Scalars['Boolean']['output']>
+  userSyncCommunityRoles?: Maybe<Scalars['JSON']['output']>
   userTestBotServerConfig?: Maybe<BotServer>
   userUpdateBot?: Maybe<Bot>
   userUpdateBotServer?: Maybe<BotServer>
@@ -494,7 +492,6 @@ export type Mutation = {
   userUpdateRole?: Maybe<Role>
   userUpdateRoleCondition?: Maybe<RoleCondition>
   userUpdateUser?: Maybe<User>
-  userValidateRoles?: Maybe<Scalars['JSON']['output']>
   userVerifyIdentityChallenge?: Maybe<IdentityChallenge>
 }
 
@@ -707,6 +704,10 @@ export type MutationUserSyncBotServerArgs = {
   serverId: Scalars['String']['input']
 }
 
+export type MutationUserSyncCommunityRolesArgs = {
+  communityId: Scalars['String']['input']
+}
+
 export type MutationUserTestBotServerConfigArgs = {
   botId: Scalars['String']['input']
   serverId: Scalars['String']['input']
@@ -747,10 +748,6 @@ export type MutationUserUpdateUserArgs = {
   input: UserUpdateUserInput
 }
 
-export type MutationUserValidateRolesArgs = {
-  communityId: Scalars['String']['input']
-}
-
 export type MutationUserVerifyIdentityChallengeArgs = {
   input: VerifyIdentityChallengeInput
 }
@@ -760,6 +757,7 @@ export type Network = {
   cluster: NetworkCluster
   createdAt?: Maybe<Scalars['DateTime']['output']>
   decimals: Scalars['Int']['output']
+  enableSync?: Maybe<Scalars['Boolean']['output']>
   endpoint: Scalars['String']['output']
   explorerUrl: Scalars['String']['output']
   id: Scalars['String']['output']
@@ -908,7 +906,6 @@ export type Query = {
   userFindOneUser?: Maybe<User>
   userFindOneUserById?: Maybe<User>
   userGetBotChannels?: Maybe<Array<DiscordChannel>>
-  userGetBotMembers?: Maybe<Array<BotMember>>
   userGetBotRoles?: Maybe<Array<DiscordRole>>
   userGetBotServer?: Maybe<DiscordServer>
   userGetBotServers?: Maybe<Array<DiscordServer>>
@@ -1089,11 +1086,6 @@ export type QueryUserFindOneUserByIdArgs = {
 }
 
 export type QueryUserGetBotChannelsArgs = {
-  botId: Scalars['String']['input']
-  serverId: Scalars['String']['input']
-}
-
-export type QueryUserGetBotMembersArgs = {
   botId: Scalars['String']['input']
   serverId: Scalars['String']['input']
 }
@@ -1348,6 +1340,7 @@ export type UserUpdateBotServerInput = {
   adminRole?: InputMaybe<Scalars['String']['input']>
   commandChannel?: InputMaybe<Scalars['String']['input']>
   dryRun?: InputMaybe<Scalars['Boolean']['input']>
+  enableSync?: InputMaybe<Scalars['Boolean']['input']>
   verbose?: InputMaybe<Scalars['Boolean']['input']>
 }
 
@@ -1355,6 +1348,7 @@ export type UserUpdateCommunityInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>
   description?: InputMaybe<Scalars['String']['input']>
   discordUrl?: InputMaybe<Scalars['String']['input']>
+  enableSync?: InputMaybe<Scalars['Boolean']['input']>
   githubUrl?: InputMaybe<Scalars['String']['input']>
   name?: InputMaybe<Scalars['String']['input']>
   telegramUrl?: InputMaybe<Scalars['String']['input']>
@@ -1508,8 +1502,6 @@ export type BotDetailsFragment = {
   verificationUrlSet?: boolean | null
 }
 
-export type BotMemberDetailsFragment = { __typename?: 'BotMember'; memberId: string; roleIds?: Array<string> | null }
-
 export type BotServerDetailsFragment = {
   __typename?: 'BotServer'
   id: string
@@ -1520,6 +1512,7 @@ export type BotServerDetailsFragment = {
   adminRole?: string | null
   commandChannel?: string | null
   dryRun?: boolean | null
+  enableSync?: boolean | null
   verbose?: boolean | null
 }
 
@@ -1839,6 +1832,7 @@ export type UserFindOneBotServerQuery = {
     adminRole?: string | null
     commandChannel?: string | null
     dryRun?: boolean | null
+    enableSync?: boolean | null
     verbose?: boolean | null
   } | null
 }
@@ -1911,6 +1905,7 @@ export type UserTestBotServerConfigMutation = {
     adminRole?: string | null
     commandChannel?: string | null
     dryRun?: boolean | null
+    enableSync?: boolean | null
     verbose?: boolean | null
   } | null
 }
@@ -1933,6 +1928,7 @@ export type UserUpdateBotServerMutation = {
     adminRole?: string | null
     commandChannel?: string | null
     dryRun?: boolean | null
+    enableSync?: boolean | null
     verbose?: boolean | null
   } | null
 }
@@ -1968,16 +1964,6 @@ export type UserSyncBotServerMutationVariables = Exact<{
 }>
 
 export type UserSyncBotServerMutation = { __typename?: 'Mutation'; synced?: boolean | null }
-
-export type UserGetBotMembersQueryVariables = Exact<{
-  botId: Scalars['String']['input']
-  serverId: Scalars['String']['input']
-}>
-
-export type UserGetBotMembersQuery = {
-  __typename?: 'Query'
-  items?: Array<{ __typename?: 'BotMember'; memberId: string; roleIds?: Array<string> | null }> | null
-}
 
 export type UserGetBotChannelsQueryVariables = Exact<{
   botId: Scalars['String']['input']
@@ -2810,6 +2796,7 @@ export type CommunityDetailsFragment = {
   telegramUrl?: string | null
   updatedAt?: Date | null
   cluster: NetworkCluster
+  enableSync?: boolean | null
 }
 
 export type AdminFindManyCommunityQueryVariables = Exact<{
@@ -2834,6 +2821,7 @@ export type AdminFindManyCommunityQuery = {
       telegramUrl?: string | null
       updatedAt?: Date | null
       cluster: NetworkCluster
+      enableSync?: boolean | null
     }>
     meta: {
       __typename?: 'PagingMeta'
@@ -2868,6 +2856,7 @@ export type AdminFindOneCommunityQuery = {
     telegramUrl?: string | null
     updatedAt?: Date | null
     cluster: NetworkCluster
+    enableSync?: boolean | null
   } | null
 }
 
@@ -2891,6 +2880,7 @@ export type AdminCreateCommunityMutation = {
     telegramUrl?: string | null
     updatedAt?: Date | null
     cluster: NetworkCluster
+    enableSync?: boolean | null
   } | null
 }
 
@@ -2915,6 +2905,7 @@ export type AdminUpdateCommunityMutation = {
     telegramUrl?: string | null
     updatedAt?: Date | null
     cluster: NetworkCluster
+    enableSync?: boolean | null
   } | null
 }
 
@@ -2944,6 +2935,7 @@ export type UserGetCommunitiesQuery = {
     telegramUrl?: string | null
     updatedAt?: Date | null
     cluster: NetworkCluster
+    enableSync?: boolean | null
     roles?: Array<{
       __typename?: 'Role'
       createdAt?: Date | null
@@ -3040,6 +3032,7 @@ export type UserFindManyCommunityQuery = {
       telegramUrl?: string | null
       updatedAt?: Date | null
       cluster: NetworkCluster
+      enableSync?: boolean | null
     }>
     meta: {
       __typename?: 'PagingMeta'
@@ -3074,6 +3067,7 @@ export type UserFindOneCommunityQuery = {
     telegramUrl?: string | null
     updatedAt?: Date | null
     cluster: NetworkCluster
+    enableSync?: boolean | null
   } | null
 }
 
@@ -3097,6 +3091,7 @@ export type UserCreateCommunityMutation = {
     telegramUrl?: string | null
     updatedAt?: Date | null
     cluster: NetworkCluster
+    enableSync?: boolean | null
   } | null
 }
 
@@ -3121,6 +3116,7 @@ export type UserUpdateCommunityMutation = {
     telegramUrl?: string | null
     updatedAt?: Date | null
     cluster: NetworkCluster
+    enableSync?: boolean | null
   } | null
 }
 
@@ -4744,6 +4740,7 @@ export type NetworkDetailsFragment = {
   type: NetworkType
   name: string
   decimals: number
+  enableSync?: boolean | null
   endpoint: string
   explorerUrl: string
   symbol: string
@@ -4766,6 +4763,7 @@ export type AdminFindManyNetworkQuery = {
       type: NetworkType
       name: string
       decimals: number
+      enableSync?: boolean | null
       endpoint: string
       explorerUrl: string
       symbol: string
@@ -4798,6 +4796,7 @@ export type AdminFindOneNetworkQuery = {
     type: NetworkType
     name: string
     decimals: number
+    enableSync?: boolean | null
     endpoint: string
     explorerUrl: string
     symbol: string
@@ -4819,6 +4818,7 @@ export type AdminCreateNetworkMutation = {
     type: NetworkType
     name: string
     decimals: number
+    enableSync?: boolean | null
     endpoint: string
     explorerUrl: string
     symbol: string
@@ -4841,6 +4841,7 @@ export type AdminUpdateNetworkMutation = {
     type: NetworkType
     name: string
     decimals: number
+    enableSync?: boolean | null
     endpoint: string
     explorerUrl: string
     symbol: string
@@ -5805,11 +5806,11 @@ export type UserDeleteRolePermissionMutationVariables = Exact<{
 
 export type UserDeleteRolePermissionMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
-export type UserValidateRolesMutationVariables = Exact<{
+export type UserSyncCommunityRolesMutationVariables = Exact<{
   communityId: Scalars['String']['input']
 }>
 
-export type UserValidateRolesMutation = { __typename?: 'Mutation'; result?: any | null }
+export type UserSyncCommunityRolesMutation = { __typename?: 'Mutation'; result?: any | null }
 
 export type UserSummaryFragment = {
   __typename?: 'User'
@@ -6063,12 +6064,6 @@ export type UserUpdateUserMutation = {
   } | null
 }
 
-export const BotMemberDetailsFragmentDoc = gql`
-  fragment BotMemberDetails on BotMember {
-    memberId
-    roleIds
-  }
-`
 export const BotServerDetailsFragmentDoc = gql`
   fragment BotServerDetails on BotServer {
     id
@@ -6079,6 +6074,7 @@ export const BotServerDetailsFragmentDoc = gql`
     adminRole
     commandChannel
     dryRun
+    enableSync
     verbose
   }
 `
@@ -6243,6 +6239,7 @@ export const CommunityDetailsFragmentDoc = gql`
     telegramUrl
     updatedAt
     cluster
+    enableSync
   }
 `
 export const AppConfigDetailsFragmentDoc = gql`
@@ -6392,6 +6389,7 @@ export const NetworkDetailsFragmentDoc = gql`
     type
     name
     decimals
+    enableSync
     endpoint
     explorerUrl
     symbol
@@ -6595,14 +6593,6 @@ export const UserSyncBotServerDocument = gql`
   mutation userSyncBotServer($botId: String!, $serverId: String!) {
     synced: userSyncBotServer(botId: $botId, serverId: $serverId)
   }
-`
-export const UserGetBotMembersDocument = gql`
-  query userGetBotMembers($botId: String!, $serverId: String!) {
-    items: userGetBotMembers(botId: $botId, serverId: $serverId) {
-      ...BotMemberDetails
-    }
-  }
-  ${BotMemberDetailsFragmentDoc}
 `
 export const UserGetBotChannelsDocument = gql`
   query userGetBotChannels($botId: String!, $serverId: String!) {
@@ -7278,9 +7268,9 @@ export const UserDeleteRolePermissionDocument = gql`
     deleted: userDeleteRolePermission(rolePermissionId: $rolePermissionId)
   }
 `
-export const UserValidateRolesDocument = gql`
-  mutation userValidateRoles($communityId: String!) {
-    result: userValidateRoles(communityId: $communityId)
+export const UserSyncCommunityRolesDocument = gql`
+  mutation userSyncCommunityRoles($communityId: String!) {
+    result: userSyncCommunityRoles(communityId: $communityId)
   }
 `
 export const AdminCreateUserDocument = gql`
@@ -7404,7 +7394,6 @@ const UserStartBotDocumentString = print(UserStartBotDocument)
 const UserStopBotDocumentString = print(UserStopBotDocument)
 const UserLeaveBotServerDocumentString = print(UserLeaveBotServerDocument)
 const UserSyncBotServerDocumentString = print(UserSyncBotServerDocument)
-const UserGetBotMembersDocumentString = print(UserGetBotMembersDocument)
 const UserGetBotChannelsDocumentString = print(UserGetBotChannelsDocument)
 const UserGetBotRolesDocumentString = print(UserGetBotRolesDocument)
 const UserGetBotServersDocumentString = print(UserGetBotServersDocument)
@@ -7484,7 +7473,7 @@ const UserUpdateRoleConditionDocumentString = print(UserUpdateRoleConditionDocum
 const UserDeleteRoleDocumentString = print(UserDeleteRoleDocument)
 const UserDeleteRoleConditionDocumentString = print(UserDeleteRoleConditionDocument)
 const UserDeleteRolePermissionDocumentString = print(UserDeleteRolePermissionDocument)
-const UserValidateRolesDocumentString = print(UserValidateRolesDocument)
+const UserSyncCommunityRolesDocumentString = print(UserSyncCommunityRolesDocument)
 const AdminCreateUserDocumentString = print(AdminCreateUserDocument)
 const AdminDeleteUserDocumentString = print(AdminDeleteUserDocument)
 const AdminFindManyUserDocumentString = print(AdminFindManyUserDocument)
@@ -8039,27 +8028,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
           }),
         'userSyncBotServer',
         'mutation',
-        variables,
-      )
-    },
-    userGetBotMembers(
-      variables: UserGetBotMembersQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<{
-      data: UserGetBotMembersQuery
-      errors?: GraphQLError[]
-      extensions?: any
-      headers: Headers
-      status: number
-    }> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.rawRequest<UserGetBotMembersQuery>(UserGetBotMembersDocumentString, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
-          }),
-        'userGetBotMembers',
-        'query',
         variables,
       )
     },
@@ -9711,11 +9679,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
-    userValidateRoles(
-      variables: UserValidateRolesMutationVariables,
+    userSyncCommunityRoles(
+      variables: UserSyncCommunityRolesMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserValidateRolesMutation
+      data: UserSyncCommunityRolesMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9723,11 +9691,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserValidateRolesMutation>(UserValidateRolesDocumentString, variables, {
+          client.rawRequest<UserSyncCommunityRolesMutation>(UserSyncCommunityRolesDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userValidateRoles',
+        'userSyncCommunityRoles',
         'mutation',
         variables,
       )
@@ -10147,6 +10115,7 @@ export function AdminUpdateCommunityMemberInputSchema(): z.ZodObject<Properties<
 
 export function AdminUpdateNetworkInputSchema(): z.ZodObject<Properties<AdminUpdateNetworkInput>> {
   return z.object({
+    enableSync: z.boolean().nullish(),
     endpoint: z.string().nullish(),
     name: z.string().nullish(),
   })
@@ -10352,6 +10321,7 @@ export function UserUpdateBotServerInputSchema(): z.ZodObject<Properties<UserUpd
     adminRole: z.string().nullish(),
     commandChannel: z.string().nullish(),
     dryRun: z.boolean().nullish(),
+    enableSync: z.boolean().nullish(),
     verbose: z.boolean().nullish(),
   })
 }
@@ -10361,6 +10331,7 @@ export function UserUpdateCommunityInputSchema(): z.ZodObject<Properties<UserUpd
     avatarUrl: z.string().nullish(),
     description: z.string().nullish(),
     discordUrl: z.string().nullish(),
+    enableSync: z.boolean().nullish(),
     githubUrl: z.string().nullish(),
     name: z.string().nullish(),
     telegramUrl: z.string().nullish(),

@@ -29,6 +29,7 @@ export function UserBotServerUiUpdateForm({
       adminRole: botServer.adminRole,
       commandChannel: botServer.commandChannel,
       dryRun: botServer.dryRun ?? false,
+      enableSync: botServer.enableSync ?? false,
       verbose: botServer.verbose ?? false,
     },
     validate: {
@@ -59,6 +60,11 @@ export function UserBotServerUiUpdateForm({
           label="Dry Run"
           description="If enabled, the bot will not perform any actions, only log what it would do."
           {...form.getInputProps('dryRun', { type: 'checkbox' })}
+        />
+        <Checkbox
+          label="Enable Sync"
+          description="If enabled, the server will sync its state with the bot."
+          {...form.getInputProps('enableSync', { type: 'checkbox' })}
         />
         <Checkbox
           label="Verbose"

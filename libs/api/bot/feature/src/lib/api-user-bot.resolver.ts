@@ -4,7 +4,6 @@ import { ApiAuthGraphQLUserGuard, CtxUserId } from '@pubkey-link/api-auth-data-a
 import {
   ApiBotService,
   Bot,
-  BotMember,
   BotRole,
   BotServer,
   DiscordChannel,
@@ -86,11 +85,6 @@ export class ApiUserBotResolver {
   @Query(() => [DiscordRole], { nullable: true })
   userGetBotRoles(@CtxUserId() userId: string, @Args('botId') botId: string, @Args('serverId') serverId: string) {
     return this.service.user.userGetBotRoles(userId, botId, serverId)
-  }
-
-  @Query(() => [BotMember], { nullable: true })
-  userGetBotMembers(@CtxUserId() userId: string, @Args('botId') botId: string, @Args('serverId') serverId: string) {
-    return this.service.user.userGetBotMembers(userId, botId, serverId)
   }
 
   @Query(() => DiscordServer, { nullable: true })

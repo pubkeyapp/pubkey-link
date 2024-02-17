@@ -25,7 +25,7 @@ export function NetworkAssetUiGrid({
   const totalPages = totalRecords / limit + 1
   return (
     <UiStack>
-      <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="md">
+      <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing="md">
         {networkAssets.map((networkAsset) => (
           <NetworkAssetUiGridItem
             key={networkAsset.id}

@@ -5,7 +5,6 @@ import { UiDiscordServerItem } from '@pubkey-link/web-ui-core'
 import { UiAlert, UiCard, UiDebugModal, UiGroup, UiLoader, UiStack, UiTabRoutes } from '@pubkey-ui/core'
 import { useNavigate, useParams } from 'react-router-dom'
 import { UserBotDetailRolesTab } from './user-bot-detail-roles-tab'
-import { UserBotDetailServerMembers } from './user-bot-detail-server-members'
 import { UserBotDetailServerRoles } from './user-bot-detail-server-roles'
 import { UserBotDetailServerSettings } from './user-bot-detail-server-settings'
 
@@ -60,11 +59,6 @@ export function UserBotDetailServerDetail({ bot }: { bot: Bot }) {
             path: 'settings',
             label: 'Settings',
             element: <UserBotDetailServerSettings botId={bot.id} serverId={serverId} />,
-          },
-          {
-            path: 'members',
-            label: 'Members',
-            element: <UserBotDetailServerMembers bot={bot} serverId={serverId} />,
           },
           {
             path: 'server-roles',

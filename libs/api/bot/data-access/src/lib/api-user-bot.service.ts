@@ -97,12 +97,6 @@ export class ApiUserBotService {
     return this.manager.getBotServer(botId, serverId)
   }
 
-  async userGetBotMembers(userId: string, botId: string, serverId: string) {
-    await this.ensureBotAdmin({ botId, userId })
-
-    return this.manager.getBotMembers(botId, serverId)
-  }
-
   async userLeaveBotServer(userId: string, botId: string, serverId: string) {
     await this.ensureBotAdmin({ botId, userId })
     return this.manager.leaveBotServer(botId, serverId)

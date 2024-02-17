@@ -3,7 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { Bot, IdentityProvider, UserStatus } from '@prisma/client'
 import { createDiscordRestClient, DiscordBot } from '@pubkey-link/api-bot-util'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { ChannelType, PermissionsString, User } from 'discord.js'
+import { ChannelType, Guild, PermissionsString, User } from 'discord.js'
 import { ApiBotMemberService } from './api-bot-member.service'
 import { BotStatus } from './entity/bot-status.enum'
 import { DiscordChannel, DiscordRole, DiscordServer } from './entity/discord-server.entity'
@@ -158,119 +158,96 @@ export class ApiBotManagerService implements OnModuleInit {
     return instance
   }
 
-  async getBotMembers(botId: string, serverId: string) {
-    const [botMembers, botRoleIds, discordIds] = await Promise.all([
-      this.ensureBotInstance(botId).getDiscordServerMembers(serverId),
-      this.getBotRoleIds(botId),
-      this.getDiscordIdentityIds(),
-    ])
-    return botMembers
-      .filter((member) => discordIds.includes(member.memberId))
-      .map((member) => {
-        return {
-          memberId: member.memberId,
-          roleIds: member.roleIds.filter((role) => botRoleIds.includes(role)),
-        }
-      })
-  }
-
-  private async getDiscordIdentityIds() {
-    return this.core.data.identity
-      .findMany({ where: { provider: IdentityProvider.Discord }, select: { providerId: true } })
-      .then((items) => items.map((item) => item.providerId))
-  }
-
-  private async getDiscordIdentities() {
-    return this.core.data.identity.findMany({
-      where: { provider: IdentityProvider.Discord },
-      select: { providerId: true, ownerId: true },
-    })
-  }
-
-  private async getBotRoleIds(botId: string) {
-    return this.core.data.botRole.findMany({ where: { botId } }).then((items) => items.map((item) => item.serverRoleId))
+  async getGuildMember(guild: Guild, memberId: string) {
+    try {
+      return await guild.members.fetch(memberId)
+    } catch (e) {
+      return undefined
+    }
   }
 
   async syncBotServer(botId: string, serverId: string) {
-    const [communityMembers, communityRoles, botMembers, botServer] = await Promise.all([
+    const [communityMembers, communityRoles, botMembers, botServer, botInstance] = await Promise.all([
       this.getCommunityMemberMap({ botId }),
       this.getRolePermissions({ botId, serverId }),
       this.ensureBotInstance(botId).getDiscordServerMembers(serverId),
       this.ensureBotServer({ botId, serverId }),
+      this.ensureBotInstance(botId),
     ])
+    const guild = await botInstance.client?.guilds.fetch(serverId)
+
+    if (!guild) {
+      throw new Error(`Server ${serverId} not found for bot ${botId}`)
+    }
 
     const { dryRun, commandChannel } = botServer
 
-    // Now that we have a member and role map, we can create an overview of the roles in the community
-    const roles = await this.getBotRoles(botId, serverId)
+    async function sendCommandChannel(message: string) {
+      if (!commandChannel) {
+        return
+      }
+      await botInstance.sendChannel(commandChannel, message)
+    }
 
-    for (const communityMember of communityMembers) {
-      if (!communityMember.discordId) {
+    const communityRoleIds = Object.values(communityRoles).flat()
+
+    // Now that we have a member and role map, we can create an overview of the roles in the community
+    const roles = await this.getBotRoles(botId, serverId).then((roles) =>
+      roles.filter((role) => communityRoleIds.includes(role.id)),
+    )
+
+    const roleMap: Record<string, string> = roles
+      .map((role) => ({ [role.id]: role.name }))
+      .reduce((acc, role) => ({ ...acc, ...role }), {})
+
+    const notFound: string[] = []
+
+    for (const cm of communityMembers) {
+      const discordId = cm.discordId
+      if (!discordId) {
         continue
       }
-      const botMember = botMembers.find((member) => member.memberId === communityMember.discordId)
+
+      const found = botMembers.find((member) => member.memberId === discordId)
+      if (!found) {
+        continue
+      }
+      const member = await this.getGuildMember(guild, discordId)
+      if (!member) {
+        this.logger.warn(`syncBotServerRoles: MEMBER ${discordId} NOT FOUND IN GUID`)
+        notFound.push(discordId)
+        continue
+      }
+      const botMember = botMembers.find((member) => member.memberId === discordId)
       const botMemberRoles = botMember?.roleIds ?? []
 
-      const communityMemberRoles = communityMember.roles
-        .map((role) => {
-          return communityRoles[role]
-        })
-        .flat()
+      const communityMemberRoles = cm.roles.map((role) => communityRoles[role]).flat()
 
-      // find the difference between the botMemberRoles and the communityMemberRoles
-      const toBeAdded = communityMemberRoles.filter((role) => {
-        return !botMemberRoles.includes(role) && roles.find((r) => r.id === role)
-      })
-      const toBeRemoved = botMemberRoles.filter((role) => {
-        return !communityMemberRoles.includes(role) && roles.find((r) => r.id === role)
-      })
+      const { toBeAdded, toBeRemoved } = getAddRemoved({ communityMemberRoles, botMemberRoles, roles })
 
-      await this.ensureBotInstance(botId)
-        .client?.guilds.fetch(serverId)
-        .then(async (server) => {
-          const member = await server.members.fetch(communityMember.discordId!)
-          if (!member) {
-            this.logger.verbose(`syncBotServerRoles: MEMBER NOT FOUND ${communityMember.discordId}`)
-            return
-          }
+      if (toBeAdded.length) {
+        if (!dryRun) {
+          await member.roles.add(toBeAdded)
+        }
+        const { botMessage, logMessage } = messageAdd({ dryRun, communityMember: cm, roles: toBeAdded, roleMap })
+        await this.core.logVerbose(logMessage, { botId, communityId: cm.communityId, userId: cm.userId })
+        await sendCommandChannel(botMessage)
+      }
 
-          if (toBeAdded.length) {
-            const message = `🥳 Added roles to <@${communityMember.discordId}>: ${toBeAdded
-              .map((r) => `<@&${r}>`)
-              .join(', ')}`
-            if (dryRun) {
-              await this.core.logVerbose(`${message} [DRY RUN] `, { communityId: communityMember.communityId })
-              if (commandChannel) {
-                await this.ensureBotInstance(botId).sendChannel(commandChannel, `${message} **[DRY RUN]**`)
-              }
-            } else {
-              await member.roles.add(toBeAdded)
-              await this.core.logVerbose(message, { communityId: communityMember.communityId })
-              if (commandChannel) {
-                await this.ensureBotInstance(botId).sendChannel(commandChannel, message)
-              }
-            }
-          }
-
-          if (toBeRemoved.length) {
-            const message = `😭 Removed roles from <@${communityMember.discordId}>: ${toBeRemoved
-              .map((r) => `<@&${r}>`)
-              .join(', ')}`
-            if (dryRun) {
-              await this.core.logVerbose(`${message} [DRY RUN] `, { communityId: communityMember.communityId })
-              if (commandChannel) {
-                await this.ensureBotInstance(botId).sendChannel(commandChannel, `${message} **[DRY RUN]**`)
-              }
-            } else {
-              await member.roles.remove(toBeRemoved)
-              await this.core.logVerbose(message, { communityId: communityMember.communityId })
-              if (commandChannel) {
-                await this.ensureBotInstance(botId).sendChannel(commandChannel, message)
-              }
-            }
-          }
-        })
+      if (toBeRemoved.length) {
+        if (!dryRun) {
+          await member.roles.remove(toBeRemoved)
+        }
+        const { botMessage, logMessage } = messageRemove({ dryRun, communityMember: cm, roles: toBeRemoved, roleMap })
+        await this.core.logVerbose(logMessage, { botId, communityId: cm.communityId, userId: cm.userId })
+        await sendCommandChannel(botMessage)
+      }
     }
+    if (notFound.length) {
+      this.logger.warn(`Accounts not in Discord server: ${notFound.length}`)
+    }
+
+    this.logger.verbose(`Synced ${communityMembers.length} members in ${serverId} for bot ${botId}`)
 
     return true
   }
@@ -308,6 +285,8 @@ export class ApiBotManagerService implements OnModuleInit {
           fields: [
             { name: `Admin Role`, value: botServer.adminRole ? `<@&${botServer.adminRole}>` : 'Not set' },
             { name: `Command Channel`, value: `<#${botServer.commandChannel}>` },
+            { name: `Dry Run`, value: botServer.dryRun ? 'Enabled' : 'Disabled' },
+            { name: `Enable Sync`, value: botServer.enableSync ? 'Enabled' : 'Disabled' },
             { name: 'Roles:', value: `There are ${summary.length} roles in this community` },
             ...summary.map((role) => ({
               name: `${role.name}`,
@@ -330,7 +309,7 @@ export class ApiBotManagerService implements OnModuleInit {
     return botServer
   }
   @Cron(CronExpression.EVERY_MINUTE)
-  private async syncBotServers() {
+  private async syncAllBotServers() {
     if (!this.core.config.syncBotServers) {
       this.logger.verbose(`Bot server sync is disabled`)
       return
@@ -339,10 +318,13 @@ export class ApiBotManagerService implements OnModuleInit {
 
     for (const bot of bots) {
       const servers = await this.getBotServers(bot.id)
-      for (const server of servers) {
-        await this.ensureBotServer({ botId: bot.id, serverId: server.id })
-
-        await this.syncBotServer(bot.id, server.id)
+      for (const server of servers.filter((e) => e)) {
+        const botServer = await this.ensureBotServer({ botId: bot.id, serverId: server.id })
+        if (botServer.enableSync) {
+          await this.syncBotServer(bot.id, server.id)
+        } else {
+          this.logger.debug(`[${bot.name}] Sync is disabled for server ${server.name}`)
+        }
       }
     }
     return bots
@@ -413,8 +395,8 @@ export class ApiBotManagerService implements OnModuleInit {
           },
         },
       })
-      .then((members) => {
-        const result = members
+      .then((members) =>
+        members
           .filter((member) => member.user.communities.length)
           .map(({ user }) => {
             const community = user.communities[0]
@@ -428,10 +410,8 @@ export class ApiBotManagerService implements OnModuleInit {
               communityId: community.communityId,
               roles,
             }
-          })
-
-        return result
-      })
+          }),
+      )
   }
 
   async ensureBotServer({ botId, serverId }: { botId: string; serverId: string }) {
@@ -509,7 +489,7 @@ export class ApiBotManagerService implements OnModuleInit {
   inviteUrl(botId: string) {
     const url = new URL('https://discord.com/api/oauth2/authorize')
     url.searchParams.append('client_id', botId)
-    url.searchParams.append('permissions', '268435456')
+    url.searchParams.append('permissions', '2415935488')
     // url.searchParams.append('permissions', '268437504')
     url.searchParams.append('scope', ' bot role_connections.write')
     url.searchParams.append('redirect_uri', this.redirectUrl(botId))
@@ -519,7 +499,7 @@ export class ApiBotManagerService implements OnModuleInit {
   }
 
   redirectUrl(botId: string) {
-    return this.core.config.authDiscordStrategyOptions.callbackURL + `?botId=${botId}`
+    return this.core.config.authDiscordStrategyOptions.callbackURL
     // return `${this.core.config.apiUrl}/bot/${botId}/callback`
   }
 
@@ -530,4 +510,66 @@ export class ApiBotManagerService implements OnModuleInit {
 
 function convertPermissions(permissions: Record<PermissionsString, boolean>) {
   return (Object.keys(permissions) as PermissionsString[]).filter((key) => permissions[key] === true)
+}
+
+function messageRemove({
+  communityMember: { discordId, username },
+  dryRun,
+  roles,
+  roleMap,
+}: {
+  communityMember: { username: string; discordId?: string }
+  dryRun: boolean
+  roles: string[]
+  roleMap: Record<string, string>
+}) {
+  const prefix = roles.length > 1 ? '😭 Removed roles from' : '😭 Removed role from'
+  return {
+    botMessage: `${dryRunBot(dryRun)} ${prefix} <@${discordId}>: ${roles.map((r) => `<@&${r}>`).join(', ')}`,
+    logMessage: `${dryRunLog(dryRun)} ${prefix} ${username}: ${roles.map((r) => roleMap[r]).join(', ')}`,
+  }
+}
+
+function messageAdd({
+  communityMember: { username, discordId },
+  dryRun,
+  roles,
+  roleMap,
+}: {
+  communityMember: { username: string; discordId?: string }
+  dryRun: boolean
+  roles: string[]
+  roleMap: Record<string, string>
+}) {
+  const prefix = roles.length > 1 ? '🥳 Added roles to' : '🥳 Added role to'
+  return {
+    botMessage: `${dryRunBot(dryRun)} ${prefix} <@${discordId}>: ${roles.map((r) => `<@&${r}>`).join(', ')}`,
+    logMessage: `${dryRunLog(dryRun)} ${prefix} ${username}: ${roles.map((r) => roleMap[r]).join(', ')}`,
+  }
+}
+
+function dryRunBot(dryRun: boolean) {
+  return dryRun ? `**${dryRunLog(dryRun)}**` : ''
+}
+function dryRunLog(dryRun: boolean) {
+  return dryRun ? '[DRY RUN]' : ''
+}
+
+function getAddRemoved({
+  communityMemberRoles,
+  botMemberRoles,
+  roles,
+}: {
+  communityMemberRoles: string[]
+  botMemberRoles: string[]
+  roles: DiscordRole[]
+}) {
+  const toBeAdded = communityMemberRoles.filter((role) => {
+    return !botMemberRoles.includes(role) && roles.find((r) => r.id === role)
+  })
+  const toBeRemoved = botMemberRoles.filter((role) => {
+    return !communityMemberRoles.includes(role) && roles.find((r) => r.id === role)
+  })
+
+  return { toBeAdded, toBeRemoved }
 }

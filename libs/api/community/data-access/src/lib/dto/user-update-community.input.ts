@@ -5,6 +5,8 @@ export class UserUpdateCommunityInput {
   @Field({ nullable: true })
   name?: string
   @Field({ nullable: true })
+  enableSync?: boolean
+  @Field({ nullable: true })
   avatarUrl?: string
   @Field({ nullable: true })
   description?: string

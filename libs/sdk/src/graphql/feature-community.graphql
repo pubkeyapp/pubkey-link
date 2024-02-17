@@ -11,6 +11,7 @@ fragment CommunityDetails on Community {
   telegramUrl
   updatedAt
   cluster
+  enableSync
 }
 
 query adminFindManyCommunity($input: AdminFindManyCommunityInput!) {

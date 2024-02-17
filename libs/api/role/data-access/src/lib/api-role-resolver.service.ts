@@ -25,8 +25,8 @@ export class ApiRoleResolverService {
   ) {}
 
   @Cron(CronExpression.EVERY_MINUTE)
-  async validateAllRoles() {
-    if (!this.core.config.syncValidateRoles) {
+  async syncAllCommunityRoles() {
+    if (!this.core.config.syncCommunityRoles) {
       this.logger.log(`Role validation is disabled`)
       return
     }
@@ -35,15 +35,24 @@ export class ApiRoleResolverService {
         bot: {
           isNot: null,
         },
+        enableSync: true,
       },
     })
     this.logger.log(`Validating roles of ${communities.length} communities`)
     for (const community of communities) {
-      await this.validateRoles(community.id)
+      await this.syncCommunityRoles(community.id)
     }
   }
 
-  async validateRoles(communityId: string) {
+  async syncCommunityRoles(communityId: string) {
+    const community = await this.core.data.community.findUnique({ where: { id: communityId } })
+    if (!community) {
+      throw new Error(`Community not found`)
+    }
+    if (!community.enableSync) {
+      this.logger.debug(`Role sync is disabled for community ${communityId}`)
+      return
+    }
     await this.syncCommunityMembers(communityId)
     const startedAt = Date.now()
 
@@ -151,6 +160,7 @@ export class ApiRoleResolverService {
     if (newMembers.length) {
       for (const newMember of newMembers) {
         await this.core.data.communityMember.create({ data: newMember })
+        await this.core.logInfo(`Member added`, { userId: newMember.userId, communityId })
       }
 
       this.logger.verbose(`Synced ${newMembers.length} members to community ${communityId}`)
@@ -161,6 +171,7 @@ export class ApiRoleResolverService {
     if (deleteMembers.length) {
       for (const deleteMember of deleteMembers) {
         await this.core.data.communityMember.delete({ where: { id: deleteMember.id } })
+        await this.core.logInfo(`Member removed`, { userId: deleteMember.userId, communityId })
       }
       this.logger.verbose(`Deleted ${deleteMembers.length} members from community ${communityId}`)
     }
