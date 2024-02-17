@@ -27,21 +27,21 @@ export class ApiNetworkAssetSyncService {
     private readonly network: ApiNetworkService,
   ) {}
 
-  async sync(identity: Identity) {
+  async sync({ cluster, identity }: { cluster: NetworkCluster; identity: Identity }) {
     // If the last sync was less than 10 minutes ago, do not sync
     if ((identity.syncEnded?.getTime() ?? 0) > new Date().getTime() - this.assetTimeout) {
       this.logger.log(`Identity ${identity.id} sync skipped, last sync less than 10 minutes ago`)
       return true
     }
 
-    const job = await this.networkAssetSyncQueue.add('sync', { cluster: NetworkCluster.SolanaMainnet, identity })
+    const job = await this.networkAssetSyncQueue.add('sync', { cluster, identity })
 
     return !!job.id
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
-  async syncAll() {
-    if (!this.core.config.syncNetworkAssets) {
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  async syncAll(cluster: NetworkCluster = NetworkCluster.SolanaMainnet, { force = false } = {}) {
+    if (!this.core.config.syncNetworkAssets && !force) {
       this.logger.log(`Network asset sync is disabled`)
       return true
     }
@@ -61,7 +61,7 @@ export class ApiNetworkAssetSyncService {
       return true
     }
     this.logger.log(`Queuing ${identities.length} identity syncs`)
-    const jobs = identities.map((identity) => this.sync(identity))
+    const jobs = identities.map((identity) => this.sync({ cluster, identity }))
     const results = await Promise.all(jobs)
     this.logger.log(`Queued ${results.length} identity syncs`)
     return results.every((r) => r)

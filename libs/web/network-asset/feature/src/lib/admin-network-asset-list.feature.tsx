@@ -1,4 +1,4 @@
-import { Group } from '@mantine/core'
+import { Button, Group } from '@mantine/core'
 import { NetworkCluster } from '@pubkey-link/sdk'
 import { useAdminFindManyNetworkAsset } from '@pubkey-link/web-network-asset-data-access'
 import { AdminNetworkAssetUiTable } from '@pubkey-link/web-network-asset-ui'
@@ -7,10 +7,11 @@ import { UiPageLimit, UiSearchField } from '@pubkey-link/web-ui-core'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function AdminNetworkAssetListFeature({ cluster }: { cluster: NetworkCluster }) {
-  const { deleteNetworkAsset, items, pagination, type, setType, query, setSearch } = useAdminFindManyNetworkAsset({
-    limit: 10,
-    cluster,
-  })
+  const { deleteNetworkAsset, syncNetworkAssets, items, pagination, type, setType, query, setSearch } =
+    useAdminFindManyNetworkAsset({
+      limit: 10,
+      cluster,
+    })
 
   return (
     <UiStack>
@@ -18,6 +19,9 @@ export function AdminNetworkAssetListFeature({ cluster }: { cluster: NetworkClus
         <UiSearchField placeholder="Search asset" setSearch={setSearch} />
         <NetworkTokenUiSelectType value={type} setValue={setType} />
         <UiPageLimit limit={pagination.limit} setLimit={pagination.setLimit} setPage={pagination.setPage} />
+        <Button onClick={() => syncNetworkAssets()} variant="light">
+          Sync assets
+        </Button>
         <UiDebugModal data={items} />
       </Group>
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { CommunityRole } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { ApiRoleResolverService } from './api-role-resolver.service'
@@ -13,6 +13,7 @@ import { getUserRoleWhereInput } from './helpers/get-user-role-where.input'
 
 @Injectable()
 export class ApiUserRoleService {
+  private readonly logger = new Logger(ApiUserRoleService.name)
   constructor(private readonly core: ApiCoreService, private readonly resolver: ApiRoleResolverService) {}
 
   async createRole(userId: string, input: UserCreateRoleInput) {

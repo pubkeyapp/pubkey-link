@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { Bot, CommunityRole, IdentityProvider, UserStatus } from '@prisma/client'
+import { Bot, IdentityProvider, UserStatus } from '@prisma/client'
 import { createDiscordRestClient, DiscordBot } from '@pubkey-link/api-bot-util'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { ChannelType, PermissionsString, User } from 'discord.js'
@@ -191,94 +191,6 @@ export class ApiBotManagerService implements OnModuleInit {
     return this.core.data.botRole.findMany({ where: { botId } }).then((items) => items.map((item) => item.serverRoleId))
   }
 
-  private async linkBotMemberIdentities({
-    communityId,
-    botMembers,
-    communityMembers,
-  }: {
-    communityId: string
-    botMembers: { memberId: string; roleIds: string[] }[]
-    communityMembers: { userId: string; username: string; discordId?: string }[]
-  }) {
-    const discordIdentities = await this.getDiscordIdentities()
-    const discordIds = discordIdentities.map((identity) => identity.providerId)
-
-    // Get all the bot members
-    const botMemberIdentities = botMembers.map((member) => member.memberId).filter((id) => discordIds.includes(id))
-    const communityMemberIdentities = communityMembers.map((member) => member.discordId)
-
-    // Get all the bot members that are not in the community
-    const toBeAdded = botMembers
-      .filter(({ memberId }) => discordIds.includes(memberId))
-      .filter((member) => !communityMemberIdentities.includes(member.memberId))
-
-    // Get all the community members that are not in the bot
-    const toBeRemoved = communityMembers.filter((member) =>
-      member.discordId ? !botMemberIdentities.includes(member.discordId) : false,
-    )
-    this.logger.verbose(`linkBotMemberIdentities: ${toBeAdded.length} to be added, ${toBeRemoved.length} to be removed`)
-
-    // Add the missing members to the community
-    await this.addMembersToCommunity({ botMembers: toBeAdded, communityId, discordIdentities })
-
-    // Remove the members that are not in the bot
-    await this.removeMembersFromCommunity({
-      botMembers: toBeRemoved,
-      discordIdentities,
-      communityId,
-    })
-  }
-
-  private async addMembersToCommunity({
-    botMembers,
-    communityId,
-    discordIdentities,
-  }: {
-    botMembers: { memberId: string; roleIds: string[] }[]
-    communityId: string
-    discordIdentities: { ownerId: string; providerId: string }[]
-  }) {
-    for (const member of botMembers) {
-      const identity = discordIdentities.find((m) => m.providerId === member.memberId)
-      if (!identity) {
-        console.log('No community member found for', member.memberId)
-        continue
-      }
-
-      await this.core.data.communityMember.create({
-        data: { userId: identity.ownerId, communityId, role: CommunityRole.Member },
-      })
-      await this.core.logInfo(`Added member ${identity.ownerId} to community ${communityId}`, {
-        communityId,
-        userId: identity.ownerId,
-      })
-    }
-  }
-
-  private async removeMembersFromCommunity({
-    botMembers,
-    discordIdentities,
-    communityId,
-  }: {
-    botMembers: { userId: string; discordId?: string | null }[]
-    discordIdentities: { ownerId: string; providerId: string }[]
-    communityId: string
-  }) {
-    for (const member of botMembers) {
-      const communityMember = discordIdentities.find((m) => m.providerId === member.discordId)
-      if (!communityMember) {
-        continue
-      }
-      await this.core.data.communityMember.delete({
-        where: { communityId_userId: { userId: communityMember.ownerId, communityId } },
-      })
-      await this.core.logInfo(`Removed member ${communityMember.ownerId} from community ${communityId}`, {
-        communityId,
-        userId: communityMember.ownerId,
-      })
-    }
-  }
-
   async syncBotServer(botId: string, serverId: string) {
     const [communityMembers, communityRoles, botMembers, botServer] = await Promise.all([
       this.getCommunityMemberMap({ botId }),
@@ -286,8 +198,6 @@ export class ApiBotManagerService implements OnModuleInit {
       this.ensureBotInstance(botId).getDiscordServerMembers(serverId),
       this.ensureBotServer({ botId, serverId }),
     ])
-
-    await this.linkBotMemberIdentities({ botMembers, communityMembers, communityId: botServer.bot.communityId })
 
     const { dryRun, commandChannel } = botServer
 

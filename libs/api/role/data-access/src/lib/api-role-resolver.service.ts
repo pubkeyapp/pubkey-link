@@ -1,6 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { IdentityProvider, NetworkAsset, NetworkToken, NetworkTokenType, Prisma, UserStatus } from '@prisma/client'
+import {
+  CommunityRole,
+  IdentityProvider,
+  NetworkAsset,
+  NetworkToken,
+  NetworkTokenType,
+  Prisma,
+  UserStatus,
+} from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-access'
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
@@ -36,6 +44,7 @@ export class ApiRoleResolverService {
   }
 
   async validateRoles(communityId: string) {
+    await this.syncCommunityMembers(communityId)
     const startedAt = Date.now()
 
     const [conditions, users] = await Promise.all([
@@ -49,10 +58,12 @@ export class ApiRoleResolverService {
       totalRevoked: 0,
       totalGranted: 0,
     }
+
     if (!conditions?.length) {
       await this.core.logInfo(`No conditions found for community ${communityId}`, { communityId })
       return result
     }
+    this.logger.log(`Validating ${conditions.length} conditions for ${users.length} users`)
 
     for (const user of users) {
       // We are now in the context of a user
@@ -94,6 +105,71 @@ export class ApiRoleResolverService {
       )
     }
     return Promise.resolve(result)
+  }
+  async syncCommunityMembers(communityId: string) {
+    // We're looking for any tokens that are linked to the community
+    const tokens = await this.core.data.networkToken
+      .findMany({
+        where: { conditions: { some: { role: { communityId } } } },
+        select: { account: true },
+      })
+      .then((res) => res.map((r) => r.account))
+
+    if (!tokens.length) {
+      return
+    }
+
+    // We're looking for any owners of the assets
+    const owners = await this.core.data.networkAsset
+      .findMany({
+        where: { group: { in: tokens } },
+        select: { owner: true },
+        distinct: ['owner'],
+        orderBy: { owner: 'asc' },
+      })
+      .then((res) => res.map((r) => r.owner))
+
+    // We need to get the users ids for the owners of the identified tokens
+    const userIds = await this.core.data.user
+      .findMany({
+        where: { identities: { some: { provider: IdentityProvider.Solana, providerId: { in: owners } } } },
+        select: { id: true },
+      })
+      .then((res) => res.map((r) => r.id))
+
+    const existing = await this.core.data.communityMember.findMany({ where: { communityId, userId: { in: userIds } } })
+    const existingIds = existing.map((e) => e.userId)
+
+    const newMembers: Prisma.CommunityMemberCreateManyInput[] = userIds
+      .filter((id) => !existingIds.includes(id))
+      .map((userId) => ({
+        communityId,
+        userId,
+        role: CommunityRole.Member,
+      }))
+
+    if (newMembers.length) {
+      for (const newMember of newMembers) {
+        await this.core.data.communityMember.create({ data: newMember })
+      }
+
+      this.logger.verbose(`Synced ${newMembers.length} members to community ${communityId}`)
+    }
+
+    // Now delete any members that are no longer owners of the tokens
+    const deleteMembers = existing.filter((e) => !userIds.includes(e.userId))
+    if (deleteMembers.length) {
+      for (const deleteMember of deleteMembers) {
+        await this.core.data.communityMember.delete({ where: { id: deleteMember.id } })
+      }
+      this.logger.verbose(`Deleted ${deleteMembers.length} members from community ${communityId}`)
+    }
+
+    if (!newMembers.length && !deleteMembers.length) {
+      this.logger.verbose(`No members to sync for community ${communityId}`)
+    }
+
+    return
   }
 
   private async ensureCommunityMemberRoles({
@@ -297,9 +373,7 @@ export class ApiRoleResolverService {
       .findMany({
         where: {
           status: UserStatus.Active,
-          identities: {
-            some: {},
-          },
+          communities: { some: { communityId } },
         },
         select: {
           id: true,

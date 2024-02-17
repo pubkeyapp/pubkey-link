@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Identity as PrismaIdentity, IdentityProvider } from '@prisma/client'
+import { Identity as PrismaIdentity, IdentityProvider, NetworkCluster } from '@prisma/client'
 import { ApiCoreService, BaseContext, getRequestDetails } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-access'
 import { verifySignature } from '@pubkeyapp/solana-verify-wallet'
@@ -50,7 +50,7 @@ export class ApiUserIdentityService {
     if (identity.provider !== IdentityProvider.Solana) {
       throw new Error(`Identity ${identityId} not supported`)
     }
-    return this.networkAsset.sync.sync(identity)
+    return this.networkAsset.sync.sync({ cluster: NetworkCluster.SolanaMainnet, identity })
   }
 
   async findManyIdentity(input: UserFindManyIdentityInput): Promise<PrismaIdentity[]> {

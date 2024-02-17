@@ -7,6 +7,7 @@ import {
   NetworkAsset,
   NetworkAssetPaging,
 } from '@pubkey-link/api-network-asset-data-access'
+import { NetworkCluster } from '@pubkey-link/api-network-data-access'
 
 @Resolver()
 @UseGuards(ApiAuthGraphQLAdminGuard)
@@ -16,6 +17,12 @@ export class ApiAdminNetworkAssetResolver {
   @Mutation(() => Boolean, { nullable: true })
   adminDeleteNetworkAsset(@Args('networkAssetId') networkAssetId: string) {
     return this.service.admin.deleteNetworkAsset(networkAssetId)
+  }
+  @Mutation(() => Boolean, { nullable: true })
+  adminSyncNetworkAssets(
+    @Args({ name: 'cluster', type: () => NetworkCluster, nullable: true }) cluster: NetworkCluster,
+  ) {
+    return this.service.sync.syncAll(cluster, { force: true })
   }
 
   @Query(() => NetworkAssetPaging)

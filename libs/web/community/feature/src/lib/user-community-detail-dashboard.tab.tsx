@@ -1,7 +1,6 @@
 import { Anchor, SimpleGrid, Text } from '@mantine/core'
 import { Community, CommunityRole } from '@pubkey-link/sdk'
 import { UiCard, UiCardTitle, UiStack, UiWarning } from '@pubkey-ui/core'
-import { CommunityDashboardAdminCardRoles } from './community-dashboard-admin-card-roles'
 import { CommunityDashboardCardBot } from './community-dashboard-card-bot'
 import { CommunityDashboardMemberCardRoles } from './community-dashboard-member-card-roles'
 
@@ -34,7 +33,6 @@ function CommunityDashboardAdmin({ community }: { community: Community }) {
         </UiStack>
       </UiCard>
       <SimpleGrid cols={{ base: 0, xl: 2 }} spacing={20}>
-        <CommunityDashboardAdminCardRoles community={community} />
         <CommunityDashboardCardBot community={community} />
       </SimpleGrid>
     </UiStack>

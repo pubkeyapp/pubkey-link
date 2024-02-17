@@ -425,6 +425,7 @@ type Mutation {
   adminDeleteUser(userId: String!): Boolean
   adminFetchBackup(url: String!): Boolean!
   adminRestoreBackup(name: String!): Boolean!
+  adminSyncNetworkAssets(cluster: NetworkCluster): Boolean
   adminUpdateBot(botId: String!, input: AdminUpdateBotInput!): Bot
   adminUpdateCommunity(communityId: String!, input: AdminUpdateCommunityInput!): Community
   adminUpdateCommunityMember(communityMemberId: String!, input: AdminUpdateCommunityMemberInput!): CommunityMember

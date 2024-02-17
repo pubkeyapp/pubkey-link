@@ -455,6 +455,7 @@ export type Mutation = {
   adminDeleteUser?: Maybe<Scalars['Boolean']['output']>
   adminFetchBackup: Scalars['Boolean']['output']
   adminRestoreBackup: Scalars['Boolean']['output']
+  adminSyncNetworkAssets?: Maybe<Scalars['Boolean']['output']>
   adminUpdateBot?: Maybe<Bot>
   adminUpdateCommunity?: Maybe<Community>
   adminUpdateCommunityMember?: Maybe<CommunityMember>
@@ -575,6 +576,10 @@ export type MutationAdminFetchBackupArgs = {
 
 export type MutationAdminRestoreBackupArgs = {
   name: Scalars['String']['input']
+}
+
+export type MutationAdminSyncNetworkAssetsArgs = {
+  cluster?: InputMaybe<NetworkCluster>
 }
 
 export type MutationAdminUpdateBotArgs = {
@@ -4524,6 +4529,12 @@ export type AdminDeleteNetworkAssetMutationVariables = Exact<{
 
 export type AdminDeleteNetworkAssetMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
+export type AdminSyncNetworkAssetsMutationVariables = Exact<{
+  cluster: NetworkCluster
+}>
+
+export type AdminSyncNetworkAssetsMutation = { __typename?: 'Mutation'; synced?: boolean | null }
+
 export type NetworkTokenDetailsFragment = {
   __typename?: 'NetworkToken'
   id: string
@@ -7020,6 +7031,11 @@ export const AdminDeleteNetworkAssetDocument = gql`
     deleted: adminDeleteNetworkAsset(networkAssetId: $networkAssetId)
   }
 `
+export const AdminSyncNetworkAssetsDocument = gql`
+  mutation adminSyncNetworkAssets($cluster: NetworkCluster!) {
+    synced: adminSyncNetworkAssets(cluster: $cluster)
+  }
+`
 export const AdminFindManyNetworkTokenDocument = gql`
   query adminFindManyNetworkToken($input: AdminFindManyNetworkTokenInput!) {
     paging: adminFindManyNetworkToken(input: $input) {
@@ -7438,6 +7454,7 @@ const UserFindOneNetworkAssetDocumentString = print(UserFindOneNetworkAssetDocum
 const AdminFindManyNetworkAssetDocumentString = print(AdminFindManyNetworkAssetDocument)
 const AdminFindOneNetworkAssetDocumentString = print(AdminFindOneNetworkAssetDocument)
 const AdminDeleteNetworkAssetDocumentString = print(AdminDeleteNetworkAssetDocument)
+const AdminSyncNetworkAssetsDocumentString = print(AdminSyncNetworkAssetsDocument)
 const AdminFindManyNetworkTokenDocumentString = print(AdminFindManyNetworkTokenDocument)
 const AdminFindOneNetworkTokenDocumentString = print(AdminFindOneNetworkTokenDocument)
 const AdminCreateNetworkTokenDocumentString = print(AdminCreateNetworkTokenDocument)
@@ -9059,6 +9076,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'adminDeleteNetworkAsset',
+        'mutation',
+        variables,
+      )
+    },
+    adminSyncNetworkAssets(
+      variables: AdminSyncNetworkAssetsMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminSyncNetworkAssetsMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminSyncNetworkAssetsMutation>(AdminSyncNetworkAssetsDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminSyncNetworkAssets',
         'mutation',
         variables,
       )
