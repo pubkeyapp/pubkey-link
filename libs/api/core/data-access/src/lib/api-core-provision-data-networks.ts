@@ -61,6 +61,27 @@ export const provisionNetworks: Prisma.NetworkCreateInput[] = [
         },
         {
           type: NetworkTokenType.Fungible,
+          account: 'LGNDeXXXaDDeRerwwHfUtPBNz5s6vrn1NMSt9hdaCwx',
+          program: TOKEN_PROGRAM_ID.toString(),
+          name: 'Legends of SOL',
+          symbol: 'LEGEND',
+          description: 'A Legendary Airdrop to the Legends of SOL which leads to The Choice',
+          imageUrl: 'https://arweave.net/sCGvXDlbFn8p0s0cfqtznbjn9K_cyYY2aa9HGC1XWR8',
+          metadataUrl:
+            'https://shdw-drive.genesysgo.net/NZkFUhCfuhhDKnQnPjqVcanddkkaf51rVwYYhryxiZo/kE94cDcRWswNMTYamnxqx.json',
+        },
+        {
+          type: NetworkTokenType.NonFungible,
+          account: '8fmefJZapGpyVMDzj4MSYQfR7mTET1oV9hXyu1axCjLE',
+          program: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          name: 'The Choice',
+          symbol: 'CHOOSE',
+          description: 'A Legendary Airdrop to the Legends of SOL which leads to The Choice',
+          imageUrl: 'https://arweave.net/t9IITRU07LOqVnYnuzphaMX4rSmbEmqlWbsBecbIkis?ext=gif',
+          metadataUrl: 'https://arweave.net/0qGGBeYhvzSY4f9j1ql4ftRkCVUgLAM5ldppn4eNIg8',
+        },
+        {
+          type: NetworkTokenType.Fungible,
           account: 'CKfatsPMUf8SkiURsDXs7eK6GWb4Jsd6UDbs7twMCWxo',
           program: TOKEN_2022_PROGRAM_ID.toString(),
           name: 'BonkEarn',
@@ -75,6 +96,7 @@ export const provisionNetworks: Prisma.NetworkCreateInput[] = [
           program: TOKEN_PROGRAM_ID.toString(),
           symbol: 'MNDE',
           type: NetworkTokenType.Fungible,
+          metadataUrl: '',
         },
         {
           account: 'Ds52CDgqdWbTWsua1hgT3AuSSy4FNx2Ezge1br3jQ14a',

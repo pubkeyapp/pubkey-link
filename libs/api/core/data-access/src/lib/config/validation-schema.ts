@@ -31,5 +31,7 @@ export const validationSchema = Joi.object({
   PORT: Joi.number().default(3000),
   REDIS_URL: Joi.string().required().error(new Error(`REDIS_URL is required.`)),
   SESSION_SECRET: Joi.string().required(),
-  SYNC_DRY_RUN: Joi.boolean().default(false),
+  SYNC_BOT_SERVERS: Joi.boolean().default(true),
+  SYNC_NETWORK_ASSETS: Joi.boolean().default(true),
+  SYNC_VALIDATE_ROLES: Joi.boolean().default(true),
 })

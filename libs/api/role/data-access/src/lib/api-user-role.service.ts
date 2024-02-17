@@ -8,7 +8,6 @@ import { UserCreateRoleInput } from './dto/user-create-role.input'
 import { UserFindManyRoleInput } from './dto/user-find-many-role.input'
 import { UserUpdateRoleConditionInput } from './dto/user-update-role-condition-input'
 import { UserUpdateRoleInput } from './dto/user-update-role.input'
-import { RoleCondition } from './entity/role-condition.entity'
 import { RolePaging } from './entity/role-paging.entity'
 import { getUserRoleWhereInput } from './helpers/get-user-role-where.input'
 
@@ -130,20 +129,6 @@ export class ApiUserRoleService {
         filters: input.filters ?? undefined,
       },
     })
-  }
-
-  async validateRole(userId: string, roleId: string, address: string): Promise<RoleCondition[]> {
-    await this.ensureRoleAdmin({ roleId, userId })
-    const role = await this.findOneRole(userId, roleId)
-    if (!role) {
-      throw new Error('Role not found')
-    }
-
-    if (!role.conditions.length) {
-      throw new Error('Role has no conditions')
-    }
-
-    return this.resolver.resolve(role.community.cluster, role.conditions, address)
   }
 
   async validateRoles(userId: string, communityId: string) {

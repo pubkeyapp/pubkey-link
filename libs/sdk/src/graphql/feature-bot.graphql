@@ -13,26 +13,14 @@ fragment BotDetails on Bot {
   updatedAt
   verificationUrl
   verificationUrlSet
-  permissions {
-    ...BotPermissionDetails
-  }
+  #  permissions {
+  #    ...BotPermissionDetails
+  #  }
 }
 
 fragment BotMemberDetails on BotMember {
-  id
-  createdAt
-  updatedAt
-  botId
-  userId
-  serverId
+  memberId
   roleIds
-  identity {
-    ...IdentityDetails
-    owner {
-      ...UserDetails
-    }
-  }
-  identityProvider
 }
 
 fragment BotServerDetails on BotServer {
@@ -120,15 +108,23 @@ mutation adminDeleteBot($botId: String!) {
 query userFindOneBot($communityId: String!) {
   item: userFindOneBot(communityId: $communityId) {
     ...BotDetails
-    permissions {
-      ...BotPermissionDetails
-      roles {
-        ...RoleDetails
-      }
-    }
+    #    permissions {
+    #      ...BotPermissionDetails
+    #      roles {
+    #        ...RoleDetails
+    #      }
+    #    }
   }
 }
 
+query userFindManyBotPermissions($botId: String!) {
+  items: userFindManyBotPermissions(botId: $botId) {
+    ...BotPermissionDetails
+    roles {
+      ...RoleDetails
+    }
+  }
+}
 query userFindOneBotServer($botId: String!, $serverId: String!) {
   item: userFindOneBotServer(botId: $botId, serverId: $serverId) {
     ...BotServerDetails
@@ -177,9 +173,6 @@ mutation userLeaveBotServer($botId: String!, $serverId: String!) {
 
 mutation userSyncBotServer($botId: String!, $serverId: String!) {
   synced: userSyncBotServer(botId: $botId, serverId: $serverId)
-}
-mutation userSyncBotServerRoles($botId: String!, $serverId: String!) {
-  synced: userSyncBotServerRoles(botId: $botId, serverId: $serverId)
 }
 
 query userGetBotMembers($botId: String!, $serverId: String!) {

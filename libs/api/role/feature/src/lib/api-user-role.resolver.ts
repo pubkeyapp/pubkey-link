@@ -61,11 +61,6 @@ export class ApiUserRoleResolver {
     return this.service.user.findOneRole(userId, roleId)
   }
 
-  @Mutation(() => [RoleCondition], { nullable: true })
-  userValidateRole(@CtxUserId() userId: string, @Args('roleId') roleId: string, @Args('address') address: string) {
-    return this.service.user.validateRole(userId, roleId, address)
-  }
-
   @Mutation(() => GraphQLJSON, { nullable: true })
   userValidateRoles(@CtxUserId() userId: string, @Args('communityId') communityId: string) {
     return this.service.user.validateRoles(userId, communityId)

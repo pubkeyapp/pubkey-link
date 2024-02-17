@@ -14,28 +14,6 @@ export function useUserManageBot({ bot }: { bot: Bot }) {
   return {
     starting,
     stopping,
-    syncServer: (serverId: string) => {
-      return sdk
-        .userSyncBotServer({ botId: bot.id, serverId })
-        .then((res) => res.data)
-        .then(async (res) => {
-          if (res) {
-            if (res.synced) {
-              toastSuccess('Bot synced server')
-            } else {
-              toastError('Bot did not sync server')
-            }
-            await query.refetch()
-            return true
-          }
-          toastError('Error syncing server')
-          return false
-        })
-        .catch((err) => {
-          toastError(err.message)
-          return false
-        })
-    },
     leaveServer: async (serverId: string) =>
       sdk
         .userLeaveBotServer({ botId: bot.id, serverId })

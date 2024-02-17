@@ -33,17 +33,14 @@ export class ApiUserBotService {
   }
 
   async deleteBot(userId: string, botId: string) {
-    await this.botMember.ensureBotAdmin({ botId, userId })
+    await this.ensureBotAdmin({ botId, userId })
     const deleted = await this.core.data.bot.delete({ where: { id: botId } })
     return !!deleted
   }
 
   async findOneBot(userId: string, communityId: string) {
     await this.core.ensureCommunityAccess({ communityId, userId })
-    const bot = await this.core.data.bot.findUnique({
-      where: { communityId },
-      include: { permissions: { include: { roles: { include: { role: true } } } } },
-    })
+    const bot = await this.core.data.bot.findUnique({ where: { communityId } })
     if (!bot) {
       return null
     }
@@ -62,20 +59,14 @@ export class ApiUserBotService {
   }
 
   async findOneBotServer(userId: string, botId: string, serverId: string) {
-    const botServer = await this.core.data.botServer.findUnique({
-      where: {
-        botId_serverId: { botId: botId, serverId },
-      },
-    })
-    if (!botServer) {
-      throw new Error(`Bot server not found ${serverId}`)
-    }
-    await this.botMember.ensureBotAdmin({ botId: botServer.botId, userId })
+    const botServer = await this.manager.ensureBotServer({ botId, serverId })
+
+    await this.ensureBotAdmin({ botId: botServer.botId, userId })
     return botServer
   }
 
   async updateBot(userId: string, botId: string, input: UserUpdateBotInput) {
-    await this.botMember.ensureBotAdmin({ botId, userId })
+    await this.ensureBotAdmin({ botId, userId })
     return this.core.data.bot.update({ where: { id: botId }, data: input })
   }
 
@@ -86,63 +77,73 @@ export class ApiUserBotService {
   }
 
   async userGetBotChannels(userId: string, botId: string, serverId: string) {
-    await this.botMember.ensureBotAdmin({ botId, userId })
+    await this.ensureBotAdmin({ botId, userId })
     return this.manager.getBotChannels(botId, serverId)
   }
 
-  async userGetBotMembers(userId: string, botId: string, serverId: string) {
-    await this.botMember.ensureBotAdmin({ botId, userId })
-    return this.botMember.getBotMembers(botId, serverId)
-  }
-
   async userGetBotRoles(userId: string, botId: string, serverId: string): Promise<DiscordRole[]> {
-    await this.botMember.ensureBotAdmin({ botId, userId })
+    await this.ensureBotAdmin({ botId, userId })
 
     return this.manager.getBotRoles(botId, serverId)
   }
 
   async userGetBotServers(userId: string, botId: string): Promise<DiscordServer[]> {
-    await this.botMember.ensureBotAdmin({ botId, userId })
+    await this.ensureBotAdmin({ botId, userId })
     return this.manager.getBotServers(botId)
   }
   async userGetBotServer(userId: string, botId: string, serverId: string) {
-    await this.botMember.ensureBotAdmin({ botId, userId })
+    await this.ensureBotAdmin({ botId, userId })
 
     return this.manager.getBotServer(botId, serverId)
   }
 
+  async userGetBotMembers(userId: string, botId: string, serverId: string) {
+    await this.ensureBotAdmin({ botId, userId })
+
+    return this.manager.getBotMembers(botId, serverId)
+  }
+
   async userLeaveBotServer(userId: string, botId: string, serverId: string) {
-    await this.botMember.ensureBotAdmin({ botId, userId })
+    await this.ensureBotAdmin({ botId, userId })
     return this.manager.leaveBotServer(botId, serverId)
   }
 
   async userStartBot(userId: string, botId: string) {
-    const bot = await this.botMember.ensureBotAdmin({ botId, userId })
+    const bot = await this.ensureBotAdmin({ botId, userId })
 
     return this.manager.startBot(bot)
   }
 
   async userStopBot(userId: string, botId: string) {
-    const bot = await this.botMember.ensureBotAdmin({ botId, userId })
+    const bot = await this.ensureBotAdmin({ botId, userId })
 
     return this.manager.stopBot(bot)
   }
 
   async userSyncBotServer(userId: string, botId: string, serverId: string) {
-    await this.botMember.ensureBotAdmin({ botId, userId })
+    await this.ensureBotAdmin({ botId, userId })
 
     return this.manager.syncBotServer(botId, serverId)
   }
 
-  async userSyncBotServerRoles(userId: string, botId: string, serverId: string) {
-    await this.botMember.ensureBotAdmin({ botId, userId })
-
-    return this.manager.syncBotServerRoles(botId, serverId)
-  }
-
   async userTestBotServerConfig(userId: string, botId: string, serverId: string) {
-    await this.botMember.ensureBotAdmin({ botId, userId })
+    await this.ensureBotAdmin({ botId, userId })
 
     return this.manager.testBotServerConfig(botId, serverId)
+  }
+
+  private async ensureBotAdmin({ botId, userId }: { botId: string; userId: string }) {
+    const bot = await this.core.data.bot.findUnique({ where: { id: botId }, include: { community: true } })
+    if (!bot) {
+      throw new Error(`Bot with id ${botId} not found`)
+    }
+    await this.core.ensureCommunityAdmin({ userId, communityId: bot.communityId })
+    return bot
+  }
+
+  async userFindManyBotPermissions(userId: string, botId: string) {
+    await this.ensureBotAdmin({ botId, userId })
+
+    return this.core.data.botPermission.findMany({ where: { botId }, include: { roles: { include: { role: true } } } })
   }
 }

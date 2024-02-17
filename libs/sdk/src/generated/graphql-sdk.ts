@@ -227,15 +227,8 @@ export type Bot = {
 
 export type BotMember = {
   __typename?: 'BotMember'
-  botId: Scalars['String']['output']
-  createdAt?: Maybe<Scalars['DateTime']['output']>
-  id: Scalars['String']['output']
-  identity?: Maybe<Identity>
-  identityProvider: IdentityProvider
+  memberId: Scalars['String']['output']
   roleIds?: Maybe<Array<Scalars['String']['output']>>
-  serverId: Scalars['String']['output']
-  updatedAt?: Maybe<Scalars['DateTime']['output']>
-  userId: Scalars['String']['output']
 }
 
 export type BotPaging = {
@@ -494,7 +487,6 @@ export type Mutation = {
   userStartBot?: Maybe<Scalars['Boolean']['output']>
   userStopBot?: Maybe<Scalars['Boolean']['output']>
   userSyncBotServer?: Maybe<Scalars['Boolean']['output']>
-  userSyncBotServerRoles?: Maybe<Scalars['Boolean']['output']>
   userTestBotServerConfig?: Maybe<BotServer>
   userUpdateBot?: Maybe<Bot>
   userUpdateBotServer?: Maybe<BotServer>
@@ -503,7 +495,6 @@ export type Mutation = {
   userUpdateRole?: Maybe<Role>
   userUpdateRoleCondition?: Maybe<RoleCondition>
   userUpdateUser?: Maybe<User>
-  userValidateRole?: Maybe<Array<RoleCondition>>
   userValidateRoles?: Maybe<Scalars['JSON']['output']>
   userVerifyIdentityChallenge?: Maybe<IdentityChallenge>
 }
@@ -713,11 +704,6 @@ export type MutationUserSyncBotServerArgs = {
   serverId: Scalars['String']['input']
 }
 
-export type MutationUserSyncBotServerRolesArgs = {
-  botId: Scalars['String']['input']
-  serverId: Scalars['String']['input']
-}
-
 export type MutationUserTestBotServerConfigArgs = {
   botId: Scalars['String']['input']
   serverId: Scalars['String']['input']
@@ -756,11 +742,6 @@ export type MutationUserUpdateRoleConditionArgs = {
 
 export type MutationUserUpdateUserArgs = {
   input: UserUpdateUserInput
-}
-
-export type MutationUserValidateRoleArgs = {
-  address: Scalars['String']['input']
-  roleId: Scalars['String']['input']
 }
 
 export type MutationUserValidateRolesArgs = {
@@ -904,6 +885,7 @@ export type Query = {
   appConfig: AppConfig
   me?: Maybe<User>
   uptime: Scalars['Float']['output']
+  userFindManyBotPermissions?: Maybe<Array<BotPermission>>
   userFindManyCommunity: CommunityPaging
   userFindManyCommunityMember: CommunityMemberPaging
   userFindManyIdentity?: Maybe<Array<Identity>>
@@ -1021,6 +1003,10 @@ export type QueryAnonFindUserByIdentityArgs = {
 
 export type QueryAnonRequestIdentityChallengeArgs = {
   input: RequestIdentityChallengeInput
+}
+
+export type QueryUserFindManyBotPermissionsArgs = {
+  botId: Scalars['String']['input']
 }
 
 export type QueryUserFindManyCommunityArgs = {
@@ -1519,74 +1505,9 @@ export type BotDetailsFragment = {
   updatedAt?: Date | null
   verificationUrl: string
   verificationUrlSet?: boolean | null
-  permissions?: Array<{
-    __typename?: 'BotPermission'
-    botId?: string | null
-    createdAt?: Date | null
-    id: string
-    serverId?: string | null
-    updatedAt?: Date | null
-    serverRoleId?: string | null
-    serverRole?: {
-      __typename?: 'DiscordRole'
-      id: string
-      name: string
-      managed: boolean
-      color: number
-      position: number
-    } | null
-    server?: {
-      __typename?: 'DiscordServer'
-      id: string
-      name: string
-      icon?: string | null
-      permissions?: Array<string> | null
-    } | null
-  }> | null
 }
 
-export type BotMemberDetailsFragment = {
-  __typename?: 'BotMember'
-  id: string
-  createdAt?: Date | null
-  updatedAt?: Date | null
-  botId: string
-  userId: string
-  serverId: string
-  roleIds?: Array<string> | null
-  identityProvider: IdentityProvider
-  identity?: {
-    __typename?: 'Identity'
-    avatarUrl?: string | null
-    createdAt?: Date | null
-    syncStarted?: Date | null
-    syncEnded?: Date | null
-    expired?: boolean | null
-    id: string
-    name?: string | null
-    ownerId?: string | null
-    profile?: any | null
-    provider: IdentityProvider
-    providerId: string
-    updatedAt?: Date | null
-    url?: string | null
-    verified?: boolean | null
-    owner?: {
-      __typename?: 'User'
-      avatarUrl?: string | null
-      createdAt?: Date | null
-      developer?: boolean | null
-      lastLogin?: Date | null
-      id: string
-      name?: string | null
-      profileUrl: string
-      role?: UserRole | null
-      status?: UserStatus | null
-      updatedAt?: Date | null
-      username?: string | null
-    } | null
-  } | null
-}
+export type BotMemberDetailsFragment = { __typename?: 'BotMember'; memberId: string; roleIds?: Array<string> | null }
 
 export type BotServerDetailsFragment = {
   __typename?: 'BotServer'
@@ -1675,30 +1596,6 @@ export type AdminFindManyBotQuery = {
       updatedAt?: Date | null
       verificationUrl: string
       verificationUrlSet?: boolean | null
-      permissions?: Array<{
-        __typename?: 'BotPermission'
-        botId?: string | null
-        createdAt?: Date | null
-        id: string
-        serverId?: string | null
-        updatedAt?: Date | null
-        serverRoleId?: string | null
-        serverRole?: {
-          __typename?: 'DiscordRole'
-          id: string
-          name: string
-          managed: boolean
-          color: number
-          position: number
-        } | null
-        server?: {
-          __typename?: 'DiscordServer'
-          id: string
-          name: string
-          icon?: string | null
-          permissions?: Array<string> | null
-        } | null
-      }> | null
     }>
     meta: {
       __typename?: 'PagingMeta'
@@ -1735,30 +1632,6 @@ export type AdminFindOneBotQuery = {
     updatedAt?: Date | null
     verificationUrl: string
     verificationUrlSet?: boolean | null
-    permissions?: Array<{
-      __typename?: 'BotPermission'
-      botId?: string | null
-      createdAt?: Date | null
-      id: string
-      serverId?: string | null
-      updatedAt?: Date | null
-      serverRoleId?: string | null
-      serverRole?: {
-        __typename?: 'DiscordRole'
-        id: string
-        name: string
-        managed: boolean
-        color: number
-        position: number
-      } | null
-      server?: {
-        __typename?: 'DiscordServer'
-        id: string
-        name: string
-        icon?: string | null
-        permissions?: Array<string> | null
-      } | null
-    }> | null
   } | null
 }
 
@@ -1784,30 +1657,6 @@ export type AdminCreateBotMutation = {
     updatedAt?: Date | null
     verificationUrl: string
     verificationUrlSet?: boolean | null
-    permissions?: Array<{
-      __typename?: 'BotPermission'
-      botId?: string | null
-      createdAt?: Date | null
-      id: string
-      serverId?: string | null
-      updatedAt?: Date | null
-      serverRoleId?: string | null
-      serverRole?: {
-        __typename?: 'DiscordRole'
-        id: string
-        name: string
-        managed: boolean
-        color: number
-        position: number
-      } | null
-      server?: {
-        __typename?: 'DiscordServer'
-        id: string
-        name: string
-        icon?: string | null
-        permissions?: Array<string> | null
-      } | null
-    }> | null
   } | null
 }
 
@@ -1834,30 +1683,6 @@ export type AdminUpdateBotMutation = {
     updatedAt?: Date | null
     verificationUrl: string
     verificationUrlSet?: boolean | null
-    permissions?: Array<{
-      __typename?: 'BotPermission'
-      botId?: string | null
-      createdAt?: Date | null
-      id: string
-      serverId?: string | null
-      updatedAt?: Date | null
-      serverRoleId?: string | null
-      serverRole?: {
-        __typename?: 'DiscordRole'
-        id: string
-        name: string
-        managed: boolean
-        color: number
-        position: number
-      } | null
-      server?: {
-        __typename?: 'DiscordServer'
-        id: string
-        name: string
-        icon?: string | null
-        permissions?: Array<string> | null
-      } | null
-    }> | null
   } | null
 }
 
@@ -1889,103 +1714,111 @@ export type UserFindOneBotQuery = {
     updatedAt?: Date | null
     verificationUrl: string
     verificationUrlSet?: boolean | null
-    permissions?: Array<{
-      __typename?: 'BotPermission'
-      botId?: string | null
+  } | null
+}
+
+export type UserFindManyBotPermissionsQueryVariables = Exact<{
+  botId: Scalars['String']['input']
+}>
+
+export type UserFindManyBotPermissionsQuery = {
+  __typename?: 'Query'
+  items?: Array<{
+    __typename?: 'BotPermission'
+    botId?: string | null
+    createdAt?: Date | null
+    id: string
+    serverId?: string | null
+    updatedAt?: Date | null
+    serverRoleId?: string | null
+    roles?: Array<{
+      __typename?: 'Role'
       createdAt?: Date | null
       id: string
-      serverId?: string | null
+      communityId: string
+      name: string
+      description?: string | null
       updatedAt?: Date | null
-      serverRoleId?: string | null
-      roles?: Array<{
-        __typename?: 'Role'
+      viewUrl?: string | null
+      conditions?: Array<{
+        __typename?: 'RoleCondition'
         createdAt?: Date | null
         id: string
-        communityId: string
-        name: string
-        description?: string | null
+        type: NetworkTokenType
+        amount?: string | null
+        filters?: any | null
+        config?: any | null
+        tokenId?: string | null
         updatedAt?: Date | null
-        viewUrl?: string | null
-        conditions?: Array<{
-          __typename?: 'RoleCondition'
-          createdAt?: Date | null
+        valid?: boolean | null
+        token?: {
+          __typename?: 'NetworkToken'
           id: string
+          createdAt?: Date | null
+          updatedAt?: Date | null
+          cluster: NetworkCluster
           type: NetworkTokenType
-          amount?: string | null
-          filters?: any | null
-          config?: any | null
-          tokenId?: string | null
-          updatedAt?: Date | null
-          valid?: boolean | null
-          token?: {
-            __typename?: 'NetworkToken'
-            id: string
-            createdAt?: Date | null
-            updatedAt?: Date | null
-            cluster: NetworkCluster
-            type: NetworkTokenType
-            account: string
-            program: string
-            name: string
-            vault?: string | null
-            symbol?: string | null
-            description?: string | null
-            imageUrl?: string | null
-            metadataUrl?: string | null
-            raw?: any | null
-          } | null
-          asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
-        }> | null
-        permissions?: Array<{
-          __typename?: 'RolePermission'
+          account: string
+          program: string
+          name: string
+          vault?: string | null
+          symbol?: string | null
+          description?: string | null
+          imageUrl?: string | null
+          metadataUrl?: string | null
+          raw?: any | null
+        } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      }> | null
+      permissions?: Array<{
+        __typename?: 'RolePermission'
+        createdAt?: Date | null
+        id: string
+        updatedAt?: Date | null
+        botId?: string | null
+        roleId?: string | null
+        bot?: {
+          __typename?: 'BotPermission'
+          botId?: string | null
           createdAt?: Date | null
           id: string
+          serverId?: string | null
           updatedAt?: Date | null
-          botId?: string | null
-          roleId?: string | null
-          bot?: {
-            __typename?: 'BotPermission'
-            botId?: string | null
-            createdAt?: Date | null
+          serverRoleId?: string | null
+          serverRole?: {
+            __typename?: 'DiscordRole'
             id: string
-            serverId?: string | null
-            updatedAt?: Date | null
-            serverRoleId?: string | null
-            serverRole?: {
-              __typename?: 'DiscordRole'
-              id: string
-              name: string
-              managed: boolean
-              color: number
-              position: number
-            } | null
-            server?: {
-              __typename?: 'DiscordServer'
-              id: string
-              name: string
-              icon?: string | null
-              permissions?: Array<string> | null
-            } | null
+            name: string
+            managed: boolean
+            color: number
+            position: number
           } | null
-        }> | null
+          server?: {
+            __typename?: 'DiscordServer'
+            id: string
+            name: string
+            icon?: string | null
+            permissions?: Array<string> | null
+          } | null
+        } | null
       }> | null
-      serverRole?: {
-        __typename?: 'DiscordRole'
-        id: string
-        name: string
-        managed: boolean
-        color: number
-        position: number
-      } | null
-      server?: {
-        __typename?: 'DiscordServer'
-        id: string
-        name: string
-        icon?: string | null
-        permissions?: Array<string> | null
-      } | null
     }> | null
-  } | null
+    serverRole?: {
+      __typename?: 'DiscordRole'
+      id: string
+      name: string
+      managed: boolean
+      color: number
+      position: number
+    } | null
+    server?: {
+      __typename?: 'DiscordServer'
+      id: string
+      name: string
+      icon?: string | null
+      permissions?: Array<string> | null
+    } | null
+  }> | null
 }
 
 export type UserFindOneBotServerQueryVariables = Exact<{
@@ -2031,30 +1864,6 @@ export type UserCreateBotMutation = {
     updatedAt?: Date | null
     verificationUrl: string
     verificationUrlSet?: boolean | null
-    permissions?: Array<{
-      __typename?: 'BotPermission'
-      botId?: string | null
-      createdAt?: Date | null
-      id: string
-      serverId?: string | null
-      updatedAt?: Date | null
-      serverRoleId?: string | null
-      serverRole?: {
-        __typename?: 'DiscordRole'
-        id: string
-        name: string
-        managed: boolean
-        color: number
-        position: number
-      } | null
-      server?: {
-        __typename?: 'DiscordServer'
-        id: string
-        name: string
-        icon?: string | null
-        permissions?: Array<string> | null
-      } | null
-    }> | null
   } | null
 }
 
@@ -2081,30 +1890,6 @@ export type UserUpdateBotMutation = {
     updatedAt?: Date | null
     verificationUrl: string
     verificationUrlSet?: boolean | null
-    permissions?: Array<{
-      __typename?: 'BotPermission'
-      botId?: string | null
-      createdAt?: Date | null
-      id: string
-      serverId?: string | null
-      updatedAt?: Date | null
-      serverRoleId?: string | null
-      serverRole?: {
-        __typename?: 'DiscordRole'
-        id: string
-        name: string
-        managed: boolean
-        color: number
-        position: number
-      } | null
-      server?: {
-        __typename?: 'DiscordServer'
-        id: string
-        name: string
-        icon?: string | null
-        permissions?: Array<string> | null
-      } | null
-    }> | null
   } | null
 }
 
@@ -2183,13 +1968,6 @@ export type UserSyncBotServerMutationVariables = Exact<{
 
 export type UserSyncBotServerMutation = { __typename?: 'Mutation'; synced?: boolean | null }
 
-export type UserSyncBotServerRolesMutationVariables = Exact<{
-  botId: Scalars['String']['input']
-  serverId: Scalars['String']['input']
-}>
-
-export type UserSyncBotServerRolesMutation = { __typename?: 'Mutation'; synced?: boolean | null }
-
 export type UserGetBotMembersQueryVariables = Exact<{
   botId: Scalars['String']['input']
   serverId: Scalars['String']['input']
@@ -2197,48 +1975,7 @@ export type UserGetBotMembersQueryVariables = Exact<{
 
 export type UserGetBotMembersQuery = {
   __typename?: 'Query'
-  items?: Array<{
-    __typename?: 'BotMember'
-    id: string
-    createdAt?: Date | null
-    updatedAt?: Date | null
-    botId: string
-    userId: string
-    serverId: string
-    roleIds?: Array<string> | null
-    identityProvider: IdentityProvider
-    identity?: {
-      __typename?: 'Identity'
-      avatarUrl?: string | null
-      createdAt?: Date | null
-      syncStarted?: Date | null
-      syncEnded?: Date | null
-      expired?: boolean | null
-      id: string
-      name?: string | null
-      ownerId?: string | null
-      profile?: any | null
-      provider: IdentityProvider
-      providerId: string
-      updatedAt?: Date | null
-      url?: string | null
-      verified?: boolean | null
-      owner?: {
-        __typename?: 'User'
-        avatarUrl?: string | null
-        createdAt?: Date | null
-        developer?: boolean | null
-        lastLogin?: Date | null
-        id: string
-        name?: string | null
-        profileUrl: string
-        role?: UserRole | null
-        status?: UserStatus | null
-        updatedAt?: Date | null
-        username?: string | null
-      } | null
-    } | null
-  }> | null
+  items?: Array<{ __typename?: 'BotMember'; memberId: string; roleIds?: Array<string> | null }> | null
 }
 
 export type UserGetBotChannelsQueryVariables = Exact<{
@@ -3806,30 +3543,6 @@ export type LogDetailsFragment = {
     updatedAt?: Date | null
     verificationUrl: string
     verificationUrlSet?: boolean | null
-    permissions?: Array<{
-      __typename?: 'BotPermission'
-      botId?: string | null
-      createdAt?: Date | null
-      id: string
-      serverId?: string | null
-      updatedAt?: Date | null
-      serverRoleId?: string | null
-      serverRole?: {
-        __typename?: 'DiscordRole'
-        id: string
-        name: string
-        managed: boolean
-        color: number
-        position: number
-      } | null
-      server?: {
-        __typename?: 'DiscordServer'
-        id: string
-        name: string
-        icon?: string | null
-        permissions?: Array<string> | null
-      } | null
-    }> | null
   } | null
   identity?: {
     __typename?: 'Identity'
@@ -3998,30 +3711,6 @@ export type UserFindManyLogQuery = {
         updatedAt?: Date | null
         verificationUrl: string
         verificationUrlSet?: boolean | null
-        permissions?: Array<{
-          __typename?: 'BotPermission'
-          botId?: string | null
-          createdAt?: Date | null
-          id: string
-          serverId?: string | null
-          updatedAt?: Date | null
-          serverRoleId?: string | null
-          serverRole?: {
-            __typename?: 'DiscordRole'
-            id: string
-            name: string
-            managed: boolean
-            color: number
-            position: number
-          } | null
-          server?: {
-            __typename?: 'DiscordServer'
-            id: string
-            name: string
-            icon?: string | null
-            permissions?: Array<string> | null
-          } | null
-        }> | null
       } | null
       identity?: {
         __typename?: 'Identity'
@@ -4200,30 +3889,6 @@ export type UserFindOneLogQuery = {
       updatedAt?: Date | null
       verificationUrl: string
       verificationUrlSet?: boolean | null
-      permissions?: Array<{
-        __typename?: 'BotPermission'
-        botId?: string | null
-        createdAt?: Date | null
-        id: string
-        serverId?: string | null
-        updatedAt?: Date | null
-        serverRoleId?: string | null
-        serverRole?: {
-          __typename?: 'DiscordRole'
-          id: string
-          name: string
-          managed: boolean
-          color: number
-          position: number
-        } | null
-        server?: {
-          __typename?: 'DiscordServer'
-          id: string
-          name: string
-          icon?: string | null
-          permissions?: Array<string> | null
-        } | null
-      }> | null
     } | null
     identity?: {
       __typename?: 'Identity'
@@ -4393,30 +4058,6 @@ export type AdminFindManyLogQuery = {
         updatedAt?: Date | null
         verificationUrl: string
         verificationUrlSet?: boolean | null
-        permissions?: Array<{
-          __typename?: 'BotPermission'
-          botId?: string | null
-          createdAt?: Date | null
-          id: string
-          serverId?: string | null
-          updatedAt?: Date | null
-          serverRoleId?: string | null
-          serverRole?: {
-            __typename?: 'DiscordRole'
-            id: string
-            name: string
-            managed: boolean
-            color: number
-            position: number
-          } | null
-          server?: {
-            __typename?: 'DiscordServer'
-            id: string
-            name: string
-            icon?: string | null
-            permissions?: Array<string> | null
-          } | null
-        }> | null
       } | null
       identity?: {
         __typename?: 'Identity'
@@ -4595,30 +4236,6 @@ export type AdminFindOneLogQuery = {
       updatedAt?: Date | null
       verificationUrl: string
       verificationUrlSet?: boolean | null
-      permissions?: Array<{
-        __typename?: 'BotPermission'
-        botId?: string | null
-        createdAt?: Date | null
-        id: string
-        serverId?: string | null
-        updatedAt?: Date | null
-        serverRoleId?: string | null
-        serverRole?: {
-          __typename?: 'DiscordRole'
-          id: string
-          name: string
-          managed: boolean
-          color: number
-          position: number
-        } | null
-        server?: {
-          __typename?: 'DiscordServer'
-          id: string
-          name: string
-          icon?: string | null
-          permissions?: Array<string> | null
-        } | null
-      }> | null
     } | null
     identity?: {
       __typename?: 'Identity'
@@ -6203,45 +5820,6 @@ export type UserDeleteRolePermissionMutationVariables = Exact<{
 
 export type UserDeleteRolePermissionMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
-export type UserValidateRoleMutationVariables = Exact<{
-  roleId: Scalars['String']['input']
-  address: Scalars['String']['input']
-}>
-
-export type UserValidateRoleMutation = {
-  __typename?: 'Mutation'
-  result?: Array<{
-    __typename?: 'RoleCondition'
-    createdAt?: Date | null
-    id: string
-    type: NetworkTokenType
-    amount?: string | null
-    filters?: any | null
-    config?: any | null
-    tokenId?: string | null
-    updatedAt?: Date | null
-    valid?: boolean | null
-    token?: {
-      __typename?: 'NetworkToken'
-      id: string
-      createdAt?: Date | null
-      updatedAt?: Date | null
-      cluster: NetworkCluster
-      type: NetworkTokenType
-      account: string
-      program: string
-      name: string
-      vault?: string | null
-      symbol?: string | null
-      description?: string | null
-      imageUrl?: string | null
-      metadataUrl?: string | null
-      raw?: any | null
-    } | null
-    asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
-  }> | null
-}
-
 export type UserValidateRolesMutationVariables = Exact<{
   communityId: Scalars['String']['input']
 }>
@@ -6500,58 +6078,11 @@ export type UserUpdateUserMutation = {
   } | null
 }
 
-export const IdentityDetailsFragmentDoc = gql`
-  fragment IdentityDetails on Identity {
-    avatarUrl
-    createdAt
-    syncStarted
-    syncEnded
-    expired
-    id
-    name
-    ownerId
-    profile
-    provider
-    providerId
-    updatedAt
-    url
-    verified
-  }
-`
-export const UserDetailsFragmentDoc = gql`
-  fragment UserDetails on User {
-    avatarUrl
-    createdAt
-    developer
-    lastLogin
-    id
-    name
-    profileUrl
-    role
-    status
-    updatedAt
-    username
-  }
-`
 export const BotMemberDetailsFragmentDoc = gql`
   fragment BotMemberDetails on BotMember {
-    id
-    createdAt
-    updatedAt
-    botId
-    userId
-    serverId
+    memberId
     roleIds
-    identity {
-      ...IdentityDetails
-      owner {
-        ...UserDetails
-      }
-    }
-    identityProvider
   }
-  ${IdentityDetailsFragmentDoc}
-  ${UserDetailsFragmentDoc}
 `
 export const BotServerDetailsFragmentDoc = gql`
   fragment BotServerDetails on BotServer {
@@ -6572,6 +6103,21 @@ export const DiscordChannelDetailsFragmentDoc = gql`
     name
     parentId
     type
+  }
+`
+export const UserDetailsFragmentDoc = gql`
+  fragment UserDetails on User {
+    avatarUrl
+    createdAt
+    developer
+    lastLogin
+    id
+    name
+    profileUrl
+    role
+    status
+    updatedAt
+    username
   }
 `
 export const NetworkTokenDetailsFragmentDoc = gql`
@@ -6773,11 +6319,25 @@ export const BotDetailsFragmentDoc = gql`
     updatedAt
     verificationUrl
     verificationUrlSet
-    permissions {
-      ...BotPermissionDetails
-    }
   }
-  ${BotPermissionDetailsFragmentDoc}
+`
+export const IdentityDetailsFragmentDoc = gql`
+  fragment IdentityDetails on Identity {
+    avatarUrl
+    createdAt
+    syncStarted
+    syncEnded
+    expired
+    id
+    name
+    ownerId
+    profile
+    provider
+    providerId
+    updatedAt
+    url
+    verified
+  }
 `
 export const NetworkAssetDetailsFragmentDoc = gql`
   fragment NetworkAssetDetails on NetworkAsset {
@@ -6971,15 +6531,19 @@ export const UserFindOneBotDocument = gql`
   query userFindOneBot($communityId: String!) {
     item: userFindOneBot(communityId: $communityId) {
       ...BotDetails
-      permissions {
-        ...BotPermissionDetails
-        roles {
-          ...RoleDetails
-        }
-      }
     }
   }
   ${BotDetailsFragmentDoc}
+`
+export const UserFindManyBotPermissionsDocument = gql`
+  query userFindManyBotPermissions($botId: String!) {
+    items: userFindManyBotPermissions(botId: $botId) {
+      ...BotPermissionDetails
+      roles {
+        ...RoleDetails
+      }
+    }
+  }
   ${BotPermissionDetailsFragmentDoc}
   ${RoleDetailsFragmentDoc}
 `
@@ -7046,11 +6610,6 @@ export const UserLeaveBotServerDocument = gql`
 export const UserSyncBotServerDocument = gql`
   mutation userSyncBotServer($botId: String!, $serverId: String!) {
     synced: userSyncBotServer(botId: $botId, serverId: $serverId)
-  }
-`
-export const UserSyncBotServerRolesDocument = gql`
-  mutation userSyncBotServerRoles($botId: String!, $serverId: String!) {
-    synced: userSyncBotServerRoles(botId: $botId, serverId: $serverId)
   }
 `
 export const UserGetBotMembersDocument = gql`
@@ -7726,14 +7285,6 @@ export const UserDeleteRolePermissionDocument = gql`
     deleted: userDeleteRolePermission(rolePermissionId: $rolePermissionId)
   }
 `
-export const UserValidateRoleDocument = gql`
-  mutation userValidateRole($roleId: String!, $address: String!) {
-    result: userValidateRole(roleId: $roleId, address: $address) {
-      ...RoleConditionDetails
-    }
-  }
-  ${RoleConditionDetailsFragmentDoc}
-`
 export const UserValidateRolesDocument = gql`
   mutation userValidateRoles($communityId: String!) {
     result: userValidateRoles(communityId: $communityId)
@@ -7849,6 +7400,7 @@ const AdminCreateBotDocumentString = print(AdminCreateBotDocument)
 const AdminUpdateBotDocumentString = print(AdminUpdateBotDocument)
 const AdminDeleteBotDocumentString = print(AdminDeleteBotDocument)
 const UserFindOneBotDocumentString = print(UserFindOneBotDocument)
+const UserFindManyBotPermissionsDocumentString = print(UserFindManyBotPermissionsDocument)
 const UserFindOneBotServerDocumentString = print(UserFindOneBotServerDocument)
 const UserCreateBotDocumentString = print(UserCreateBotDocument)
 const UserUpdateBotDocumentString = print(UserUpdateBotDocument)
@@ -7859,7 +7411,6 @@ const UserStartBotDocumentString = print(UserStartBotDocument)
 const UserStopBotDocumentString = print(UserStopBotDocument)
 const UserLeaveBotServerDocumentString = print(UserLeaveBotServerDocument)
 const UserSyncBotServerDocumentString = print(UserSyncBotServerDocument)
-const UserSyncBotServerRolesDocumentString = print(UserSyncBotServerRolesDocument)
 const UserGetBotMembersDocumentString = print(UserGetBotMembersDocument)
 const UserGetBotChannelsDocumentString = print(UserGetBotChannelsDocument)
 const UserGetBotRolesDocumentString = print(UserGetBotRolesDocument)
@@ -7939,7 +7490,6 @@ const UserUpdateRoleConditionDocumentString = print(UserUpdateRoleConditionDocum
 const UserDeleteRoleDocumentString = print(UserDeleteRoleDocument)
 const UserDeleteRoleConditionDocumentString = print(UserDeleteRoleConditionDocument)
 const UserDeleteRolePermissionDocumentString = print(UserDeleteRolePermissionDocument)
-const UserValidateRoleDocumentString = print(UserValidateRoleDocument)
 const UserValidateRolesDocumentString = print(UserValidateRolesDocument)
 const AdminCreateUserDocumentString = print(AdminCreateUserDocument)
 const AdminDeleteUserDocumentString = print(AdminDeleteUserDocument)
@@ -8267,6 +7817,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
+    userFindManyBotPermissions(
+      variables: UserFindManyBotPermissionsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserFindManyBotPermissionsQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserFindManyBotPermissionsQuery>(UserFindManyBotPermissionsDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userFindManyBotPermissions',
+        'query',
+        variables,
+      )
+    },
     userFindOneBotServer(
       variables: UserFindOneBotServerQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -8473,27 +8044,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'userSyncBotServer',
-        'mutation',
-        variables,
-      )
-    },
-    userSyncBotServerRoles(
-      variables: UserSyncBotServerRolesMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<{
-      data: UserSyncBotServerRolesMutation
-      errors?: GraphQLError[]
-      extensions?: any
-      headers: Headers
-      status: number
-    }> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.rawRequest<UserSyncBotServerRolesMutation>(UserSyncBotServerRolesDocumentString, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
-          }),
-        'userSyncBotServerRoles',
         'mutation',
         variables,
       )
@@ -10142,27 +9692,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'userDeleteRolePermission',
-        'mutation',
-        variables,
-      )
-    },
-    userValidateRole(
-      variables: UserValidateRoleMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<{
-      data: UserValidateRoleMutation
-      errors?: GraphQLError[]
-      extensions?: any
-      headers: Headers
-      status: number
-    }> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.rawRequest<UserValidateRoleMutation>(UserValidateRoleDocumentString, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
-          }),
-        'userValidateRole',
         'mutation',
         variables,
       )

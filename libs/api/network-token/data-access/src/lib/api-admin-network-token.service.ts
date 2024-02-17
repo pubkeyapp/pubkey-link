@@ -1,8 +1,8 @@
-import { DasApiAsset } from '@metaplex-foundation/digital-asset-standard-api'
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { NetworkTokenType, Prisma } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
+import { getNetworkTokenType } from '@pubkey-link/api-network-util'
 import { AdminCreateNetworkTokenInput } from './dto/admin-create-network-token.input'
 import { AdminFindManyNetworkTokenInput } from './dto/admin-find-many-network-token.input'
 import { AdminUpdateNetworkTokenInput } from './dto/admin-update-network-token.input'
@@ -77,26 +77,10 @@ export class ApiAdminNetworkTokenService implements OnModuleInit {
     }
 
     const data: Prisma.NetworkTokenUpdateInput = await this.network.getAllTokenMetadata(token)
-    this.logger.verbose(`updateNetworkTokenMetadata`, JSON.stringify(data, null, 2))
+    // this.logger.verbose(`updateNetworkTokenMetadata`, JSON.stringify(data, null, 2))
     return this.core.data.networkToken.update({
       where: { id: networkTokenId },
       data,
     })
-  }
-}
-
-export function getNetworkTokenType(int: DasApiAsset['interface'] | string) {
-  switch (int) {
-    case 'spl-token':
-    case 'spl-token-2022':
-    case 'FungibleAsset':
-    case 'FungibleToken':
-      return NetworkTokenType.Fungible
-    case 'ProgrammableNFT':
-    case 'V1_NFT':
-    case 'V2_NFT':
-      return NetworkTokenType.NonFungible
-    default:
-      throw new Error(`getNetworkTokenType: Unknown interface: ${int}`)
   }
 }

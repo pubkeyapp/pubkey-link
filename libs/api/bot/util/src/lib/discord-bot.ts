@@ -70,7 +70,7 @@ export class DiscordBot {
     }
 
     const members = await this.getEachMember(guild)
-    return members.map((member) => ({ id: member.id, roleIds: member.roles.cache.map((role) => role.id) }))
+    return members.map((member) => ({ memberId: member.id, roleIds: member.roles.cache.map((role) => role.id) }))
   }
 
   async getDiscordServerChannels(guildId: string) {

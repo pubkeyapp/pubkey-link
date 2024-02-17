@@ -198,6 +198,16 @@ export class ApiCoreConfigService {
     return this.service.get<string>('sessionSecret') as string
   }
 
+  get syncBotServers() {
+    return this.service.get<boolean>('syncBotServers') ?? false
+  }
+  get syncNetworkAssets() {
+    return this.service.get<boolean>('syncNetworkAssets') ?? false
+  }
+  get syncValidateRoles() {
+    return this.service.get<boolean>('syncValidateRoles') ?? false
+  }
+
   get webUrl(): string {
     return this.service.get<string>('webUrl') as string
   }

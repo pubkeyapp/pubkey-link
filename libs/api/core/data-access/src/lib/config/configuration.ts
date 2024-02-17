@@ -50,6 +50,9 @@ export interface ApiCoreConfig {
   port: number
   redisUrl: string
   sessionSecret: string
+  syncBotServers: boolean
+  syncNetworkAssets: boolean
+  syncValidateRoles: boolean
   webUrl: string
 }
 
@@ -79,6 +82,9 @@ export function configuration(): ApiCoreConfig {
     port: parseInt(process.env['PORT'] as string, 10) || 3000,
     redisUrl: process.env['REDIS_URL'] as string,
     sessionSecret: process.env['SESSION_SECRET'] as string,
+    syncBotServers: process.env['SYNC_BOT_SERVERS'] === 'true',
+    syncNetworkAssets: process.env['SYNC_NETWORK_ASSETS'] === 'true',
+    syncValidateRoles: process.env['SYNC_VALIDATE_ROLES'] === 'true',
     webUrl: WEB_URL,
   }
 }

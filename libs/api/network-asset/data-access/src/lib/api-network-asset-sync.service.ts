@@ -39,8 +39,12 @@ export class ApiNetworkAssetSyncService {
     return !!job.id
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async syncAll() {
+    if (!this.core.config.syncNetworkAssets) {
+      this.logger.log(`Network asset sync is disabled`)
+      return true
+    }
     const identities = await this.core.data.identity.findMany({
       where: {
         provider: IdentityProvider.Solana,

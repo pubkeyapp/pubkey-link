@@ -136,12 +136,6 @@ mutation userDeleteRolePermission($rolePermissionId: String!) {
   deleted: userDeleteRolePermission(rolePermissionId: $rolePermissionId)
 }
 
-mutation userValidateRole($roleId: String!, $address: String!) {
-  result: userValidateRole(roleId: $roleId, address: $address) {
-    ...RoleConditionDetails
-  }
-}
-
 mutation userValidateRoles($communityId: String!) {
   result: userValidateRoles(communityId: $communityId)
 }

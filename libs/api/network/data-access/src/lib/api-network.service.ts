@@ -8,6 +8,7 @@ import {
   findAssetGroupValue,
   findAssetsByGroup,
   getAnybodiesVaultSnapshot,
+  getNetworkTokenType,
   NetworkAssetInput,
 } from '@pubkey-link/api-network-util'
 import { getTokenMetadata, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
@@ -74,7 +75,6 @@ export class ApiNetworkService {
       )
   }
   async getTokenMetadata({ cluster, account }: { cluster: NetworkCluster; account: string }) {
-    console.log('getTokenMetadata', cluster, account)
     return this.cluster
       .getConnection(cluster)
       .then((conn) =>
@@ -116,6 +116,7 @@ export class ApiNetworkService {
       : null
 
     return {
+      type: getNetworkTokenType(asset?.interface),
       name: metadata?.name ?? asset?.content?.metadata?.name ?? tokenList?.name,
       imageUrl: imageUrl ?? tokenList?.logoURI,
       metadataUrl: metadata?.uri ?? asset.content.json_uri,

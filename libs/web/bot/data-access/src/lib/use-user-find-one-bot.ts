@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query'
 export function useUserFindOneBot({ communityId }: { communityId: string }) {
   const sdk = useSdk()
   const query = useQuery({
-    queryKey: ['user', 'find-one-bot', communityId],
+    queryKey: ['user', 'find-one-bot', { communityId }],
     queryFn: () => sdk.userFindOneBot({ communityId }).then((res) => res.data),
     retry: 0,
   })
@@ -54,5 +54,20 @@ export function useUserFindOneBot({ communityId }: { communityId: string }) {
           toastError(err.message)
           return false
         }),
+  }
+}
+
+export function useUserFindManyBotPermissions({ botId }: { botId: string }) {
+  const sdk = useSdk()
+  const query = useQuery({
+    queryKey: ['user', 'find-many-bot-permissions', { botId }],
+    queryFn: () => sdk.userFindManyBotPermissions({ botId }).then((res) => res.data),
+    retry: 0,
+  })
+  const items = query.data?.items ?? []
+
+  return {
+    items,
+    query,
   }
 }

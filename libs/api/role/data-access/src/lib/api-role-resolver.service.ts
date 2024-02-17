@@ -1,14 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import {
-  IdentityProvider,
-  NetworkAsset,
-  NetworkCluster,
-  NetworkToken,
-  NetworkTokenType,
-  Prisma,
-  UserStatus,
-} from '@prisma/client'
+import { IdentityProvider, NetworkAsset, NetworkToken, NetworkTokenType, Prisma, UserStatus } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-access'
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
@@ -24,16 +16,12 @@ export class ApiRoleResolverService {
     readonly networkAsset: ApiNetworkAssetService,
   ) {}
 
-  async resolve(cluster: NetworkCluster, conditions: RoleCondition[], owner: string): Promise<RoleCondition[]> {
-    // We want to loop over all the conditions, resolve them, then tack the resolved network assets onto the condition
-
-    const result: RoleCondition[] = []
-
-    return result
-  }
-
   @Cron(CronExpression.EVERY_MINUTE)
   async validateAllRoles() {
+    if (!this.core.config.syncValidateRoles) {
+      this.logger.log(`Role validation is disabled`)
+      return
+    }
     const communities = await this.core.data.community.findMany({
       where: {
         bot: {
@@ -310,7 +298,7 @@ export class ApiRoleResolverService {
         where: {
           status: UserStatus.Active,
           identities: {
-            some: { bots: { some: { bot: { communityId } } } },
+            some: {},
           },
         },
         select: {

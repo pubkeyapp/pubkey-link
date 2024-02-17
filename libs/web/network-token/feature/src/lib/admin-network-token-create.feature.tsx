@@ -55,6 +55,7 @@ function AdminNetworkTokenUiTokenMetadata({
   cluster: NetworkCluster
   onClick: () => void
 }) {
+  console.log({ account, cluster })
   const query = useUserGetTokenMetadata({ account, cluster })
 
   return query.isLoading ? (
@@ -63,7 +64,7 @@ function AdminNetworkTokenUiTokenMetadata({
     <UiError message={query.error.message} />
   ) : query.data ? (
     <UiGroup>
-      <NetworkTokenUiItem networkToken={query.data.result} />
+      <NetworkTokenUiItem networkToken={query.data.result} cluster={cluster} />
       <Button onClick={onClick}>Add Token</Button>
     </UiGroup>
   ) : (

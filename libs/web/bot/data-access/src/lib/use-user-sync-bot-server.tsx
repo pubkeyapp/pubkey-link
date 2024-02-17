@@ -13,9 +13,9 @@ export function useUserSyncBotServer({ botId, serverId }: { botId: string; serve
         .then(async (res) => {
           if (res) {
             if (res.synced) {
-              toastSuccess('Bot synced server')
+              toastSuccess('Bot server synced')
             } else {
-              toastError('Bot did not sync server')
+              toastError('Error syncing server')
             }
             return true
           }

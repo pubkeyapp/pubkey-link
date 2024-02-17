@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom'
 import { UserRoleDetailConditionsTab } from './user-role-detail-conditions.tab'
 import { UserRoleDetailPermissionsTab } from './user-role-detail-permissions.tab'
 import { UserRoleDetailSettingsTab } from './user-role-detail-settings.tab'
-import { UserRoleDetailValidateTab } from './user-role-detail-validate.tab'
 
 export function UserRoleDetailFeature({ community }: { community: Community }) {
   const { roleId } = useParams<{ roleId: string }>() as { roleId: string }
@@ -40,11 +39,6 @@ export function UserRoleDetailFeature({ community }: { community: Community }) {
             path: 'permissions',
             label: 'Permissions',
             element: <UserRoleDetailPermissionsTab role={item} />,
-          },
-          {
-            path: 'validate',
-            label: 'Validate',
-            element: <UserRoleDetailValidateTab role={item} />,
           },
           {
             path: 'settings',

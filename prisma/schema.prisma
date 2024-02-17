@@ -20,42 +20,23 @@ model Bot {
   community    Community       @relation(fields: [communityId], references: [id], onDelete: Cascade)
   communityId  String          @unique
   permissions  BotPermission[]
-  members      BotMember[]
   servers      BotServer[]
   logs         Log[]
 }
 
 model BotServer {
-  id             String      @id @default(cuid())
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
-  bot            Bot         @relation(fields: [botId], references: [id], onDelete: Cascade)
+  id             String   @id @default(cuid())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  bot            Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
   botId          String
   serverId       String
-  dryRun         Boolean     @default(true)
-  verbose        Boolean     @default(false)
+  dryRun         Boolean  @default(true)
+  verbose        Boolean  @default(false)
   adminRole      String?
   commandChannel String?
-  member         BotMember[]
 
   @@unique([botId, serverId])
-}
-
-model BotMember {
-  id        String    @id @default(cuid())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  bot       Bot       @relation(fields: [botId], references: [id], onDelete: Cascade)
-  botId     String
-  userId    String
-  server    BotServer @relation(fields: [botId, serverId], references: [botId, serverId])
-  serverId  String
-  roleIds   String[]
-
-  identity         Identity         @relation(fields: [identityProvider, userId], references: [provider, providerId], onDelete: Cascade)
-  identityProvider IdentityProvider @default(Discord)
-
-  @@unique([botId, userId, serverId])
 }
 
 model BotPermission {
@@ -132,7 +113,6 @@ model Identity {
   owner        User                @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId      String
   challenges   IdentityChallenge[]
-  bots         BotMember[]
   logs         Log[]
 
   @@unique([provider, providerId])

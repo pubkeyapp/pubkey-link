@@ -1,8 +1,8 @@
 import { Group, Table, Text } from '@mantine/core'
-import { Bot } from '@pubkey-link/sdk'
+import { Bot, IdentityProvider } from '@pubkey-link/sdk'
 import { useUserGetBotMembers, useUserGetBotRoles } from '@pubkey-link/web-bot-data-access'
+import { IdentityUiItemById } from '@pubkey-link/web-identity-ui'
 import { UiDiscordRoleColor } from '@pubkey-link/web-ui-core'
-import { UserUiItem } from '@pubkey-link/web-user-ui'
 import { UiAlert, UiCard, UiDebug, UiDebugModal, UiGroup, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function UserBotDetailServerMembers({ bot, serverId }: { bot: Bot; serverId: string }) {
@@ -42,11 +42,9 @@ export function UserBotDetailServerMembers({ bot, serverId }: { bot: Bot; server
             <Table.Tbody>
               {items?.length ? (
                 items.map((item) => (
-                  <Table.Tr key={item.id}>
+                  <Table.Tr key={item.memberId}>
                     <Table.Td>
-                      {item.identity?.owner ? (
-                        <UserUiItem user={item.identity.owner} to={item.identity.owner.profileUrl} />
-                      ) : null}
+                      <IdentityUiItemById provider={IdentityProvider.Discord} providerId={item.memberId} />
                     </Table.Td>
                     <Table.Td align="right">
                       <UiGroup>

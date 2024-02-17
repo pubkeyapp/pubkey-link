@@ -114,6 +114,7 @@
     "react-dom": "18.2.0",
     "react-router-dom": "6.21.1",
     "reflect-metadata": "^0.1.13",
+    "remove": "^0.1.5",
     "rxjs": "^7.8.1",
     "slugify": "^1.6.6",
     "timeago-react": "^3.0.6",

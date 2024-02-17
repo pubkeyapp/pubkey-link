@@ -202,15 +202,8 @@ type Bot {
 }
 
 type BotMember {
-  botId: String!
-  createdAt: DateTime
-  id: String!
-  identity: Identity
-  identityProvider: IdentityProvider!
+  memberId: String!
   roleIds: [String!]
-  serverId: String!
-  updatedAt: DateTime
-  userId: String!
 }
 
 type BotPaging {
@@ -464,7 +457,6 @@ type Mutation {
   userStartBot(botId: String!): Boolean
   userStopBot(botId: String!): Boolean
   userSyncBotServer(botId: String!, serverId: String!): Boolean
-  userSyncBotServerRoles(botId: String!, serverId: String!): Boolean
   userTestBotServerConfig(botId: String!, serverId: String!): BotServer
   userUpdateBot(botId: String!, input: UserUpdateBotInput!): Bot
   userUpdateBotServer(botId: String!, input: UserUpdateBotServerInput!, serverId: String!): BotServer
@@ -473,7 +465,6 @@ type Mutation {
   userUpdateRole(input: UserUpdateRoleInput!, roleId: String!): Role
   userUpdateRoleCondition(input: UserUpdateRoleConditionInput!, roleConditionId: String!): RoleCondition
   userUpdateUser(input: UserUpdateUserInput!): User
-  userValidateRole(address: String!, roleId: String!): [RoleCondition!]
   userValidateRoles(communityId: String!): JSON
   userVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
 }
@@ -603,6 +594,7 @@ type Query {
   appConfig: AppConfig!
   me: User
   uptime: Float!
+  userFindManyBotPermissions(botId: String!): [BotPermission!]
   userFindManyCommunity(input: UserFindManyCommunityInput!): CommunityPaging!
   userFindManyCommunityMember(input: UserFindManyCommunityMemberInput!): CommunityMemberPaging!
   userFindManyIdentity(input: UserFindManyIdentityInput!): [Identity!]
