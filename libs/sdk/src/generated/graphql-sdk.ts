@@ -63,7 +63,6 @@ export type AdminCreateNetworkTokenInput = {
 
 export type AdminCreateRoleInput = {
   communityId: Scalars['String']['input']
-  description?: InputMaybe<Scalars['String']['input']>
   name: Scalars['String']['input']
 }
 
@@ -184,7 +183,6 @@ export type AdminUpdateNetworkTokenInput = {
 }
 
 export type AdminUpdateRoleInput = {
-  description?: InputMaybe<Scalars['String']['input']>
   name?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -215,7 +213,7 @@ export type Bot = {
   id: Scalars['String']['output']
   inviteUrl: Scalars['String']['output']
   name: Scalars['String']['output']
-  permissions?: Maybe<Array<BotPermission>>
+  permissions?: Maybe<Array<BotRole>>
   redirectUrl: Scalars['String']['output']
   redirectUrlSet?: Maybe<Scalars['Boolean']['output']>
   started: Scalars['Boolean']['output']
@@ -237,12 +235,12 @@ export type BotPaging = {
   meta: PagingMeta
 }
 
-export type BotPermission = {
-  __typename?: 'BotPermission'
+export type BotRole = {
+  __typename?: 'BotRole'
   botId?: Maybe<Scalars['String']['output']>
   createdAt?: Maybe<Scalars['DateTime']['output']>
   id: Scalars['String']['output']
-  roles?: Maybe<Array<Role>>
+  permissions?: Maybe<Array<Role>>
   server?: Maybe<DiscordServer>
   serverId?: Maybe<Scalars['String']['output']>
   serverRole?: Maybe<DiscordRole>
@@ -885,7 +883,7 @@ export type Query = {
   appConfig: AppConfig
   me?: Maybe<User>
   uptime: Scalars['Float']['output']
-  userFindManyBotPermissions?: Maybe<Array<BotPermission>>
+  userFindManyBotRoles?: Maybe<Array<BotRole>>
   userFindManyCommunity: CommunityPaging
   userFindManyCommunityMember: CommunityMemberPaging
   userFindManyIdentity?: Maybe<Array<Identity>>
@@ -1005,8 +1003,9 @@ export type QueryAnonRequestIdentityChallengeArgs = {
   input: RequestIdentityChallengeInput
 }
 
-export type QueryUserFindManyBotPermissionsArgs = {
+export type QueryUserFindManyBotRolesArgs = {
   botId: Scalars['String']['input']
+  serverId?: InputMaybe<Scalars['String']['input']>
 }
 
 export type QueryUserFindManyCommunityArgs = {
@@ -1145,7 +1144,6 @@ export type Role = {
   communityId: Scalars['String']['output']
   conditions?: Maybe<Array<RoleCondition>>
   createdAt?: Maybe<Scalars['DateTime']['output']>
-  description?: Maybe<Scalars['String']['output']>
   id: Scalars['String']['output']
   name: Scalars['String']['output']
   permissions?: Maybe<Array<RolePermission>>
@@ -1176,8 +1174,8 @@ export type RolePaging = {
 
 export type RolePermission = {
   __typename?: 'RolePermission'
-  bot?: Maybe<BotPermission>
   botId?: Maybe<Scalars['String']['output']>
+  botRole?: Maybe<BotRole>
   createdAt?: Maybe<Scalars['DateTime']['output']>
   id: Scalars['String']['output']
   role?: Maybe<Role>
@@ -1239,7 +1237,6 @@ export type UserCreateRoleConditionInput = {
 
 export type UserCreateRoleInput = {
   communityId: Scalars['String']['input']
-  description?: InputMaybe<Scalars['String']['input']>
   name: Scalars['String']['input']
 }
 
@@ -1371,7 +1368,6 @@ export type UserUpdateRoleConditionInput = {
 }
 
 export type UserUpdateRoleInput = {
-  description?: InputMaybe<Scalars['String']['input']>
   name?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -1522,8 +1518,8 @@ export type BotServerDetailsFragment = {
   verbose?: boolean | null
 }
 
-export type BotPermissionDetailsFragment = {
-  __typename?: 'BotPermission'
+export type BotRoleDetailsFragment = {
+  __typename?: 'BotRole'
   botId?: string | null
   createdAt?: Date | null
   id: string
@@ -1717,27 +1713,27 @@ export type UserFindOneBotQuery = {
   } | null
 }
 
-export type UserFindManyBotPermissionsQueryVariables = Exact<{
+export type UserFindManyBotRolesQueryVariables = Exact<{
   botId: Scalars['String']['input']
+  serverId?: InputMaybe<Scalars['String']['input']>
 }>
 
-export type UserFindManyBotPermissionsQuery = {
+export type UserFindManyBotRolesQuery = {
   __typename?: 'Query'
   items?: Array<{
-    __typename?: 'BotPermission'
+    __typename?: 'BotRole'
     botId?: string | null
     createdAt?: Date | null
     id: string
     serverId?: string | null
     updatedAt?: Date | null
     serverRoleId?: string | null
-    roles?: Array<{
+    permissions?: Array<{
       __typename?: 'Role'
       createdAt?: Date | null
       id: string
       communityId: string
       name: string
-      description?: string | null
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
@@ -1777,8 +1773,8 @@ export type UserFindManyBotPermissionsQuery = {
         updatedAt?: Date | null
         botId?: string | null
         roleId?: string | null
-        bot?: {
-          __typename?: 'BotPermission'
+        botRole?: {
+          __typename?: 'BotRole'
           botId?: string | null
           createdAt?: Date | null
           id: string
@@ -2070,7 +2066,6 @@ export type CommunityMemberDetailsFragment = {
     id: string
     communityId: string
     name: string
-    description?: string | null
     updatedAt?: Date | null
     viewUrl?: string | null
     conditions?: Array<{
@@ -2110,8 +2105,8 @@ export type CommunityMemberDetailsFragment = {
       updatedAt?: Date | null
       botId?: string | null
       roleId?: string | null
-      bot?: {
-        __typename?: 'BotPermission'
+      botRole?: {
+        __typename?: 'BotRole'
         botId?: string | null
         createdAt?: Date | null
         id: string
@@ -2174,7 +2169,6 @@ export type AdminFindManyCommunityMemberQuery = {
         id: string
         communityId: string
         name: string
-        description?: string | null
         updatedAt?: Date | null
         viewUrl?: string | null
         conditions?: Array<{
@@ -2214,8 +2208,8 @@ export type AdminFindManyCommunityMemberQuery = {
           updatedAt?: Date | null
           botId?: string | null
           roleId?: string | null
-          bot?: {
-            __typename?: 'BotPermission'
+          botRole?: {
+            __typename?: 'BotRole'
             botId?: string | null
             createdAt?: Date | null
             id: string
@@ -2288,7 +2282,6 @@ export type AdminFindOneCommunityMemberQuery = {
       id: string
       communityId: string
       name: string
-      description?: string | null
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
@@ -2328,8 +2321,8 @@ export type AdminFindOneCommunityMemberQuery = {
         updatedAt?: Date | null
         botId?: string | null
         roleId?: string | null
-        bot?: {
-          __typename?: 'BotPermission'
+        botRole?: {
+          __typename?: 'BotRole'
           botId?: string | null
           createdAt?: Date | null
           id: string
@@ -2392,7 +2385,6 @@ export type AdminUpdateCommunityMemberMutation = {
       id: string
       communityId: string
       name: string
-      description?: string | null
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
@@ -2432,8 +2424,8 @@ export type AdminUpdateCommunityMemberMutation = {
         updatedAt?: Date | null
         botId?: string | null
         roleId?: string | null
-        bot?: {
-          __typename?: 'BotPermission'
+        botRole?: {
+          __typename?: 'BotRole'
           botId?: string | null
           createdAt?: Date | null
           id: string
@@ -2509,7 +2501,6 @@ export type UserFindManyCommunityMemberQuery = {
         id: string
         communityId: string
         name: string
-        description?: string | null
         updatedAt?: Date | null
         viewUrl?: string | null
         conditions?: Array<{
@@ -2549,8 +2540,8 @@ export type UserFindManyCommunityMemberQuery = {
           updatedAt?: Date | null
           botId?: string | null
           roleId?: string | null
-          bot?: {
-            __typename?: 'BotPermission'
+          botRole?: {
+            __typename?: 'BotRole'
             botId?: string | null
             createdAt?: Date | null
             id: string
@@ -2623,7 +2614,6 @@ export type UserFindOneCommunityMemberQuery = {
       id: string
       communityId: string
       name: string
-      description?: string | null
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
@@ -2663,8 +2653,8 @@ export type UserFindOneCommunityMemberQuery = {
         updatedAt?: Date | null
         botId?: string | null
         roleId?: string | null
-        bot?: {
-          __typename?: 'BotPermission'
+        botRole?: {
+          __typename?: 'BotRole'
           botId?: string | null
           createdAt?: Date | null
           id: string
@@ -2727,7 +2717,6 @@ export type UserUpdateCommunityMemberMutation = {
       id: string
       communityId: string
       name: string
-      description?: string | null
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
@@ -2767,8 +2756,8 @@ export type UserUpdateCommunityMemberMutation = {
         updatedAt?: Date | null
         botId?: string | null
         roleId?: string | null
-        bot?: {
-          __typename?: 'BotPermission'
+        botRole?: {
+          __typename?: 'BotRole'
           botId?: string | null
           createdAt?: Date | null
           id: string
@@ -2956,7 +2945,6 @@ export type UserGetCommunitiesQuery = {
       id: string
       communityId: string
       name: string
-      description?: string | null
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
@@ -2996,8 +2984,8 @@ export type UserGetCommunitiesQuery = {
         updatedAt?: Date | null
         botId?: string | null
         roleId?: string | null
-        bot?: {
-          __typename?: 'BotPermission'
+        botRole?: {
+          __typename?: 'BotRole'
           botId?: string | null
           createdAt?: Date | null
           id: string
@@ -3588,7 +3576,6 @@ export type LogDetailsFragment = {
     id: string
     communityId: string
     name: string
-    description?: string | null
     updatedAt?: Date | null
     viewUrl?: string | null
     conditions?: Array<{
@@ -3628,8 +3615,8 @@ export type LogDetailsFragment = {
       updatedAt?: Date | null
       botId?: string | null
       roleId?: string | null
-      bot?: {
-        __typename?: 'BotPermission'
+      botRole?: {
+        __typename?: 'BotRole'
         botId?: string | null
         createdAt?: Date | null
         id: string
@@ -3756,7 +3743,6 @@ export type UserFindManyLogQuery = {
         id: string
         communityId: string
         name: string
-        description?: string | null
         updatedAt?: Date | null
         viewUrl?: string | null
         conditions?: Array<{
@@ -3796,8 +3782,8 @@ export type UserFindManyLogQuery = {
           updatedAt?: Date | null
           botId?: string | null
           roleId?: string | null
-          bot?: {
-            __typename?: 'BotPermission'
+          botRole?: {
+            __typename?: 'BotRole'
             botId?: string | null
             createdAt?: Date | null
             id: string
@@ -3934,7 +3920,6 @@ export type UserFindOneLogQuery = {
       id: string
       communityId: string
       name: string
-      description?: string | null
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
@@ -3974,8 +3959,8 @@ export type UserFindOneLogQuery = {
         updatedAt?: Date | null
         botId?: string | null
         roleId?: string | null
-        bot?: {
-          __typename?: 'BotPermission'
+        botRole?: {
+          __typename?: 'BotRole'
           botId?: string | null
           createdAt?: Date | null
           id: string
@@ -4103,7 +4088,6 @@ export type AdminFindManyLogQuery = {
         id: string
         communityId: string
         name: string
-        description?: string | null
         updatedAt?: Date | null
         viewUrl?: string | null
         conditions?: Array<{
@@ -4143,8 +4127,8 @@ export type AdminFindManyLogQuery = {
           updatedAt?: Date | null
           botId?: string | null
           roleId?: string | null
-          bot?: {
-            __typename?: 'BotPermission'
+          botRole?: {
+            __typename?: 'BotRole'
             botId?: string | null
             createdAt?: Date | null
             id: string
@@ -4281,7 +4265,6 @@ export type AdminFindOneLogQuery = {
       id: string
       communityId: string
       name: string
-      description?: string | null
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
@@ -4321,8 +4304,8 @@ export type AdminFindOneLogQuery = {
         updatedAt?: Date | null
         botId?: string | null
         roleId?: string | null
-        bot?: {
-          __typename?: 'BotPermission'
+        botRole?: {
+          __typename?: 'BotRole'
           botId?: string | null
           createdAt?: Date | null
           id: string
@@ -4880,7 +4863,6 @@ export type RoleDetailsFragment = {
   id: string
   communityId: string
   name: string
-  description?: string | null
   updatedAt?: Date | null
   viewUrl?: string | null
   conditions?: Array<{
@@ -4920,8 +4902,8 @@ export type RoleDetailsFragment = {
     updatedAt?: Date | null
     botId?: string | null
     roleId?: string | null
-    bot?: {
-      __typename?: 'BotPermission'
+    botRole?: {
+      __typename?: 'BotRole'
       botId?: string | null
       createdAt?: Date | null
       id: string
@@ -4985,8 +4967,8 @@ export type RolePermissionDetailsFragment = {
   updatedAt?: Date | null
   botId?: string | null
   roleId?: string | null
-  bot?: {
-    __typename?: 'BotPermission'
+  botRole?: {
+    __typename?: 'BotRole'
     botId?: string | null
     createdAt?: Date | null
     id: string
@@ -5025,7 +5007,6 @@ export type AdminFindManyRoleQuery = {
       id: string
       communityId: string
       name: string
-      description?: string | null
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
@@ -5065,8 +5046,8 @@ export type AdminFindManyRoleQuery = {
         updatedAt?: Date | null
         botId?: string | null
         roleId?: string | null
-        bot?: {
-          __typename?: 'BotPermission'
+        botRole?: {
+          __typename?: 'BotRole'
           botId?: string | null
           createdAt?: Date | null
           id: string
@@ -5116,7 +5097,6 @@ export type AdminFindOneRoleQuery = {
     id: string
     communityId: string
     name: string
-    description?: string | null
     updatedAt?: Date | null
     viewUrl?: string | null
     conditions?: Array<{
@@ -5156,8 +5136,8 @@ export type AdminFindOneRoleQuery = {
       updatedAt?: Date | null
       botId?: string | null
       roleId?: string | null
-      bot?: {
-        __typename?: 'BotPermission'
+      botRole?: {
+        __typename?: 'BotRole'
         botId?: string | null
         createdAt?: Date | null
         id: string
@@ -5196,7 +5176,6 @@ export type AdminCreateRoleMutation = {
     id: string
     communityId: string
     name: string
-    description?: string | null
     updatedAt?: Date | null
     viewUrl?: string | null
     conditions?: Array<{
@@ -5236,8 +5215,8 @@ export type AdminCreateRoleMutation = {
       updatedAt?: Date | null
       botId?: string | null
       roleId?: string | null
-      bot?: {
-        __typename?: 'BotPermission'
+      botRole?: {
+        __typename?: 'BotRole'
         botId?: string | null
         createdAt?: Date | null
         id: string
@@ -5277,7 +5256,6 @@ export type AdminUpdateRoleMutation = {
     id: string
     communityId: string
     name: string
-    description?: string | null
     updatedAt?: Date | null
     viewUrl?: string | null
     conditions?: Array<{
@@ -5317,8 +5295,8 @@ export type AdminUpdateRoleMutation = {
       updatedAt?: Date | null
       botId?: string | null
       roleId?: string | null
-      bot?: {
-        __typename?: 'BotPermission'
+      botRole?: {
+        __typename?: 'BotRole'
         botId?: string | null
         createdAt?: Date | null
         id: string
@@ -5365,7 +5343,6 @@ export type UserFindManyRoleQuery = {
       id: string
       communityId: string
       name: string
-      description?: string | null
       updatedAt?: Date | null
       viewUrl?: string | null
       conditions?: Array<{
@@ -5405,8 +5382,8 @@ export type UserFindManyRoleQuery = {
         updatedAt?: Date | null
         botId?: string | null
         roleId?: string | null
-        bot?: {
-          __typename?: 'BotPermission'
+        botRole?: {
+          __typename?: 'BotRole'
           botId?: string | null
           createdAt?: Date | null
           id: string
@@ -5456,39 +5433,8 @@ export type UserFindOneRoleQuery = {
     id: string
     communityId: string
     name: string
-    description?: string | null
     updatedAt?: Date | null
     viewUrl?: string | null
-    conditions?: Array<{
-      __typename?: 'RoleCondition'
-      createdAt?: Date | null
-      id: string
-      type: NetworkTokenType
-      amount?: string | null
-      filters?: any | null
-      config?: any | null
-      tokenId?: string | null
-      updatedAt?: Date | null
-      valid?: boolean | null
-      token?: {
-        __typename?: 'NetworkToken'
-        id: string
-        createdAt?: Date | null
-        updatedAt?: Date | null
-        cluster: NetworkCluster
-        type: NetworkTokenType
-        account: string
-        program: string
-        name: string
-        vault?: string | null
-        symbol?: string | null
-        description?: string | null
-        imageUrl?: string | null
-        metadataUrl?: string | null
-        raw?: any | null
-      } | null
-      asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
-    }> | null
     permissions?: Array<{
       __typename?: 'RolePermission'
       createdAt?: Date | null
@@ -5496,8 +5442,8 @@ export type UserFindOneRoleQuery = {
       updatedAt?: Date | null
       botId?: string | null
       roleId?: string | null
-      bot?: {
-        __typename?: 'BotPermission'
+      botRole?: {
+        __typename?: 'BotRole'
         botId?: string | null
         createdAt?: Date | null
         id: string
@@ -5521,6 +5467,36 @@ export type UserFindOneRoleQuery = {
         } | null
       } | null
     }> | null
+    conditions?: Array<{
+      __typename?: 'RoleCondition'
+      createdAt?: Date | null
+      id: string
+      type: NetworkTokenType
+      amount?: string | null
+      filters?: any | null
+      config?: any | null
+      tokenId?: string | null
+      updatedAt?: Date | null
+      valid?: boolean | null
+      token?: {
+        __typename?: 'NetworkToken'
+        id: string
+        createdAt?: Date | null
+        updatedAt?: Date | null
+        cluster: NetworkCluster
+        type: NetworkTokenType
+        account: string
+        program: string
+        name: string
+        vault?: string | null
+        symbol?: string | null
+        description?: string | null
+        imageUrl?: string | null
+        metadataUrl?: string | null
+        raw?: any | null
+      } | null
+      asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+    }> | null
   } | null
 }
 
@@ -5536,7 +5512,6 @@ export type UserCreateRoleMutation = {
     id: string
     communityId: string
     name: string
-    description?: string | null
     updatedAt?: Date | null
     viewUrl?: string | null
     conditions?: Array<{
@@ -5576,8 +5551,8 @@ export type UserCreateRoleMutation = {
       updatedAt?: Date | null
       botId?: string | null
       roleId?: string | null
-      bot?: {
-        __typename?: 'BotPermission'
+      botRole?: {
+        __typename?: 'BotRole'
         botId?: string | null
         createdAt?: Date | null
         id: string
@@ -5655,8 +5630,8 @@ export type UserCreateRolePermissionMutation = {
     updatedAt?: Date | null
     botId?: string | null
     roleId?: string | null
-    bot?: {
-      __typename?: 'BotPermission'
+    botRole?: {
+      __typename?: 'BotRole'
       botId?: string | null
       createdAt?: Date | null
       id: string
@@ -5695,7 +5670,6 @@ export type UserUpdateRoleMutation = {
     id: string
     communityId: string
     name: string
-    description?: string | null
     updatedAt?: Date | null
     viewUrl?: string | null
     conditions?: Array<{
@@ -5735,8 +5709,8 @@ export type UserUpdateRoleMutation = {
       updatedAt?: Date | null
       botId?: string | null
       roleId?: string | null
-      bot?: {
-        __typename?: 'BotPermission'
+      botRole?: {
+        __typename?: 'BotRole'
         botId?: string | null
         createdAt?: Date | null
         id: string
@@ -6177,8 +6151,8 @@ export const DiscordServerDetailsFragmentDoc = gql`
     permissions
   }
 `
-export const BotPermissionDetailsFragmentDoc = gql`
-  fragment BotPermissionDetails on BotPermission {
+export const BotRoleDetailsFragmentDoc = gql`
+  fragment BotRoleDetails on BotRole {
     botId
     createdAt
     id
@@ -6202,11 +6176,11 @@ export const RolePermissionDetailsFragmentDoc = gql`
     updatedAt
     botId
     roleId
-    bot {
-      ...BotPermissionDetails
+    botRole {
+      ...BotRoleDetails
     }
   }
-  ${BotPermissionDetailsFragmentDoc}
+  ${BotRoleDetailsFragmentDoc}
 `
 export const RoleDetailsFragmentDoc = gql`
   fragment RoleDetails on Role {
@@ -6214,7 +6188,6 @@ export const RoleDetailsFragmentDoc = gql`
     id
     communityId
     name
-    description
     conditions {
       ...RoleConditionDetails
     }
@@ -6535,16 +6508,16 @@ export const UserFindOneBotDocument = gql`
   }
   ${BotDetailsFragmentDoc}
 `
-export const UserFindManyBotPermissionsDocument = gql`
-  query userFindManyBotPermissions($botId: String!) {
-    items: userFindManyBotPermissions(botId: $botId) {
-      ...BotPermissionDetails
-      roles {
+export const UserFindManyBotRolesDocument = gql`
+  query userFindManyBotRoles($botId: String!, $serverId: String) {
+    items: userFindManyBotRoles(botId: $botId, serverId: $serverId) {
+      ...BotRoleDetails
+      permissions {
         ...RoleDetails
       }
     }
   }
-  ${BotPermissionDetailsFragmentDoc}
+  ${BotRoleDetailsFragmentDoc}
   ${RoleDetailsFragmentDoc}
 `
 export const UserFindOneBotServerDocument = gql`
@@ -7226,9 +7199,13 @@ export const UserFindOneRoleDocument = gql`
   query userFindOneRole($roleId: String!) {
     item: userFindOneRole(roleId: $roleId) {
       ...RoleDetails
+      permissions {
+        ...RolePermissionDetails
+      }
     }
   }
   ${RoleDetailsFragmentDoc}
+  ${RolePermissionDetailsFragmentDoc}
 `
 export const UserCreateRoleDocument = gql`
   mutation userCreateRole($input: UserCreateRoleInput!) {
@@ -7400,7 +7377,7 @@ const AdminCreateBotDocumentString = print(AdminCreateBotDocument)
 const AdminUpdateBotDocumentString = print(AdminUpdateBotDocument)
 const AdminDeleteBotDocumentString = print(AdminDeleteBotDocument)
 const UserFindOneBotDocumentString = print(UserFindOneBotDocument)
-const UserFindManyBotPermissionsDocumentString = print(UserFindManyBotPermissionsDocument)
+const UserFindManyBotRolesDocumentString = print(UserFindManyBotRolesDocument)
 const UserFindOneBotServerDocumentString = print(UserFindOneBotServerDocument)
 const UserCreateBotDocumentString = print(UserCreateBotDocument)
 const UserUpdateBotDocumentString = print(UserUpdateBotDocument)
@@ -7817,11 +7794,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
-    userFindManyBotPermissions(
-      variables: UserFindManyBotPermissionsQueryVariables,
+    userFindManyBotRoles(
+      variables: UserFindManyBotRolesQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserFindManyBotPermissionsQuery
+      data: UserFindManyBotRolesQuery
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -7829,11 +7806,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserFindManyBotPermissionsQuery>(UserFindManyBotPermissionsDocumentString, variables, {
+          client.rawRequest<UserFindManyBotRolesQuery>(UserFindManyBotRolesDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userFindManyBotPermissions',
+        'userFindManyBotRoles',
         'query',
         variables,
       )
@@ -9992,7 +9969,6 @@ export function AdminCreateNetworkTokenInputSchema(): z.ZodObject<Properties<Adm
 export function AdminCreateRoleInputSchema(): z.ZodObject<Properties<AdminCreateRoleInput>> {
   return z.object({
     communityId: z.string(),
-    description: z.string().nullish(),
     name: z.string(),
   })
 }
@@ -10147,7 +10123,6 @@ export function AdminUpdateNetworkTokenInputSchema(): z.ZodObject<Properties<Adm
 
 export function AdminUpdateRoleInputSchema(): z.ZodObject<Properties<AdminUpdateRoleInput>> {
   return z.object({
-    description: z.string().nullish(),
     name: z.string().nullish(),
   })
 }
@@ -10228,7 +10203,6 @@ export function UserCreateRoleConditionInputSchema(): z.ZodObject<Properties<Use
 export function UserCreateRoleInputSchema(): z.ZodObject<Properties<UserCreateRoleInput>> {
   return z.object({
     communityId: z.string(),
-    description: z.string().nullish(),
     name: z.string(),
   })
 }
@@ -10373,7 +10347,6 @@ export function UserUpdateRoleConditionInputSchema(): z.ZodObject<Properties<Use
 
 export function UserUpdateRoleInputSchema(): z.ZodObject<Properties<UserUpdateRoleInput>> {
   return z.object({
-    description: z.string().nullish(),
     name: z.string().nullish(),
   })
 }

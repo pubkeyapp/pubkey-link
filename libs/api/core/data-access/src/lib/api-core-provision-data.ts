@@ -124,7 +124,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
               },
             ],
           },
-          permissions: { create: [{ botId: `${DL_SERVER}-${DL_ROLE_ONE_OF_US}` }] },
+          permissions: { create: [{ botRoleId: `${DL_SERVER}-${DL_ROLE_ONE_OF_US}` }] },
         },
         {
           id: 'business-visa',
@@ -142,7 +142,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
               },
             ],
           },
-          permissions: { create: [{ botId: `${DL_SERVER}-${DL_ROLE_BV}` }] },
+          permissions: { create: [{ botRoleId: `${DL_SERVER}-${DL_ROLE_BV}` }] },
         },
         {
           id: 'business-visa-expired',
@@ -160,7 +160,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
               },
             ],
           },
-          permissions: { create: [{ botId: `${DL_SERVER}-${DL_ROLE_BV_EXPIRED}` }] },
+          permissions: { create: [{ botRoleId: `${DL_SERVER}-${DL_ROLE_BV_EXPIRED}` }] },
         },
         {
           id: 'dean-holder',
@@ -177,7 +177,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
               },
             ],
           },
-          permissions: { create: [{ botId: `${DL_SERVER}-${DL_ROLE_HOLDER}` }] },
+          permissions: { create: [{ botRoleId: `${DL_SERVER}-${DL_ROLE_HOLDER}` }] },
         },
       ],
     },

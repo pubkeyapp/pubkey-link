@@ -14,7 +14,7 @@ fragment BotDetails on Bot {
   verificationUrl
   verificationUrlSet
   #  permissions {
-  #    ...BotPermissionDetails
+  #    ...BotRoleDetails
   #  }
 }
 
@@ -35,7 +35,7 @@ fragment BotServerDetails on BotServer {
   verbose
 }
 
-fragment BotPermissionDetails on BotPermission {
+fragment BotRoleDetails on BotRole {
   botId
   createdAt
   id
@@ -108,19 +108,13 @@ mutation adminDeleteBot($botId: String!) {
 query userFindOneBot($communityId: String!) {
   item: userFindOneBot(communityId: $communityId) {
     ...BotDetails
-    #    permissions {
-    #      ...BotPermissionDetails
-    #      roles {
-    #        ...RoleDetails
-    #      }
-    #    }
   }
 }
 
-query userFindManyBotPermissions($botId: String!) {
-  items: userFindManyBotPermissions(botId: $botId) {
-    ...BotPermissionDetails
-    roles {
+query userFindManyBotRoles($botId: String!, $serverId: String) {
+  items: userFindManyBotRoles(botId: $botId, serverId: $serverId) {
+    ...BotRoleDetails
+    permissions {
       ...RoleDetails
     }
   }

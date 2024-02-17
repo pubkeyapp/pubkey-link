@@ -6,13 +6,9 @@ export function AdminRoleUiCreateForm({ submit }: { submit: (res: AdminCreateRol
   const model: AdminCreateRoleInput = {
     communityId: '',
     name: '',
-    description: '',
   }
 
-  const fields: UiFormField<AdminCreateRoleInput>[] = [
-    formFieldText('name', { label: 'Name', required: true }),
-    formFieldText('description', { label: 'Description', required: true }),
-  ]
+  const fields: UiFormField<AdminCreateRoleInput>[] = [formFieldText('name', { label: 'Name', required: true })]
   return (
     <UiForm model={model} fields={fields} submit={(res) => submit(res as AdminCreateRoleInput)}>
       <Group justify="right">

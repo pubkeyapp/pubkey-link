@@ -41,7 +41,6 @@ input AdminCreateNetworkTokenInput {
 
 input AdminCreateRoleInput {
   communityId: String!
-  description: String
   name: String!
 }
 
@@ -162,7 +161,6 @@ input AdminUpdateNetworkTokenInput {
 }
 
 input AdminUpdateRoleInput {
-  description: String
   name: String
 }
 
@@ -191,7 +189,7 @@ type Bot {
   id: String!
   inviteUrl: String!
   name: String!
-  permissions: [BotPermission!]
+  permissions: [BotRole!]
   redirectUrl: String!
   redirectUrlSet: Boolean
   started: Boolean!
@@ -211,11 +209,11 @@ type BotPaging {
   meta: PagingMeta!
 }
 
-type BotPermission {
+type BotRole {
   botId: String
   createdAt: DateTime
   id: String!
-  roles: [Role!]
+  permissions: [Role!]
   server: DiscordServer
   serverId: String
   serverRole: DiscordRole
@@ -594,7 +592,7 @@ type Query {
   appConfig: AppConfig!
   me: User
   uptime: Float!
-  userFindManyBotPermissions(botId: String!): [BotPermission!]
+  userFindManyBotRoles(botId: String!, serverId: String): [BotRole!]
   userFindManyCommunity(input: UserFindManyCommunityInput!): CommunityPaging!
   userFindManyCommunityMember(input: UserFindManyCommunityMemberInput!): CommunityMemberPaging!
   userFindManyIdentity(input: UserFindManyIdentityInput!): [Identity!]
@@ -639,7 +637,6 @@ type Role {
   communityId: String!
   conditions: [RoleCondition!]
   createdAt: DateTime
-  description: String
   id: String!
   name: String!
   permissions: [RolePermission!]
@@ -667,8 +664,8 @@ type RolePaging {
 }
 
 type RolePermission {
-  bot: BotPermission
   botId: String
+  botRole: BotRole
   createdAt: DateTime
   id: String!
   role: Role
@@ -728,7 +725,6 @@ input UserCreateRoleConditionInput {
 
 input UserCreateRoleInput {
   communityId: String!
-  description: String
   name: String!
 }
 
@@ -859,7 +855,6 @@ input UserUpdateRoleConditionInput {
 }
 
 input UserUpdateRoleInput {
-  description: String
   name: String
 }
 

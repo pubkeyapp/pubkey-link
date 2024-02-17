@@ -4,7 +4,7 @@ import { Role, UserCreateRolePermissionInput } from '@pubkey-link/sdk'
 import { useUserFindOneBot, useUserGetBotRoles, useUserGetBotServers } from '@pubkey-link/web-bot-data-access'
 import { useUserFindOneRole } from '@pubkey-link/web-role-data-access'
 import { UiDiscordServerItem } from '@pubkey-link/web-ui-core'
-import { UiAnchor, UiCard, UiGroup, UiInfo, UiLoader, UiStack, UiWarning } from '@pubkey-ui/core'
+import { UiAnchor, UiCard, UiGroup, UiLoader, UiStack, UiWarning } from '@pubkey-ui/core'
 import { IconPlus, IconTrash } from '@tabler/icons-react'
 import { useMemo, useState } from 'react'
 
@@ -18,27 +18,18 @@ export function UserRoleDetailPermissionsTab({ role }: { role: Role }) {
     <UiLoader />
   ) : item ? (
     <UiStack>
-      <UiInfo
-        title="Role Permissions"
-        message={
-          <Group justify="space-between">
-            <Text size="sm" span>
-              Permissions will be granted once these <UiAnchor to={'../conditions'}>conditions</UiAnchor> are met.
-            </Text>
-            <AddPermissionButton role={role} />
-          </Group>
-        }
-      />
-
+      <Text size="sm" span>
+        Permissions will be granted once the above conditions are met.
+      </Text>
       {role.permissions?.length ? (
         <SimpleGrid cols={{ base: 1, sm: 2 }}>
           {role.permissions
-            .sort((a, b) => (a.bot?.server?.name ?? '').localeCompare(b.bot?.server?.name ?? '') ?? 0)
+            .sort((a, b) => (a.botRole?.server?.name ?? '').localeCompare(b.botRole?.server?.name ?? '') ?? 0)
             .map((permission) => (
               <UiCard key={permission.id}>
                 <UiStack>
                   <UiGroup align="top">
-                    <UiDiscordServerItem server={permission.bot?.server} role={permission.bot?.serverRole} />
+                    <UiDiscordServerItem server={permission.botRole?.server} role={permission.botRole?.serverRole} />
                     <ActionIcon
                       size="xs"
                       variant="light"
@@ -52,8 +43,8 @@ export function UserRoleDetailPermissionsTab({ role }: { role: Role }) {
                     </ActionIcon>
                   </UiGroup>
                   <Text size="sm" c="dimmed">
-                    Get the <strong>{permission.bot?.serverRole?.name}</strong> role in the{' '}
-                    <strong>{permission.bot?.server?.name}</strong> Discord server.
+                    Get the <strong>{permission.botRole?.serverRole?.name}</strong> role in the{' '}
+                    <strong>{permission.botRole?.server?.name}</strong> Discord server.
                   </Text>
                 </UiStack>
               </UiCard>
@@ -76,7 +67,7 @@ export function UserRoleDetailPermissionsTab({ role }: { role: Role }) {
   )
 }
 
-function AddPermissionButton({ role }: { role: Role }) {
+export function AddPermissionButton({ role }: { role: Role }) {
   const { query, item } = useUserFindOneBot({ communityId: role.communityId })
   const { createRolePermission } = useUserFindOneRole({ roleId: role.id })
 
@@ -112,7 +103,7 @@ function AddPermissionButton({ role }: { role: Role }) {
   )
 }
 
-function AddPermissionForm({
+export function AddPermissionForm({
   role,
   botId,
   create,
@@ -129,7 +120,9 @@ function AddPermissionForm({
       {serverId && (
         <DiscordUiRoleSelect
           filter={
-            role.permissions?.filter((p) => p.bot?.serverId === serverId).map((p) => p.bot?.serverRoleId ?? '') ?? []
+            role.permissions
+              ?.filter((p) => p.botRole?.serverId === serverId)
+              .map((p) => p.botRole?.serverRoleId ?? '') ?? []
           }
           botId={botId}
           serverId={serverId}

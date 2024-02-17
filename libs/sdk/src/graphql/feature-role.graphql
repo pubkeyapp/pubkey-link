@@ -3,7 +3,6 @@ fragment RoleDetails on Role {
   id
   communityId
   name
-  description
   conditions {
     ...RoleConditionDetails
   }
@@ -40,8 +39,8 @@ fragment RolePermissionDetails on RolePermission {
   updatedAt
   botId
   roleId
-  bot {
-    ...BotPermissionDetails
+  botRole {
+    ...BotRoleDetails
   }
 }
 
@@ -92,6 +91,9 @@ query userFindManyRole($input: UserFindManyRoleInput!) {
 query userFindOneRole($roleId: String!) {
   item: userFindOneRole(roleId: $roleId) {
     ...RoleDetails
+    permissions {
+      ...RolePermissionDetails
+    }
   }
 }
 

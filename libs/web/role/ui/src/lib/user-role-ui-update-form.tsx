@@ -11,13 +11,9 @@ export function UserRoleUiUpdateForm({
 }) {
   const model: UserUpdateRoleInput = {
     name: role.name ?? '',
-    description: role.description ?? '',
   }
 
-  const fields: UiFormField<UserUpdateRoleInput>[] = [
-    formFieldText('name', { label: 'Name' }),
-    formFieldText('description', { label: 'Description' }),
-  ]
+  const fields: UiFormField<UserUpdateRoleInput>[] = [formFieldText('name', { label: 'Name' })]
   return (
     <UiForm model={model} fields={fields} submit={(res) => submit(res as UserUpdateRoleInput)}>
       <Group justify="right">

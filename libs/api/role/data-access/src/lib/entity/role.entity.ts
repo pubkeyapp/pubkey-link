@@ -14,8 +14,6 @@ export class Role {
   communityId!: string
   @Field()
   name!: string
-  @Field({ nullable: true })
-  description?: string | null
   @Field(() => [RoleCondition], { nullable: true })
   conditions?: RoleCondition[] | null
   @Field(() => [RolePermission], { nullable: true })

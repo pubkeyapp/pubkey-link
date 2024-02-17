@@ -1,6 +1,6 @@
 import { useUserFindOneRole } from '@pubkey-link/web-role-data-access'
 import { UserRoleUiUpdateForm } from '@pubkey-link/web-role-ui'
-import { UiCard, UiError, UiLoader } from '@pubkey-ui/core'
+import { UiError, UiLoader } from '@pubkey-ui/core'
 
 export function UserRoleDetailSettingsTab({ roleId }: { roleId: string }) {
   const { item, query, updateRole } = useUserFindOneRole({ roleId })
@@ -12,9 +12,5 @@ export function UserRoleDetailSettingsTab({ roleId }: { roleId: string }) {
     return <UiError message="Role not found." />
   }
 
-  return (
-    <UiCard>
-      <UserRoleUiUpdateForm role={item} submit={updateRole} />
-    </UiCard>
-  )
+  return <UserRoleUiUpdateForm role={item} submit={updateRole} />
 }

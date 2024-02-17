@@ -5,7 +5,7 @@ import {
   ApiBotService,
   Bot,
   BotMember,
-  BotPermission,
+  BotRole,
   BotServer,
   DiscordChannel,
   DiscordRole,
@@ -35,10 +35,15 @@ export class ApiUserBotResolver {
     return this.service.user.findOneBot(userId, communityId)
   }
 
-  @Query(() => [BotPermission], { nullable: true })
-  userFindManyBotPermissions(@CtxUserId() userId: string, @Args('botId') botId: string) {
-    return this.service.user.userFindManyBotPermissions(userId, botId)
+  @Query(() => [BotRole], { nullable: true })
+  userFindManyBotRoles(
+    @CtxUserId() userId: string,
+    @Args('botId') botId: string,
+    @Args({ name: 'serverId', nullable: true }) serverId?: string,
+  ) {
+    return this.service.user.userFindManyBotRoles(userId, botId, serverId)
   }
+
   @Query(() => BotServer, { nullable: true })
   userFindOneBotServer(@CtxUserId() userId: string, @Args('botId') botId: string, @Args('serverId') serverId: string) {
     return this.service.user.findOneBotServer(userId, botId, serverId)

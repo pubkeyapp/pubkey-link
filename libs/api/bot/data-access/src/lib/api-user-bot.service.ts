@@ -141,9 +141,12 @@ export class ApiUserBotService {
     return bot
   }
 
-  async userFindManyBotPermissions(userId: string, botId: string) {
+  async userFindManyBotRoles(userId: string, botId: string, serverId?: string) {
     await this.ensureBotAdmin({ botId, userId })
 
-    return this.core.data.botPermission.findMany({ where: { botId }, include: { roles: { include: { role: true } } } })
+    return this.core.data.botRole.findMany({
+      where: { botId, serverId: serverId ?? undefined },
+      include: { permissions: { include: { role: true } } },
+    })
   }
 }

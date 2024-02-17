@@ -6,6 +6,4 @@ export class AdminCreateRoleInput {
   communityId!: string
   @Field()
   name!: string
-  @Field({ nullable: true })
-  description?: string
 }

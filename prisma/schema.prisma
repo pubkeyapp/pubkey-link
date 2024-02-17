@@ -8,20 +8,33 @@ datasource db {
 }
 
 model Bot {
-  id           String          @id @default(cuid())
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
-  name         String          @unique
+  id           String      @id @default(cuid())
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  name         String      @unique
   avatarUrl    String?
-  status       BotStatus       @default(Active)
+  status       BotStatus   @default(Active)
   token        String /// @encrypted
   clientId     String /// @encrypted
   clientSecret String /// @encrypted
-  community    Community       @relation(fields: [communityId], references: [id], onDelete: Cascade)
-  communityId  String          @unique
-  permissions  BotPermission[]
+  community    Community   @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  communityId  String      @unique
+  permissions  BotRole[]
   servers      BotServer[]
   logs         Log[]
+}
+
+model BotRole {
+  id           String           @id @default(cuid())
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  bot          Bot              @relation(fields: [botId], references: [id], onDelete: Cascade)
+  botId        String
+  serverId     String
+  serverRoleId String
+  permissions  RolePermission[]
+
+  @@unique([botId, serverId, serverRoleId])
 }
 
 model BotServer {
@@ -37,19 +50,6 @@ model BotServer {
   commandChannel String?
 
   @@unique([botId, serverId])
-}
-
-model BotPermission {
-  id           String           @id @default(cuid())
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-  bot          Bot              @relation(fields: [botId], references: [id], onDelete: Cascade)
-  botId        String
-  serverId     String
-  serverRoleId String
-  roles        RolePermission[]
-
-  @@unique([botId, serverId, serverRoleId])
 }
 
 model Community {
@@ -70,6 +70,7 @@ model Community {
   bot         Bot?
   logs        Log[]
 
+  // TODO: Add relation to NetworkToken
   @@unique([name])
 }
 
@@ -223,7 +224,6 @@ model Role {
   community   Community             @relation(fields: [communityId], references: [id], onDelete: Cascade)
   communityId String
   name        String
-  description String?
   conditions  RoleCondition[]
   permissions RolePermission[]
   members     CommunityMemberRole[]
@@ -246,15 +246,15 @@ model RoleCondition {
 }
 
 model RolePermission {
-  id        String         @id @default(cuid())
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-  role      Role           @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
   roleId    String
-  bot       BotPermission? @relation(fields: [botId], references: [id], onDelete: Cascade)
-  botId     String?
+  botRole   BotRole? @relation(fields: [botRoleId], references: [id], onDelete: Cascade)
+  botRoleId String?
 
-  @@unique([roleId, botId])
+  @@unique([roleId, botRoleId])
 }
 
 model User {

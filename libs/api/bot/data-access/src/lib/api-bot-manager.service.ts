@@ -188,9 +188,7 @@ export class ApiBotManagerService implements OnModuleInit {
   }
 
   private async getBotRoleIds(botId: string) {
-    return this.core.data.botPermission
-      .findMany({ where: { botId } })
-      .then((items) => items.map((item) => item.serverRoleId))
+    return this.core.data.botRole.findMany({ where: { botId } }).then((items) => items.map((item) => item.serverRoleId))
   }
 
   private async linkBotMemberIdentities({
@@ -409,7 +407,7 @@ export class ApiBotManagerService implements OnModuleInit {
                    ` - ${condition.amount} [${condition.token?.symbol}](https://solana.fm/address/${condition.token?.account}) ${condition.token?.name} (${condition.type})\n`,
                )}Permissions (**${role.permissions.length}**):
                 ${role.permissions.map(
-                  (permission) => ` - <@&${permission.bot?.serverRoleId}>\n`,
+                  (permission) => ` - <@&${permission.botRole?.serverRoleId}>\n`,
                 )}Members with this role: **${role.members.length}**.
             `,
             })),
@@ -449,7 +447,7 @@ export class ApiBotManagerService implements OnModuleInit {
         },
         select: {
           roleId: true,
-          bot: {
+          botRole: {
             where: { serverId },
             select: { serverRoleId: true },
           },
@@ -457,13 +455,13 @@ export class ApiBotManagerService implements OnModuleInit {
       })
       .then((permissions) => {
         return permissions.reduce((acc, permission) => {
-          if (!permission.bot?.serverRoleId) {
+          if (!permission.botRole?.serverRoleId) {
             return acc
           }
           if (!acc[permission.roleId]) {
             acc[permission.roleId] = []
           }
-          acc[permission.roleId].push(permission.bot.serverRoleId)
+          acc[permission.roleId].push(permission.botRole.serverRoleId)
           return acc
         }, {} as Record<string, string[]>)
       })
@@ -553,7 +551,7 @@ export class ApiBotManagerService implements OnModuleInit {
       where: { communityId },
       include: {
         conditions: { include: { token: true } },
-        permissions: { include: { bot: true } },
+        permissions: { include: { botRole: true } },
         members: true,
       },
     })

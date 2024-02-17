@@ -56,18 +56,3 @@ export function useUserFindOneBot({ communityId }: { communityId: string }) {
         }),
   }
 }
-
-export function useUserFindManyBotPermissions({ botId }: { botId: string }) {
-  const sdk = useSdk()
-  const query = useQuery({
-    queryKey: ['user', 'find-many-bot-permissions', { botId }],
-    queryFn: () => sdk.userFindManyBotPermissions({ botId }).then((res) => res.data),
-    retry: 0,
-  })
-  const items = query.data?.items ?? []
-
-  return {
-    items,
-    query,
-  }
-}

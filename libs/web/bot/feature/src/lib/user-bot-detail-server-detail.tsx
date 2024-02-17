@@ -2,8 +2,9 @@ import { Button, Group } from '@mantine/core'
 import { Bot, DiscordServer } from '@pubkey-link/sdk'
 import { useUserGetBotServer, useUserManageBot } from '@pubkey-link/web-bot-data-access'
 import { UiDiscordServerItem } from '@pubkey-link/web-ui-core'
-import { UiAlert, UiCard, UiDebug, UiGroup, UiLoader, UiStack, UiTabRoutes } from '@pubkey-ui/core'
+import { UiAlert, UiCard, UiDebugModal, UiGroup, UiLoader, UiStack, UiTabRoutes } from '@pubkey-ui/core'
 import { useNavigate, useParams } from 'react-router-dom'
+import { UserBotDetailRolesTab } from './user-bot-detail-roles-tab'
 import { UserBotDetailServerMembers } from './user-bot-detail-server-members'
 import { UserBotDetailServerRoles } from './user-bot-detail-server-roles'
 import { UserBotDetailServerSettings } from './user-bot-detail-server-settings'
@@ -30,44 +31,45 @@ export function UserBotDetailServerDetail({ bot }: { bot: Bot }) {
           <Group>
             <UiDiscordServerItem server={item} />
           </Group>
+          <Group justify="end">
+            <UiDebugModal data={item} />
+            <Button
+              size="xs"
+              color="red"
+              variant="outline"
+              onClick={() => {
+                if (!window.confirm('Are you sure you want to leave this server?')) {
+                  return
+                }
+                return leaveServer(item.id).then(() => navigate('..'))
+              }}
+            >
+              Leave Server
+            </Button>
+          </Group>
         </UiGroup>
       </UiCard>
       <UiTabRoutes
         tabs={[
           {
+            path: 'permissions',
+            label: 'Permissions',
+            element: <UserBotDetailRolesTab bot={bot} serverId={serverId} />,
+          },
+          {
             path: 'settings',
             label: 'Settings',
             element: <UserBotDetailServerSettings botId={bot.id} serverId={serverId} />,
           },
-          { path: 'roles', label: 'Roles', element: <UserBotDetailServerRoles botId={bot.id} serverId={serverId} /> },
           {
             path: 'members',
             label: 'Members',
             element: <UserBotDetailServerMembers bot={bot} serverId={serverId} />,
           },
           {
-            path: 'debug',
-            label: 'Debug',
-            element: (
-              <UiStack>
-                <UiDebug data={item} open hideButton />
-                <Group justify="end">
-                  <Button
-                    size="xs"
-                    color="red"
-                    variant="outline"
-                    onClick={() => {
-                      if (!window.confirm('Are you sure you want to leave this server?')) {
-                        return
-                      }
-                      return leaveServer(item.id).then(() => navigate('..'))
-                    }}
-                  >
-                    Leave Server
-                  </Button>
-                </Group>
-              </UiStack>
-            ),
+            path: 'server-roles',
+            label: 'Server Roles',
+            element: <UserBotDetailServerRoles botId={bot.id} serverId={serverId} />,
           },
         ]}
       />

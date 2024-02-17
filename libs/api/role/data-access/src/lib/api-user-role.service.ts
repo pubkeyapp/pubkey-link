@@ -38,7 +38,7 @@ export class ApiUserRoleService {
     await this.ensureRoleAdmin({ userId, roleId: input.roleId })
     return this.core.data.rolePermission.create({
       data: {
-        bot: {
+        botRole: {
           connectOrCreate: {
             where: {
               botId_serverId_serverRoleId: {
@@ -104,7 +104,7 @@ export class ApiUserRoleService {
       include: {
         conditions: { include: { token: true }, orderBy: { name: 'asc' } },
         community: true,
-        permissions: { include: { bot: true } },
+        permissions: { include: { botRole: true } },
       },
     })
   }

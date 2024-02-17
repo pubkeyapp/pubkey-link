@@ -1,8 +1,5 @@
 import { ActionIcon, Anchor, Group, ScrollArea } from '@mantine/core'
-import { Bot, BotPermission } from '@pubkey-link/sdk'
-import { RoleUiItem } from '@pubkey-link/web-role-ui'
-import { UiDiscordServerItem } from '@pubkey-link/web-ui-core'
-import { UiStack } from '@pubkey-ui/core'
+import { Bot } from '@pubkey-link/sdk'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'
@@ -58,45 +55,6 @@ export function UserBotUiTable({
           },
         ]}
         records={bots}
-      />
-    </ScrollArea>
-  )
-}
-
-export function UserBotPermissionUiTable({ permissions = [] }: { permissions: BotPermission[] }) {
-  return (
-    <ScrollArea>
-      <DataTable
-        borderRadius="sm"
-        withTableBorder
-        shadow="xs"
-        columns={[
-          {
-            accessor: 'name',
-            title: 'Server and Role',
-            cellsStyle: () => ({
-              //
-              justifyContent: 'center',
-              alignItems: 'center',
-            }),
-            render: (item) => <UiDiscordServerItem server={item?.server} role={item?.serverRole} />,
-          },
-          {
-            accessor: 'role',
-            title: 'Role',
-            render: (item) =>
-              item?.roles?.length ? (
-                <UiStack>
-                  {item?.roles?.map((role) => (
-                    <UiStack key={role.id}>
-                      <RoleUiItem role={role} to={role.viewUrl} />
-                    </UiStack>
-                  ))}
-                </UiStack>
-              ) : null,
-          },
-        ]}
-        records={permissions}
       />
     </ScrollArea>
   )

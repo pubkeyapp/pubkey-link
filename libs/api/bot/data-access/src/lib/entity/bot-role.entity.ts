@@ -2,7 +2,7 @@ import { Field, HideField, ObjectType } from '@nestjs/graphql'
 import { DiscordRole, DiscordServer } from './discord-server.entity'
 
 @ObjectType()
-export class BotPermission {
+export class BotRole {
   @Field()
   id!: string
   @Field({ nullable: true })
@@ -20,5 +20,5 @@ export class BotPermission {
   @Field({ nullable: true })
   serverId!: string
   @HideField()
-  roles?: unknown[]
+  permissions?: unknown[]
 }

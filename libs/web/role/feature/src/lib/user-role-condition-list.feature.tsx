@@ -1,27 +1,14 @@
-import { Accordion, Button, Group, Text } from '@mantine/core'
-import { modals } from '@mantine/modals'
+import { Accordion, Text } from '@mantine/core'
 import { Community, NetworkToken, Role } from '@pubkey-link/sdk'
 
-import { RoleConditionUiCreateWizard, RoleConditionUiItem, RoleConditionUiPanel } from '@pubkey-link/web-role-ui'
-import { UiAnchor, UiInfo, UiStack } from '@pubkey-ui/core'
-import { IconPlus } from '@tabler/icons-react'
+import { RoleConditionUiItem, RoleConditionUiPanel } from '@pubkey-link/web-role-ui'
+import { UiStack } from '@pubkey-ui/core'
 
 export function UserRoleConditionListFeature(props: { role: Role; community: Community; tokens: NetworkToken[] }) {
   const conditions = props.role.conditions ?? []
   return (
     <UiStack>
-      <UiInfo
-        title="Role Conditions"
-        message={
-          <Group justify="space-between">
-            <Text size="sm">
-              The following conditions must be satisfied to receive{' '}
-              <UiAnchor to={'../permissions'}>these permissions</UiAnchor>.
-            </Text>
-            <AddConditionButton {...props} />
-          </Group>
-        }
-      />
+      <Text size="sm">The following conditions must be satisfied to receive the permissions below.</Text>
       <Accordion multiple variant="separated">
         {conditions?.map((condition) => (
           <Accordion.Item key={condition.id} value={condition.id}>
@@ -35,23 +22,5 @@ export function UserRoleConditionListFeature(props: { role: Role; community: Com
         ))}
       </Accordion>
     </UiStack>
-  )
-}
-function AddConditionButton(props: { role: Role; community: Community; tokens: NetworkToken[] }) {
-  return (
-    <Button
-      size="xs"
-      variant="light"
-      leftSection={<IconPlus size={28} />}
-      onClick={() =>
-        modals.open({
-          title: 'Add Condition',
-          size: 'xl',
-          children: <RoleConditionUiCreateWizard {...props} />,
-        })
-      }
-    >
-      Add Condition
-    </Button>
   )
 }

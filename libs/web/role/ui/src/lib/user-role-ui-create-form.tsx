@@ -6,13 +6,9 @@ export function UserRoleUiCreateForm({ submit }: { submit: (res: UserCreateRoleI
   const model: UserCreateRoleInput = {
     communityId: '',
     name: '',
-    description: '',
   }
 
-  const fields: UiFormField<UserCreateRoleInput>[] = [
-    formFieldText('name', { label: 'Name', required: true }),
-    formFieldText('description', { label: 'Description', required: true }),
-  ]
+  const fields: UiFormField<UserCreateRoleInput>[] = [formFieldText('name', { label: 'Name', required: true })]
   return (
     <UiForm model={model} fields={fields} submit={(res) => submit(res as UserCreateRoleInput)}>
       <Group justify="right">

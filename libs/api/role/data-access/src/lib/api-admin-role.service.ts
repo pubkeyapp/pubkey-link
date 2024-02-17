@@ -36,7 +36,7 @@ export class ApiAdminRoleService {
       include: {
         conditions: { include: { token: true }, orderBy: { name: 'asc' } },
         community: true,
-        permissions: { include: { bot: true } },
+        permissions: { include: { botRole: true } },
       },
     })
   }

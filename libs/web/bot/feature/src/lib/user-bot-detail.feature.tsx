@@ -15,7 +15,6 @@ import {
   UiWarning,
 } from '@pubkey-ui/core'
 import { UserBotCommands } from './user-bot-commands'
-import { UserBotDetailPermissionsTab } from './user-bot-detail-permissions.tab'
 import { UserBotDetailServerList } from './user-bot-detail-server-list'
 import { UserBotDetailSettingsTab } from './user-bot-detail-settings.tab'
 
@@ -64,11 +63,6 @@ export function UserBotDetailFeature({ community }: { community: Community }) {
               path: 'servers',
               label: 'Servers',
               element: <UserBotDetailServerList bot={item} />,
-            },
-            {
-              path: 'permissions',
-              label: 'Permissions',
-              element: <UserBotDetailPermissionsTab bot={item} />,
             },
             {
               path: 'settings',

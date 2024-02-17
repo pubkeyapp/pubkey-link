@@ -16,5 +16,5 @@ export class RolePermission {
   @Field({ nullable: true })
   botId!: string
   @HideField()
-  bot?: unknown
+  botRole?: unknown
 }
