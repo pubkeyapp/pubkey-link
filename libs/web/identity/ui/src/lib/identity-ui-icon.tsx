@@ -1,10 +1,10 @@
 import { IdentityProvider } from '@pubkey-link/sdk'
-import { IconBrandDiscord, IconCurrencySolana, IconQuestionMark } from '@tabler/icons-react'
+import { IconBrandDiscordFilled, IconCurrencySolana, IconQuestionMark } from '@tabler/icons-react'
 
 export function IdentityUiIcon({ provider, size }: { provider: IdentityProvider; size?: number }) {
   switch (provider) {
     case IdentityProvider.Discord:
-      return <IconBrandDiscord size={size} />
+      return <IconBrandDiscordFilled size={size} />
     case IdentityProvider.Solana:
       return <IconCurrencySolana size={size} />
     default:

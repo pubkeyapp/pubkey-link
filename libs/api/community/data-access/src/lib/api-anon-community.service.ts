@@ -7,14 +7,8 @@ export class ApiAnonCommunityService {
 
   async getCommunities() {
     return this.core.data.community.findMany({
-      where: {
-        featured: true,
-      },
-      include: {
-        roles: {
-          orderBy: { name: 'asc' },
-        },
-      },
+      where: { featured: true, bot: { isNot: null } },
+      orderBy: { name: 'asc' },
     })
   }
 }

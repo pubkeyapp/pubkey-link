@@ -1,43 +1,36 @@
-import { Divider, Group, Paper } from '@mantine/core'
-import { useAnonGetCommunities } from '@pubkey-link/web-community-data-access'
-import { CommunityUiItem, CommunityUiSocials } from '@pubkey-link/web-community-ui'
-import { UiGroup, UiLoader, UiLogoType, UiStack } from '@pubkey-ui/core'
+import { Flex, Group, Paper, rem, useMantineTheme } from '@mantine/core'
+import { useMediaQuery } from '@mantine/hooks'
+import { CommunityUiFeatured } from '@pubkey-link/web-community-ui'
+import { UiBackgroundImage } from '@pubkey-link/web-ui-core'
+import { UiLogoType, UiStack, useUiColorScheme } from '@pubkey-ui/core'
 import { ReactNode } from 'react'
 import { AuthUiEnabled } from './auth-ui-enabled'
-import classes from './auth-ui-page.module.css'
 
-const images = [
-  'https://images.pexels.com/photos/1888883/pexels-photo-1888883.jpeg',
-  'https://images.pexels.com/photos/8954107/pexels-photo-8954107.jpeg',
-]
-const image = images[Math.floor(Math.random() * images.length)]
 export function AuthUiPage({ authEnabled, children }: { authEnabled: boolean; children: ReactNode }) {
-  const { query, items } = useAnonGetCommunities()
+  const { breakpoints } = useMantineTheme()
+  const isSmall = useMediaQuery(`(max-width: ${breakpoints.sm}`)
+  const { colorScheme } = useUiColorScheme()
+  const border = `${rem(1)} solid var(mantine-color-${colorScheme === 'dark' ? 'dark-7' : 'gray-3'})`
+
   return (
-    <div className={classes.wrapper} style={{ backgroundImage: `url(${image})` }}>
-      <div className={classes.overlay}>
-        <Paper className={classes.form} radius={0} p={30}>
-          <UiStack gap={48}>
-            <Group justify="center">
-              <UiLogoType height={48} />
+    <UiBackgroundImage>
+      <Flex w="100%" h="100%" justify="center" align="center">
+        <Paper
+          h={isSmall ? '100%' : undefined}
+          w={isSmall ? '100%' : rem(550)}
+          p="xl"
+          bg={colorScheme === 'dark' ? 'dark.9' : undefined}
+          style={{ border: isSmall ? undefined : border }}
+        >
+          <UiStack gap="xl">
+            <Group justify="center" mt="xl">
+              <UiLogoType height={64} />
             </Group>
-            <Divider label="Communities hosted on this instance" labelPosition="center" mt="lg" />
-            {query.isLoading ? (
-              <UiLoader />
-            ) : (
-              <UiStack gap={32}>
-                {items.map((item) => (
-                  <UiGroup key={item.id}>
-                    <CommunityUiItem community={item} />
-                    <CommunityUiSocials community={item} />
-                  </UiGroup>
-                ))}
-              </UiStack>
-            )}
+            <CommunityUiFeatured />
             <AuthUiEnabled authEnabled={authEnabled}>{children}</AuthUiEnabled>
           </UiStack>
         </Paper>
-      </div>
-    </div>
+      </Flex>
+    </UiBackgroundImage>
   )
 }

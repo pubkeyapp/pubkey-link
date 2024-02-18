@@ -13,7 +13,7 @@ export function IdentityUiProviderButton({
       bg={getIdentityProviderColor(provider)}
       variant="filled"
       size="xl"
-      leftSection={<IdentityUiIcon provider={provider} />}
+      leftSection={<IdentityUiIcon provider={provider} size={32} />}
       component={'a'}
       href={`/api/auth/${provider.toLowerCase()}`}
       {...props}
