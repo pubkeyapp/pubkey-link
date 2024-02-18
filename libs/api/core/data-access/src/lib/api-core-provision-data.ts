@@ -241,6 +241,10 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     id: 'legends-of-sol',
     name: 'Legends of SOL',
     description: 'A digital art project',
+    twitterUrl: 'https://twitter.com/Legends_of_SOL',
+    githubUrl: 'https://github.com/Legends-of-Sol',
+    websiteUrl: 'https://legendsofsol.com',
+    discordUrl: 'https://discord.gg/fzjvRCAT4g',
     avatarUrl:
       'https://waq26xbzlmlh6koszuoh5k3ttw4op5fp3teymntjv5drqlkxlepq.arweave.net/sCGvXDlbFn8p0s0cfqtznbjn9K_cyYY2aa9HGC1XWR8',
     members: {

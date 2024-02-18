@@ -1,10 +1,10 @@
 import { AuthLoginFeature, AuthRegisterFeature } from '@pubkey-link/web-auth-feature'
 import { HomeFeature } from '@pubkey-link/web-home-feature'
+import { AnonVerifyFeature } from '@pubkey-link/web-verify-feature'
 import { UiNotFound } from '@pubkey-ui/core'
 import { lazy } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useGuardedRoutes } from './use-guarded-routes'
-import { AnonVerifyFeature } from '@pubkey-link/web-verify-feature'
 
 export const LazyAdminFeature = lazy(() => import('./shell-admin.routes'))
 export const LazyUserFeature = lazy(() => import('./shell-user.routes'))

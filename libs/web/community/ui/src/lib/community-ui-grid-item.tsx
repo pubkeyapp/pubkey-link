@@ -89,3 +89,15 @@ export function CommunityUiSocialTelegram({ community, ...props }: ActionIconPro
 export function CommunityUiSocialWebsite({ community, ...props }: ActionIconProps & { community: Community }) {
   return <CommunityUiSocial href={community.websiteUrl} tooltip="Visit our website" icon={IconWorld} {...props} />
 }
+
+export function CommunityUiSocials({ community, ...props }: ActionIconProps & { community: Community }) {
+  return (
+    <Group gap="4">
+      <CommunityUiSocialDiscord community={community} {...props} />
+      <CommunityUiSocialGithub community={community} {...props} />
+      <CommunityUiSocialTelegram community={community} {...props} />
+      <CommunityUiSocialWebsite community={community} {...props} />
+      <CommunityUiSocialX community={community} {...props} />
+    </Group>
+  )
+}

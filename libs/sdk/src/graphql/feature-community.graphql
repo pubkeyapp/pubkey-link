@@ -2,6 +2,8 @@ fragment CommunityDetails on Community {
   createdAt
   id
   name
+  enableSync
+  featured
   avatarUrl
   description
   websiteUrl
@@ -11,7 +13,6 @@ fragment CommunityDetails on Community {
   telegramUrl
   updatedAt
   cluster
-  enableSync
 }
 
 query adminFindManyCommunity($input: AdminFindManyCommunityInput!) {
@@ -45,6 +46,12 @@ mutation adminUpdateCommunity($communityId: String!, $input: AdminUpdateCommunit
 
 mutation adminDeleteCommunity($communityId: String!) {
   deleted: adminDeleteCommunity(communityId: $communityId)
+}
+
+query anonGetCommunities {
+  items: anonGetCommunities {
+    ...CommunityDetails
+  }
 }
 
 query userGetCommunities($username: String!) {

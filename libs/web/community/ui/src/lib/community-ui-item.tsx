@@ -1,6 +1,7 @@
-import { AvatarProps, Badge, Group, type GroupProps, Stack, Text, TextProps } from '@mantine/core'
+import { AvatarProps, Group, type GroupProps, Stack, Text, TextProps } from '@mantine/core'
 import { Community } from '@pubkey-link/sdk'
 import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core'
+import { ReactNode } from 'react'
 import { CommunityUiAvatar } from './community-ui-avatar'
 
 export function CommunityUiItem({
@@ -9,6 +10,7 @@ export function CommunityUiItem({
   groupProps,
   textProps,
   community,
+  title,
   to,
 }: {
   anchorProps?: UiAnchorProps
@@ -16,6 +18,7 @@ export function CommunityUiItem({
   groupProps?: GroupProps
   textProps?: TextProps
   community?: Community
+  title?: ReactNode
   to?: string | null
 }) {
   if (!community) return null
@@ -29,9 +32,7 @@ export function CommunityUiItem({
             <Text size="xl" fw="bold" {...textProps}>
               {community?.name}
             </Text>
-            <Badge variant="dot" color={community.enableSync ? 'lime' : 'orange'} size="xs">
-              Sync {community.enableSync ? 'Enabled' : 'Disabled'}
-            </Badge>
+            {title}
           </Group>
           {community.description ? (
             <Text size="xs" c="dimmed">

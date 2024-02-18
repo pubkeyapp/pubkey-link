@@ -66,6 +66,7 @@ model Community {
   twitterUrl  String?
   telegramUrl String?
   enableSync  Boolean           @default(false)
+  featured    Boolean           @default(false)
   members     CommunityMember[]
   roles       Role[]
   cluster     NetworkCluster

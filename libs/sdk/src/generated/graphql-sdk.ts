@@ -161,6 +161,8 @@ export type AdminUpdateCommunityInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>
   description?: InputMaybe<Scalars['String']['input']>
   discordUrl?: InputMaybe<Scalars['String']['input']>
+  enableSync?: InputMaybe<Scalars['Boolean']['input']>
+  featured?: InputMaybe<Scalars['Boolean']['input']>
   githubUrl?: InputMaybe<Scalars['String']['input']>
   name?: InputMaybe<Scalars['String']['input']>
   telegramUrl?: InputMaybe<Scalars['String']['input']>
@@ -270,6 +272,7 @@ export type Community = {
   description?: Maybe<Scalars['String']['output']>
   discordUrl?: Maybe<Scalars['String']['output']>
   enableSync?: Maybe<Scalars['Boolean']['output']>
+  featured?: Maybe<Scalars['Boolean']['output']>
   githubUrl?: Maybe<Scalars['String']['output']>
   id: Scalars['String']['output']
   name: Scalars['String']['output']
@@ -882,6 +885,7 @@ export type Query = {
   adminGetBackup?: Maybe<Scalars['JSON']['output']>
   adminGetBackups: Array<Scalars['String']['output']>
   anonFindUserByIdentity?: Maybe<User>
+  anonGetCommunities: Array<Community>
   anonRequestIdentityChallenge?: Maybe<IdentityChallenge>
   appConfig: AppConfig
   me?: Maybe<User>
@@ -2787,6 +2791,8 @@ export type CommunityDetailsFragment = {
   createdAt?: Date | null
   id: string
   name: string
+  enableSync?: boolean | null
+  featured?: boolean | null
   avatarUrl?: string | null
   description?: string | null
   websiteUrl?: string | null
@@ -2796,7 +2802,6 @@ export type CommunityDetailsFragment = {
   telegramUrl?: string | null
   updatedAt?: Date | null
   cluster: NetworkCluster
-  enableSync?: boolean | null
 }
 
 export type AdminFindManyCommunityQueryVariables = Exact<{
@@ -2812,6 +2817,8 @@ export type AdminFindManyCommunityQuery = {
       createdAt?: Date | null
       id: string
       name: string
+      enableSync?: boolean | null
+      featured?: boolean | null
       avatarUrl?: string | null
       description?: string | null
       websiteUrl?: string | null
@@ -2821,7 +2828,6 @@ export type AdminFindManyCommunityQuery = {
       telegramUrl?: string | null
       updatedAt?: Date | null
       cluster: NetworkCluster
-      enableSync?: boolean | null
     }>
     meta: {
       __typename?: 'PagingMeta'
@@ -2847,6 +2853,8 @@ export type AdminFindOneCommunityQuery = {
     createdAt?: Date | null
     id: string
     name: string
+    enableSync?: boolean | null
+    featured?: boolean | null
     avatarUrl?: string | null
     description?: string | null
     websiteUrl?: string | null
@@ -2856,7 +2864,6 @@ export type AdminFindOneCommunityQuery = {
     telegramUrl?: string | null
     updatedAt?: Date | null
     cluster: NetworkCluster
-    enableSync?: boolean | null
   } | null
 }
 
@@ -2871,6 +2878,8 @@ export type AdminCreateCommunityMutation = {
     createdAt?: Date | null
     id: string
     name: string
+    enableSync?: boolean | null
+    featured?: boolean | null
     avatarUrl?: string | null
     description?: string | null
     websiteUrl?: string | null
@@ -2880,7 +2889,6 @@ export type AdminCreateCommunityMutation = {
     telegramUrl?: string | null
     updatedAt?: Date | null
     cluster: NetworkCluster
-    enableSync?: boolean | null
   } | null
 }
 
@@ -2896,6 +2904,8 @@ export type AdminUpdateCommunityMutation = {
     createdAt?: Date | null
     id: string
     name: string
+    enableSync?: boolean | null
+    featured?: boolean | null
     avatarUrl?: string | null
     description?: string | null
     websiteUrl?: string | null
@@ -2905,7 +2915,6 @@ export type AdminUpdateCommunityMutation = {
     telegramUrl?: string | null
     updatedAt?: Date | null
     cluster: NetworkCluster
-    enableSync?: boolean | null
   } | null
 }
 
@@ -2914,6 +2923,29 @@ export type AdminDeleteCommunityMutationVariables = Exact<{
 }>
 
 export type AdminDeleteCommunityMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
+export type AnonGetCommunitiesQueryVariables = Exact<{ [key: string]: never }>
+
+export type AnonGetCommunitiesQuery = {
+  __typename?: 'Query'
+  items: Array<{
+    __typename?: 'Community'
+    createdAt?: Date | null
+    id: string
+    name: string
+    enableSync?: boolean | null
+    featured?: boolean | null
+    avatarUrl?: string | null
+    description?: string | null
+    websiteUrl?: string | null
+    discordUrl?: string | null
+    githubUrl?: string | null
+    twitterUrl?: string | null
+    telegramUrl?: string | null
+    updatedAt?: Date | null
+    cluster: NetworkCluster
+  }>
+}
 
 export type UserGetCommunitiesQueryVariables = Exact<{
   username: Scalars['String']['input']
@@ -2926,6 +2958,8 @@ export type UserGetCommunitiesQuery = {
     createdAt?: Date | null
     id: string
     name: string
+    enableSync?: boolean | null
+    featured?: boolean | null
     avatarUrl?: string | null
     description?: string | null
     websiteUrl?: string | null
@@ -2935,7 +2969,6 @@ export type UserGetCommunitiesQuery = {
     telegramUrl?: string | null
     updatedAt?: Date | null
     cluster: NetworkCluster
-    enableSync?: boolean | null
     roles?: Array<{
       __typename?: 'Role'
       createdAt?: Date | null
@@ -3023,6 +3056,8 @@ export type UserFindManyCommunityQuery = {
       createdAt?: Date | null
       id: string
       name: string
+      enableSync?: boolean | null
+      featured?: boolean | null
       avatarUrl?: string | null
       description?: string | null
       websiteUrl?: string | null
@@ -3032,7 +3067,6 @@ export type UserFindManyCommunityQuery = {
       telegramUrl?: string | null
       updatedAt?: Date | null
       cluster: NetworkCluster
-      enableSync?: boolean | null
     }>
     meta: {
       __typename?: 'PagingMeta'
@@ -3058,6 +3092,8 @@ export type UserFindOneCommunityQuery = {
     createdAt?: Date | null
     id: string
     name: string
+    enableSync?: boolean | null
+    featured?: boolean | null
     avatarUrl?: string | null
     description?: string | null
     websiteUrl?: string | null
@@ -3067,7 +3103,6 @@ export type UserFindOneCommunityQuery = {
     telegramUrl?: string | null
     updatedAt?: Date | null
     cluster: NetworkCluster
-    enableSync?: boolean | null
   } | null
 }
 
@@ -3082,6 +3117,8 @@ export type UserCreateCommunityMutation = {
     createdAt?: Date | null
     id: string
     name: string
+    enableSync?: boolean | null
+    featured?: boolean | null
     avatarUrl?: string | null
     description?: string | null
     websiteUrl?: string | null
@@ -3091,7 +3128,6 @@ export type UserCreateCommunityMutation = {
     telegramUrl?: string | null
     updatedAt?: Date | null
     cluster: NetworkCluster
-    enableSync?: boolean | null
   } | null
 }
 
@@ -3107,6 +3143,8 @@ export type UserUpdateCommunityMutation = {
     createdAt?: Date | null
     id: string
     name: string
+    enableSync?: boolean | null
+    featured?: boolean | null
     avatarUrl?: string | null
     description?: string | null
     websiteUrl?: string | null
@@ -3116,7 +3154,6 @@ export type UserUpdateCommunityMutation = {
     telegramUrl?: string | null
     updatedAt?: Date | null
     cluster: NetworkCluster
-    enableSync?: boolean | null
   } | null
 }
 
@@ -6230,6 +6267,8 @@ export const CommunityDetailsFragmentDoc = gql`
     createdAt
     id
     name
+    enableSync
+    featured
     avatarUrl
     description
     websiteUrl
@@ -6239,7 +6278,6 @@ export const CommunityDetailsFragmentDoc = gql`
     telegramUrl
     updatedAt
     cluster
-    enableSync
   }
 `
 export const AppConfigDetailsFragmentDoc = gql`
@@ -6743,6 +6781,14 @@ export const AdminDeleteCommunityDocument = gql`
   mutation adminDeleteCommunity($communityId: String!) {
     deleted: adminDeleteCommunity(communityId: $communityId)
   }
+`
+export const AnonGetCommunitiesDocument = gql`
+  query anonGetCommunities {
+    items: anonGetCommunities {
+      ...CommunityDetails
+    }
+  }
+  ${CommunityDetailsFragmentDoc}
 `
 export const UserGetCommunitiesDocument = gql`
   query userGetCommunities($username: String!) {
@@ -7412,6 +7458,7 @@ const AdminFindOneCommunityDocumentString = print(AdminFindOneCommunityDocument)
 const AdminCreateCommunityDocumentString = print(AdminCreateCommunityDocument)
 const AdminUpdateCommunityDocumentString = print(AdminUpdateCommunityDocument)
 const AdminDeleteCommunityDocumentString = print(AdminDeleteCommunityDocument)
+const AnonGetCommunitiesDocumentString = print(AnonGetCommunitiesDocument)
 const UserGetCommunitiesDocumentString = print(UserGetCommunitiesDocument)
 const UserFindManyCommunityDocumentString = print(UserFindManyCommunityDocument)
 const UserFindOneCommunityDocumentString = print(UserFindOneCommunityDocument)
@@ -8406,6 +8453,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
           }),
         'adminDeleteCommunity',
         'mutation',
+        variables,
+      )
+    },
+    anonGetCommunities(
+      variables?: AnonGetCommunitiesQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AnonGetCommunitiesQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AnonGetCommunitiesQuery>(AnonGetCommunitiesDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'anonGetCommunities',
+        'query',
         variables,
       )
     },
@@ -10099,6 +10167,8 @@ export function AdminUpdateCommunityInputSchema(): z.ZodObject<Properties<AdminU
     avatarUrl: z.string().nullish(),
     description: z.string().nullish(),
     discordUrl: z.string().nullish(),
+    enableSync: z.boolean().nullish(),
+    featured: z.boolean().nullish(),
     githubUrl: z.string().nullish(),
     name: z.string().nullish(),
     telegramUrl: z.string().nullish(),

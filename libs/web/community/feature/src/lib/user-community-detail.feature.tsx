@@ -1,4 +1,4 @@
-import { Group } from '@mantine/core'
+import { Badge, Group } from '@mantine/core'
 import { UserBotFeature } from '@pubkey-link/web-bot-feature'
 import { useUserFindOneCommunity } from '@pubkey-link/web-community-data-access'
 import { UserCommunityMemberFeature } from '@pubkey-link/web-community-member-feature'
@@ -84,7 +84,14 @@ export function UserCommunityDetailFeature() {
         <UiGroup>
           <Group>
             <UiBack />
-            <CommunityUiItem community={item} />
+            <CommunityUiItem
+              community={item}
+              title={
+                <Badge variant="dot" color={item.enableSync ? 'lime' : 'orange'} size="xs">
+                  Sync {item.enableSync ? 'Enabled' : 'Disabled'}
+                </Badge>
+              }
+            />
           </Group>
           <Group>
             <UiDebugModal data={item} />

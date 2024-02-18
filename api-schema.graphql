@@ -139,6 +139,8 @@ input AdminUpdateCommunityInput {
   avatarUrl: String
   description: String
   discordUrl: String
+  enableSync: Boolean
+  featured: Boolean
   githubUrl: String
   name: String
   telegramUrl: String
@@ -242,6 +244,7 @@ type Community {
   description: String
   discordUrl: String
   enableSync: Boolean
+  featured: Boolean
   githubUrl: String
   id: String!
   name: String!
@@ -588,6 +591,7 @@ type Query {
   adminGetBackup(name: String!): JSON
   adminGetBackups: [String!]!
   anonFindUserByIdentity(provider: IdentityProvider!, providerId: String!): User
+  anonGetCommunities: [Community!]!
   anonRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
   appConfig: AppConfig!
   me: User

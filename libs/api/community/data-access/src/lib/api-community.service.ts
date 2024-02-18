@@ -2,11 +2,13 @@ import { Injectable } from '@nestjs/common'
 import { CommunityRole } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { ApiAdminCommunityService } from './api-admin-community.service'
+import { ApiAnonCommunityService } from './api-anon-community.service'
 import { ApiUserCommunityService } from './api-user-community.service'
 
 @Injectable()
 export class ApiCommunityService {
   constructor(
+    readonly anon: ApiAnonCommunityService,
     readonly core: ApiCoreService,
     readonly admin: ApiAdminCommunityService,
     readonly user: ApiUserCommunityService,

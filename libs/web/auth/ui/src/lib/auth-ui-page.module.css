@@ -1,0 +1,34 @@
+.wrapper {
+  min-height: rem(900px);
+  height: 100%;
+  background-size: cover;
+}
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.form {
+  border-right: rem(1px) solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7));
+  min-height: rem(900px);
+  height: 100%;
+  max-width: rem(550px);
+  padding-top: rem(80px);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    max-width: 100%;
+  }
+}
+
+.title {
+  color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+  font-family: Greycliff CF, var(--mantine-font-family);
+}

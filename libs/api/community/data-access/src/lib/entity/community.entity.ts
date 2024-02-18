@@ -15,6 +15,8 @@ export class Community {
   @Field({ nullable: true })
   enableSync?: boolean
   @Field({ nullable: true })
+  featured?: boolean
+  @Field({ nullable: true })
   avatarUrl?: string | null
   @Field({ nullable: true })
   description?: string | null
