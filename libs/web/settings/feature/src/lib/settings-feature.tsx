@@ -1,8 +1,8 @@
-import { Button } from '@mantine/core'
+import { Accordion, Button } from '@mantine/core'
 import { UiGrid } from '@pubkey-link/web-ui-core'
 import { useUserProfile } from '@pubkey-link/web-user-data-access'
 import { UserUiProfile, UserUiUpdateForm } from '@pubkey-link/web-user-ui'
-import { UiCard, UiContainer, UiLoader, UiStack, UiTabRoutes, UiWarning } from '@pubkey-ui/core'
+import { UiCardTitle, UiContainer, UiLoader, UiStack, UiWarning } from '@pubkey-ui/core'
 import { Link } from 'react-router-dom'
 import { SettingsIdentityDiscordFeature } from './settings-identity-feature'
 import { SettingsWalletsFeature } from './settings-wallets-feature'
@@ -35,33 +35,32 @@ export default function SettingsFeature() {
             </UiStack>
           }
         >
-          <UiTabRoutes
-            tabs={[
-              {
-                label: 'Profile',
-                path: 'profile',
-                element: (
-                  <UiStack>
-                    <UiCard title="Profile">
-                      <UserUiUpdateForm user={user} submit={updateUser} />
-                    </UiCard>
-                    <UiCard title="Discord">
-                      <SettingsIdentityDiscordFeature />
-                    </UiCard>
-                  </UiStack>
-                ),
-              },
-              {
-                label: 'Wallets',
-                path: 'wallets',
-                element: (
-                  <UiCard>
-                    <SettingsWalletsFeature />
-                  </UiCard>
-                ),
-              },
-            ]}
-          />
+          <Accordion multiple variant="separated" defaultValue={['profile', 'discord', 'wallets']}>
+            <Accordion.Item value="profile">
+              <Accordion.Control>
+                <UiCardTitle>Profile</UiCardTitle>
+              </Accordion.Control>
+              <Accordion.Panel>
+                <UserUiUpdateForm user={user} submit={updateUser} />
+              </Accordion.Panel>
+            </Accordion.Item>
+            <Accordion.Item value="discord">
+              <Accordion.Control>
+                <UiCardTitle>Discord</UiCardTitle>
+              </Accordion.Control>
+              <Accordion.Panel>
+                <SettingsIdentityDiscordFeature />
+              </Accordion.Panel>
+            </Accordion.Item>
+            <Accordion.Item value="wallets">
+              <Accordion.Control>
+                <UiCardTitle>Wallets</UiCardTitle>
+              </Accordion.Control>
+              <Accordion.Panel>
+                <SettingsWalletsFeature />
+              </Accordion.Panel>
+            </Accordion.Item>
+          </Accordion>
         </UiGrid>
       </UiStack>
     </UiContainer>

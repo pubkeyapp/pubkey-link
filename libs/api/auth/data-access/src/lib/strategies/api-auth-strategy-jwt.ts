@@ -23,7 +23,14 @@ export class ApiAuthStrategyJwt extends PassportStrategy(Strategy) {
     if (!payload.id) {
       throw new UnauthorizedException()
     }
-    const user = await this.core.data.user.findUnique({ where: { id: payload.id } })
+    const user = await this.core.data.user.findUnique({
+      where: { id: payload.id },
+      include: {
+        identities: {
+          select: { id: true, name: true, provider: true, providerId: true, profile: true, verified: true },
+        },
+      },
+    })
     if (!user) {
       throw new UnauthorizedException()
     }

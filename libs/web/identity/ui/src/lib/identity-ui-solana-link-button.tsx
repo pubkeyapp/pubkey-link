@@ -28,6 +28,7 @@ export function IdentityUiSolanaLinkButton({
         modals.open({
           size: 'xl',
           title: 'Link Solana Wallet',
+          centered: true,
           zIndex: 1,
           children: (
             <SolanaClusterProvider autoConnect={false}>

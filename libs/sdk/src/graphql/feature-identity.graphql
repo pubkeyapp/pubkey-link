@@ -4,6 +4,7 @@ fragment IdentitySummary on Identity {
   name
   provider
   providerId
+  verified
 }
 
 fragment IdentityDetails on Identity {

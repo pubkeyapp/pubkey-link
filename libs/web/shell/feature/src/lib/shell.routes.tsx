@@ -1,5 +1,6 @@
 import { AuthLoginFeature, AuthRegisterFeature } from '@pubkey-link/web-auth-feature'
 import { HomeFeature } from '@pubkey-link/web-home-feature'
+import { OnboardingFeature } from '@pubkey-link/web-onboarding-feature'
 import { AnonVerifyFeature } from '@pubkey-link/web-verify-feature'
 import { UiNotFound } from '@pubkey-ui/core'
 import { lazy } from 'react'
@@ -25,6 +26,7 @@ export function ShellRoutes() {
     full: [
       // Here you can add routes that are not part of the main layout, visit /custom-full-page to see this route
       // { path: 'custom-full-page', element: <div>CUSTOM FULL PAGE</div> },
+      { path: '/onboarding/*', element: <OnboardingFeature /> },
     ],
     public: [
       { path: '/verify/*', element: <AnonVerifyFeature /> },

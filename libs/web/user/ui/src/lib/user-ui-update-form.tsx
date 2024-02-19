@@ -9,13 +9,19 @@ export function UserUiUpdateForm({
   submit: (res: UserUpdateUserInput) => Promise<boolean>
   user: User
 }) {
-  const model: UserUpdateUserInput = {
+  const model: UserUpdateUserInput & { username: string } = {
+    username: user.username ?? '',
     avatarUrl: user.avatarUrl ?? user.avatarUrl ?? '',
     developer: user.developer ?? false,
     name: user.name ?? '',
   }
 
-  const fields: UiFormField<UserUpdateUserInput>[] = [
+  const fields: UiFormField<UserUpdateUserInput & { username: string }>[] = [
+    formFieldText('username', {
+      label: 'Username',
+      disabled: true,
+      description: 'Your username is synchronized with your Discord identity.',
+    }),
     formFieldText('name', { label: 'Name' }),
     formFieldText('avatarUrl', { label: 'Avatar URL' }),
   ]

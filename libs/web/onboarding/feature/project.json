@@ -1,0 +1,13 @@
+{
+  "name": "web-onboarding-feature",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/web/onboarding/feature/src",
+  "projectType": "library",
+  "tags": ["app:web", "type:feature"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    }
+  }
+}

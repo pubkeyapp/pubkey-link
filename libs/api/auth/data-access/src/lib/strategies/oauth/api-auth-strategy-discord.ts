@@ -35,7 +35,7 @@ function createDiscordProfile(profile: DiscordProfile) {
   return {
     externalId: profile.id,
     username: parseInt(profile.discriminator) > 0 ? `${profile.username}#${profile.discriminator}` : profile.username,
-    name: profile.global_name,
+    name: profile.global_name ?? profile.username,
     avatarUrl,
     bannerUrl,
     verified: profile.verified,

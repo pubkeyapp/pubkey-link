@@ -1453,6 +1453,15 @@ export type MeQuery = {
     status?: UserStatus | null
     updatedAt?: Date | null
     username?: string | null
+    identities?: Array<{
+      __typename?: 'Identity'
+      avatarUrl?: string | null
+      id: string
+      name?: string | null
+      provider: IdentityProvider
+      providerId: string
+      verified?: boolean | null
+    }> | null
   } | null
 }
 
@@ -3206,6 +3215,7 @@ export type IdentitySummaryFragment = {
   name?: string | null
   provider: IdentityProvider
   providerId: string
+  verified?: boolean | null
 }
 
 export type IdentityDetailsFragment = {
@@ -3511,6 +3521,7 @@ export type AnonFindUserByIdentityQuery = {
       name?: string | null
       provider: IdentityProvider
       providerId: string
+      verified?: boolean | null
     }> | null
   } | null
 }
@@ -6306,6 +6317,7 @@ export const IdentitySummaryFragmentDoc = gql`
     name
     provider
     providerId
+    verified
   }
 `
 export const IdentityChallengeDetailsFragmentDoc = gql`
@@ -6470,9 +6482,13 @@ export const MeDocument = gql`
   query me {
     me {
       ...UserDetails
+      identities {
+        ...IdentitySummary
+      }
     }
   }
   ${UserDetailsFragmentDoc}
+  ${IdentitySummaryFragmentDoc}
 `
 export const AdminCreateBackupDocument = gql`
   mutation adminCreateBackup {

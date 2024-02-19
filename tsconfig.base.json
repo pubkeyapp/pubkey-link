@@ -77,6 +77,7 @@
       "@pubkey-link/web-network-token-feature": ["libs/web/network-token/feature/src/index.ts"],
       "@pubkey-link/web-network-token-ui": ["libs/web/network-token/ui/src/index.ts"],
       "@pubkey-link/web-network-ui": ["libs/web/network/ui/src/index.ts"],
+      "@pubkey-link/web-onboarding-feature": ["libs/web/onboarding/feature/src/index.ts"],
       "@pubkey-link/web-role-data-access": ["libs/web/role/data-access/src/index.ts"],
       "@pubkey-link/web-role-feature": ["libs/web/role/feature/src/index.ts"],
       "@pubkey-link/web-role-ui": ["libs/web/role/ui/src/index.ts"],

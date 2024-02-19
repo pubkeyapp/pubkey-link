@@ -17,5 +17,8 @@ mutation register($input: RegisterInput!) {
 query me {
   me {
     ...UserDetails
+    identities {
+      ...IdentitySummary
+    }
   }
 }

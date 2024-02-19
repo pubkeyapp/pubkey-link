@@ -2,7 +2,7 @@ import { IdentityProvider } from '@pubkey-link/sdk'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { useUserFindManyIdentity } from '@pubkey-link/web-identity-data-access'
 import { IdentityUiLinkButton, IdentityUiList } from '@pubkey-link/web-identity-ui'
-import { UiCardTitle, UiGroup, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
+import { UiGroup, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function SettingsWalletsFeature() {
   const { user, appConfig } = useAuth()
@@ -17,8 +17,12 @@ export function SettingsWalletsFeature() {
         <UiLoader />
       ) : (
         <UiStack>
-          <UiGroup>
-            <UiCardTitle>Wallets</UiCardTitle>
+          {items.length ? (
+            <IdentityUiList items={items ?? []} deleteIdentity={deleteIdentity} refresh={() => query.refetch()} />
+          ) : (
+            <UiInfo message="No wallets found" />
+          )}
+          <UiGroup justify="end">
             <IdentityUiLinkButton
               disabled={!appConfig?.authLinkProviders?.includes(IdentityProvider.Solana)}
               identities={[]}
@@ -28,11 +32,6 @@ export function SettingsWalletsFeature() {
               w={210}
             />
           </UiGroup>
-          {items.length ? (
-            <IdentityUiList items={items ?? []} deleteIdentity={deleteIdentity} refresh={() => query.refetch()} />
-          ) : (
-            <UiInfo message="No wallets found" />
-          )}
         </UiStack>
       )}
     </UiStack>

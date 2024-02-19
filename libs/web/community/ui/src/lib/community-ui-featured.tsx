@@ -5,5 +5,5 @@ import { CommunityUiFeaturedItems } from './community-ui-featured-items'
 export function CommunityUiFeatured() {
   const { query, items } = useAnonGetCommunities()
 
-  return query.isLoading ? <UiLoader /> : items.length ? <CommunityUiFeaturedItems items={items} /> : null
+  return query.isLoading ? <UiLoader my="xl" /> : items.length ? <CommunityUiFeaturedItems items={items} /> : null
 }
