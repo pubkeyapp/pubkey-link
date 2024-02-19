@@ -9,7 +9,7 @@ FROM node:20.10-alpine as base
 
 RUN apk add --update --no-cache git python3 make g++
 
-RUN npm install -g pnpm
+RUN corepack enable && corepack prepare pnpm@8 --activate
 
 ENV HUSKY=0
 
