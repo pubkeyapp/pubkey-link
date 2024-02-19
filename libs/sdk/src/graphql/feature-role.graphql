@@ -24,6 +24,7 @@ fragment RoleConditionDetails on RoleCondition {
     ...NetworkTokenDetails
   }
   tokenId
+  roleId
   asset {
     owner
     amount

@@ -653,6 +653,7 @@ type RoleCondition {
   createdAt: DateTime
   filters: JSON
   id: String!
+  roleId: String
   token: NetworkToken
   tokenId: String
   type: NetworkTokenType!

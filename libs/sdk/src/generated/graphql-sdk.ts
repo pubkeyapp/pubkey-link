@@ -1159,6 +1159,7 @@ export type RoleCondition = {
   createdAt?: Maybe<Scalars['DateTime']['output']>
   filters?: Maybe<Scalars['JSON']['output']>
   id: Scalars['String']['output']
+  roleId?: Maybe<Scalars['String']['output']>
   token?: Maybe<NetworkToken>
   tokenId?: Maybe<Scalars['String']['output']>
   type: NetworkTokenType
@@ -1755,6 +1756,7 @@ export type UserFindManyBotRolesQuery = {
         filters?: any | null
         config?: any | null
         tokenId?: string | null
+        roleId?: string | null
         updatedAt?: Date | null
         valid?: boolean | null
         token?: {
@@ -2080,6 +2082,7 @@ export type CommunityMemberDetailsFragment = {
       filters?: any | null
       config?: any | null
       tokenId?: string | null
+      roleId?: string | null
       updatedAt?: Date | null
       valid?: boolean | null
       token?: {
@@ -2183,6 +2186,7 @@ export type AdminFindManyCommunityMemberQuery = {
           filters?: any | null
           config?: any | null
           tokenId?: string | null
+          roleId?: string | null
           updatedAt?: Date | null
           valid?: boolean | null
           token?: {
@@ -2296,6 +2300,7 @@ export type AdminFindOneCommunityMemberQuery = {
         filters?: any | null
         config?: any | null
         tokenId?: string | null
+        roleId?: string | null
         updatedAt?: Date | null
         valid?: boolean | null
         token?: {
@@ -2399,6 +2404,7 @@ export type AdminUpdateCommunityMemberMutation = {
         filters?: any | null
         config?: any | null
         tokenId?: string | null
+        roleId?: string | null
         updatedAt?: Date | null
         valid?: boolean | null
         token?: {
@@ -2515,6 +2521,7 @@ export type UserFindManyCommunityMemberQuery = {
           filters?: any | null
           config?: any | null
           tokenId?: string | null
+          roleId?: string | null
           updatedAt?: Date | null
           valid?: boolean | null
           token?: {
@@ -2628,6 +2635,7 @@ export type UserFindOneCommunityMemberQuery = {
         filters?: any | null
         config?: any | null
         tokenId?: string | null
+        roleId?: string | null
         updatedAt?: Date | null
         valid?: boolean | null
         token?: {
@@ -2731,6 +2739,7 @@ export type UserUpdateCommunityMemberMutation = {
         filters?: any | null
         config?: any | null
         tokenId?: string | null
+        roleId?: string | null
         updatedAt?: Date | null
         valid?: boolean | null
         token?: {
@@ -2994,6 +3003,7 @@ export type UserGetCommunitiesQuery = {
         filters?: any | null
         config?: any | null
         tokenId?: string | null
+        roleId?: string | null
         updatedAt?: Date | null
         valid?: boolean | null
         token?: {
@@ -3635,6 +3645,7 @@ export type LogDetailsFragment = {
       filters?: any | null
       config?: any | null
       tokenId?: string | null
+      roleId?: string | null
       updatedAt?: Date | null
       valid?: boolean | null
       token?: {
@@ -3802,6 +3813,7 @@ export type UserFindManyLogQuery = {
           filters?: any | null
           config?: any | null
           tokenId?: string | null
+          roleId?: string | null
           updatedAt?: Date | null
           valid?: boolean | null
           token?: {
@@ -3979,6 +3991,7 @@ export type UserFindOneLogQuery = {
         filters?: any | null
         config?: any | null
         tokenId?: string | null
+        roleId?: string | null
         updatedAt?: Date | null
         valid?: boolean | null
         token?: {
@@ -4147,6 +4160,7 @@ export type AdminFindManyLogQuery = {
           filters?: any | null
           config?: any | null
           tokenId?: string | null
+          roleId?: string | null
           updatedAt?: Date | null
           valid?: boolean | null
           token?: {
@@ -4324,6 +4338,7 @@ export type AdminFindOneLogQuery = {
         filters?: any | null
         config?: any | null
         tokenId?: string | null
+        roleId?: string | null
         updatedAt?: Date | null
         valid?: boolean | null
         token?: {
@@ -4933,6 +4948,7 @@ export type RoleDetailsFragment = {
     filters?: any | null
     config?: any | null
     tokenId?: string | null
+    roleId?: string | null
     updatedAt?: Date | null
     valid?: boolean | null
     token?: {
@@ -4997,6 +5013,7 @@ export type RoleConditionDetailsFragment = {
   filters?: any | null
   config?: any | null
   tokenId?: string | null
+  roleId?: string | null
   updatedAt?: Date | null
   valid?: boolean | null
   token?: {
@@ -5077,6 +5094,7 @@ export type AdminFindManyRoleQuery = {
         filters?: any | null
         config?: any | null
         tokenId?: string | null
+        roleId?: string | null
         updatedAt?: Date | null
         valid?: boolean | null
         token?: {
@@ -5167,6 +5185,7 @@ export type AdminFindOneRoleQuery = {
       filters?: any | null
       config?: any | null
       tokenId?: string | null
+      roleId?: string | null
       updatedAt?: Date | null
       valid?: boolean | null
       token?: {
@@ -5246,6 +5265,7 @@ export type AdminCreateRoleMutation = {
       filters?: any | null
       config?: any | null
       tokenId?: string | null
+      roleId?: string | null
       updatedAt?: Date | null
       valid?: boolean | null
       token?: {
@@ -5326,6 +5346,7 @@ export type AdminUpdateRoleMutation = {
       filters?: any | null
       config?: any | null
       tokenId?: string | null
+      roleId?: string | null
       updatedAt?: Date | null
       valid?: boolean | null
       token?: {
@@ -5413,6 +5434,7 @@ export type UserFindManyRoleQuery = {
         filters?: any | null
         config?: any | null
         tokenId?: string | null
+        roleId?: string | null
         updatedAt?: Date | null
         valid?: boolean | null
         token?: {
@@ -5535,6 +5557,7 @@ export type UserFindOneRoleQuery = {
       filters?: any | null
       config?: any | null
       tokenId?: string | null
+      roleId?: string | null
       updatedAt?: Date | null
       valid?: boolean | null
       token?: {
@@ -5582,6 +5605,7 @@ export type UserCreateRoleMutation = {
       filters?: any | null
       config?: any | null
       tokenId?: string | null
+      roleId?: string | null
       updatedAt?: Date | null
       valid?: boolean | null
       token?: {
@@ -5653,6 +5677,7 @@ export type UserCreateRoleConditionMutation = {
     filters?: any | null
     config?: any | null
     tokenId?: string | null
+    roleId?: string | null
     updatedAt?: Date | null
     valid?: boolean | null
     token?: {
@@ -5740,6 +5765,7 @@ export type UserUpdateRoleMutation = {
       filters?: any | null
       config?: any | null
       tokenId?: string | null
+      roleId?: string | null
       updatedAt?: Date | null
       valid?: boolean | null
       token?: {
@@ -5812,6 +5838,7 @@ export type UserUpdateRoleConditionMutation = {
     filters?: any | null
     config?: any | null
     tokenId?: string | null
+    roleId?: string | null
     updatedAt?: Date | null
     valid?: boolean | null
     token?: {
@@ -6178,6 +6205,7 @@ export const RoleConditionDetailsFragmentDoc = gql`
       ...NetworkTokenDetails
     }
     tokenId
+    roleId
     asset {
       owner
       amount

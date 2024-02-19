@@ -1,4 +1,9 @@
-import { UserCreateRoleConditionInput, UserCreateRolePermissionInput, UserUpdateRoleInput } from '@pubkey-link/sdk'
+import {
+  UserCreateRoleConditionInput,
+  UserCreateRolePermissionInput,
+  UserUpdateRoleConditionInput,
+  UserUpdateRoleInput,
+} from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
@@ -90,6 +95,23 @@ export function useUserFindOneRole({ roleId }: { roleId: string }) {
             return true
           }
           toastError('Role not updated')
+          return false
+        })
+        .catch((err) => {
+          toastError(err.message)
+          return false
+        }),
+    updateRoleCondition: async (roleConditionId: string, input: UserUpdateRoleConditionInput) =>
+      sdk
+        .userUpdateRoleCondition({ roleConditionId, input })
+        .then((res) => res.data)
+        .then(async (res) => {
+          if (res) {
+            toastSuccess('Role Condition updated')
+            await query.refetch()
+            return true
+          }
+          toastError('Role Condition not updated')
           return false
         })
         .catch((err) => {

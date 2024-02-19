@@ -26,6 +26,7 @@ export class RoleCondition {
   role?: Role | null
   @Field({ nullable: true })
   tokenId?: string | null
+  @Field({ nullable: true })
   roleId?: string | null
   @Field(() => SolanaNetworkAsset, { nullable: true })
   asset?: SolanaNetworkAsset | null
