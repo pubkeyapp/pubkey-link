@@ -1,6 +1,6 @@
 import { Community, NetworkToken } from '@pubkey-link/sdk'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
-import { NetworkTokenUiList } from '@pubkey-link/web-network-token-ui'
+import { NetworkTokenUiDetail } from '@pubkey-link/web-network-token-feature'
 import { useUserFindManyRole } from '@pubkey-link/web-role-data-access'
 import { RoleUiList } from '@pubkey-link/web-role-ui'
 import { UiCard, UiLoader, UiStack, UiWarning } from '@pubkey-ui/core'
@@ -26,7 +26,11 @@ export function CommunityDashboardMemberCardRoles({ community }: { community: Co
         <UiStack>
           <UiCard title="Community Assets">
             {user?.username && uniqueTokens?.length ? (
-              <NetworkTokenUiList tokens={(uniqueTokens ?? []) as NetworkToken[]} username={user.username} />
+              <UiStack>
+                {((uniqueTokens ?? []) as NetworkToken[]).map((token) => (
+                  <NetworkTokenUiDetail key={token.id} token={token} username={user.username!} />
+                ))}
+              </UiStack>
             ) : null}
           </UiCard>
           <UiCard title="Community Roles">

@@ -2,10 +2,9 @@ import { Button } from '@mantine/core'
 import { NetworkToken, NetworkTokenType } from '@pubkey-link/sdk'
 import { useUserFindManyNetworkAsset } from '@pubkey-link/web-network-asset-data-access'
 import { UserNetworkAssetFeature } from '@pubkey-link/web-network-asset-feature'
+import { NetworkAssetUiShowBalance, NetworkTokenUiItem } from '@pubkey-link/web-network-token-ui'
 import { UiCard, UiGroup, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 import { Suspense, useState } from 'react'
-import { NetworkAssetUiShowBalance } from './network-asset-ui-show-balance'
-import { NetworkTokenUiItem } from './network-token-ui-item'
 
 export function NetworkTokenUiDetailNonFungible({ token, username }: { token: NetworkToken; username: string }) {
   const [showDetails, setShowDetails] = useState(false)

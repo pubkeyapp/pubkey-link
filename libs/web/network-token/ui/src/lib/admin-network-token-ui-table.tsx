@@ -1,9 +1,10 @@
 import { ActionIcon, Group, ScrollArea } from '@mantine/core'
 import { NetworkToken } from '@pubkey-link/sdk'
-import { UiDebugModal } from '@pubkey-ui/core'
+import { UiCopy, UiDebugModal } from '@pubkey-ui/core'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'
+import { NetworkTokenUiExplorerIcon } from './network-token-ui-explorer-icon'
 import { NetworkTokenUiItem } from './network-token-ui-item'
 import { NetworkTokenUiProgram } from './network-token-ui-program'
 
@@ -49,6 +50,8 @@ export function AdminNetworkTokenUiTable({
             render: (item) => (
               <Group gap="xs" justify="right">
                 <UiDebugModal data={item} />
+                <UiCopy text={item.account} tooltip="Copy account address" />
+                <NetworkTokenUiExplorerIcon token={{ ...item, cluster: item.cluster! }} />
                 <ActionIcon color="brand" variant="light" size="sm" component={Link} to={`./${item.id}/settings`}>
                   <IconPencil size={16} />
                 </ActionIcon>

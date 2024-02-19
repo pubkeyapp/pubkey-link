@@ -22,6 +22,12 @@ export function NetworkTokenUiItem({
 }) {
   if (!networkToken) return null
 
+  const account = (
+    <Text size="sm" c="dimmed">
+      {ellipsify(networkToken.account, 10)}
+    </Text>
+  )
+
   return (
     <UiAnchor to={to ?? undefined} underline="never" {...anchorProps}>
       <Group gap="sm" wrap="nowrap" {...groupProps}>
@@ -33,14 +39,16 @@ export function NetworkTokenUiItem({
             </Text>
             <NetworkTokenUiTypeBadge type={networkToken.type} />
           </Group>
-          <Group gap={4} wrap="nowrap">
-            <UiCopy text={networkToken.account} tooltip="Copy account address" />
-            <NetworkTokenUiExplorerIcon token={{ ...networkToken, cluster: networkToken.cluster ?? cluster }} />
-            <UiDebugModal data={networkToken} />
-            <Text size="sm" c="dimmed">
-              {ellipsify(networkToken.account, 10)}
-            </Text>
-          </Group>
+          {to ? (
+            account
+          ) : (
+            <Group gap={4} wrap="nowrap">
+              <UiCopy text={networkToken.account} tooltip="Copy account address" />
+              <NetworkTokenUiExplorerIcon token={{ ...networkToken, cluster: networkToken.cluster ?? cluster }} />
+              <UiDebugModal data={networkToken} />
+              {account}
+            </Group>
+          )}
         </Stack>
       </Group>
     </UiAnchor>
