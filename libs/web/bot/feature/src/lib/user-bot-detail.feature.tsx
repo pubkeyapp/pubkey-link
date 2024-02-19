@@ -1,5 +1,5 @@
 import { Button, Group, Paper } from '@mantine/core'
-import { Community, UserCreateBotInput } from '@pubkey-link/sdk'
+import { Bot, Community, UserCreateBotInput } from '@pubkey-link/sdk'
 import { useUserFindOneBot } from '@pubkey-link/web-bot-data-access'
 import { BotUiItem, UserBotUiCreateForm } from '@pubkey-link/web-bot-ui'
 import {
@@ -100,8 +100,24 @@ export function UserBotDetailFeature({ community }: { community: Community }) {
           ]}
         />
       ) : (
-        <UiWarning message="Bot not started." />
+        <UiStack>
+          <BotControls item={item} />
+          <UiWarning message="Bot not started." />
+        </UiStack>
       )}
     </UiStack>
+  )
+}
+
+function BotControls({ item }: { item: Bot }) {
+  return (
+    <Paper withBorder p="md" radius="sm">
+      <UiGroup>
+        <BotUiItem bot={item} />
+        <Group>
+          <UserBotCommands bot={item} />
+        </Group>
+      </UiGroup>
+    </Paper>
   )
 }
