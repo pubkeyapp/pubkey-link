@@ -11,7 +11,7 @@ export interface ApiNetworkAssetIdentitySyncPayload {
   identity: Identity
 }
 
-@Processor(API_NETWORK_ASSET_SYNC, { concurrency: 8 })
+@Processor(API_NETWORK_ASSET_SYNC, { concurrency: parseInt(process.env['SYNC_NETWORK_ASSETS_CONCURRENT'] || '2') })
 export class ApiNetworkAssetSyncQueue extends WorkerHost {
   private readonly logger = new Logger(ApiNetworkAssetSyncQueue.name)
   constructor(private readonly core: ApiCoreService, private readonly sync: ApiNetworkAssetSyncService) {

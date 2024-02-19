@@ -16,7 +16,9 @@ export interface ApiNetworkAssetUpsertPayload {
   asset: NetworkAssetInput
 }
 
-@Processor(API_NETWORK_ASSET_UPSERT_QUEUE, { concurrency: 4 })
+@Processor(API_NETWORK_ASSET_UPSERT_QUEUE, {
+  concurrency: parseInt(process.env['SYNC_NETWORK_ASSETS_CONCURRENT'] || '2'),
+})
 export class ApiNetworkAssetUpsertQueue extends WorkerHost {
   private readonly logger = new Logger(ApiNetworkAssetUpsertQueue.name)
   constructor(private readonly core: ApiCoreService, private readonly sync: ApiNetworkAssetSyncService) {
