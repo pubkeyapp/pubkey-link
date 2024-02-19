@@ -2,10 +2,10 @@ import { Button } from '@mantine/core'
 import { NetworkToken, NetworkTokenType } from '@pubkey-link/sdk'
 import { useUserFindManyNetworkAsset } from '@pubkey-link/web-network-asset-data-access'
 import { UserNetworkAssetFeature } from '@pubkey-link/web-network-asset-feature'
-import { NetworkTokenUiItem } from '@pubkey-link/web-network-token-ui'
 import { UiCard, UiGroup, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { NetworkAssetUiShowBalance } from './network-asset-ui-show-balance'
+import { NetworkTokenUiItem } from './network-token-ui-item'
 
 export function NetworkTokenUiDetailNonFungible({ token, username }: { token: NetworkToken; username: string }) {
   const [showDetails, setShowDetails] = useState(false)
@@ -32,25 +32,27 @@ export function NetworkTokenUiDetailNonFungible({ token, username }: { token: Ne
         </UiStack>
       </UiGroup>
 
-      {query.isLoading ? (
-        <UiLoader />
-      ) : items.length ? (
-        showDetails ? (
-          <UiStack mt="lg">
-            <UserNetworkAssetFeature
-              hideCluster
-              cluster={token.cluster}
-              group={token.account}
-              username={username}
-              type={NetworkTokenType.NonFungible}
-            />
-          </UiStack>
+      <Suspense fallback={<UiLoader />}>
+        {query.isLoading ? (
+          <UiLoader />
+        ) : items.length ? (
+          showDetails ? (
+            <UiStack mt="lg">
+              <UserNetworkAssetFeature
+                hideCluster
+                cluster={token.cluster}
+                group={token.account}
+                username={username}
+                type={NetworkTokenType.NonFungible}
+              />
+            </UiStack>
+          ) : (
+            <div />
+          )
         ) : (
-          <div />
-        )
-      ) : (
-        <UiInfo mt="lg" message={`No assets found for ${username}.`} />
-      )}
+          <UiInfo mt="lg" message={`No assets found for ${username}.`} />
+        )}
+      </Suspense>
     </UiCard>
   )
 }

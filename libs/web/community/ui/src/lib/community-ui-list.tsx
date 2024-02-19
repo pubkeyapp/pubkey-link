@@ -5,7 +5,7 @@ import { CommunityUiGridItem } from './community-ui-grid-item'
 
 export function CommunityUiList({ communities }: { communities: Community[] }) {
   return communities.map((item) => (
-    <CommunityUiGridItem key={item.id} community={item}>
+    <CommunityUiGridItem key={item.id} community={item} to={`/c/${item.id}`}>
       {item?.roles?.length ? <RoleUiList mt="xs" roles={item.roles ?? []} /> : <UiInfo message="No roles." />}
     </CommunityUiGridItem>
   ))

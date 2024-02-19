@@ -498,7 +498,7 @@ export class ApiBotManagerService implements OnModuleInit {
     return url.toString()
   }
 
-  redirectUrl(botId: string) {
+  redirectUrl(_botId: string) {
     return this.core.config.authDiscordStrategyOptions.callbackURL
     // return `${this.core.config.apiUrl}/bot/${botId}/callback`
   }

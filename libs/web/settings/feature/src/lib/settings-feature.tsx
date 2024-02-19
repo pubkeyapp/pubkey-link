@@ -1,9 +1,8 @@
-import { Accordion, Button } from '@mantine/core'
+import { Accordion } from '@mantine/core'
 import { UiGrid } from '@pubkey-link/web-ui-core'
 import { useUserProfile } from '@pubkey-link/web-user-data-access'
 import { UserUiProfile, UserUiUpdateForm } from '@pubkey-link/web-user-ui'
 import { UiCardTitle, UiContainer, UiLoader, UiStack, UiWarning } from '@pubkey-ui/core'
-import { Link } from 'react-router-dom'
 import { SettingsIdentityDiscordFeature } from './settings-identity-feature'
 import { SettingsWalletsFeature } from './settings-wallets-feature'
 
@@ -24,14 +23,7 @@ export default function SettingsFeature() {
         <UiGrid
           sidebar={
             <UiStack>
-              <UserUiProfile
-                user={user}
-                action={
-                  <Button size="xs" variant="light" component={Link} to={user.profileUrl}>
-                    View profile
-                  </Button>
-                }
-              />
+              <UserUiProfile user={user} />
             </UiStack>
           }
         >

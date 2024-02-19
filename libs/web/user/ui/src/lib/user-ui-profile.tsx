@@ -32,10 +32,10 @@ export function UserUiProfile({
           <UserUiAvatar user={user} size="xl" radius={100} />
           <Stack gap={0}>
             <Text component={Link} to={user.profileUrl} fz="lg" fw={500}>
-              {user.username}
+              {user.name}
             </Text>
             <Text c="dimmed" fz="sm">
-              {user.name}
+              {user.username}
             </Text>
             {action ? <Group mt="sm">{action}</Group> : null}
           </Stack>

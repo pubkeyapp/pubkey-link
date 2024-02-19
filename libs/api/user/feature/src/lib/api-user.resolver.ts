@@ -10,6 +10,11 @@ export class ApiUserResolver {
   }
 
   @ResolveField(() => String)
+  name(@Parent() user: User) {
+    return user.name ?? user.username
+  }
+
+  @ResolveField(() => String)
   profileUrl(@Parent() user: User) {
     return ['/u', user.username].join('/')
   }

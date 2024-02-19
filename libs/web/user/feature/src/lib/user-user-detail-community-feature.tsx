@@ -10,7 +10,7 @@ export function UserUserDetailCommunityFeature({ username }: { username: string 
   }
 
   if (!items?.length) {
-    return <UiWarning message={`${username} is not part of any community.`} />
+    return <UiWarning message={`${username} is not a member of any community.`} />
   }
 
   return (

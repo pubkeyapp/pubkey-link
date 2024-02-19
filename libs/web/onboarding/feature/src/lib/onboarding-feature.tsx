@@ -38,7 +38,7 @@ export function OnboardingFeature() {
               You're almost there!
             </Title>
             <Text ta="center">Link your Solana wallet to get started.</Text>
-            <Text ta="center">You can add more wallets later.</Text>
+            <Text ta="center">You can add more wallets later in your settings.</Text>
           </Stack>
           <IdentityUiLinkButton
             loading={query.isLoading}

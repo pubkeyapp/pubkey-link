@@ -66,6 +66,14 @@ export class ApiCoreService {
     return role === CommunityRole.Admin
   }
 
+  async ensureUserAdmin(userId: string): Promise<boolean> {
+    const user = await this.findUserById(userId)
+    if (user?.role !== UserRole.Admin) {
+      throw new Error(`User ${userId} is not an admin`)
+    }
+    return user.role === UserRole.Admin
+  }
+
   async ensureUserById(userId: string) {
     const found = await this.findUserById(userId)
     if (!found) {

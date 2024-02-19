@@ -1,47 +1,63 @@
-import { Button, Group } from '@mantine/core'
+import { Button, Group, Stack, Text } from '@mantine/core'
+import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { useUserFindManyCommunity } from '@pubkey-link/web-community-data-access'
-import { CommunityUiGrid } from '@pubkey-link/web-community-ui'
+import { CommunityUiFeatured, CommunityUiGrid } from '@pubkey-link/web-community-ui'
 import { UiSearchField } from '@pubkey-link/web-ui-core'
-import { UiBack, UiDebugModal, UiInfo, UiLoader, UiPage } from '@pubkey-ui/core'
+import { UiContainer, UiDebugModal, UiGroup, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 import { Link } from 'react-router-dom'
 
 export function UserCommunityListFeature() {
+  const { isAdmin } = useAuth()
   const { items, pagination, query, setSearch } = useUserFindManyCommunity({
     limit: 12,
   })
 
   return (
-    <UiPage
-      title="Communities"
-      leftAction={<UiBack />}
-      rightAction={
+    <UiContainer>
+      <UiStack>
         <Group>
-          <UiDebugModal data={items} />
-          <Button component={Link} to="create">
-            Create
-          </Button>
+          <UiSearchField placeholder="Search community" setSearch={setSearch} />
+          {isAdmin ? (
+            <Group>
+              <UiDebugModal data={items} />
+              <Button component={Link} to="create">
+                Create
+              </Button>
+            </Group>
+          ) : null}
         </Group>
-      }
-    >
-      <Group>
-        <UiSearchField placeholder="Search community" setSearch={setSearch} />
-      </Group>
 
-      {query.isLoading ? (
-        <UiLoader />
-      ) : items?.length ? (
-        <CommunityUiGrid
-          communities={items}
-          page={pagination.page}
-          totalRecords={pagination.total}
-          onPageChange={pagination.setPage}
-          limit={pagination.limit}
-          setLimit={pagination.setLimit}
-          setPage={pagination.setPage}
-        />
-      ) : (
-        <UiInfo message="No communities found." />
-      )}
-    </UiPage>
+        {query.isLoading ? (
+          <UiLoader />
+        ) : items?.length ? (
+          <CommunityUiGrid
+            communities={items}
+            page={pagination.page}
+            totalRecords={pagination.total}
+            onPageChange={pagination.setPage}
+            limit={pagination.limit}
+            setLimit={pagination.setLimit}
+            setPage={pagination.setPage}
+          />
+        ) : (
+          <UiStack>
+            <UiInfo
+              title="No communities found."
+              message={
+                <Stack>
+                  <Text>
+                    If you just joined, it may take a few minutes for your communities to appear while we index your
+                    wallet and validate your access.
+                  </Text>
+                </Stack>
+              }
+            />
+            <UiGroup mx="auto">
+              <CommunityUiFeatured label="Join one of these communities to get verified" />
+            </UiGroup>
+          </UiStack>
+        )}
+      </UiStack>
+    </UiContainer>
   )
 }

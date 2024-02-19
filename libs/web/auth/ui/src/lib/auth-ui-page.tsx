@@ -26,7 +26,7 @@ export function AuthUiPage({ authEnabled, children }: { authEnabled: boolean; ch
             <Group justify="center" mt="xl">
               <UiLogoType height={64} />
             </Group>
-            <CommunityUiFeatured />
+            <CommunityUiFeatured label="Communities hosted on this instance" />
             <AuthUiEnabled authEnabled={authEnabled}>{children}</AuthUiEnabled>
           </UiStack>
           <Stack align="center" mt="xl">

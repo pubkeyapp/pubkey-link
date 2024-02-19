@@ -148,6 +148,7 @@ export class ApiUserIdentityService {
         signature,
       },
     })
+    await this.networkAsset.sync.sync({ cluster: NetworkCluster.SolanaMainnet, identity: found.identity })
     return updated
   }
 

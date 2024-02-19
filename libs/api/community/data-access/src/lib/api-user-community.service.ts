@@ -11,6 +11,7 @@ export class ApiUserCommunityService {
   constructor(private readonly core: ApiCoreService) {}
 
   async createCommunity(userId: string, input: UserCreateCommunityInput) {
+    await this.core.ensureUserAdmin(userId)
     return this.core.createCommunity({ userId, input })
   }
 

@@ -1,11 +1,11 @@
 import { Button, Group, Text } from '@mantine/core'
 import { ellipsify, NetworkToken, NetworkTokenType } from '@pubkey-link/sdk'
 import { useUserFindManyNetworkAsset } from '@pubkey-link/web-network-asset-data-access'
-import { NetworkTokenUiItem } from '@pubkey-link/web-network-token-ui'
 import { UiKeyValueTable } from '@pubkey-link/web-ui-core'
 import { UiCard, UiGroup, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 import { useState } from 'react'
 import { NetworkAssetUiShowBalance } from './network-asset-ui-show-balance'
+import { NetworkTokenUiItem } from './network-token-ui-item'
 import { useNetworkTokenSummary } from './use-network-token-summary'
 
 export function NetworkTokenUiDetailFungible({ token, username }: { token: NetworkToken; username: string }) {

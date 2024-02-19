@@ -3,6 +3,7 @@ import { ellipsify, NetworkCluster, NetworkToken } from '@pubkey-link/sdk'
 import { UiAnchor, type UiAnchorProps, UiCopy, UiDebugModal } from '@pubkey-ui/core'
 import { NetworkTokenUiAvatar } from './network-token-ui-avatar'
 import { NetworkTokenUiExplorerIcon } from './network-token-ui-explorer-icon'
+import { NetworkTokenUiTypeBadge } from './network-token-ui-type-badge'
 
 export function NetworkTokenUiItem({
   anchorProps,
@@ -30,6 +31,7 @@ export function NetworkTokenUiItem({
             <Text size="lg" fw={500}>
               {networkToken?.name}
             </Text>
+            <NetworkTokenUiTypeBadge type={networkToken.type} />
           </Group>
           <Group gap={4} wrap="nowrap">
             <UiCopy text={networkToken.account} tooltip="Copy account address" />

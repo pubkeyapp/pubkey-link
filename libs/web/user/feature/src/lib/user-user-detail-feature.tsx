@@ -36,7 +36,6 @@ export function UserUserDetailFeature() {
   }
 
   const isAuthAdmin = authUser?.role === UserRole.Admin
-  const isAuthUser = authUser?.id === user.id
 
   return (
     <UiContainer>
@@ -46,18 +45,11 @@ export function UserUserDetailFeature() {
             <UserUiProfile
               user={user}
               action={
-                <Group>
-                  {isAuthAdmin ? (
-                    <Button size="xs" variant="light" component={Link} to={`/admin/users/${user.id}`}>
-                      Manage
-                    </Button>
-                  ) : null}
-                  {isAuthUser ? (
-                    <Button size="xs" variant="light" component={Link} to={`/settings`}>
-                      Edit profile
-                    </Button>
-                  ) : null}
-                </Group>
+                isAuthAdmin ? (
+                  <Button size="xs" variant="light" component={Link} to={`/admin/users/${user.id}`}>
+                    Manage
+                  </Button>
+                ) : undefined
               }
             />
             {items?.map((identity) => (

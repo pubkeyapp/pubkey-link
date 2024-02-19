@@ -102,11 +102,11 @@ dependencies:
     specifier: 5.8.0
     version: 5.8.0(prisma@5.8.0)
   '@pubkey-ui/core':
-    specifier: ^1.4.1
-    version: 1.4.1(@types/react@18.2.47)(dayjs@1.11.10)(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^1.4.2
+    version: 1.4.2(@types/react@18.2.47)(dayjs@1.11.10)(react-dom@18.2.0)(react@18.2.0)
   '@pubkey-ui/generators':
-    specifier: ^1.4.1
-    version: 1.4.1(@swc-node/register@1.6.8)(@swc/core@1.3.102)(@types/node@20.10.8)(eslint@8.56.0)(nx@17.2.8)(ts-node@10.9.2)(typescript@5.3.3)(webpack@5.89.0)
+    specifier: ^1.4.2
+    version: 1.4.2(@swc-node/register@1.6.8)(@swc/core@1.3.102)(@types/node@20.10.8)(eslint@8.56.0)(nx@17.2.8)(ts-node@10.9.2)(typescript@5.3.3)(webpack@5.89.0)
   '@pubkeyapp/solana-verify-wallet':
     specifier: ^1.3.3
     version: 1.3.3
@@ -7245,8 +7245,8 @@ packages:
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
     dev: false
 
-  /@pubkey-ui/core@1.4.1(@types/react@18.2.47)(dayjs@1.11.10)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-6kEeZu5lZd5x6JUAvkR/cTDT7oav6CTCqoq2P6hDvJ4qwYWAUzkQa1euLIAL1sRCwGT6T+5/2Pn8st3KUr92Fg==}
+  /@pubkey-ui/core@1.4.2(@types/react@18.2.47)(dayjs@1.11.10)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-0PIxxd9Ms8LA0m+VdcDGyTfRBuIu6ci9hK1QtJ3Uj6IzmFU2FueX5eYQCLWXOsEeCZmWKZpyNpO0nV+VhnHCPA==}
     dependencies:
       '@mantine/core': 7.4.1(@mantine/hooks@7.4.1)(@types/react@18.2.47)(react-dom@18.2.0)(react@18.2.0)
       '@mantine/dates': 7.4.1(@mantine/core@7.4.1)(@mantine/hooks@7.4.1)(dayjs@1.11.10)(react-dom@18.2.0)(react@18.2.0)
@@ -7262,8 +7262,8 @@ packages:
       - react-dom
     dev: false
 
-  /@pubkey-ui/generators@1.4.1(@swc-node/register@1.6.8)(@swc/core@1.3.102)(@types/node@20.10.8)(eslint@8.56.0)(nx@17.2.8)(ts-node@10.9.2)(typescript@5.3.3)(webpack@5.89.0):
-    resolution: {integrity: sha512-coBgYUIOPirm05JqbJy169V9j1h+RqbfJEKkO2opuJyFalln5MpqGzBszVRZ+UuS3eqMfCpwUn3XvewrRFSpzw==}
+  /@pubkey-ui/generators@1.4.2(@swc-node/register@1.6.8)(@swc/core@1.3.102)(@types/node@20.10.8)(eslint@8.56.0)(nx@17.2.8)(ts-node@10.9.2)(typescript@5.3.3)(webpack@5.89.0):
+    resolution: {integrity: sha512-aHWEuQxu78RBS4IF/x+s7N1vcjMh0FR0jAquHN5bchM09AzZ24ASeK5ttU6CwWhuE7FK/XgpXljmJteq78Ej8Q==}
     dependencies:
       '@beeman/preset-anchor': 2.0.0(@swc-node/register@1.6.8)(@swc/core@1.3.102)(@types/node@20.10.8)(nx@17.2.8)(ts-node@10.9.2)(typescript@5.3.3)
       '@nx/devkit': 17.2.8(nx@17.2.8)
@@ -15941,8 +15941,6 @@ packages:
       webpack: '*'
     peerDependenciesMeta:
       webpack:
-        optional: true
-      webpack-sources:
         optional: true
     dependencies:
       webpack: 5.89.0(@swc/core@1.3.102)

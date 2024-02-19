@@ -26,7 +26,11 @@ export function UserUiUpdateForm({
     formFieldText('avatarUrl', { label: 'Avatar URL' }),
   ]
   return (
-    <UiForm model={model} fields={fields} submit={(res) => submit(res as UserUpdateUserInput)}>
+    <UiForm
+      model={model}
+      fields={fields}
+      submit={({ name, avatarUrl }) => submit({ name, avatarUrl } as UserUpdateUserInput)}
+    >
       <Group justify="right">
         <Button type="submit">Save</Button>
       </Group>
