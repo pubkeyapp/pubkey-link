@@ -48,17 +48,23 @@ export function UserBotDetailFeature({ community }: { community: Community }) {
 
   return (
     <UiStack>
-      <Paper withBorder p="md" radius="sm">
-        <UiGroup>
-          <BotUiItem bot={item} />
-          <Group>
-            <UserBotCommands bot={item} />
-          </Group>
-        </UiGroup>
-      </Paper>
       {item.started ? (
         <UiTabRoutes
           tabs={[
+            {
+              path: 'bot',
+              label: 'Bot',
+              element: (
+                <Paper withBorder p="md" radius="sm">
+                  <UiGroup>
+                    <BotUiItem bot={item} />
+                    <Group>
+                      <UserBotCommands bot={item} />
+                    </Group>
+                  </UiGroup>
+                </Paper>
+              ),
+            },
             {
               path: 'servers',
               label: 'Servers',
