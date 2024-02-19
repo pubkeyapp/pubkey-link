@@ -253,6 +253,8 @@ export type BotServer = {
   dryRun?: Maybe<Scalars['Boolean']['output']>
   enableSync?: Maybe<Scalars['Boolean']['output']>
   id: Scalars['String']['output']
+  mentionRoles?: Maybe<Scalars['Boolean']['output']>
+  mentionUsers?: Maybe<Scalars['Boolean']['output']>
   serverId: Scalars['String']['output']
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   verbose?: Maybe<Scalars['Boolean']['output']>
@@ -1345,6 +1347,8 @@ export type UserUpdateBotServerInput = {
   commandChannel?: InputMaybe<Scalars['String']['input']>
   dryRun?: InputMaybe<Scalars['Boolean']['input']>
   enableSync?: InputMaybe<Scalars['Boolean']['input']>
+  mentionRoles?: InputMaybe<Scalars['Boolean']['input']>
+  mentionUsers?: InputMaybe<Scalars['Boolean']['input']>
   verbose?: InputMaybe<Scalars['Boolean']['input']>
 }
 
@@ -1526,6 +1530,8 @@ export type BotServerDetailsFragment = {
   commandChannel?: string | null
   dryRun?: boolean | null
   enableSync?: boolean | null
+  mentionRoles?: boolean | null
+  mentionUsers?: boolean | null
   verbose?: boolean | null
 }
 
@@ -1847,6 +1853,8 @@ export type UserFindOneBotServerQuery = {
     commandChannel?: string | null
     dryRun?: boolean | null
     enableSync?: boolean | null
+    mentionRoles?: boolean | null
+    mentionUsers?: boolean | null
     verbose?: boolean | null
   } | null
 }
@@ -1920,6 +1928,8 @@ export type UserTestBotServerConfigMutation = {
     commandChannel?: string | null
     dryRun?: boolean | null
     enableSync?: boolean | null
+    mentionRoles?: boolean | null
+    mentionUsers?: boolean | null
     verbose?: boolean | null
   } | null
 }
@@ -1943,6 +1953,8 @@ export type UserUpdateBotServerMutation = {
     commandChannel?: string | null
     dryRun?: boolean | null
     enableSync?: boolean | null
+    mentionRoles?: boolean | null
+    mentionUsers?: boolean | null
     verbose?: boolean | null
   } | null
 }
@@ -6149,6 +6161,8 @@ export const BotServerDetailsFragmentDoc = gql`
     commandChannel
     dryRun
     enableSync
+    mentionRoles
+    mentionUsers
     verbose
   }
 `
@@ -10434,6 +10448,8 @@ export function UserUpdateBotServerInputSchema(): z.ZodObject<Properties<UserUpd
     commandChannel: z.string().nullish(),
     dryRun: z.boolean().nullish(),
     enableSync: z.boolean().nullish(),
+    mentionRoles: z.boolean().nullish(),
+    mentionUsers: z.boolean().nullish(),
     verbose: z.boolean().nullish(),
   })
 }

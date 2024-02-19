@@ -15,6 +15,10 @@ export class BotServer {
   @Field({ nullable: true })
   enableSync?: boolean
   @Field({ nullable: true })
+  mentionUsers?: boolean
+  @Field({ nullable: true })
+  mentionRoles?: boolean
+  @Field({ nullable: true })
   adminRole?: string
   @Field({ nullable: true })
   commandChannel?: string

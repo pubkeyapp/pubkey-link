@@ -46,6 +46,8 @@ model BotServer {
   serverId       String
   enableSync     Boolean  @default(false)
   dryRun         Boolean  @default(true)
+  mentionRoles   Boolean  @default(false)
+  mentionUsers   Boolean  @default(false)
   verbose        Boolean  @default(false)
   adminRole      String?
   commandChannel String?

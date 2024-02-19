@@ -30,6 +30,8 @@ export function UserBotServerUiUpdateForm({
       commandChannel: botServer.commandChannel,
       dryRun: botServer.dryRun ?? false,
       enableSync: botServer.enableSync ?? false,
+      mentionRoles: botServer.mentionRoles ?? false,
+      mentionUsers: botServer.mentionUsers ?? false,
       verbose: botServer.verbose ?? false,
     },
     validate: {
@@ -65,6 +67,16 @@ export function UserBotServerUiUpdateForm({
           label="Enable Sync"
           description="If enabled, the server will sync its state with the bot."
           {...form.getInputProps('enableSync', { type: 'checkbox' })}
+        />
+        <Checkbox
+          label="Mention Roles"
+          description="If enabled, the server will mention roles in the command channel."
+          {...form.getInputProps('mentionRoles', { type: 'checkbox' })}
+        />
+        <Checkbox
+          label="Mention Users"
+          description="If enabled, the server will mention users in the command channel."
+          {...form.getInputProps('mentionUsers', { type: 'checkbox' })}
         />
         <Checkbox
           label="Verbose"

@@ -1,7 +1,12 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { Bot, IdentityProvider, UserStatus } from '@prisma/client'
-import { createDiscordRestClient, DiscordBot } from '@pubkey-link/api-bot-util'
+import {
+  createDiscordRestClient,
+  DiscordBot,
+  formatBotMessageAdd,
+  formatBotMessageRemove,
+} from '@pubkey-link/api-bot-util'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { ChannelType, Guild, PermissionsString, User } from 'discord.js'
 import { ApiBotMemberService } from './api-bot-member.service'
@@ -180,7 +185,7 @@ export class ApiBotManagerService implements OnModuleInit {
       throw new Error(`Server ${serverId} not found for bot ${botId}`)
     }
 
-    const { dryRun, commandChannel } = botServer
+    const { dryRun, commandChannel, mentionRoles, mentionUsers } = botServer
 
     async function sendCommandChannel(message: string) {
       if (!commandChannel) {
@@ -229,7 +234,14 @@ export class ApiBotManagerService implements OnModuleInit {
         if (!dryRun) {
           await member.roles.add(toBeAdded)
         }
-        const { botMessage, logMessage } = messageAdd({ dryRun, communityMember: cm, roles: toBeAdded, roleMap })
+        const { botMessage, logMessage } = formatBotMessageAdd({
+          dryRun,
+          communityMember: cm,
+          roles: toBeAdded,
+          roleMap,
+          mentionRoles,
+          mentionUsers,
+        })
         await this.core.logVerbose(logMessage, { botId, communityId: cm.communityId, userId: cm.userId })
         await sendCommandChannel(botMessage)
       }
@@ -238,7 +250,14 @@ export class ApiBotManagerService implements OnModuleInit {
         if (!dryRun) {
           await member.roles.remove(toBeRemoved)
         }
-        const { botMessage, logMessage } = messageRemove({ dryRun, communityMember: cm, roles: toBeRemoved, roleMap })
+        const { botMessage, logMessage } = formatBotMessageRemove({
+          dryRun,
+          communityMember: cm,
+          roles: toBeRemoved,
+          roleMap,
+          mentionRoles,
+          mentionUsers,
+        })
         await this.core.logVerbose(logMessage, { botId, communityId: cm.communityId, userId: cm.userId })
         await sendCommandChannel(botMessage)
       }
@@ -510,49 +529,6 @@ export class ApiBotManagerService implements OnModuleInit {
 
 function convertPermissions(permissions: Record<PermissionsString, boolean>) {
   return (Object.keys(permissions) as PermissionsString[]).filter((key) => permissions[key] === true)
-}
-
-function messageRemove({
-  communityMember: { discordId, username },
-  dryRun,
-  roles,
-  roleMap,
-}: {
-  communityMember: { username: string; discordId?: string }
-  dryRun: boolean
-  roles: string[]
-  roleMap: Record<string, string>
-}) {
-  const prefix = roles.length > 1 ? '😭 Removed roles from' : '😭 Removed role from'
-  return {
-    botMessage: `${dryRunBot(dryRun)} ${prefix} <@${discordId}>: ${roles.map((r) => `<@&${r}>`).join(', ')}`,
-    logMessage: `${dryRunLog(dryRun)} ${prefix} ${username}: ${roles.map((r) => roleMap[r]).join(', ')}`,
-  }
-}
-
-function messageAdd({
-  communityMember: { username, discordId },
-  dryRun,
-  roles,
-  roleMap,
-}: {
-  communityMember: { username: string; discordId?: string }
-  dryRun: boolean
-  roles: string[]
-  roleMap: Record<string, string>
-}) {
-  const prefix = roles.length > 1 ? '🥳 Added roles to' : '🥳 Added role to'
-  return {
-    botMessage: `${dryRunBot(dryRun)} ${prefix} <@${discordId}>: ${roles.map((r) => `<@&${r}>`).join(', ')}`,
-    logMessage: `${dryRunLog(dryRun)} ${prefix} ${username}: ${roles.map((r) => roleMap[r]).join(', ')}`,
-  }
-}
-
-function dryRunBot(dryRun: boolean) {
-  return dryRun ? `**${dryRunLog(dryRun)}**` : ''
-}
-function dryRunLog(dryRun: boolean) {
-  return dryRun ? '[DRY RUN]' : ''
 }
 
 function getAddRemoved({
