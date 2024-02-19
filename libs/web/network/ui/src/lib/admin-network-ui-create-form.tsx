@@ -1,5 +1,5 @@
 import { Button, Group } from '@mantine/core'
-import { AdminCreateNetworkInput, getEnumOptions, NetworkCluster, NetworkType } from '@pubkey-link/sdk'
+import { AdminCreateNetworkInput, getEnumOptions, NetworkCluster } from '@pubkey-link/sdk'
 import { formFieldSelect, formFieldText, UiForm, UiFormField } from '@pubkey-ui/core'
 
 export function AdminNetworkUiCreateForm({ submit }: { submit: (res: AdminCreateNetworkInput) => Promise<boolean> }) {
@@ -7,7 +7,6 @@ export function AdminNetworkUiCreateForm({ submit }: { submit: (res: AdminCreate
     cluster: NetworkCluster.SolanaMainnet,
     endpoint: '',
     name: '',
-    type: NetworkType.Solana,
   }
 
   const fields: UiFormField<AdminCreateNetworkInput>[] = [

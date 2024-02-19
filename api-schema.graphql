@@ -31,7 +31,6 @@ input AdminCreateNetworkInput {
   cluster: NetworkCluster!
   endpoint: String!
   name: String!
-  type: NetworkType!
 }
 
 input AdminCreateNetworkTokenInput {

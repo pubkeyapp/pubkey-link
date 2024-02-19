@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
+import { getNetworkType } from '@pubkey-link/api-network-util'
 import { AdminCreateNetworkInput } from './dto/admin-create-network.input'
 import { AdminFindManyNetworkInput } from './dto/admin-find-many-network.input'
 import { AdminUpdateNetworkInput } from './dto/admin-update-network.input'
@@ -11,7 +12,9 @@ export class ApiAdminNetworkService {
   constructor(private readonly core: ApiCoreService) {}
 
   async createNetwork(input: AdminCreateNetworkInput) {
-    return this.core.data.network.create({ data: input })
+    const type = getNetworkType(input.cluster)
+
+    return this.core.data.network.create({ data: { ...input, type, id: input.cluster } })
   }
 
   async deleteNetwork(networkId: string) {

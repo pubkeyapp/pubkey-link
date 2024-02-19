@@ -53,7 +53,6 @@ export type AdminCreateNetworkInput = {
   cluster: NetworkCluster
   endpoint: Scalars['String']['input']
   name: Scalars['String']['input']
-  type: NetworkType
 }
 
 export type AdminCreateNetworkTokenInput = {
@@ -10045,7 +10044,6 @@ export function AdminCreateNetworkInputSchema(): z.ZodObject<Properties<AdminCre
     cluster: NetworkClusterSchema,
     endpoint: z.string(),
     name: z.string(),
-    type: NetworkTypeSchema,
   })
 }
 
