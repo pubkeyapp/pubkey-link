@@ -19,7 +19,7 @@ export function SolanaClusterProvider({ autoConnect, children }: { autoConnect?:
   )
 }
 
-export function SolanaProvider({ autoConnect = true, children }: { autoConnect?: boolean; children: ReactNode }) {
+export function SolanaProvider({ autoConnect = false, children }: { autoConnect?: boolean; children: ReactNode }) {
   const { cluster } = useCluster()
   const endpoint = useMemo(() => cluster.endpoint, [cluster])
 
