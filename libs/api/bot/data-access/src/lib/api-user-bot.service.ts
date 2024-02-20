@@ -123,7 +123,7 @@ export class ApiUserBotService {
   async userTestBotServerConfig(userId: string, botId: string, serverId: string) {
     await this.ensureBotAdmin({ botId, userId })
 
-    return this.manager.testBotServerConfig(botId, serverId)
+    return this.manager.testBotServerConfig(userId, botId, serverId)
   }
 
   private async ensureBotAdmin({ botId, userId }: { botId: string; userId: string }) {

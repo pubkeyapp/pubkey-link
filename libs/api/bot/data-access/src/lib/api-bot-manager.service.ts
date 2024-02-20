@@ -189,7 +189,7 @@ export class ApiBotManagerService implements OnModuleInit {
       throw new Error(`Server ${serverId} not found for bot ${botId}`)
     }
 
-    const { dryRun, commandChannel, mentionRoles, mentionUsers } = botServer
+    const { dryRun, commandChannel, mentionRoles, mentionUsers, verbose } = botServer
 
     async function sendCommandChannel(message: string) {
       if (!commandChannel) {
@@ -204,7 +204,13 @@ export class ApiBotManagerService implements OnModuleInit {
     const roles = await this.getBotRoles(botId, serverId).then((roles) =>
       roles.filter((role) => communityRoleIds.includes(role.id)),
     )
-
+    if (!roles.length) {
+      this.logger.warn(`No roles found for bot ${botId} in server ${serverId}`)
+      return false
+    }
+    if (verbose) {
+      await sendCommandChannel(`Syncing ${roles.length} roles for ${communityMembers.length} members`)
+    }
     const roleMap: Record<string, string> = roles
       .map((role) => ({ [role.id]: role.name }))
       .reduce((acc, role) => ({ ...acc, ...role }), {})
@@ -270,12 +276,15 @@ export class ApiBotManagerService implements OnModuleInit {
       this.logger.warn(`Accounts not in Discord server: ${notFound.length}`)
     }
 
-    this.logger.verbose(`Synced ${communityMembers.length} members in ${serverId} for bot ${botId}`)
+    if (verbose) {
+      await sendCommandChannel(`Synced ${roles.length} roles ${communityMembers.length} members`)
+      this.logger.verbose(`Synced ${communityMembers.length} members in ${serverId} for bot ${botId}`)
+    }
 
     return true
   }
 
-  async testBotServerConfig(botId: string, serverId: string) {
+  async testBotServerConfig(userId: string, botId: string, serverId: string) {
     const bot = await this.core.data.bot.findUnique({ where: { id: botId }, include: { community: true } })
     if (!bot) {
       throw new Error(`Bot ${botId} not found`)
@@ -298,7 +307,12 @@ export class ApiBotManagerService implements OnModuleInit {
     if (!botServer.commandChannel) {
       throw new Error(`This bot does not have a command channel set`)
     }
-
+    const identity = await this.core.data.identity.findFirst({
+      where: { ownerId: userId, provider: IdentityProvider.Discord },
+    })
+    if (!identity) {
+      throw new Error(`Discord Identity for user ${userId} not found`)
+    }
     const summary = await this.getCommunityRoleSummary(bot.communityId)
 
     await discordBot.sendChannel(botServer.commandChannel, {
@@ -306,6 +320,8 @@ export class ApiBotManagerService implements OnModuleInit {
         {
           title: `Configuration for ${discordBot.client?.user?.username} in ${bot.community.name} (${bot.community.cluster})`,
           fields: [
+            { name: 'Requester', value: `<@${identity.providerId}>` },
+            { name: `Bot`, value: `<@${discordBot.client?.user?.id}>` },
             { name: `Admin Role`, value: botServer.adminRole ? `<@&${botServer.adminRole}>` : 'Not set' },
             { name: `Command Channel`, value: `<#${botServer.commandChannel}>` },
             { name: `Dry Run`, value: botServer.dryRun ? 'Enabled' : 'Disabled' },
