@@ -213,7 +213,8 @@ export class ApiRoleResolverService {
       const deleted = await this.core.data.communityMemberRole.deleteMany({
         where: { member: { communityId, userId }, roleId: role.id },
       })
-      await this.core.logInfo(`Role revoked`, {
+      const roleName = roles.find((r) => r.id === role.id)?.name
+      await this.core.logInfo(`Role revoked: ${roleName}`, {
         userId,
         communityId,
         relatedId: role.id,
@@ -228,7 +229,7 @@ export class ApiRoleResolverService {
           member: { connect: { communityId_userId: { communityId, userId } } },
         },
       })
-      await this.core.logInfo(`Role granted`, {
+      await this.core.logInfo(`Role granted: ${role.name}`, {
         userId,
         communityId,
         relatedId: role.id,
