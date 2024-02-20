@@ -45,7 +45,9 @@ export class ApiNetworkAssetUpsertQueue extends WorkerHost {
   }
 
   @OnWorkerEvent('completed')
-  onCompleted(job: Job<ApiNetworkAssetUpsertPayload, boolean | undefined, string>) {
+  async onCompleted(job: Job<ApiNetworkAssetUpsertPayload, boolean | undefined, string>) {
     this.logger.debug(`Finished ${job.name} [${job.id}]`)
+    // TODO: Figure out why removeOnComplete in api-core-queues.module.ts is not working
+    await job.remove()
   }
 }

@@ -17,7 +17,6 @@ export class ApiAnonIdentityService {
   ) {}
 
   findUserByIdentity(provider: IdentityProvider, providerId: string) {
-    console.log('findUserByIdentity', { provider, providerId })
     return this.core.data.user.findFirst({
       where: {
         identities: {
