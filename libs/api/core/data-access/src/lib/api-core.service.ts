@@ -8,24 +8,7 @@ import { slugifyId, slugifyUsername } from './helpers/slugify-id'
 export class ApiCoreService {
   private readonly logger = new Logger(ApiCoreService.name)
   readonly data: ApiCorePrismaClient = prismaClient
-  constructor(readonly config: ApiCoreConfigService) {
-    // Get all the condition that have a name to reset them to null
-    this.data.roleCondition
-      .findMany({
-        where: { name: { not: null } },
-        select: { id: true },
-      })
-      .then((conditions) => {
-        console.log('Found conditions with name', conditions)
-        conditions.forEach((condition) => {
-          console.log(`Resetting name for condition ${condition.id}`)
-          this.data.roleCondition.update({
-            where: { id: condition.id },
-            data: { name: null },
-          })
-        })
-      })
-  }
+  constructor(readonly config: ApiCoreConfigService) {}
 
   async createCommunity({ input, userId }: { input: Prisma.CommunityCreateInput; userId?: string }) {
     const id = slugifyId(input.name).toLowerCase()

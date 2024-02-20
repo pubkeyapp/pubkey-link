@@ -244,7 +244,6 @@ model RoleCondition {
   amount    String           @default("0")
   config    Json?
   filters   Json?
-  name      String?
   token     NetworkToken     @relation(fields: [tokenId], references: [id])
   tokenId   String
   role      Role             @relation(fields: [roleId], references: [id], onDelete: Cascade)
