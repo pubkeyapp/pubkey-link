@@ -13,6 +13,9 @@ export class ApiSolanaIdentityService {
     if (provider !== IdentityProvider.Solana) {
       throw new Error(`Identity provider ${provider} not supported`)
     }
+    if (!this.core.config.authSolanaLinkEnabled && !this.core.config.authSolanaLoginEnabled) {
+      throw new Error(`Solana login disabled`)
+    }
   }
 
   ensureValidProviderId(provider: IdentityProvider, providerId: string) {

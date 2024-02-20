@@ -44,13 +44,22 @@ export class ApiAnonIdentityService {
   }
 
   async requestIdentityChallenge(ctx: BaseContext, { provider, providerId }: RequestIdentityChallengeInput) {
-    // Make sure we can link the given provider
+    // Make sure we can link or login with the given provider
     this.solana.ensureLinkProvider(provider)
     // Make sure the providerId is valid
     this.solana.ensureValidProviderId(provider, providerId)
 
     // Check if we already have an identity for this provider
     const found = await this.solana.findIdentity(provider, providerId)
+
+    // If we found the identity, we need to check if we can log in with it
+    if (found) {
+      if (!this.core.config.authSolanaLoginEnabled) {
+        throw new Error(`Solana login disabled`)
+      }
+    } else if (!this.core.config.authSolanaLinkEnabled) {
+      throw new Error(`Solana link disabled`)
+    }
 
     // Get the IP and user agent from the request
     const { ip, userAgent } = getRequestDetails(ctx)
