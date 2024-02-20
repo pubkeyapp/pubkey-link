@@ -1,8 +1,9 @@
-import { Card, Stack, Text } from '@mantine/core'
+import { Card, Group, Stack, Text } from '@mantine/core'
 import { NetworkAsset } from '@pubkey-link/sdk'
 import { UiAnchor, type UiAnchorProps, UiDebugModal, UiGroup } from '@pubkey-ui/core'
 import { NetworkAssetUiAvatar } from './network-asset-ui-avatar'
 import { NetworkAssetUiImage } from './network-asset-ui-image'
+import { NetworkAssetUiExplorerIcon } from './network-asset-ui-explorer-icon'
 
 export function NetworkAssetUiItem({
   anchorProps,
@@ -36,7 +37,10 @@ export function NetworkAssetUiItem({
               {networkAsset?.symbol}
             </Text>
           </Stack>
-          <UiDebugModal data={networkAsset} />
+          <Group wrap="nowrap" gap="xs">
+            <NetworkAssetUiExplorerIcon asset={networkAsset} />
+            <UiDebugModal data={networkAsset} />
+          </Group>
         </UiGroup>
       </Card.Section>
     </Card>

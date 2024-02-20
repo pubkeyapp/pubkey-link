@@ -1,4 +1,4 @@
-import { NetworkCluster, NetworkToken } from '../generated/graphql-sdk'
+import { NetworkAsset, NetworkCluster, NetworkToken } from '../generated/graphql-sdk'
 
 export function getNetworkExplorerUrl(cluster: NetworkCluster, endpoint: string = 'http://localost:8899') {
   const base = 'https://solana.fm/{path}'
@@ -16,6 +16,9 @@ export function getNetworkExplorerUrl(cluster: NetworkCluster, endpoint: string 
   }
 }
 
+export function getNetworkAssetUrl(token: Pick<NetworkAsset, 'account' | 'cluster'>): string {
+  return getNetworkExplorerUrl(token.cluster).replace('{path}', `account/${token.account}`)
+}
 export function getNetworkTokenUrl(token: Pick<NetworkToken, 'account' | 'cluster'>): string {
   return getNetworkExplorerUrl(token.cluster).replace('{path}', `account/${token.account}`)
 }
