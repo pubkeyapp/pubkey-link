@@ -24,7 +24,7 @@ export class ApiRoleResolverService {
     readonly networkAsset: ApiNetworkAssetService,
   ) {}
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async syncAllCommunityRoles() {
     if (!this.core.config.syncCommunityRoles) {
       this.logger.log(`Role validation is disabled`)
