@@ -102,6 +102,10 @@ export class ApiCoreConfigService {
     return this.service.get<string>('apiUrl') as string
   }
 
+  get botAutoStart(): boolean {
+    return this.service.get<boolean>('botAutoStart') ?? false
+  }
+
   get cookieDomains(): string[] {
     return this.service.get<string[]>('cookieDomains') ?? []
   }

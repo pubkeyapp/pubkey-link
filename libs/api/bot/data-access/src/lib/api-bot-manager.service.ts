@@ -21,6 +21,10 @@ export class ApiBotManagerService implements OnModuleInit {
   constructor(private readonly core: ApiCoreService, private readonly botMember: ApiBotMemberService) {}
 
   async onModuleInit() {
+    if (!this.core.config.botAutoStart) {
+      this.logger.verbose(`Bot auto start is disabled`)
+      return
+    }
     const bots = await this.core.data.bot.findMany({ where: { status: BotStatus.Active } })
     for (const bot of bots) {
       this.logger.verbose(`Starting bot ${bot.name}`)
