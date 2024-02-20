@@ -34,7 +34,7 @@ export class ApiAdminRoleService {
     return this.core.data.role.findUnique({
       where: { id: roleId },
       include: {
-        conditions: { include: { token: true }, orderBy: { name: 'asc' } },
+        conditions: { include: { token: true }, orderBy: { createdAt: 'asc' } },
         community: true,
         permissions: { include: { botRole: true } },
       },

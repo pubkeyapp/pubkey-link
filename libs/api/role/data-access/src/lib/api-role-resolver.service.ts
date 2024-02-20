@@ -360,7 +360,6 @@ export class ApiRoleResolverService {
           config: true,
           filters: true,
           id: true,
-          name: true,
           type: true,
           role: true,
           token: {
@@ -374,7 +373,6 @@ export class ApiRoleResolverService {
           amount: condition.amount ?? undefined,
           config: condition.config ?? undefined,
           filters: condition.filters ?? undefined,
-          name: condition.name ?? condition.type,
           token: condition.token ?? undefined,
         })),
       )

@@ -27,7 +27,6 @@ export class ApiUserRoleService {
       data: {
         config: input.config ?? undefined,
         filters: input.filters ?? undefined,
-        name: input.type.toString(),
         role: { connect: { id: input.roleId } },
         token: { connect: { id: input.tokenId } },
         type: input.type,
@@ -103,7 +102,7 @@ export class ApiUserRoleService {
     return this.core.data.role.findUnique({
       where: { id: roleId },
       include: {
-        conditions: { include: { token: true }, orderBy: { name: 'asc' } },
+        conditions: { include: { token: true }, orderBy: { createdAt: 'asc' } },
         community: true,
         permissions: { include: { botRole: true } },
       },
