@@ -210,8 +210,8 @@ export class ApiRoleResolverService {
     }
 
     for (const role of toRevoke) {
-      const deleted = await this.core.data.communityMemberRole.deleteMany({
-        where: { member: { communityId, userId }, roleId: role.roleId },
+      const deleted = await this.core.data.communityMemberRole.delete({
+        where: { id: role.id },
       })
       const roleName = roles.find((r) => r.id === role.roleId)?.name
       await this.core.logInfo(`Role revoked: ${roleName}`, {
@@ -220,7 +220,7 @@ export class ApiRoleResolverService {
         relatedId: role.id,
         relatedType: 'Role',
       })
-      result.revoked += deleted.count
+      result.revoked += deleted ? 1 : 0
     }
     for (const role of toGrant) {
       const created = await this.core.data.communityMemberRole.create({
