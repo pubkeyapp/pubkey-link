@@ -31,7 +31,7 @@ export function AuthUiPage({ authEnabled, children }: { authEnabled: boolean; ch
           </UiStack>
           <Stack align="center" mt="xl">
             <Group justify="center" gap={4}>
-              Powered by <Anchor href="https://github.com/pubkeyapp/pubkey-link-next">PubKey Link</Anchor>
+              Powered by <Anchor href="https://github.com/pubkeyapp/pubkey-link">PubKey Link</Anchor>
             </Group>
             <Group>
               <UiSocialDiscord
