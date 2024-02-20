@@ -15,7 +15,6 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@pubkey-link/anchor": ["libs/anchor/src/index.ts"],
       "@pubkey-link/api-auth-data-access": ["libs/api/auth/data-access/src/index.ts"],
       "@pubkey-link/api-auth-feature": ["libs/api/auth/feature/src/index.ts"],
       "@pubkey-link/api-backup-data-access": ["libs/api/backup/data-access/src/index.ts"],
