@@ -11,10 +11,14 @@ import {
 
 const cluster = NetworkCluster.SolanaMainnet
 const DL_SERVER = '953959331353751632'
+const DL_LOGS_DEV = '1186082723064991774'
 const DL_ROLE_ONE_OF_US = '1126756485200871465'
 const DL_ROLE_BV = '1148950083941961798'
 const DL_ROLE_BV_EXPIRED = '1150017837017084005'
 const DL_ROLE_HOLDER = '1205617205006434384'
+const DL_TOKEN_BV = '9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp'
+const DL_TOKEN_NFT = '5FusHaKEKjfKsmQwXNrhFcFABGGxu7iYCdbvyVSRe3Ri'
+const DL_TOKEN_FT = 'Ds52CDgqdWbTWsua1hgT3AuSSy4FNx2Ezge1br3jQ14a'
 
 const DL_BOT: Prisma.BotCreateWithoutCommunityInput = {
   clientId: process.env['DEANSLIST_BOT_CLIENT_ID'] ?? '',
@@ -30,6 +34,27 @@ const DL_BOT: Prisma.BotCreateWithoutCommunityInput = {
       serverRoleId,
     })),
   },
+}
+
+const DL_CONDITION_NFT: Prisma.RoleConditionCreateWithoutRoleInput = {
+  token: { connect: { account_cluster: { cluster, account: DL_TOKEN_NFT } } },
+  type: NetworkTokenType.NonFungible,
+  amount: '1',
+}
+const DL_CONDITION_BV: Prisma.RoleConditionCreateWithoutRoleInput = {
+  token: { connect: { account_cluster: { cluster, account: DL_TOKEN_BV } } },
+  type: NetworkTokenType.NonFungible,
+  amount: '1',
+  filters: { status: 'active' },
+}
+const DL_CONDITION_BV_EXP: Prisma.RoleConditionCreateWithoutRoleInput = {
+  ...DL_CONDITION_BV,
+  filters: { status: 'expired' },
+}
+const DL_CONDITION_HOLDER: Prisma.RoleConditionCreateWithoutRoleInput = {
+  token: { connect: { account_cluster: { cluster, account: DL_TOKEN_FT } } },
+  type: NetworkTokenType.Fungible,
+  amount: '100',
 }
 
 const LOS_SERVER = '1190413756325429268'
@@ -53,10 +78,66 @@ const LOS_BOT: Prisma.BotCreateWithoutCommunityInput = {
   },
 }
 
+const LOS_CONDITION_NFT: Prisma.RoleConditionCreateWithoutRoleInput = {
+  type: NetworkTokenType.NonFungible,
+  token: { connect: { account_cluster: { cluster, account: LOS_THE_CHOICE } } },
+  amount: '1',
+}
+
+const LOG_CONDITION_FT: Prisma.RoleConditionCreateWithoutRoleInput = {
+  type: NetworkTokenType.Fungible,
+  token: { connect: { account_cluster: { cluster, account: LOS_LEGEND } } },
+  amount: '1',
+}
+
+const PK_SERVER = '1074745933163671562'
+const PK_SERVER_LOGS = '1209484932011790366'
+const PK_ROLE_DEANSLIST = '1199576114566283294'
+const PK_ROLE_DL_BV = '1148913524207263815'
+const PK_ROLE_DL_BV_EXPIRED = '1209490186644361246'
+const PK_ROLE_DL_HOLDER = '1148913592230477835'
+
+const PK_BOT: Prisma.BotCreateWithoutCommunityInput = {
+  clientId: process.env['PUBKEY_BOT_CLIENT_ID'] ?? '',
+  clientSecret: process.env['PUBKEY_BOT_CLIENT_SECRET'] ?? '',
+  token: process.env['PUBKEY_BOT_TOKEN'] ?? '',
+  avatarUrl: 'https://cdn.discordapp.com/avatars/1142411815897288846/279959328ec47debb9cc7db3dff1ab4c.webp',
+  id: process.env['PUBKEY_BOT_CLIENT_ID'] ?? '',
+  name: 'PubKey Link Yellow',
+  status: 'Active',
+  permissions: {
+    create: [PK_ROLE_DEANSLIST, PK_ROLE_DL_BV, PK_ROLE_DL_BV_EXPIRED, PK_ROLE_DL_HOLDER].map((serverRoleId) => ({
+      id: `${PK_SERVER}-${serverRoleId}`,
+      serverId: PK_SERVER,
+      serverRoleId,
+    })),
+  },
+  servers: {
+    create: [
+      {
+        serverId: PK_SERVER,
+        enableSync: true,
+        dryRun: true,
+        verbose: true,
+        commandChannel: PK_SERVER_LOGS,
+      },
+      {
+        serverId: DL_SERVER,
+        enableSync: true,
+        dryRun: true,
+        verbose: true,
+        commandChannel: DL_LOGS_DEV,
+      },
+    ],
+  },
+}
+
 export const provisionCommunities: Prisma.CommunityCreateInput[] = [
   {
     cluster,
     name: 'PubKey',
+    featured: true,
+    enableSync: true,
     description: 'Decentralized identities on Solana',
     avatarUrl: 'https://avatars.githubusercontent.com/u/125477168?v=4',
     discordUrl: 'https://discord.gg/XxuZQeDPNf',
@@ -64,21 +145,7 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     telegramUrl: 'https://t.me/beemandev',
     twitterUrl: 'https://twitter.com/PubKeyApp',
     websiteUrl: 'https://app.pubkey.link',
-    bot: {
-      create: {
-        clientId: process.env['PUBKEY_BOT_CLIENT_ID'] ?? '',
-        clientSecret: process.env['PUBKEY_BOT_CLIENT_SECRET'] ?? '',
-        token: process.env['PUBKEY_BOT_TOKEN'] ?? '',
-        avatarUrl:
-          'https://cdn.discordapp.com/avatars/1151220382444044298/2b0c80a7bb6ec8970d4953c5621b7d43.png?size=1024',
-        id: process.env['PUBKEY_BOT_CLIENT_ID'] ?? '',
-        name: 'PubKey Linked Roles',
-        status: 'Active',
-        permissions: {
-          create: [],
-        },
-      },
-    },
+    bot: { create: PK_BOT },
     members: {
       create: [
         { user: { connect: { id: 'beeman.dev' } }, role: CommunityRole.Admin },
@@ -88,32 +155,29 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     roles: {
       create: [
         {
-          id: 'role-one-of-us',
-          name: 'One of Us',
-          // permissions: {
-          //   create: [
-          //     { id: 'perm-one-of-us', botId: '953959331353751632-1163196496607457441' }
-          //   ],
-          // },
-          conditions: {
-            create: [
-              {
-                id: 'cond-deanslist-nft-holder',
-                type: NetworkTokenType.NonFungible,
-                name: 'Deanslist NFT holder',
-                token: {
-                  connect: {
-                    account_cluster: { cluster, account: '5FusHaKEKjfKsmQwXNrhFcFABGGxu7iYCdbvyVSRe3Ri' },
-                  },
-                },
-                amount: '1',
-              },
-            ],
-          },
+          id: 'one-of-us-pubkey',
+          name: 'ONE OF US',
+          conditions: { create: [DL_CONDITION_NFT] },
+          permissions: { create: [{ botRoleId: `${PK_SERVER}-${PK_ROLE_DEANSLIST}` }] },
         },
-        { name: 'Mad Lads' },
-        { name: 'Mc Degens DAO' },
-        { name: 'The Faceless' },
+        {
+          id: 'business-visa-pubkey',
+          name: 'BUSINESS VISA',
+          conditions: { create: [DL_CONDITION_BV] },
+          permissions: { create: [{ botRoleId: `${PK_SERVER}-${PK_ROLE_DL_BV}` }] },
+        },
+        {
+          id: 'business-visa-expired-pubkey',
+          name: 'BUSINESS VISA (EXPIRED)',
+          conditions: { create: [DL_CONDITION_BV_EXP] },
+          permissions: { create: [{ botRoleId: `${PK_SERVER}-${PK_ROLE_DL_BV_EXPIRED}` }] },
+        },
+        {
+          id: 'dean-holder-pubkey',
+          name: 'DEAN HOLDER',
+          conditions: { create: [DL_CONDITION_HOLDER] },
+          permissions: { create: [{ botRoleId: `${PK_SERVER}-${PK_ROLE_DL_HOLDER}` }] },
+        },
       ],
     },
   },
@@ -133,73 +197,25 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
         {
           id: 'one-of-us',
           name: 'One of Us',
-          conditions: {
-            create: [
-              {
-                type: NetworkTokenType.NonFungible,
-                name: 'Deanslist NFT holder',
-                token: {
-                  connect: {
-                    account_cluster: { cluster, account: '5FusHaKEKjfKsmQwXNrhFcFABGGxu7iYCdbvyVSRe3Ri' },
-                  },
-                },
-                amount: '1',
-              },
-            ],
-          },
+          conditions: { create: [DL_CONDITION_NFT] },
           permissions: { create: [{ botRoleId: `${DL_SERVER}-${DL_ROLE_ONE_OF_US}` }] },
         },
         {
           id: 'business-visa',
           name: 'Business Visa',
-          conditions: {
-            create: [
-              {
-                type: NetworkTokenType.NonFungible,
-                name: 'Business Visa NFT holder',
-                token: {
-                  connect: { account_cluster: { cluster, account: '9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp' } },
-                },
-                amount: '1',
-                filters: { status: 'active' },
-              },
-            ],
-          },
+          conditions: { create: [DL_CONDITION_BV] },
           permissions: { create: [{ botRoleId: `${DL_SERVER}-${DL_ROLE_BV}` }] },
         },
         {
           id: 'business-visa-expired',
           name: 'Business Visa (Expired)',
-          conditions: {
-            create: [
-              {
-                type: NetworkTokenType.NonFungible,
-                name: 'Business Visa NFT holder (Expired)',
-                token: {
-                  connect: { account_cluster: { cluster, account: '9HdPsLjMBUW8fQTp314kg4LoiqGxQqvCxKk6uhHttjVp' } },
-                },
-                amount: '1',
-                filters: { status: 'expired' },
-              },
-            ],
-          },
+          conditions: { create: [DL_CONDITION_BV_EXP] },
           permissions: { create: [{ botRoleId: `${DL_SERVER}-${DL_ROLE_BV_EXPIRED}` }] },
         },
         {
           id: 'dean-holder',
           name: 'DEAN Holder',
-          conditions: {
-            create: [
-              {
-                type: NetworkTokenType.Fungible,
-                name: '$DEAN token holder',
-                amount: '100',
-                token: {
-                  connect: { account_cluster: { cluster, account: 'Ds52CDgqdWbTWsua1hgT3AuSSy4FNx2Ezge1br3jQ14a' } },
-                },
-              },
-            ],
-          },
+          conditions: { create: [DL_CONDITION_HOLDER] },
           permissions: { create: [{ botRoleId: `${DL_SERVER}-${DL_ROLE_HOLDER}` }] },
         },
       ],
@@ -258,31 +274,13 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     roles: {
       create: [
         {
-          name: 'certified legends',
-          conditions: {
-            create: [
-              {
-                type: NetworkTokenType.NonFungible,
-                name: 'The Choice',
-                token: { connect: { account_cluster: { cluster, account: LOS_THE_CHOICE } } },
-                amount: '1',
-              },
-            ],
-          },
+          name: 'CERTIFIED LEGENDS',
+          conditions: { create: [LOS_CONDITION_NFT] },
           permissions: { create: { botRoleId: `${LOS_SERVER}-${LOS_ROLE_CERTIFIED}` } },
         },
         {
-          name: 'legend holder',
-          conditions: {
-            create: [
-              {
-                type: NetworkTokenType.Fungible,
-                name: 'LEGEND',
-                token: { connect: { account_cluster: { cluster, account: LOS_LEGEND } } },
-                amount: '1',
-              },
-            ],
-          },
+          name: '$LEGEND HOLDER',
+          conditions: { create: [LOG_CONDITION_FT] },
         },
       ],
     },
@@ -304,6 +302,7 @@ export const provisionUsers: Prisma.UserCreateInput[] = [
         ...[
           { providerId: '3XN71ShwyPNYZ22fV4phQCnyPj6E6EbMLAD5ReLRvdRP', name: 'BEEMAN#8333' },
           { providerId: '9VyTdXMBXXPaEcCXjhCqicLF975Ji2zz4SwMSvCYe9ks', name: 'SAGA' },
+          { providerId: 'BEEMANPx2jdmfR7jpn1hRdMuM2Vj4E3azBLb6RUBrCDY', name: 'BEEMAN.DEV' },
           { providerId: 'BeEMuaaQCQPodQdaA7W6Rmsu7761vCabN4Tth6jA4VCP', name: '🌶️ WALLET' },
           { providerId: 'BumrJWH5kf4MXZ5bEg7VyZY6oXAMr78jXC1mFiDAE3u3', name: 'Backpack' },
           { providerId: 'CdrFwyi78fjEN3WFUc72KUxewFdxv1SUSaKAMVkPHQyd', name: 'Dialect' },
