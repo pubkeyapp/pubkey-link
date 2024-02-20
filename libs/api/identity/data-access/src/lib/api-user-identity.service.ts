@@ -56,7 +56,7 @@ export class ApiUserIdentityService {
   async findManyIdentity(input: UserFindManyIdentityInput): Promise<PrismaIdentity[]> {
     const items = await this.core.data.identity.findMany({
       where: { owner: { username: input.username }, provider: input.provider ?? undefined },
-      orderBy: [{ provider: 'asc' }, { providerId: 'asc' }],
+      orderBy: [{ provider: 'asc' }, { name: 'asc' }],
     })
 
     return items ?? []
