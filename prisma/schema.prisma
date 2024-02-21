@@ -97,9 +97,9 @@ model CommunityMemberRole {
   id        String          @id @default(cuid())
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
-  member    CommunityMember @relation(fields: [memberId], references: [id])
+  member    CommunityMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
   memberId  String
-  role      Role            @relation(fields: [roleId], references: [id])
+  role      Role            @relation(fields: [roleId], references: [id], onDelete: Cascade)
   roleId    String
 }
 
