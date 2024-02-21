@@ -8,7 +8,21 @@ import { slugifyId, slugifyUsername } from './helpers/slugify-id'
 export class ApiCoreService {
   private readonly logger = new Logger(ApiCoreService.name)
   readonly data: ApiCorePrismaClient = prismaClient
-  constructor(readonly config: ApiCoreConfigService) {}
+  constructor(readonly config: ApiCoreConfigService) {
+    // Find the botServer entities that have a `commandChannel` value and migrate that to `botChannel`
+    this.data.botServer.findMany({ where: { commandChannel: { not: null } } }).then((servers) =>
+      servers.map((server) =>
+        this.data.botServer
+          .update({
+            where: { id: server.id },
+            data: { botChannel: server.commandChannel, commandChannel: null },
+          })
+          .then((updated) => {
+            this.logger.verbose(`Migrated commandChannel to botChannel for ${updated.id}`)
+          }),
+      ),
+    )
+  }
 
   async createCommunity({ input, userId }: { input: Prisma.CommunityCreateInput; userId?: string }) {
     const id = slugifyId(input.name).toLowerCase()

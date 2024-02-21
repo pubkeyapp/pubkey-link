@@ -22,7 +22,7 @@ fragment BotServerDetails on BotServer {
   botId
   serverId
   adminRole
-  commandChannel
+  botChannel
   dryRun
   enableSync
   mentionRoles

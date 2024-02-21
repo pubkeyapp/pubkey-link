@@ -5,7 +5,7 @@ export class UserUpdateBotServerInput {
   @Field({ nullable: true })
   adminRole?: string
   @Field({ nullable: true })
-  commandChannel?: string
+  botChannel?: string
   @Field({ nullable: true })
   dryRun?: boolean
   @Field({ nullable: true })

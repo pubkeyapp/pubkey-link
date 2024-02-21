@@ -189,13 +189,13 @@ export class ApiBotManagerService implements OnModuleInit {
       throw new Error(`Server ${serverId} not found for bot ${botId}`)
     }
 
-    const { dryRun, commandChannel, mentionRoles, mentionUsers, verbose } = botServer
+    const { dryRun, botChannel, mentionRoles, mentionUsers, verbose } = botServer
 
     async function sendCommandChannel(message: string) {
-      if (!commandChannel) {
+      if (!botChannel) {
         return
       }
-      await botInstance.sendChannel(commandChannel, message)
+      await botInstance.sendChannel(botChannel, message)
     }
 
     const communityRoleIds = Object.values(communityRoles).flat()
@@ -304,7 +304,7 @@ export class ApiBotManagerService implements OnModuleInit {
     if (!botServer) {
       throw new Error(`Bot server ${serverId} not found`)
     }
-    if (!botServer.commandChannel) {
+    if (!botServer.botChannel) {
       throw new Error(`This bot does not have a command channel set`)
     }
     const identity = await this.core.data.identity.findFirst({
@@ -315,7 +315,7 @@ export class ApiBotManagerService implements OnModuleInit {
     }
     const summary = await this.getCommunityRoleSummary(bot.communityId)
 
-    await discordBot.sendChannel(botServer.commandChannel, {
+    await discordBot.sendChannel(botServer.botChannel, {
       embeds: [
         {
           title: `Configuration for ${discordBot.client?.user?.username} in ${bot.community.name} (${bot.community.cluster})`,
@@ -323,7 +323,7 @@ export class ApiBotManagerService implements OnModuleInit {
             { name: 'Requester', value: `<@${identity.providerId}>` },
             { name: `Bot`, value: `<@${discordBot.client?.user?.id}>` },
             { name: `Admin Role`, value: botServer.adminRole ? `<@&${botServer.adminRole}>` : 'Not set' },
-            { name: `Command Channel`, value: `<#${botServer.commandChannel}>` },
+            { name: `Bot Channel`, value: `<#${botServer.botChannel}>` },
             { name: `Dry Run`, value: botServer.dryRun ? 'Enabled' : 'Disabled' },
             { name: `Enable Sync`, value: botServer.enableSync ? 'Enabled' : 'Disabled' },
             { name: 'Roles:', value: `There are ${summary.length} roles in this community` },

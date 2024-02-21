@@ -220,8 +220,8 @@ type BotRole {
 
 type BotServer {
   adminRole: String
+  botChannel: String
   botId: String!
-  commandChannel: String
   createdAt: DateTime
   dryRun: Boolean
   enableSync: Boolean
@@ -835,7 +835,7 @@ input UserUpdateBotInput {
 
 input UserUpdateBotServerInput {
   adminRole: String
-  commandChannel: String
+  botChannel: String
   dryRun: Boolean
   enableSync: Boolean
   mentionRoles: Boolean

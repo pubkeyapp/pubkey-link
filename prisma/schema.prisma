@@ -50,6 +50,7 @@ model BotServer {
   mentionUsers   Boolean  @default(false)
   verbose        Boolean  @default(false)
   adminRole      String?
+  botChannel     String?
   commandChannel String?
 
   @@unique([botId, serverId])

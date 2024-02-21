@@ -27,7 +27,7 @@ export function UserBotServerUiUpdateForm({
   const form = useForm<UserUpdateBotServerInput>({
     initialValues: {
       adminRole: botServer.adminRole,
-      commandChannel: botServer.commandChannel,
+      botChannel: botServer.botChannel,
       dryRun: botServer.dryRun ?? false,
       enableSync: botServer.enableSync ?? false,
       mentionRoles: botServer.mentionRoles ?? false,
@@ -53,10 +53,10 @@ export function UserBotServerUiUpdateForm({
           {...form.getInputProps('adminRole')}
         />
         <DiscordUiChannelSelect
-          label="Command Channel"
-          description="The channel where the bot will listen for commands and log events."
+          label="Bot Channel"
+          description="The channel where the bot will send log events."
           data={channels}
-          {...form.getInputProps('commandChannel')}
+          {...form.getInputProps('botChannel')}
         />
         <Checkbox
           label="Dry Run"
