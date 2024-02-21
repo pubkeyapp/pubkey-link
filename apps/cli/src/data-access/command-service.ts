@@ -88,6 +88,40 @@ export class CommandService {
     }
     console.log(res.data.synced ? 'Synced network assets' : 'Failed to sync network assets')
   }
+  async snapshotGet(snapshotId: string) {
+    const { cookie, sdk } = await this.getConfig()
+    const res = await sdk.adminFindOneSnapshot({ snapshotId }, { cookie })
+    if (!res.data?.item) {
+      console.log('Snapshot not found')
+      return
+    }
+    const { data, role, ...rest } = res.data.item
+    console.log({ role: { id: role.id, name: role.name, communityId: role.communityId }, ...rest })
+    console.log(JSON.stringify(data ?? [], null, 2))
+  }
+
+  async snapshotList() {
+    const { cookie, sdk } = await this.getConfig()
+    const res = await sdk.adminFindManySnapshot({ input: {} }, { cookie })
+    if (!res.data?.paging.meta?.totalCount) {
+      console.log('No snapshots found')
+      return
+    }
+    console.log(`Found ${res.data.paging.meta.totalCount} snapshots`)
+    for (const { id, name, createdAt } of res.data.paging.data) {
+      console.log(`- [${id}] ${name} - ${createdAt}`)
+    }
+  }
+
+  async snapshotCreate(roleId: string) {
+    const { cookie, sdk } = await this.getConfig()
+    const res = await sdk.adminCreateSnapshot({ input: { roleId } }, { cookie })
+    if (!res.data?.created) {
+      console.log('Failed to create snapshot')
+      return
+    }
+    console.log('Created snapshot')
+  }
 
   async whoami() {
     const { cookie, sdk } = await this.getConfig()

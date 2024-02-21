@@ -241,11 +241,10 @@ export class ApiRoleResolverService {
   }
 
   private validateRoleCondition(condition: RoleCondition, assets: NetworkAsset[]) {
-    const found: NetworkAsset[] = assets.filter((asset) => asset.group === condition.token?.account) ?? []
+    const found: NetworkAsset[] = this.getRoleConditionAssets(condition, assets)
     if (!found?.length) {
       return false
     }
-
     const amountMin = parseInt(condition.amount ?? '0')
     const amountMax = parseInt(condition.amountMax ?? '0')
 
@@ -258,6 +257,14 @@ export class ApiRoleResolverService {
       return false
     }
     return true
+  }
+
+  private getRoleConditionAssets(condition: RoleCondition, assets: NetworkAsset[]) {
+    const found: NetworkAsset[] = assets.filter((asset) => asset.group === condition.token?.account) ?? []
+    if (!found?.length) {
+      return []
+    }
+    return found
   }
 
   private getAssetAmount(condition: RoleCondition, assets: NetworkAsset[]) {
@@ -468,6 +475,42 @@ export class ApiRoleResolverService {
           conditions: [],
         }
       })
+  }
+
+  async getRoleSnapshot(roleId: string) {
+    const role = await this.core.data.role.findUnique({
+      where: { id: roleId },
+      include: { conditions: { include: { token: true } } },
+    })
+
+    if (!role?.conditions?.length) {
+      return []
+    }
+    const conditions = role.conditions
+    const users = await this.getCommunityUsers({ communityId: role.communityId })
+
+    const result: { assets: NetworkAsset[]; owner: { username: string; discordId: string } }[] = []
+
+    for (const user of users) {
+      const assets: NetworkAsset[] = []
+      // We are now in the context of a user
+      const resolved = await this.resolveNetworkAssetsForContext({ conditions, context: user })
+
+      // Now we want to loop over each condition and check the assets
+      for (const condition of conditions) {
+        const res = this.getRoleConditionAssets(condition, resolved.assetMap[condition.type] ?? [])
+        if (!res?.length) {
+          continue
+        }
+        assets.push(...res)
+      }
+
+      if (assets.length) {
+        result.push({ owner: { username: user.username, discordId: user.discordId }, assets })
+      }
+    }
+
+    return result
   }
 }
 

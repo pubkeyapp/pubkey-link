@@ -1,7 +1,7 @@
 import { getGraphQLSdk, Sdk } from '@pubkey-link/sdk'
 import { getKeypairFromFile } from '@solana-developers/helpers'
 import fs from 'fs'
-import { PubKeyServer } from '../types/pubkey-server'
+import { PubKeyServer } from '../data-access/pubkey-server'
 import { authenticateWithKeypair } from './authenticate-with-keypair'
 
 const home = process.env.HOME || process.env.USERPROFILE

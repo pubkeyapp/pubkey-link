@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
+import { ApiSnapshotRoleService } from './api-snapshot-role.service'
 import { AdminCreateSnapshotInput } from './dto/admin-create-snapshot.input'
 import { AdminFindManySnapshotInput } from './dto/admin-find-many-snapshot.input'
 import { SnapshotPaging } from './entity/snapshot-paging.entity'
@@ -7,12 +8,10 @@ import { getAdminSnapshotWhereInput } from './helpers/get-admin-snapshot-where.i
 
 @Injectable()
 export class ApiAdminSnapshotService {
-  constructor(private readonly core: ApiCoreService) {}
+  constructor(private readonly core: ApiCoreService, private readonly role: ApiSnapshotRoleService) {}
 
   async createSnapshot(input: AdminCreateSnapshotInput) {
-    const name = ''
-    const data = {}
-    return this.core.data.snapshot.create({ data: { roleId: input.roleId, data, name } })
+    return this.role.createSnapshot(input.roleId)
   }
 
   async deleteSnapshot(snapshotId: string) {
@@ -31,6 +30,6 @@ export class ApiAdminSnapshotService {
   }
 
   async findOneSnapshot(snapshotId: string) {
-    return this.core.data.snapshot.findUnique({ where: { id: snapshotId } })
+    return this.core.data.snapshot.findUnique({ where: { id: snapshotId }, include: { role: true } })
   }
 }

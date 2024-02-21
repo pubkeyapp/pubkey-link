@@ -12,7 +12,7 @@ export class ApiUserSnapshotService {
 
   async createSnapshot(userId: string, input: UserCreateSnapshotInput) {
     await this.ensureRoleAdmin({ userId, roleId: input.roleId })
-    return this.role.getRoleSnapshot(input.roleId)
+    return this.role.createSnapshot(input.roleId)
   }
 
   async deleteSnapshot(userId: string, snapshotId: string) {

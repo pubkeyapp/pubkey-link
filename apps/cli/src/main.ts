@@ -4,6 +4,7 @@ import * as process from 'node:process'
 import { commandBackup } from './features/command-backup'
 import { commandCommunity } from './features/command-community'
 import { commandNetwork } from './features/command-network'
+import { commandSnapshot } from './features/command-snapshot'
 import { commandWhoami } from './features/command-whoami'
 
 const program = new commander.Command('pubkey-link')
@@ -13,6 +14,7 @@ const program = new commander.Command('pubkey-link')
 program.addCommand(commandBackup())
 program.addCommand(commandCommunity())
 program.addCommand(commandNetwork())
+program.addCommand(commandSnapshot())
 program.addCommand(commandWhoami())
 
 program.parse(process.argv)
