@@ -7,10 +7,6 @@ import { ReactNode } from 'react'
 import { DiscordUiChannelSelect } from './discord-ui-channel-select'
 import { DiscordUiRoleSelect } from './discord-ui-role-select'
 
-export interface GroupedOption {
-  group: string
-  data: { value: string; label: string }[]
-}
 export function UserBotServerUiUpdateForm({
   children,
   submit,
@@ -40,11 +36,7 @@ export function UserBotServerUiUpdateForm({
   })
 
   return (
-    <form
-      onSubmit={form.onSubmit((values) => {
-        return submit(values)
-      })}
-    >
+    <form onSubmit={form.onSubmit((values) => submit(values))}>
       <UiStack>
         <DiscordUiRoleSelect
           label="Admin Role"

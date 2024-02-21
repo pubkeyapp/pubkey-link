@@ -1,14 +1,14 @@
-import { Button, Group, Paper } from '@mantine/core'
+import { Anchor, Button, Group, Paper, Text } from '@mantine/core'
 import { Bot, Community, UserCreateBotInput } from '@pubkey-link/sdk'
 import { useUserFindOneBot } from '@pubkey-link/web-bot-data-access'
 import { BotUiItem, UserBotUiCreateForm } from '@pubkey-link/web-bot-ui'
 import {
   toastError,
   UiCard,
-  UiCardTitle,
   UiDebug,
   UiError,
   UiGroup,
+  UiInfo,
   UiLoader,
   UiStack,
   UiTabRoutes,
@@ -37,12 +37,21 @@ export function UserBotDetailFeature({ community }: { community: Community }) {
 
   if (!item) {
     return (
-      <UiStack>
-        <UiCardTitle>Create Discord Bot</UiCardTitle>
-        <UiCard>
+      <UiCard title="Create Discord Bot">
+        <UiStack>
+          <Text span size="lg">
+            Go to the{' '}
+            <Anchor target="_blank" rel="noopener noreferrer" href="https://discord.com/developers/applications">
+              Discord Developer Portal
+            </Anchor>{' '}
+            to create a new app or use an existing one and fill in the form below.
+          </Text>
+
+          <UiInfo message="Make sure to enable the 'SERVER MEMBERS INTENT' option in the bot section of your app." />
+
           <UserBotUiCreateForm submit={submit} />
-        </UiCard>
-      </UiStack>
+        </UiStack>
+      </UiCard>
     )
   }
 
