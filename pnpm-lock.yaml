@@ -170,6 +170,9 @@ dependencies:
   clsx:
     specifier: 2.1.0
     version: 2.1.0
+  commander:
+    specifier: ^12.0.0
+    version: 12.0.0
   cookie-parser:
     specifier: ^1.4.6
     version: 1.4.6
@@ -424,9 +427,6 @@ devDependencies:
   babel-jest:
     specifier: ^29.7.0
     version: 29.7.0(@babel/core@7.23.7)
-  commander:
-    specifier: ^12.0.0
-    version: 12.0.0
   core-js:
     specifier: ^3.35.0
     version: 3.35.0
@@ -11654,7 +11654,7 @@ packages:
   /commander@12.0.0:
     resolution: {integrity: sha512-MwVNWlYjDTtOjX5PiD7o5pK0UrFU/OYgcJfjjK4RaHZETNtjJqrZa9Y9ds88+A+f+d5lv+561eZ+yCKoS3gbAA==}
     engines: {node: '>=18'}
-    dev: true
+    dev: false
 
   /commander@2.13.0:
     resolution: {integrity: sha512-MVuS359B+YzaWqjCL/c+22gfryv+mCBPHAv3zyVI2GN8EY6IRP8VwtasXn8jyyhvvq84R4ImN1OKRtcbIasjYA==}
