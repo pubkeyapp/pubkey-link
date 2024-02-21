@@ -1,12 +1,16 @@
+import { getGraphQLSdk, Sdk } from '@pubkey-link/sdk'
 import { getKeypairFromFile } from '@solana-developers/helpers'
 import fs from 'fs'
-import { getGraphQLSdk, Sdk } from '@pubkey-link/sdk'
 import { PubKeyServer } from '../types/pubkey-server'
+import { authenticateWithKeypair } from './authenticate-with-keypair'
 
 const home = process.env.HOME || process.env.USERPROFILE
 const config = `${home}/.config/pubkey-link`
 
 export async function getCliConfig(server: string) {
+  if (!server) {
+    throw new Error('Server not defined')
+  }
   const idJson = `${config}/id.json`
   const keypair = await getKeypairFromFile(idJson)
 
@@ -30,7 +34,10 @@ export async function getCliConfig(server: string) {
 
   const sdk: Sdk = getGraphQLSdk(`${found.endpoint}/graphql`)
 
+  const cookie = await authenticateWithKeypair(sdk, keypair)
+
   return {
+    cookie,
     keypair,
     sdk,
   }

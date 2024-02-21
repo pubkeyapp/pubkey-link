@@ -1,19 +1,18 @@
-import { runCommand } from './command'
+import commander from 'commander'
+import * as process from 'node:process'
 
-const server = process.argv[2]
-const command = process.argv[3]
+import { commandBackup } from './features/command-backup'
+import { commandCommunity } from './features/command-community'
+import { commandNetwork } from './features/command-network'
+import { commandWhoami } from './features/command-whoami'
 
-if (!server) {
-  console.error('Server is required')
-  process.exit(1)
-}
-if (!command) {
-  console.error('Command is required')
-  process.exit(1)
-}
+const program = new commander.Command('pubkey-link')
+  .description('CLI to interact with the PubKey Link API')
+  .requiredOption('-s, --server <server>', 'Server to connect to', process.env.PUBKEY_SERVER_ID || 'local')
 
-const params: string[] = process.argv.slice(4) ?? []
+program.addCommand(commandBackup())
+program.addCommand(commandCommunity())
+program.addCommand(commandNetwork())
+program.addCommand(commandWhoami())
 
-runCommand(command, server, params)
-  .then(() => process.exit(0))
-  .catch((err) => console.error(err))
+program.parse(process.argv)
