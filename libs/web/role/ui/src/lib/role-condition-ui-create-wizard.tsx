@@ -44,6 +44,7 @@ export function RoleConditionUiCreateWizard(props: { role: Role; community: Comm
         ...base,
         tokenId: networkToken?.id,
         amount: amount ?? '0',
+        amountMax: amountMax ?? '0',
         config: {},
         filters: {},
       }
@@ -53,6 +54,7 @@ export function RoleConditionUiCreateWizard(props: { role: Role; community: Comm
         ...base,
         tokenId: networkToken?.id,
         amount: amount ?? '0',
+        amountMax: amountMax ?? '0',
         config: {},
         filters: {},
       }
@@ -60,7 +62,7 @@ export function RoleConditionUiCreateWizard(props: { role: Role; community: Comm
     return {
       ...base,
     }
-  }, [props.role.id, networkTokenType, networkToken])
+  }, [props.role.id, networkTokenType, networkToken, amount, amountMax])
 
   async function addCondition(type: NetworkTokenType, token: NetworkToken) {
     createRoleCondition({ ...config, type, tokenId: token.id })
