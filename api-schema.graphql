@@ -43,6 +43,10 @@ input AdminCreateRoleInput {
   name: String!
 }
 
+input AdminCreateSnapshotInput {
+  roleId: String!
+}
+
 input AdminCreateUserInput {
   password: String
   username: String!
@@ -114,6 +118,14 @@ input AdminFindManyRoleInput {
   communityId: String!
   limit: Int = 10
   page: Int = 1
+  search: String
+}
+
+input AdminFindManySnapshotInput {
+  communityId: String
+  limit: Int = 10
+  page: Int = 1
+  roleId: String
   search: String
 }
 
@@ -413,6 +425,7 @@ type Mutation {
   adminCreateNetwork(input: AdminCreateNetworkInput!): Network
   adminCreateNetworkToken(input: AdminCreateNetworkTokenInput!): NetworkToken
   adminCreateRole(input: AdminCreateRoleInput!): Role
+  adminCreateSnapshot(input: AdminCreateSnapshotInput!): Snapshot
   adminCreateUser(input: AdminCreateUserInput!): User
   adminDeleteBackup(name: String!): Boolean!
   adminDeleteBot(botId: String!): Boolean
@@ -424,6 +437,7 @@ type Mutation {
   adminDeleteNetworkAsset(networkAssetId: String!): Boolean
   adminDeleteNetworkToken(networkTokenId: String!): Boolean
   adminDeleteRole(roleId: String!): Boolean
+  adminDeleteSnapshot(snapshotId: String!): Boolean
   adminDeleteUser(userId: String!): Boolean
   adminFetchBackup(url: String!): Boolean!
   adminRestoreBackup(name: String!): Boolean!
@@ -445,6 +459,7 @@ type Mutation {
   userCreateRole(input: UserCreateRoleInput!): Role
   userCreateRoleCondition(input: UserCreateRoleConditionInput!): RoleCondition
   userCreateRolePermission(input: UserCreateRolePermissionInput!): RolePermission
+  userCreateSnapshot(input: UserCreateSnapshotInput!): Snapshot
   userDeleteBot(botId: String!): Boolean
   userDeleteCommunity(communityId: String!): Boolean
   userDeleteCommunityMember(communityMemberId: String!): Boolean
@@ -452,6 +467,7 @@ type Mutation {
   userDeleteRole(roleId: String!): Boolean
   userDeleteRoleCondition(roleConditionId: String!): Boolean
   userDeleteRolePermission(rolePermissionId: String!): Boolean
+  userDeleteSnapshot(snapshotId: String!): Boolean
   userLeaveBotServer(botId: String!, serverId: String!): Boolean
   userLinkIdentity(input: LinkIdentityInput!): Identity
   userRefreshIdentity(identityId: String!): Boolean
@@ -579,6 +595,7 @@ type Query {
   adminFindManyNetworkAsset(input: AdminFindManyNetworkAssetInput!): NetworkAssetPaging!
   adminFindManyNetworkToken(input: AdminFindManyNetworkTokenInput!): NetworkTokenPaging!
   adminFindManyRole(input: AdminFindManyRoleInput!): RolePaging!
+  adminFindManySnapshot(input: AdminFindManySnapshotInput!): SnapshotPaging!
   adminFindManyUser(input: AdminFindManyUserInput!): UserPaging!
   adminFindOneBot(botId: String!): Bot
   adminFindOneCommunity(communityId: String!): Community
@@ -588,6 +605,7 @@ type Query {
   adminFindOneNetworkAsset(networkAssetId: String!): NetworkAsset
   adminFindOneNetworkToken(networkTokenId: String!): NetworkToken
   adminFindOneRole(roleId: String!): Role
+  adminFindOneSnapshot(snapshotId: String!): Snapshot
   adminFindOneUser(userId: String!): User
   adminGetBackup(name: String!): JSON
   adminGetBackups: [String!]!
@@ -605,6 +623,7 @@ type Query {
   userFindManyNetworkAsset(input: UserFindManyNetworkAssetInput!): NetworkAssetPaging!
   userFindManyNetworkToken(input: UserFindManyNetworkTokenInput!): NetworkTokenPaging!
   userFindManyRole(input: UserFindManyRoleInput!): RolePaging!
+  userFindManySnapshot(input: UserFindManySnapshotInput!): SnapshotPaging!
   userFindManyUser(input: UserFindManyUserInput!): UserPaging!
   userFindOneBot(communityId: String!): Bot
   userFindOneBotServer(botId: String!, serverId: String!): BotServer
@@ -614,6 +633,7 @@ type Query {
   userFindOneLog(logId: String!): Log
   userFindOneNetworkAsset(account: String!, cluster: NetworkCluster!): NetworkAsset
   userFindOneRole(roleId: String!): Role
+  userFindOneSnapshot(snapshotId: String!): Snapshot
   userFindOneUser(username: String!): User
   userFindOneUserById(userId: String!): User
   userGetBotChannels(botId: String!, serverId: String!): [DiscordChannel!]
@@ -679,6 +699,21 @@ type RolePermission {
   updatedAt: DateTime
 }
 
+type Snapshot {
+  createdAt: DateTime
+  data: JSON
+  id: String!
+  name: String!
+  role: Role
+  roleId: String!
+  updatedAt: DateTime
+}
+
+type SnapshotPaging {
+  data: [Snapshot!]!
+  meta: PagingMeta!
+}
+
 type SolanaNetworkAsset {
   accounts: [String!]!
   amount: String!
@@ -742,6 +777,10 @@ input UserCreateRolePermissionInput {
   serverRoleId: String!
 }
 
+input UserCreateSnapshotInput {
+  roleId: String!
+}
+
 input UserFindManyCommunityInput {
   limit: Int = 10
   page: Int = 1
@@ -800,6 +839,14 @@ input UserFindManyRoleInput {
   communityId: String!
   limit: Int = 10
   page: Int = 1
+  search: String
+}
+
+input UserFindManySnapshotInput {
+  communityId: String!
+  limit: Int = 10
+  page: Int = 1
+  roleId: String
   search: String
 }
 

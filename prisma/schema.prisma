@@ -235,6 +235,7 @@ model Role {
   permissions RolePermission[]
   members     CommunityMemberRole[]
   logs        Log[]
+  snapshots   Snapshot[]
 }
 
 model RoleCondition {
@@ -262,6 +263,16 @@ model RolePermission {
   botRoleId String?
 
   @@unique([roleId, botRoleId])
+}
+
+model Snapshot {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId    String
+  name      String
+  data      Json
 }
 
 model User {

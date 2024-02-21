@@ -65,6 +65,10 @@ export type AdminCreateRoleInput = {
   name: Scalars['String']['input']
 }
 
+export type AdminCreateSnapshotInput = {
+  roleId: Scalars['String']['input']
+}
+
 export type AdminCreateUserInput = {
   password?: InputMaybe<Scalars['String']['input']>
   username: Scalars['String']['input']
@@ -136,6 +140,14 @@ export type AdminFindManyRoleInput = {
   communityId: Scalars['String']['input']
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
+  search?: InputMaybe<Scalars['String']['input']>
+}
+
+export type AdminFindManySnapshotInput = {
+  communityId?: InputMaybe<Scalars['String']['input']>
+  limit?: InputMaybe<Scalars['Int']['input']>
+  page?: InputMaybe<Scalars['Int']['input']>
+  roleId?: InputMaybe<Scalars['String']['input']>
   search?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -442,6 +454,7 @@ export type Mutation = {
   adminCreateNetwork?: Maybe<Network>
   adminCreateNetworkToken?: Maybe<NetworkToken>
   adminCreateRole?: Maybe<Role>
+  adminCreateSnapshot?: Maybe<Snapshot>
   adminCreateUser?: Maybe<User>
   adminDeleteBackup: Scalars['Boolean']['output']
   adminDeleteBot?: Maybe<Scalars['Boolean']['output']>
@@ -453,6 +466,7 @@ export type Mutation = {
   adminDeleteNetworkAsset?: Maybe<Scalars['Boolean']['output']>
   adminDeleteNetworkToken?: Maybe<Scalars['Boolean']['output']>
   adminDeleteRole?: Maybe<Scalars['Boolean']['output']>
+  adminDeleteSnapshot?: Maybe<Scalars['Boolean']['output']>
   adminDeleteUser?: Maybe<Scalars['Boolean']['output']>
   adminFetchBackup: Scalars['Boolean']['output']
   adminRestoreBackup: Scalars['Boolean']['output']
@@ -474,6 +488,7 @@ export type Mutation = {
   userCreateRole?: Maybe<Role>
   userCreateRoleCondition?: Maybe<RoleCondition>
   userCreateRolePermission?: Maybe<RolePermission>
+  userCreateSnapshot?: Maybe<Snapshot>
   userDeleteBot?: Maybe<Scalars['Boolean']['output']>
   userDeleteCommunity?: Maybe<Scalars['Boolean']['output']>
   userDeleteCommunityMember?: Maybe<Scalars['Boolean']['output']>
@@ -481,6 +496,7 @@ export type Mutation = {
   userDeleteRole?: Maybe<Scalars['Boolean']['output']>
   userDeleteRoleCondition?: Maybe<Scalars['Boolean']['output']>
   userDeleteRolePermission?: Maybe<Scalars['Boolean']['output']>
+  userDeleteSnapshot?: Maybe<Scalars['Boolean']['output']>
   userLeaveBotServer?: Maybe<Scalars['Boolean']['output']>
   userLinkIdentity?: Maybe<Identity>
   userRefreshIdentity?: Maybe<Scalars['Boolean']['output']>
@@ -521,6 +537,10 @@ export type MutationAdminCreateNetworkTokenArgs = {
 
 export type MutationAdminCreateRoleArgs = {
   input: AdminCreateRoleInput
+}
+
+export type MutationAdminCreateSnapshotArgs = {
+  input: AdminCreateSnapshotInput
 }
 
 export type MutationAdminCreateUserArgs = {
@@ -565,6 +585,10 @@ export type MutationAdminDeleteNetworkTokenArgs = {
 
 export type MutationAdminDeleteRoleArgs = {
   roleId: Scalars['String']['input']
+}
+
+export type MutationAdminDeleteSnapshotArgs = {
+  snapshotId: Scalars['String']['input']
 }
 
 export type MutationAdminDeleteUserArgs = {
@@ -654,6 +678,10 @@ export type MutationUserCreateRolePermissionArgs = {
   input: UserCreateRolePermissionInput
 }
 
+export type MutationUserCreateSnapshotArgs = {
+  input: UserCreateSnapshotInput
+}
+
 export type MutationUserDeleteBotArgs = {
   botId: Scalars['String']['input']
 }
@@ -680,6 +708,10 @@ export type MutationUserDeleteRoleConditionArgs = {
 
 export type MutationUserDeleteRolePermissionArgs = {
   rolePermissionId: Scalars['String']['input']
+}
+
+export type MutationUserDeleteSnapshotArgs = {
+  snapshotId: Scalars['String']['input']
 }
 
 export type MutationUserLeaveBotServerArgs = {
@@ -873,6 +905,7 @@ export type Query = {
   adminFindManyNetworkAsset: NetworkAssetPaging
   adminFindManyNetworkToken: NetworkTokenPaging
   adminFindManyRole: RolePaging
+  adminFindManySnapshot: SnapshotPaging
   adminFindManyUser: UserPaging
   adminFindOneBot?: Maybe<Bot>
   adminFindOneCommunity?: Maybe<Community>
@@ -882,6 +915,7 @@ export type Query = {
   adminFindOneNetworkAsset?: Maybe<NetworkAsset>
   adminFindOneNetworkToken?: Maybe<NetworkToken>
   adminFindOneRole?: Maybe<Role>
+  adminFindOneSnapshot?: Maybe<Snapshot>
   adminFindOneUser?: Maybe<User>
   adminGetBackup?: Maybe<Scalars['JSON']['output']>
   adminGetBackups: Array<Scalars['String']['output']>
@@ -899,6 +933,7 @@ export type Query = {
   userFindManyNetworkAsset: NetworkAssetPaging
   userFindManyNetworkToken: NetworkTokenPaging
   userFindManyRole: RolePaging
+  userFindManySnapshot: SnapshotPaging
   userFindManyUser: UserPaging
   userFindOneBot?: Maybe<Bot>
   userFindOneBotServer?: Maybe<BotServer>
@@ -908,6 +943,7 @@ export type Query = {
   userFindOneLog?: Maybe<Log>
   userFindOneNetworkAsset?: Maybe<NetworkAsset>
   userFindOneRole?: Maybe<Role>
+  userFindOneSnapshot?: Maybe<Snapshot>
   userFindOneUser?: Maybe<User>
   userFindOneUserById?: Maybe<User>
   userGetBotChannels?: Maybe<Array<DiscordChannel>>
@@ -957,6 +993,10 @@ export type QueryAdminFindManyRoleArgs = {
   input: AdminFindManyRoleInput
 }
 
+export type QueryAdminFindManySnapshotArgs = {
+  input: AdminFindManySnapshotInput
+}
+
 export type QueryAdminFindManyUserArgs = {
   input: AdminFindManyUserInput
 }
@@ -991,6 +1031,10 @@ export type QueryAdminFindOneNetworkTokenArgs = {
 
 export type QueryAdminFindOneRoleArgs = {
   roleId: Scalars['String']['input']
+}
+
+export type QueryAdminFindOneSnapshotArgs = {
+  snapshotId: Scalars['String']['input']
 }
 
 export type QueryAdminFindOneUserArgs = {
@@ -1043,6 +1087,10 @@ export type QueryUserFindManyRoleArgs = {
   input: UserFindManyRoleInput
 }
 
+export type QueryUserFindManySnapshotArgs = {
+  input: UserFindManySnapshotInput
+}
+
 export type QueryUserFindManyUserArgs = {
   input: UserFindManyUserInput
 }
@@ -1080,6 +1128,10 @@ export type QueryUserFindOneNetworkAssetArgs = {
 
 export type QueryUserFindOneRoleArgs = {
   roleId: Scalars['String']['input']
+}
+
+export type QueryUserFindOneSnapshotArgs = {
+  snapshotId: Scalars['String']['input']
 }
 
 export type QueryUserFindOneUserArgs = {
@@ -1187,6 +1239,23 @@ export type RolePermission = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
+export type Snapshot = {
+  __typename?: 'Snapshot'
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  data?: Maybe<Scalars['JSON']['output']>
+  id: Scalars['String']['output']
+  name: Scalars['String']['output']
+  role?: Maybe<Role>
+  roleId: Scalars['String']['output']
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type SnapshotPaging = {
+  __typename?: 'SnapshotPaging'
+  data: Array<Snapshot>
+  meta: PagingMeta
+}
+
 export type SolanaNetworkAsset = {
   __typename?: 'SolanaNetworkAsset'
   accounts: Array<Scalars['String']['output']>
@@ -1252,6 +1321,10 @@ export type UserCreateRolePermissionInput = {
   serverRoleId: Scalars['String']['input']
 }
 
+export type UserCreateSnapshotInput = {
+  roleId: Scalars['String']['input']
+}
+
 export type UserFindManyCommunityInput = {
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
@@ -1310,6 +1383,14 @@ export type UserFindManyRoleInput = {
   communityId: Scalars['String']['input']
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
+  search?: InputMaybe<Scalars['String']['input']>
+}
+
+export type UserFindManySnapshotInput = {
+  communityId: Scalars['String']['input']
+  limit?: InputMaybe<Scalars['Int']['input']>
+  page?: InputMaybe<Scalars['Int']['input']>
+  roleId?: InputMaybe<Scalars['String']['input']>
   search?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -5901,6 +5982,660 @@ export type UserSyncCommunityRolesMutationVariables = Exact<{
 
 export type UserSyncCommunityRolesMutation = { __typename?: 'Mutation'; result?: any | null }
 
+export type SnapshotDetailsFragment = {
+  __typename?: 'Snapshot'
+  createdAt?: Date | null
+  id: string
+  roleId: string
+  name: string
+  data?: any | null
+  updatedAt?: Date | null
+  role?: {
+    __typename?: 'Role'
+    createdAt?: Date | null
+    id: string
+    communityId: string
+    name: string
+    updatedAt?: Date | null
+    viewUrl?: string | null
+    conditions?: Array<{
+      __typename?: 'RoleCondition'
+      createdAt?: Date | null
+      id: string
+      type: NetworkTokenType
+      amount?: string | null
+      filters?: any | null
+      config?: any | null
+      tokenId?: string | null
+      roleId?: string | null
+      updatedAt?: Date | null
+      valid?: boolean | null
+      token?: {
+        __typename?: 'NetworkToken'
+        id: string
+        createdAt?: Date | null
+        updatedAt?: Date | null
+        cluster: NetworkCluster
+        type: NetworkTokenType
+        account: string
+        program: string
+        name: string
+        vault?: string | null
+        symbol?: string | null
+        description?: string | null
+        imageUrl?: string | null
+        metadataUrl?: string | null
+        raw?: any | null
+      } | null
+      asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+    }> | null
+    permissions?: Array<{
+      __typename?: 'RolePermission'
+      createdAt?: Date | null
+      id: string
+      updatedAt?: Date | null
+      botId?: string | null
+      roleId?: string | null
+      botRole?: {
+        __typename?: 'BotRole'
+        botId?: string | null
+        createdAt?: Date | null
+        id: string
+        serverId?: string | null
+        updatedAt?: Date | null
+        serverRoleId?: string | null
+        serverRole?: {
+          __typename?: 'DiscordRole'
+          id: string
+          name: string
+          managed: boolean
+          color: number
+          position: number
+        } | null
+        server?: {
+          __typename?: 'DiscordServer'
+          id: string
+          name: string
+          icon?: string | null
+          permissions?: Array<string> | null
+        } | null
+      } | null
+    }> | null
+  } | null
+}
+
+export type UserFindManySnapshotQueryVariables = Exact<{
+  input: UserFindManySnapshotInput
+}>
+
+export type UserFindManySnapshotQuery = {
+  __typename?: 'Query'
+  paging: {
+    __typename?: 'SnapshotPaging'
+    data: Array<{
+      __typename?: 'Snapshot'
+      createdAt?: Date | null
+      id: string
+      roleId: string
+      name: string
+      data?: any | null
+      updatedAt?: Date | null
+      role?: {
+        __typename?: 'Role'
+        createdAt?: Date | null
+        id: string
+        communityId: string
+        name: string
+        updatedAt?: Date | null
+        viewUrl?: string | null
+        conditions?: Array<{
+          __typename?: 'RoleCondition'
+          createdAt?: Date | null
+          id: string
+          type: NetworkTokenType
+          amount?: string | null
+          filters?: any | null
+          config?: any | null
+          tokenId?: string | null
+          roleId?: string | null
+          updatedAt?: Date | null
+          valid?: boolean | null
+          token?: {
+            __typename?: 'NetworkToken'
+            id: string
+            createdAt?: Date | null
+            updatedAt?: Date | null
+            cluster: NetworkCluster
+            type: NetworkTokenType
+            account: string
+            program: string
+            name: string
+            vault?: string | null
+            symbol?: string | null
+            description?: string | null
+            imageUrl?: string | null
+            metadataUrl?: string | null
+            raw?: any | null
+          } | null
+          asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+        }> | null
+        permissions?: Array<{
+          __typename?: 'RolePermission'
+          createdAt?: Date | null
+          id: string
+          updatedAt?: Date | null
+          botId?: string | null
+          roleId?: string | null
+          botRole?: {
+            __typename?: 'BotRole'
+            botId?: string | null
+            createdAt?: Date | null
+            id: string
+            serverId?: string | null
+            updatedAt?: Date | null
+            serverRoleId?: string | null
+            serverRole?: {
+              __typename?: 'DiscordRole'
+              id: string
+              name: string
+              managed: boolean
+              color: number
+              position: number
+            } | null
+            server?: {
+              __typename?: 'DiscordServer'
+              id: string
+              name: string
+              icon?: string | null
+              permissions?: Array<string> | null
+            } | null
+          } | null
+        }> | null
+      } | null
+    }>
+    meta: {
+      __typename?: 'PagingMeta'
+      currentPage: number
+      isFirstPage: boolean
+      isLastPage: boolean
+      nextPage?: number | null
+      pageCount?: number | null
+      previousPage?: number | null
+      totalCount?: number | null
+    }
+  }
+}
+
+export type UserFindOneSnapshotQueryVariables = Exact<{
+  snapshotId: Scalars['String']['input']
+}>
+
+export type UserFindOneSnapshotQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'Snapshot'
+    createdAt?: Date | null
+    id: string
+    roleId: string
+    name: string
+    data?: any | null
+    updatedAt?: Date | null
+    role?: {
+      __typename?: 'Role'
+      createdAt?: Date | null
+      id: string
+      communityId: string
+      name: string
+      updatedAt?: Date | null
+      viewUrl?: string | null
+      conditions?: Array<{
+        __typename?: 'RoleCondition'
+        createdAt?: Date | null
+        id: string
+        type: NetworkTokenType
+        amount?: string | null
+        filters?: any | null
+        config?: any | null
+        tokenId?: string | null
+        roleId?: string | null
+        updatedAt?: Date | null
+        valid?: boolean | null
+        token?: {
+          __typename?: 'NetworkToken'
+          id: string
+          createdAt?: Date | null
+          updatedAt?: Date | null
+          cluster: NetworkCluster
+          type: NetworkTokenType
+          account: string
+          program: string
+          name: string
+          vault?: string | null
+          symbol?: string | null
+          description?: string | null
+          imageUrl?: string | null
+          metadataUrl?: string | null
+          raw?: any | null
+        } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      }> | null
+      permissions?: Array<{
+        __typename?: 'RolePermission'
+        createdAt?: Date | null
+        id: string
+        updatedAt?: Date | null
+        botId?: string | null
+        roleId?: string | null
+        botRole?: {
+          __typename?: 'BotRole'
+          botId?: string | null
+          createdAt?: Date | null
+          id: string
+          serverId?: string | null
+          updatedAt?: Date | null
+          serverRoleId?: string | null
+          serverRole?: {
+            __typename?: 'DiscordRole'
+            id: string
+            name: string
+            managed: boolean
+            color: number
+            position: number
+          } | null
+          server?: {
+            __typename?: 'DiscordServer'
+            id: string
+            name: string
+            icon?: string | null
+            permissions?: Array<string> | null
+          } | null
+        } | null
+      }> | null
+    } | null
+  } | null
+}
+
+export type UserCreateSnapshotMutationVariables = Exact<{
+  input: UserCreateSnapshotInput
+}>
+
+export type UserCreateSnapshotMutation = {
+  __typename?: 'Mutation'
+  created?: {
+    __typename?: 'Snapshot'
+    createdAt?: Date | null
+    id: string
+    roleId: string
+    name: string
+    data?: any | null
+    updatedAt?: Date | null
+    role?: {
+      __typename?: 'Role'
+      createdAt?: Date | null
+      id: string
+      communityId: string
+      name: string
+      updatedAt?: Date | null
+      viewUrl?: string | null
+      conditions?: Array<{
+        __typename?: 'RoleCondition'
+        createdAt?: Date | null
+        id: string
+        type: NetworkTokenType
+        amount?: string | null
+        filters?: any | null
+        config?: any | null
+        tokenId?: string | null
+        roleId?: string | null
+        updatedAt?: Date | null
+        valid?: boolean | null
+        token?: {
+          __typename?: 'NetworkToken'
+          id: string
+          createdAt?: Date | null
+          updatedAt?: Date | null
+          cluster: NetworkCluster
+          type: NetworkTokenType
+          account: string
+          program: string
+          name: string
+          vault?: string | null
+          symbol?: string | null
+          description?: string | null
+          imageUrl?: string | null
+          metadataUrl?: string | null
+          raw?: any | null
+        } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      }> | null
+      permissions?: Array<{
+        __typename?: 'RolePermission'
+        createdAt?: Date | null
+        id: string
+        updatedAt?: Date | null
+        botId?: string | null
+        roleId?: string | null
+        botRole?: {
+          __typename?: 'BotRole'
+          botId?: string | null
+          createdAt?: Date | null
+          id: string
+          serverId?: string | null
+          updatedAt?: Date | null
+          serverRoleId?: string | null
+          serverRole?: {
+            __typename?: 'DiscordRole'
+            id: string
+            name: string
+            managed: boolean
+            color: number
+            position: number
+          } | null
+          server?: {
+            __typename?: 'DiscordServer'
+            id: string
+            name: string
+            icon?: string | null
+            permissions?: Array<string> | null
+          } | null
+        } | null
+      }> | null
+    } | null
+  } | null
+}
+
+export type UserDeleteSnapshotMutationVariables = Exact<{
+  snapshotId: Scalars['String']['input']
+}>
+
+export type UserDeleteSnapshotMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
+export type AdminFindManySnapshotQueryVariables = Exact<{
+  input: AdminFindManySnapshotInput
+}>
+
+export type AdminFindManySnapshotQuery = {
+  __typename?: 'Query'
+  paging: {
+    __typename?: 'SnapshotPaging'
+    data: Array<{
+      __typename?: 'Snapshot'
+      createdAt?: Date | null
+      id: string
+      roleId: string
+      name: string
+      data?: any | null
+      updatedAt?: Date | null
+      role?: {
+        __typename?: 'Role'
+        createdAt?: Date | null
+        id: string
+        communityId: string
+        name: string
+        updatedAt?: Date | null
+        viewUrl?: string | null
+        conditions?: Array<{
+          __typename?: 'RoleCondition'
+          createdAt?: Date | null
+          id: string
+          type: NetworkTokenType
+          amount?: string | null
+          filters?: any | null
+          config?: any | null
+          tokenId?: string | null
+          roleId?: string | null
+          updatedAt?: Date | null
+          valid?: boolean | null
+          token?: {
+            __typename?: 'NetworkToken'
+            id: string
+            createdAt?: Date | null
+            updatedAt?: Date | null
+            cluster: NetworkCluster
+            type: NetworkTokenType
+            account: string
+            program: string
+            name: string
+            vault?: string | null
+            symbol?: string | null
+            description?: string | null
+            imageUrl?: string | null
+            metadataUrl?: string | null
+            raw?: any | null
+          } | null
+          asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+        }> | null
+        permissions?: Array<{
+          __typename?: 'RolePermission'
+          createdAt?: Date | null
+          id: string
+          updatedAt?: Date | null
+          botId?: string | null
+          roleId?: string | null
+          botRole?: {
+            __typename?: 'BotRole'
+            botId?: string | null
+            createdAt?: Date | null
+            id: string
+            serverId?: string | null
+            updatedAt?: Date | null
+            serverRoleId?: string | null
+            serverRole?: {
+              __typename?: 'DiscordRole'
+              id: string
+              name: string
+              managed: boolean
+              color: number
+              position: number
+            } | null
+            server?: {
+              __typename?: 'DiscordServer'
+              id: string
+              name: string
+              icon?: string | null
+              permissions?: Array<string> | null
+            } | null
+          } | null
+        }> | null
+      } | null
+    }>
+    meta: {
+      __typename?: 'PagingMeta'
+      currentPage: number
+      isFirstPage: boolean
+      isLastPage: boolean
+      nextPage?: number | null
+      pageCount?: number | null
+      previousPage?: number | null
+      totalCount?: number | null
+    }
+  }
+}
+
+export type AdminFindOneSnapshotQueryVariables = Exact<{
+  snapshotId: Scalars['String']['input']
+}>
+
+export type AdminFindOneSnapshotQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'Snapshot'
+    createdAt?: Date | null
+    id: string
+    roleId: string
+    name: string
+    data?: any | null
+    updatedAt?: Date | null
+    role?: {
+      __typename?: 'Role'
+      createdAt?: Date | null
+      id: string
+      communityId: string
+      name: string
+      updatedAt?: Date | null
+      viewUrl?: string | null
+      conditions?: Array<{
+        __typename?: 'RoleCondition'
+        createdAt?: Date | null
+        id: string
+        type: NetworkTokenType
+        amount?: string | null
+        filters?: any | null
+        config?: any | null
+        tokenId?: string | null
+        roleId?: string | null
+        updatedAt?: Date | null
+        valid?: boolean | null
+        token?: {
+          __typename?: 'NetworkToken'
+          id: string
+          createdAt?: Date | null
+          updatedAt?: Date | null
+          cluster: NetworkCluster
+          type: NetworkTokenType
+          account: string
+          program: string
+          name: string
+          vault?: string | null
+          symbol?: string | null
+          description?: string | null
+          imageUrl?: string | null
+          metadataUrl?: string | null
+          raw?: any | null
+        } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      }> | null
+      permissions?: Array<{
+        __typename?: 'RolePermission'
+        createdAt?: Date | null
+        id: string
+        updatedAt?: Date | null
+        botId?: string | null
+        roleId?: string | null
+        botRole?: {
+          __typename?: 'BotRole'
+          botId?: string | null
+          createdAt?: Date | null
+          id: string
+          serverId?: string | null
+          updatedAt?: Date | null
+          serverRoleId?: string | null
+          serverRole?: {
+            __typename?: 'DiscordRole'
+            id: string
+            name: string
+            managed: boolean
+            color: number
+            position: number
+          } | null
+          server?: {
+            __typename?: 'DiscordServer'
+            id: string
+            name: string
+            icon?: string | null
+            permissions?: Array<string> | null
+          } | null
+        } | null
+      }> | null
+    } | null
+  } | null
+}
+
+export type AdminCreateSnapshotMutationVariables = Exact<{
+  input: AdminCreateSnapshotInput
+}>
+
+export type AdminCreateSnapshotMutation = {
+  __typename?: 'Mutation'
+  created?: {
+    __typename?: 'Snapshot'
+    createdAt?: Date | null
+    id: string
+    roleId: string
+    name: string
+    data?: any | null
+    updatedAt?: Date | null
+    role?: {
+      __typename?: 'Role'
+      createdAt?: Date | null
+      id: string
+      communityId: string
+      name: string
+      updatedAt?: Date | null
+      viewUrl?: string | null
+      conditions?: Array<{
+        __typename?: 'RoleCondition'
+        createdAt?: Date | null
+        id: string
+        type: NetworkTokenType
+        amount?: string | null
+        filters?: any | null
+        config?: any | null
+        tokenId?: string | null
+        roleId?: string | null
+        updatedAt?: Date | null
+        valid?: boolean | null
+        token?: {
+          __typename?: 'NetworkToken'
+          id: string
+          createdAt?: Date | null
+          updatedAt?: Date | null
+          cluster: NetworkCluster
+          type: NetworkTokenType
+          account: string
+          program: string
+          name: string
+          vault?: string | null
+          symbol?: string | null
+          description?: string | null
+          imageUrl?: string | null
+          metadataUrl?: string | null
+          raw?: any | null
+        } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      }> | null
+      permissions?: Array<{
+        __typename?: 'RolePermission'
+        createdAt?: Date | null
+        id: string
+        updatedAt?: Date | null
+        botId?: string | null
+        roleId?: string | null
+        botRole?: {
+          __typename?: 'BotRole'
+          botId?: string | null
+          createdAt?: Date | null
+          id: string
+          serverId?: string | null
+          updatedAt?: Date | null
+          serverRoleId?: string | null
+          serverRole?: {
+            __typename?: 'DiscordRole'
+            id: string
+            name: string
+            managed: boolean
+            color: number
+            position: number
+          } | null
+          server?: {
+            __typename?: 'DiscordServer'
+            id: string
+            name: string
+            icon?: string | null
+            permissions?: Array<string> | null
+          } | null
+        } | null
+      }> | null
+    } | null
+  } | null
+}
+
+export type AdminDeleteSnapshotMutationVariables = Exact<{
+  snapshotId: Scalars['String']['input']
+}>
+
+export type AdminDeleteSnapshotMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
 export type UserSummaryFragment = {
   __typename?: 'User'
   avatarUrl?: string | null
@@ -6489,6 +7224,20 @@ export const NetworkDetailsFragmentDoc = gql`
     symbol
     updatedAt
   }
+`
+export const SnapshotDetailsFragmentDoc = gql`
+  fragment SnapshotDetails on Snapshot {
+    createdAt
+    id
+    role {
+      ...RoleDetails
+    }
+    roleId
+    name
+    data
+    updatedAt
+  }
+  ${RoleDetailsFragmentDoc}
 `
 export const UserSummaryFragmentDoc = gql`
   fragment UserSummary on User {
@@ -7379,6 +8128,76 @@ export const UserSyncCommunityRolesDocument = gql`
     result: userSyncCommunityRoles(communityId: $communityId)
   }
 `
+export const UserFindManySnapshotDocument = gql`
+  query userFindManySnapshot($input: UserFindManySnapshotInput!) {
+    paging: userFindManySnapshot(input: $input) {
+      data {
+        ...SnapshotDetails
+      }
+      meta {
+        ...PagingMetaDetails
+      }
+    }
+  }
+  ${SnapshotDetailsFragmentDoc}
+  ${PagingMetaDetailsFragmentDoc}
+`
+export const UserFindOneSnapshotDocument = gql`
+  query userFindOneSnapshot($snapshotId: String!) {
+    item: userFindOneSnapshot(snapshotId: $snapshotId) {
+      ...SnapshotDetails
+    }
+  }
+  ${SnapshotDetailsFragmentDoc}
+`
+export const UserCreateSnapshotDocument = gql`
+  mutation userCreateSnapshot($input: UserCreateSnapshotInput!) {
+    created: userCreateSnapshot(input: $input) {
+      ...SnapshotDetails
+    }
+  }
+  ${SnapshotDetailsFragmentDoc}
+`
+export const UserDeleteSnapshotDocument = gql`
+  mutation userDeleteSnapshot($snapshotId: String!) {
+    deleted: userDeleteSnapshot(snapshotId: $snapshotId)
+  }
+`
+export const AdminFindManySnapshotDocument = gql`
+  query adminFindManySnapshot($input: AdminFindManySnapshotInput!) {
+    paging: adminFindManySnapshot(input: $input) {
+      data {
+        ...SnapshotDetails
+      }
+      meta {
+        ...PagingMetaDetails
+      }
+    }
+  }
+  ${SnapshotDetailsFragmentDoc}
+  ${PagingMetaDetailsFragmentDoc}
+`
+export const AdminFindOneSnapshotDocument = gql`
+  query adminFindOneSnapshot($snapshotId: String!) {
+    item: adminFindOneSnapshot(snapshotId: $snapshotId) {
+      ...SnapshotDetails
+    }
+  }
+  ${SnapshotDetailsFragmentDoc}
+`
+export const AdminCreateSnapshotDocument = gql`
+  mutation adminCreateSnapshot($input: AdminCreateSnapshotInput!) {
+    created: adminCreateSnapshot(input: $input) {
+      ...SnapshotDetails
+    }
+  }
+  ${SnapshotDetailsFragmentDoc}
+`
+export const AdminDeleteSnapshotDocument = gql`
+  mutation adminDeleteSnapshot($snapshotId: String!) {
+    deleted: adminDeleteSnapshot(snapshotId: $snapshotId)
+  }
+`
 export const AdminCreateUserDocument = gql`
   mutation adminCreateUser($input: AdminCreateUserInput!) {
     created: adminCreateUser(input: $input) {
@@ -7581,6 +8400,14 @@ const UserDeleteRoleDocumentString = print(UserDeleteRoleDocument)
 const UserDeleteRoleConditionDocumentString = print(UserDeleteRoleConditionDocument)
 const UserDeleteRolePermissionDocumentString = print(UserDeleteRolePermissionDocument)
 const UserSyncCommunityRolesDocumentString = print(UserSyncCommunityRolesDocument)
+const UserFindManySnapshotDocumentString = print(UserFindManySnapshotDocument)
+const UserFindOneSnapshotDocumentString = print(UserFindOneSnapshotDocument)
+const UserCreateSnapshotDocumentString = print(UserCreateSnapshotDocument)
+const UserDeleteSnapshotDocumentString = print(UserDeleteSnapshotDocument)
+const AdminFindManySnapshotDocumentString = print(AdminFindManySnapshotDocument)
+const AdminFindOneSnapshotDocumentString = print(AdminFindOneSnapshotDocument)
+const AdminCreateSnapshotDocumentString = print(AdminCreateSnapshotDocument)
+const AdminDeleteSnapshotDocumentString = print(AdminDeleteSnapshotDocument)
 const AdminCreateUserDocumentString = print(AdminCreateUserDocument)
 const AdminDeleteUserDocumentString = print(AdminDeleteUserDocument)
 const AdminFindManyUserDocumentString = print(AdminFindManyUserDocument)
@@ -9828,6 +10655,174 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
+    userFindManySnapshot(
+      variables: UserFindManySnapshotQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserFindManySnapshotQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserFindManySnapshotQuery>(UserFindManySnapshotDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userFindManySnapshot',
+        'query',
+        variables,
+      )
+    },
+    userFindOneSnapshot(
+      variables: UserFindOneSnapshotQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserFindOneSnapshotQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserFindOneSnapshotQuery>(UserFindOneSnapshotDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userFindOneSnapshot',
+        'query',
+        variables,
+      )
+    },
+    userCreateSnapshot(
+      variables: UserCreateSnapshotMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserCreateSnapshotMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserCreateSnapshotMutation>(UserCreateSnapshotDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userCreateSnapshot',
+        'mutation',
+        variables,
+      )
+    },
+    userDeleteSnapshot(
+      variables: UserDeleteSnapshotMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserDeleteSnapshotMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserDeleteSnapshotMutation>(UserDeleteSnapshotDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userDeleteSnapshot',
+        'mutation',
+        variables,
+      )
+    },
+    adminFindManySnapshot(
+      variables: AdminFindManySnapshotQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindManySnapshotQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindManySnapshotQuery>(AdminFindManySnapshotDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindManySnapshot',
+        'query',
+        variables,
+      )
+    },
+    adminFindOneSnapshot(
+      variables: AdminFindOneSnapshotQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindOneSnapshotQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindOneSnapshotQuery>(AdminFindOneSnapshotDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindOneSnapshot',
+        'query',
+        variables,
+      )
+    },
+    adminCreateSnapshot(
+      variables: AdminCreateSnapshotMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminCreateSnapshotMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminCreateSnapshotMutation>(AdminCreateSnapshotDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminCreateSnapshot',
+        'mutation',
+        variables,
+      )
+    },
+    adminDeleteSnapshot(
+      variables: AdminDeleteSnapshotMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminDeleteSnapshotMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminDeleteSnapshotMutation>(AdminDeleteSnapshotDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminDeleteSnapshot',
+        'mutation',
+        variables,
+      )
+    },
     adminCreateUser(
       variables: AdminCreateUserMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -10106,6 +11101,12 @@ export function AdminCreateRoleInputSchema(): z.ZodObject<Properties<AdminCreate
   })
 }
 
+export function AdminCreateSnapshotInputSchema(): z.ZodObject<Properties<AdminCreateSnapshotInput>> {
+  return z.object({
+    roleId: z.string(),
+  })
+}
+
 export function AdminCreateUserInputSchema(): z.ZodObject<Properties<AdminCreateUserInput>> {
   return z.object({
     password: z.string().nullish(),
@@ -10196,6 +11197,16 @@ export function AdminFindManyRoleInputSchema(): z.ZodObject<Properties<AdminFind
     communityId: z.string(),
     limit: z.number().nullish(),
     page: z.number().nullish(),
+    search: z.string().nullish(),
+  })
+}
+
+export function AdminFindManySnapshotInputSchema(): z.ZodObject<Properties<AdminFindManySnapshotInput>> {
+  return z.object({
+    communityId: z.string().nullish(),
+    limit: z.number().nullish(),
+    page: z.number().nullish(),
+    roleId: z.string().nullish(),
     search: z.string().nullish(),
   })
 }
@@ -10353,6 +11364,12 @@ export function UserCreateRolePermissionInputSchema(): z.ZodObject<Properties<Us
   })
 }
 
+export function UserCreateSnapshotInputSchema(): z.ZodObject<Properties<UserCreateSnapshotInput>> {
+  return z.object({
+    roleId: z.string(),
+  })
+}
+
 export function UserFindManyCommunityInputSchema(): z.ZodObject<Properties<UserFindManyCommunityInput>> {
   return z.object({
     limit: z.number().nullish(),
@@ -10424,6 +11441,16 @@ export function UserFindManyRoleInputSchema(): z.ZodObject<Properties<UserFindMa
     communityId: z.string(),
     limit: z.number().nullish(),
     page: z.number().nullish(),
+    search: z.string().nullish(),
+  })
+}
+
+export function UserFindManySnapshotInputSchema(): z.ZodObject<Properties<UserFindManySnapshotInput>> {
+  return z.object({
+    communityId: z.string(),
+    limit: z.number().nullish(),
+    page: z.number().nullish(),
+    roleId: z.string().nullish(),
     search: z.string().nullish(),
   })
 }

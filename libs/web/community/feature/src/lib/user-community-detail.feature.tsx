@@ -6,6 +6,7 @@ import { CommunityUiItem } from '@pubkey-link/web-community-ui'
 import { UserLogFeature } from '@pubkey-link/web-log-feature'
 import { NetworkUiClusterBadge } from '@pubkey-link/web-network-ui'
 import { UserRoleFeature } from '@pubkey-link/web-role-feature'
+import { UserSnapshotFeature } from '@pubkey-link/web-snapshot-feature'
 import { UiIcon } from '@pubkey-link/web-ui-core'
 import {
   UiBack,
@@ -69,6 +70,12 @@ export function UserCommunityDetailFeature() {
       path: 'logs',
       element: <UserLogFeature communityId={item.id} />,
       leftSection: <UiIcon type="logs" size={20} />,
+    },
+    communityAdmin && {
+      label: 'Snapshots',
+      path: 'snapshots',
+      element: <UserSnapshotFeature communityId={item.id} />,
+      leftSection: <UiIcon type="snapshot" size={20} />,
     },
     communityAdmin && {
       path: 'settings',

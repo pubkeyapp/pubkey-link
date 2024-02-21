@@ -1,0 +1,65 @@
+fragment SnapshotDetails on Snapshot {
+  createdAt
+  id
+  role {
+    ...RoleDetails
+  }
+  roleId
+  name
+  data
+  updatedAt
+}
+
+query userFindManySnapshot($input: UserFindManySnapshotInput!) {
+  paging: userFindManySnapshot(input: $input) {
+    data {
+      ...SnapshotDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query userFindOneSnapshot($snapshotId: String!) {
+  item: userFindOneSnapshot(snapshotId: $snapshotId) {
+    ...SnapshotDetails
+  }
+}
+
+mutation userCreateSnapshot($input: UserCreateSnapshotInput!) {
+  created: userCreateSnapshot(input: $input) {
+    ...SnapshotDetails
+  }
+}
+
+mutation userDeleteSnapshot($snapshotId: String!) {
+  deleted: userDeleteSnapshot(snapshotId: $snapshotId)
+}
+
+query adminFindManySnapshot($input: AdminFindManySnapshotInput!) {
+  paging: adminFindManySnapshot(input: $input) {
+    data {
+      ...SnapshotDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query adminFindOneSnapshot($snapshotId: String!) {
+  item: adminFindOneSnapshot(snapshotId: $snapshotId) {
+    ...SnapshotDetails
+  }
+}
+
+mutation adminCreateSnapshot($input: AdminCreateSnapshotInput!) {
+  created: adminCreateSnapshot(input: $input) {
+    ...SnapshotDetails
+  }
+}
+
+mutation adminDeleteSnapshot($snapshotId: String!) {
+  deleted: adminDeleteSnapshot(snapshotId: $snapshotId)
+}

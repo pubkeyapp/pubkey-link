@@ -14,6 +14,7 @@ import { ApiBotFeatureModule } from '@pubkey-link/api-bot-feature'
 import { ApiBackupFeatureModule } from '@pubkey-link/api-backup-feature'
 import { ApiLogFeatureModule } from '@pubkey-link/api-log-feature'
 import { ApiNetworkAssetFeatureModule } from '@pubkey-link/api-network-asset-feature'
+import { ApiSnapshotFeatureModule } from '@pubkey-link/api-snapshot-feature'
 
 const imports = [
   // The api-feature generator will add the imports here
@@ -30,6 +31,7 @@ const imports = [
   ApiBackupFeatureModule,
   ApiLogFeatureModule,
   ApiNetworkAssetFeatureModule,
+  ApiSnapshotFeatureModule,
 ]
 
 @Module({

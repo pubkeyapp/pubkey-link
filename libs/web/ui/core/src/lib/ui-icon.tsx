@@ -1,4 +1,5 @@
 import {
+  IconCameraBolt,
   IconChecklist,
   IconDashboard,
   IconQuestionMark,
@@ -8,7 +9,7 @@ import {
   IconUsersGroup,
 } from '@tabler/icons-react'
 
-export type UiIconType = 'community' | 'dashboard' | 'logs' | 'roles' | 'settings' | 'users'
+export type UiIconType = 'community' | 'dashboard' | 'logs' | 'roles' | 'settings' | 'snapshot' | 'users'
 
 export function UiIcon({ type, ...props }: { type: UiIconType | string; size?: number }) {
   switch (type) {
@@ -22,6 +23,8 @@ export function UiIcon({ type, ...props }: { type: UiIconType | string; size?: n
       return <IconChecklist {...props} />
     case 'settings':
       return <IconSettings {...props} />
+    case 'snapshot':
+      return <IconCameraBolt {...props} />
     case 'users':
       return <IconUsers {...props} />
     default:
