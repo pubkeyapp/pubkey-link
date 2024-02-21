@@ -1,4 +1,4 @@
-import { Button, Stepper, Text } from '@mantine/core'
+import { Box, Button, Group, Stepper } from '@mantine/core'
 import {
   Community,
   getEnumOptions,
@@ -14,7 +14,7 @@ import { toastError, toastSuccess, UiCard, UiDebug, UiInfo, UiStack } from '@pub
 import { useMemo, useState } from 'react'
 import { RoleConditionUiItem } from './role-condition-ui-item'
 import { RoleConditionUiNavLink } from './role-condition-ui-nav-link'
-import { RoleConditionUiTypeForm } from './role-condition-ui-type-form'
+import { RoleConditionUiAmountForm, RoleConditionUiTypeForm } from './role-condition-ui-type-form'
 import { RoleUiItem } from './role-ui-item'
 
 export function RoleConditionUiCreateWizard(props: { role: Role; community: Community; tokens: NetworkToken[] }) {
@@ -22,6 +22,7 @@ export function RoleConditionUiCreateWizard(props: { role: Role; community: Comm
   const [networkTokenType, setNetworkTokenType] = useState<NetworkTokenType | undefined>(undefined)
   const [networkToken, setNetworkToken] = useState<NetworkToken | undefined>(undefined)
   const [amount, setAmount] = useState<string>('0')
+  const [amountMax, setAmountMax] = useState<string>('0')
   const tokens: NetworkToken[] = useMemo(() => {
     if (networkTokenType === NetworkTokenType.Fungible) {
       return props.tokens.filter((token) => token.type === NetworkTokenType.Fungible)
@@ -62,12 +63,10 @@ export function RoleConditionUiCreateWizard(props: { role: Role; community: Comm
   }, [props.role.id, networkTokenType, networkToken])
 
   async function addCondition(type: NetworkTokenType, token: NetworkToken) {
-    console.log('addCondition', type, token)
     createRoleCondition({ ...config, type, tokenId: token.id })
       .then(async (res) => {
-        console.log('res', res)
         toastSuccess('Condition created')
-        query.refetch()
+        await query.refetch()
       })
       .catch((err) => {
         toastError('Error creating condition')
@@ -109,9 +108,10 @@ export function RoleConditionUiCreateWizard(props: { role: Role; community: Comm
             <Stepper.Step label="Configuration" description="Configure the condition">
               {networkTokenType ? (
                 <UiStack>
+                  <Box px="sm" py="xs">
+                    <RoleConditionUiItem type={networkTokenType} />
+                  </Box>
                   <RoleConditionUiTypeForm
-                    amount={amount}
-                    setAmount={setAmount}
                     networkToken={networkToken}
                     setNetworkToken={setNetworkToken}
                     type={networkTokenType}
@@ -131,17 +131,22 @@ export function RoleConditionUiCreateWizard(props: { role: Role; community: Comm
                       ['Type', <RoleConditionUiItem type={networkTokenType} />],
                       networkToken ? ['Token', <NetworkTokenUiItem networkToken={networkToken} />] : undefined,
                       [
-                        'Amount (min)',
-                        <Text size="xl" fw="bold">
-                          {amount} {networkToken?.symbol}
-                        </Text>,
+                        'Amount',
+                        <Group>
+                          <RoleConditionUiAmountForm label="Amount (min)" amount={amount} setAmount={setAmount} />
+                          <RoleConditionUiAmountForm label="Amount (max)" amount={amountMax} setAmount={setAmountMax} />
+                        </Group>,
+                      ],
+                      [
+                        '',
+                        <Group justify="end">
+                          <Button size="xl" onClick={() => addCondition(networkTokenType, networkToken)}>
+                            Create Condition
+                          </Button>
+                        </Group>,
                       ],
                     ]}
                   />
-
-                  <Button size="xl" onClick={() => addCondition(networkTokenType, networkToken)}>
-                    Create Condition
-                  </Button>
                 </UiStack>
               ) : (
                 <UiInfo message="Select a condition type and configure it" />

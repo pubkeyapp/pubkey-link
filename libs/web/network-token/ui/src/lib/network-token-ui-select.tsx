@@ -29,5 +29,5 @@ export function NetworkTokenUiSelect({
 }
 
 function NetworkTokenUiNavLink({ token, ...props }: NavLinkProps & { token: NetworkToken }) {
-  return <NavLink label={<NetworkTokenUiItem networkToken={token} />} variant={'light'} {...props} />
+  return <NavLink component={'span'} label={<NetworkTokenUiItem networkToken={token} />} variant={'light'} {...props} />
 }

@@ -1,6 +1,6 @@
 import { Group } from '@mantine/core'
 import { Community } from '@pubkey-link/sdk'
-import { useAdminFindManyNetworkToken } from '@pubkey-link/web-network-token-data-access'
+import { useUserFindManyNetworkToken } from '@pubkey-link/web-network-token-data-access'
 import { useUserFindOneRole } from '@pubkey-link/web-role-data-access'
 import { RoleConditionUiAddButton, RoleUiItem } from '@pubkey-link/web-role-ui'
 import { UiBack, UiCard, UiCardTitle, UiDebugModal, UiError, UiGroup, UiLoader, UiStack } from '@pubkey-ui/core'
@@ -12,7 +12,7 @@ import { UserRoleDetailSettingsTab } from './user-role-detail-settings.tab'
 export function UserRoleDetailFeature({ community }: { community: Community }) {
   const { roleId } = useParams<{ roleId: string }>() as { roleId: string }
   const { item, query } = useUserFindOneRole({ roleId })
-  const { items: tokens } = useAdminFindManyNetworkToken({ cluster: community.cluster })
+  const { items: tokens } = useUserFindManyNetworkToken({ cluster: community.cluster })
 
   return query.isLoading ? (
     <UiLoader />

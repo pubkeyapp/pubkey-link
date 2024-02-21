@@ -12,7 +12,7 @@ export function getUserNetworkTokenWhereInput(
 
   if (filters.length) {
     where.account = { in: filters }
-  } else {
+  } else if (input.username) {
     where.account = 'none'
   }
 

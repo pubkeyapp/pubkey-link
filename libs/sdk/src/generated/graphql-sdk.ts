@@ -1156,6 +1156,7 @@ export type Role = {
 export type RoleCondition = {
   __typename?: 'RoleCondition'
   amount?: Maybe<Scalars['String']['output']>
+  amountMax?: Maybe<Scalars['String']['output']>
   asset?: Maybe<SolanaNetworkAsset>
   config?: Maybe<Scalars['JSON']['output']>
   createdAt?: Maybe<Scalars['DateTime']['output']>
@@ -1231,6 +1232,7 @@ export type UserCreateCommunityInput = {
 
 export type UserCreateRoleConditionInput = {
   amount?: InputMaybe<Scalars['String']['input']>
+  amountMax?: InputMaybe<Scalars['String']['input']>
   config?: InputMaybe<Scalars['JSON']['input']>
   filters?: InputMaybe<Scalars['JSON']['input']>
   roleId: Scalars['String']['input']
@@ -1370,6 +1372,7 @@ export type UserUpdateCommunityMemberInput = {
 
 export type UserUpdateRoleConditionInput = {
   amount?: InputMaybe<Scalars['String']['input']>
+  amountMax?: InputMaybe<Scalars['String']['input']>
   config?: InputMaybe<Scalars['JSON']['input']>
   filters?: InputMaybe<Scalars['JSON']['input']>
 }
@@ -10325,6 +10328,7 @@ export function UserCreateCommunityInputSchema(): z.ZodObject<Properties<UserCre
 export function UserCreateRoleConditionInputSchema(): z.ZodObject<Properties<UserCreateRoleConditionInput>> {
   return z.object({
     amount: z.string().nullish(),
+    amountMax: z.string().nullish(),
     config: definedNonNullAnySchema.nullish(),
     filters: definedNonNullAnySchema.nullish(),
     roleId: z.string(),
@@ -10477,6 +10481,7 @@ export function UserUpdateCommunityMemberInputSchema(): z.ZodObject<Properties<U
 export function UserUpdateRoleConditionInputSchema(): z.ZodObject<Properties<UserUpdateRoleConditionInput>> {
   return z.object({
     amount: z.string().nullish(),
+    amountMax: z.string().nullish(),
     config: definedNonNullAnySchema.nullish(),
     filters: definedNonNullAnySchema.nullish(),
   })

@@ -13,6 +13,8 @@ export class UserCreateRoleConditionInput {
   tokenId!: string
   @Field({ nullable: true })
   amount?: string | null
+  @Field({ nullable: true })
+  amountMax?: string | null
   @Field(() => GraphQLJSON, { nullable: true })
   config?: Prisma.InputJsonValue | null
   @Field(() => GraphQLJSON, { nullable: true })

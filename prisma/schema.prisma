@@ -241,7 +241,8 @@ model RoleCondition {
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
   type      NetworkTokenType
-  amount    String           @default("0")
+  amount    String           @default("0") // TODO: V3: rename to amountMin
+  amountMax String           @default("0")
   config    Json?
   filters   Json?
   token     NetworkToken     @relation(fields: [tokenId], references: [id])

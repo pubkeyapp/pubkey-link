@@ -1,18 +1,14 @@
-import { TextInput } from '@mantine/core'
+import { TextInput, TextInputProps } from '@mantine/core'
 import { NetworkToken, NetworkTokenType } from '@pubkey-link/sdk'
 import { NetworkTokenUiSelect } from '@pubkey-link/web-network-token-ui'
 import { UiStack } from '@pubkey-ui/core'
 
 export function RoleConditionUiTypeForm({
-  amount,
-  setAmount,
   networkToken,
   setNetworkToken,
   type,
   tokens,
 }: {
-  amount: string
-  setAmount: (amount: string) => void
   networkToken?: NetworkToken | undefined
   setNetworkToken: (token: NetworkToken | undefined) => void
   type: NetworkTokenType
@@ -24,16 +20,30 @@ export function RoleConditionUiTypeForm({
       return (
         <UiStack>
           <NetworkTokenUiSelect value={networkToken} setValue={setNetworkToken} tokens={tokens} />
-          <TextInput
-            label="Amount"
-            description="Amount of tokens to match"
-            placeholder="Amount"
-            value={amount}
-            onChange={(event) => setAmount(event.currentTarget.value)}
-          />
         </UiStack>
       )
     default:
       return <div>Unknown</div>
   }
+}
+
+export function RoleConditionUiAmountForm({
+  amount,
+  setAmount,
+  ...props
+}: TextInputProps & {
+  amount: string
+  setAmount: (amount: string) => void
+}) {
+  return (
+    <TextInput
+      label="Amount"
+      description="Amount of tokens to match"
+      step="any"
+      min="0"
+      value={amount}
+      onChange={(event) => setAmount(event.currentTarget.value)}
+      {...props}
+    />
+  )
 }

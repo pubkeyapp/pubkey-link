@@ -650,6 +650,7 @@ type Role {
 
 type RoleCondition {
   amount: String
+  amountMax: String
   asset: SolanaNetworkAsset
   config: JSON
   createdAt: DateTime
@@ -721,6 +722,7 @@ input UserCreateCommunityInput {
 
 input UserCreateRoleConditionInput {
   amount: String
+  amountMax: String
   config: JSON
   filters: JSON
   roleId: String!
@@ -859,6 +861,7 @@ input UserUpdateCommunityMemberInput {
 
 input UserUpdateRoleConditionInput {
   amount: String
+  amountMax: String
   config: JSON
   filters: JSON
 }

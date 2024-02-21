@@ -16,6 +16,7 @@ export function RoleConditionUiUpdateFormNonFungible({
   const form = useForm<UserUpdateRoleConditionInput>({
     initialValues: {
       amount: item.amount ?? '',
+      amountMax: item.amountMax ?? '',
       config: JSON.stringify(item.config ?? {}),
       filters: JSON.stringify(item.filters ?? {}),
     },
@@ -28,7 +29,20 @@ export function RoleConditionUiUpdateFormNonFungible({
       })}
     >
       <UiStack>
-        <TextInput label="Amount" type="number" min={0} step={1} {...form.getInputProps('amount')} />
+        <TextInput
+          label="Amount (Min)"
+          description="Minimal amount of tokens to match"
+          step="any"
+          min="0"
+          {...form.getInputProps('amount')}
+        />
+        <TextInput
+          label="Amount (Max)"
+          description="Maximum amount of tokens to match"
+          step="any"
+          min="0"
+          {...form.getInputProps('amountMax')}
+        />
         <JsonInput
           label="Filters"
           placeholder="Textarea will autosize to fit the content"

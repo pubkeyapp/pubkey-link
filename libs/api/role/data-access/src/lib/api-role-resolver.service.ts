@@ -246,9 +246,24 @@ export class ApiRoleResolverService {
       return false
     }
 
+    const amountMin = parseInt(condition.amount ?? '0')
+    const amountMax = parseInt(condition.amountMax ?? '0')
+
+    const assetAmount = this.getAssetAmount(condition, found)
+
+    if (amountMin && assetAmount < amountMin) {
+      return false
+    }
+    if (amountMax && assetAmount > amountMax) {
+      return false
+    }
+    return true
+  }
+
+  private getAssetAmount(condition: RoleCondition, assets: NetworkAsset[]) {
     const filtered =
       condition.type === NetworkTokenType.NonFungible && Object.keys(condition.filters ?? {})
-        ? found
+        ? assets
             .filter((assets) => !!Object.keys(assets.attributes ?? {})?.length)
             .filter((assets) =>
               validateAttributeFilter({
@@ -256,15 +271,18 @@ export class ApiRoleResolverService {
                 filters: (condition.filters ?? {}) as Record<string, string>,
               }),
             )
-        : found
+        : assets
+
+    const nonFungibleAmount = filtered?.length ?? 0
+    const fungibleAmount = filtered?.reduce((acc, asset) => acc + parseInt(asset.balance ?? '0'), 0) ?? 0
 
     switch (condition.type) {
       case NetworkTokenType.NonFungible:
-        return filtered?.length >= parseInt(condition.amount ?? '0')
+        return nonFungibleAmount
       case NetworkTokenType.Fungible:
-        return (
-          filtered?.reduce((acc, asset) => acc + parseInt(asset.balance ?? '0'), 0) >= parseInt(condition.amount ?? '0')
-        )
+        return fungibleAmount
+      default:
+        return 0
     }
   }
 
