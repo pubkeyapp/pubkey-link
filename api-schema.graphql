@@ -701,12 +701,31 @@ type RolePermission {
 
 type Snapshot {
   createdAt: DateTime
-  data: JSON
+  data: [SnapshotItem!]
   id: String!
   name: String!
   role: Role
   roleId: String!
   updatedAt: DateTime
+}
+
+type SnapshotAsset {
+  account: String
+  balance: String
+  mint: String
+  owner: String
+}
+
+type SnapshotItem {
+  assets: [SnapshotAsset!]
+  balance: String
+  items: Int
+  owner: SnapshotOwner
+}
+
+type SnapshotOwner {
+  discordId: String
+  username: String
 }
 
 type SnapshotPaging {

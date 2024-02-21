@@ -1,8 +1,11 @@
-import { Group } from '@mantine/core'
+import { Button, Group } from '@mantine/core'
 import { useUserFindOneSnapshot } from '@pubkey-link/web-snapshot-data-access'
-import { UiBack, UiDebugModal, UiError, UiLoader, UiPage } from '@pubkey-ui/core'
+import { SnapshotUiItem } from '@pubkey-link/web-snapshot-ui'
+import { UiBack, UiDebugModal, UiError, UiGroup, UiLoader, UiStack, UiTabRoutes } from '@pubkey-ui/core'
 import { useParams } from 'react-router-dom'
+import { downloadJson } from './download-json'
 import { UserSnapshotDetailOverviewTab } from './user-snapshot-detail-overview.tab'
+import { UserSnapshotDetailSnapshotTab } from './user-snapshot-detail-snapshot.tab'
 
 export function UserSnapshotDetailFeature() {
   const { snapshotId } = useParams<{ snapshotId: string }>() as { snapshotId: string }
@@ -16,16 +19,25 @@ export function UserSnapshotDetailFeature() {
   }
 
   return (
-    <UiPage
-      title={<Group>{item.name}</Group>}
-      leftAction={<UiBack />}
-      rightAction={
+    <UiStack>
+      <UiGroup>
+        <Group>
+          <UiBack />
+          <SnapshotUiItem snapshot={item} />
+        </Group>
         <Group>
           <UiDebugModal data={item} />
+          <Button variant="light" onClick={() => downloadJson(item.name, item.data)}>
+            Download JSON
+          </Button>
         </Group>
-      }
-    >
-      <UserSnapshotDetailOverviewTab snapshotId={snapshotId} />
-    </UiPage>
+      </UiGroup>
+      <UiTabRoutes
+        tabs={[
+          { path: 'overview', label: 'Overview', element: <UserSnapshotDetailOverviewTab snapshotId={snapshotId} /> },
+          { path: 'snapshot', label: 'Snapshot', element: <UserSnapshotDetailSnapshotTab snapshotId={snapshotId} /> },
+        ]}
+      />
+    </UiStack>
   )
 }

@@ -54,11 +54,14 @@ function CreateSnapshot({
       onClick={() =>
         modals.open({
           title: 'Create Snapshot',
+          centered: true,
           children: (
             <UiStack>
-              {roles.map((role) => {
-                return <Button onClick={() => createSnapshot({ roleId: role.id })}>{role.name}</Button>
-              })}
+              {roles.map((role) => (
+                <Button key={role.id} onClick={() => createSnapshot({ roleId: role.id }).then(() => modals.closeAll())}>
+                  {role.name}
+                </Button>
+              ))}
             </UiStack>
           ),
         })

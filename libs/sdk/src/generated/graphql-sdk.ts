@@ -1242,12 +1242,34 @@ export type RolePermission = {
 export type Snapshot = {
   __typename?: 'Snapshot'
   createdAt?: Maybe<Scalars['DateTime']['output']>
-  data?: Maybe<Scalars['JSON']['output']>
+  data?: Maybe<Array<SnapshotItem>>
   id: Scalars['String']['output']
   name: Scalars['String']['output']
   role?: Maybe<Role>
   roleId: Scalars['String']['output']
   updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type SnapshotAsset = {
+  __typename?: 'SnapshotAsset'
+  account?: Maybe<Scalars['String']['output']>
+  balance?: Maybe<Scalars['String']['output']>
+  mint?: Maybe<Scalars['String']['output']>
+  owner?: Maybe<Scalars['String']['output']>
+}
+
+export type SnapshotItem = {
+  __typename?: 'SnapshotItem'
+  assets?: Maybe<Array<SnapshotAsset>>
+  balance?: Maybe<Scalars['String']['output']>
+  items?: Maybe<Scalars['Int']['output']>
+  owner?: Maybe<SnapshotOwner>
+}
+
+export type SnapshotOwner = {
+  __typename?: 'SnapshotOwner'
+  discordId?: Maybe<Scalars['String']['output']>
+  username?: Maybe<Scalars['String']['output']>
 }
 
 export type SnapshotPaging = {
@@ -5988,7 +6010,6 @@ export type SnapshotDetailsFragment = {
   id: string
   roleId: string
   name: string
-  data?: any | null
   updatedAt?: Date | null
   role?: {
     __typename?: 'Role'
@@ -6064,6 +6085,20 @@ export type SnapshotDetailsFragment = {
   } | null
 }
 
+export type SnapshotItemDetailsFragment = {
+  __typename?: 'SnapshotItem'
+  items?: number | null
+  balance?: string | null
+  owner?: { __typename?: 'SnapshotOwner'; username?: string | null; discordId?: string | null } | null
+  assets?: Array<{
+    __typename?: 'SnapshotAsset'
+    mint?: string | null
+    owner?: string | null
+    account?: string | null
+    balance?: string | null
+  }> | null
+}
+
 export type UserFindManySnapshotQueryVariables = Exact<{
   input: UserFindManySnapshotInput
 }>
@@ -6078,7 +6113,6 @@ export type UserFindManySnapshotQuery = {
       id: string
       roleId: string
       name: string
-      data?: any | null
       updatedAt?: Date | null
       role?: {
         __typename?: 'Role'
@@ -6178,8 +6212,20 @@ export type UserFindOneSnapshotQuery = {
     id: string
     roleId: string
     name: string
-    data?: any | null
     updatedAt?: Date | null
+    data?: Array<{
+      __typename?: 'SnapshotItem'
+      items?: number | null
+      balance?: string | null
+      owner?: { __typename?: 'SnapshotOwner'; username?: string | null; discordId?: string | null } | null
+      assets?: Array<{
+        __typename?: 'SnapshotAsset'
+        mint?: string | null
+        owner?: string | null
+        account?: string | null
+        balance?: string | null
+      }> | null
+    }> | null
     role?: {
       __typename?: 'Role'
       createdAt?: Date | null
@@ -6267,7 +6313,6 @@ export type UserCreateSnapshotMutation = {
     id: string
     roleId: string
     name: string
-    data?: any | null
     updatedAt?: Date | null
     role?: {
       __typename?: 'Role'
@@ -6364,7 +6409,6 @@ export type AdminFindManySnapshotQuery = {
       id: string
       roleId: string
       name: string
-      data?: any | null
       updatedAt?: Date | null
       role?: {
         __typename?: 'Role'
@@ -6464,8 +6508,20 @@ export type AdminFindOneSnapshotQuery = {
     id: string
     roleId: string
     name: string
-    data?: any | null
     updatedAt?: Date | null
+    data?: Array<{
+      __typename?: 'SnapshotItem'
+      items?: number | null
+      balance?: string | null
+      owner?: { __typename?: 'SnapshotOwner'; username?: string | null; discordId?: string | null } | null
+      assets?: Array<{
+        __typename?: 'SnapshotAsset'
+        mint?: string | null
+        owner?: string | null
+        account?: string | null
+        balance?: string | null
+      }> | null
+    }> | null
     role?: {
       __typename?: 'Role'
       createdAt?: Date | null
@@ -6553,7 +6609,6 @@ export type AdminCreateSnapshotMutation = {
     id: string
     roleId: string
     name: string
-    data?: any | null
     updatedAt?: Date | null
     role?: {
       __typename?: 'Role'
@@ -7234,10 +7289,25 @@ export const SnapshotDetailsFragmentDoc = gql`
     }
     roleId
     name
-    data
     updatedAt
   }
   ${RoleDetailsFragmentDoc}
+`
+export const SnapshotItemDetailsFragmentDoc = gql`
+  fragment SnapshotItemDetails on SnapshotItem {
+    owner {
+      username
+      discordId
+    }
+    items
+    balance
+    assets {
+      mint
+      owner
+      account
+      balance
+    }
+  }
 `
 export const UserSummaryFragmentDoc = gql`
   fragment UserSummary on User {
@@ -8146,9 +8216,13 @@ export const UserFindOneSnapshotDocument = gql`
   query userFindOneSnapshot($snapshotId: String!) {
     item: userFindOneSnapshot(snapshotId: $snapshotId) {
       ...SnapshotDetails
+      data {
+        ...SnapshotItemDetails
+      }
     }
   }
   ${SnapshotDetailsFragmentDoc}
+  ${SnapshotItemDetailsFragmentDoc}
 `
 export const UserCreateSnapshotDocument = gql`
   mutation userCreateSnapshot($input: UserCreateSnapshotInput!) {
@@ -8181,9 +8255,13 @@ export const AdminFindOneSnapshotDocument = gql`
   query adminFindOneSnapshot($snapshotId: String!) {
     item: adminFindOneSnapshot(snapshotId: $snapshotId) {
       ...SnapshotDetails
+      data {
+        ...SnapshotItemDetails
+      }
     }
   }
   ${SnapshotDetailsFragmentDoc}
+  ${SnapshotItemDetailsFragmentDoc}
 `
 export const AdminCreateSnapshotDocument = gql`
   mutation adminCreateSnapshot($input: AdminCreateSnapshotInput!) {

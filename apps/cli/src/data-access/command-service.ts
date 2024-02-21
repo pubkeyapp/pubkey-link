@@ -121,6 +121,8 @@ export class CommandService {
       return
     }
     console.log('Created snapshot')
+    const { role, ...rest } = res.data.created
+    console.log({ role: { id: role.id, name: role.name, communityId: role.communityId }, ...rest })
   }
 
   async whoami() {

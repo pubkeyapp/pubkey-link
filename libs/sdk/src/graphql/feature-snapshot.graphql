@@ -6,8 +6,22 @@ fragment SnapshotDetails on Snapshot {
   }
   roleId
   name
-  data
   updatedAt
+}
+
+fragment SnapshotItemDetails on SnapshotItem {
+  owner {
+    username
+    discordId
+  }
+  items
+  balance
+  assets {
+    mint
+    owner
+    account
+    balance
+  }
 }
 
 query userFindManySnapshot($input: UserFindManySnapshotInput!) {
@@ -24,6 +38,9 @@ query userFindManySnapshot($input: UserFindManySnapshotInput!) {
 query userFindOneSnapshot($snapshotId: String!) {
   item: userFindOneSnapshot(snapshotId: $snapshotId) {
     ...SnapshotDetails
+    data {
+      ...SnapshotItemDetails
+    }
   }
 }
 
@@ -51,6 +68,9 @@ query adminFindManySnapshot($input: AdminFindManySnapshotInput!) {
 query adminFindOneSnapshot($snapshotId: String!) {
   item: adminFindOneSnapshot(snapshotId: $snapshotId) {
     ...SnapshotDetails
+    data {
+      ...SnapshotItemDetails
+    }
   }
 }
 

@@ -1,6 +1,6 @@
 import { Field, HideField, ObjectType } from '@nestjs/graphql'
 import { Prisma, Role } from '@prisma/client'
-import { GraphQLJSON } from 'graphql-scalars'
+import { SnapshotItem } from './snapshot-item'
 
 @ObjectType()
 export class Snapshot {
@@ -14,20 +14,8 @@ export class Snapshot {
   roleId!: string
   @Field()
   name!: string
-  @Field(() => GraphQLJSON, { nullable: true })
+  @Field(() => [SnapshotItem], { nullable: true })
   data!: Prisma.JsonValue
   @HideField()
   role?: Role
-}
-
-export interface SnapshotAsset {
-  account: string
-  balance: string
-  mint: string
-  owner: string
-}
-
-export interface SnapshotOwner {
-  username: string
-  discordId: string
 }

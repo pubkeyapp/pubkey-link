@@ -489,7 +489,12 @@ export class ApiRoleResolverService {
     const conditions = role.conditions
     const users = await this.getCommunityUsers({ communityId: role.communityId })
 
-    const result: { assets: NetworkAsset[]; owner: { username: string; discordId: string } }[] = []
+    const result: {
+      items: number
+      balance: string
+      assets: NetworkAsset[]
+      owner: { username: string; discordId: string }
+    }[] = []
 
     for (const user of users) {
       const assets: NetworkAsset[] = []
@@ -506,7 +511,12 @@ export class ApiRoleResolverService {
       }
 
       if (assets.length) {
-        result.push({ owner: { username: user.username, discordId: user.discordId }, assets })
+        result.push({
+          items: assets.length,
+          balance: assets.reduce((acc, asset) => acc + parseInt(asset.balance ?? '0'), 0).toString(),
+          owner: { username: user.username, discordId: user.discordId },
+          assets,
+        })
       }
     }
 
