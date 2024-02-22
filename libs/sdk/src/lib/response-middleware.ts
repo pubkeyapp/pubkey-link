@@ -4,11 +4,24 @@
 //  https://github.com/jasonkuhrt/graphql-request/issues/201
 export function responseMiddleware<T>(response: T) {
   if (response instanceof Error) {
-    const error: { response: { errors: { message: string }[] } } = JSON.parse(JSON.stringify(response, undefined, 2))
+    const error: {
+      message: string
+      code?: string
+      response: {
+        error?: string
+        errors?: { message: string }[]
+      }
+    } = JSON.parse(JSON.stringify(response, undefined, 2))
 
     if (error.response?.errors?.length) {
       throw new Error(error.response.errors[0].message)
     }
-    throw new Error(`Unknown error: ${error}`)
+    if (error.response?.error) {
+      throw new Error(error.response.error)
+    }
+    if (error?.code === 'ECONNREFUSED') {
+      throw new Error('Connection refused')
+    }
+    throw new Error(`Unknown error: ${error?.message} ${error?.code}`)
   }
 }

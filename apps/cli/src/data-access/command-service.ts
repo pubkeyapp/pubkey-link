@@ -124,6 +124,15 @@ export class CommandService {
     const { role, ...rest } = res.data.created
     console.log({ role: { id: role.id, name: role.name, communityId: role.communityId }, ...rest })
   }
+  async uptime() {
+    const { cookie, sdk } = await this.getConfig()
+    const res = await sdk.uptime({}, { cookie })
+    if (!res.data?.uptime) {
+      console.log('Failed to get user')
+      return
+    }
+    console.log(res.data.uptime)
+  }
 
   async whoami() {
     const { cookie, sdk } = await this.getConfig()

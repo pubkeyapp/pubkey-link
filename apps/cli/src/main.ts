@@ -5,6 +5,7 @@ import { commandBackup } from './features/command-backup'
 import { commandCommunity } from './features/command-community'
 import { commandNetwork } from './features/command-network'
 import { commandSnapshot } from './features/command-snapshot'
+import { commandUptime } from './features/command-uptime'
 import { commandWhoami } from './features/command-whoami'
 
 const program = new commander.Command('pubkey-link')
@@ -21,5 +22,6 @@ program.addCommand(commandCommunity())
 program.addCommand(commandNetwork())
 program.addCommand(commandSnapshot())
 program.addCommand(commandWhoami())
+program.addCommand(commandUptime())
 
 program.parse(process.argv)
