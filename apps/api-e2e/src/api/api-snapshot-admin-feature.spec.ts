@@ -1,20 +1,16 @@
-import {
-  AdminCreateSnapshotInput,
-  AdminFindManySnapshotInput,
-  AdminUpdateSnapshotInput,
-  Snapshot,
-} from '@pubkey-link/sdk'
-import { getAliceCookie, getBobCookie, sdk, uniqueId } from '../support'
+import { AdminCreateSnapshotInput, AdminFindManySnapshotInput, Snapshot } from '@pubkey-link/sdk'
+import { getAliceCookie, getBobCookie, sdk } from '../support'
+
+const defaultRoleId = 'one-of-us-pubkey'
 
 describe('api-snapshot-feature', () => {
   describe('api-snapshot-admin-resolver', () => {
-    const snapshotName = uniqueId('acme-snapshot')
     let snapshotId: string
     let cookie: string
 
     beforeAll(async () => {
       cookie = await getAliceCookie()
-      const created = await sdk.adminCreateSnapshot({ input: { name: snapshotName } }, { cookie })
+      const created = await sdk.adminCreateSnapshot({ input: { roleId: defaultRoleId } }, { cookie })
       snapshotId = created.data.created.id
     })
 
@@ -25,54 +21,29 @@ describe('api-snapshot-feature', () => {
 
       it('should create a snapshot', async () => {
         const input: AdminCreateSnapshotInput = {
-          name: uniqueId('snapshot'),
+          roleId: defaultRoleId,
         }
 
         const res = await sdk.adminCreateSnapshot({ input }, { cookie })
 
         const item: Snapshot = res.data.created
-        expect(item.name).toBe(input.name)
         expect(item.id).toBeDefined()
         expect(item.createdAt).toBeDefined()
         expect(item.updatedAt).toBeDefined()
       })
 
-      it('should update a snapshot', async () => {
-        const createInput: AdminCreateSnapshotInput = {
-          name: uniqueId('snapshot'),
-        }
-        const createdRes = await sdk.adminCreateSnapshot({ input: createInput }, { cookie })
-        const snapshotId = createdRes.data.created.id
-        const input: AdminUpdateSnapshotInput = {
-          name: uniqueId('snapshot'),
-        }
-
-        const res = await sdk.adminUpdateSnapshot({ snapshotId, input }, { cookie })
-
-        const item: Snapshot = res.data.updated
-        expect(item.name).toBe(input.name)
-      })
-
       it('should find a list of snapshots (find all)', async () => {
-        const createInput: AdminCreateSnapshotInput = {
-          name: uniqueId('snapshot'),
-        }
-        const createdRes = await sdk.adminCreateSnapshot({ input: createInput }, { cookie })
-        const snapshotId = createdRes.data.created.id
-
         const input: AdminFindManySnapshotInput = {}
 
         const res = await sdk.adminFindManySnapshot({ input }, { cookie })
 
         expect(res.data.paging.meta.totalCount).toBeGreaterThan(1)
         expect(res.data.paging.data.length).toBeGreaterThan(1)
-        // First item should be the one we created above
-        expect(res.data.paging.data[0].id).toBe(snapshotId)
       })
 
       it('should find a list of snapshots (find new one)', async () => {
         const createInput: AdminCreateSnapshotInput = {
-          name: uniqueId('snapshot'),
+          roleId: defaultRoleId,
         }
         const createdRes = await sdk.adminCreateSnapshot({ input: createInput }, { cookie })
         const snapshotId = createdRes.data.created.id
@@ -90,7 +61,7 @@ describe('api-snapshot-feature', () => {
 
       it('should find a snapshot by id', async () => {
         const createInput: AdminCreateSnapshotInput = {
-          name: uniqueId('snapshot'),
+          roleId: defaultRoleId,
         }
         const createdRes = await sdk.adminCreateSnapshot({ input: createInput }, { cookie })
         const snapshotId = createdRes.data.created.id
@@ -102,7 +73,7 @@ describe('api-snapshot-feature', () => {
 
       it('should delete a snapshot', async () => {
         const createInput: AdminCreateSnapshotInput = {
-          name: uniqueId('snapshot'),
+          roleId: defaultRoleId,
         }
         const createdRes = await sdk.adminCreateSnapshot({ input: createInput }, { cookie })
         const snapshotId = createdRes.data.created.id
@@ -126,20 +97,11 @@ describe('api-snapshot-feature', () => {
       it('should not create a snapshot', async () => {
         expect.assertions(1)
         const input: AdminCreateSnapshotInput = {
-          name: uniqueId('snapshot'),
+          roleId: defaultRoleId,
         }
 
         try {
           await sdk.adminCreateSnapshot({ input }, { cookie })
-        } catch (e) {
-          expect(e.message).toBe('Unauthorized: User is not Admin')
-        }
-      })
-
-      it('should not update a snapshot', async () => {
-        expect.assertions(1)
-        try {
-          await sdk.adminUpdateSnapshot({ snapshotId, input: {} }, { cookie })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }

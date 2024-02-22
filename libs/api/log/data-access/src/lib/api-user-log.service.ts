@@ -11,6 +11,8 @@ export class ApiUserLogService {
   async findManyLog(userId: string, input: UserFindManyLogInput): Promise<LogPaging> {
     if (input.communityId) {
       await this.core.ensureCommunityAdmin({ communityId: input.communityId, userId })
+    } else {
+      throw new Error('CommunityId is required')
     }
     return this.core.data.log
       .paginate({

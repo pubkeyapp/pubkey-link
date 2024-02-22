@@ -7,11 +7,17 @@ on:
   pull_request:
 
 env:
+  AUTH_PASSWORD_ENABLED: true
+  AUTH_REGISTER_ENABLED: true
   API_URL: http://localhost:3000/api
+  CLOAK_KEYCHAIN: 'v1.aesgcm256.c3d07a38.BoM0uySfyLZLqg8B.in_ID0d7vrwBdUjjGwvBe0CG'
+  CLOAK_MASTER_KEY: 'k1.aesgcm256.vG3cv8JCPJPHaEKmcDJMA2PeXDjoVlXCC9KLu96R_Rg='
   DATABASE_URL: postgresql://pubkey-link:pubkey-link@localhost:5432/pubkey-link?schema=public
   DATABASE_PROVISION: true
   DATABASE_RESET: true
+  HELIUS_API_KEY: 'never-gonna-get-it-ne-ver-gonna-get-it'
   HOST: 127.0.0.1
+  REDIS_URL: redis://localhost:6379
   JWT_SECRET: 1dfe5003518560c6362eab48f8220edf8708bbc67efbd4ed8cdf621965e938ee
   PORT: 3000
   SESSION_SECRET: 1dfe5003518560c6362eab48f8220edf8708bbc67efbd4ed8cdf621965e938ee

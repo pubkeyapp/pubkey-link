@@ -145,38 +145,40 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     telegramUrl: 'https://t.me/beemandev',
     twitterUrl: 'https://twitter.com/PubKeyApp',
     websiteUrl: 'https://app.pubkey.link',
-    bot: { create: PK_BOT },
     members: {
       create: [
         { user: { connect: { id: 'beeman.dev' } }, role: CommunityRole.Admin },
         { user: { connect: { id: 'alice' } }, role: CommunityRole.Member },
       ],
     },
+    bot: { create: PK_BOT.clientId ? PK_BOT : undefined },
     roles: {
       create: [
         {
           id: 'one-of-us-pubkey',
           name: 'ONE OF US',
           conditions: { create: [DL_CONDITION_NFT] },
-          permissions: { create: [{ botRoleId: `${PK_SERVER}-${PK_ROLE_DEANSLIST}` }] },
+          permissions: PK_BOT.clientId ? { create: [{ botRoleId: `${PK_SERVER}-${PK_ROLE_DEANSLIST}` }] } : undefined,
         },
         {
           id: 'business-visa-pubkey',
           name: 'BUSINESS VISA',
           conditions: { create: [DL_CONDITION_BV] },
-          permissions: { create: [{ botRoleId: `${PK_SERVER}-${PK_ROLE_DL_BV}` }] },
+          permissions: PK_BOT.clientId ? { create: [{ botRoleId: `${PK_SERVER}-${PK_ROLE_DL_BV}` }] } : undefined,
         },
         {
           id: 'business-visa-expired-pubkey',
           name: 'BUSINESS VISA (EXPIRED)',
           conditions: { create: [DL_CONDITION_BV_EXP] },
-          permissions: { create: [{ botRoleId: `${PK_SERVER}-${PK_ROLE_DL_BV_EXPIRED}` }] },
+          permissions: PK_BOT.clientId
+            ? { create: [{ botRoleId: `${PK_SERVER}-${PK_ROLE_DL_BV_EXPIRED}` }] }
+            : undefined,
         },
         {
           id: 'dean-holder-pubkey',
           name: 'DEAN HOLDER',
           conditions: { create: [DL_CONDITION_HOLDER] },
-          permissions: { create: [{ botRoleId: `${PK_SERVER}-${PK_ROLE_DL_HOLDER}` }] },
+          permissions: PK_BOT.clientId ? { create: [{ botRoleId: `${PK_SERVER}-${PK_ROLE_DL_HOLDER}` }] } : undefined,
         },
       ],
     },
@@ -191,32 +193,32 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     avatarUrl: 'https://avatars.githubusercontent.com/u/137821488?v=4',
     twitterUrl: 'https://twitter.com/deanslistDAO',
     websiteUrl: 'https://deanslist.services',
-    bot: DL_BOT ? { create: DL_BOT } : undefined,
+    bot: DL_BOT.clientId ? { create: DL_BOT } : undefined,
     roles: {
       create: [
         {
           id: 'one-of-us',
           name: 'One of Us',
           conditions: { create: [DL_CONDITION_NFT] },
-          permissions: { create: [{ botRoleId: `${DL_SERVER}-${DL_ROLE_ONE_OF_US}` }] },
+          permissions: DL_BOT.clientId ? { create: [{ botRoleId: `${DL_SERVER}-${DL_ROLE_ONE_OF_US}` }] } : undefined,
         },
         {
           id: 'business-visa',
           name: 'Business Visa',
           conditions: { create: [DL_CONDITION_BV] },
-          permissions: { create: [{ botRoleId: `${DL_SERVER}-${DL_ROLE_BV}` }] },
+          permissions: DL_BOT.clientId ? { create: [{ botRoleId: `${DL_SERVER}-${DL_ROLE_BV}` }] } : undefined,
         },
         {
           id: 'business-visa-expired',
           name: 'Business Visa (Expired)',
           conditions: { create: [DL_CONDITION_BV_EXP] },
-          permissions: { create: [{ botRoleId: `${DL_SERVER}-${DL_ROLE_BV_EXPIRED}` }] },
+          permissions: DL_BOT.clientId ? { create: [{ botRoleId: `${DL_SERVER}-${DL_ROLE_BV_EXPIRED}` }] } : undefined,
         },
         {
           id: 'dean-holder',
           name: 'DEAN Holder',
           conditions: { create: [DL_CONDITION_HOLDER] },
-          permissions: { create: [{ botRoleId: `${DL_SERVER}-${DL_ROLE_HOLDER}` }] },
+          permissions: DL_BOT.clientId ? { create: [{ botRoleId: `${DL_SERVER}-${DL_ROLE_HOLDER}` }] } : undefined,
         },
       ],
     },
@@ -270,13 +272,13 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     members: {
       create: [{ user: { connect: { id: 'beeman.dev' } }, role: CommunityRole.Admin }],
     },
-    bot: LOS_BOT ? { create: LOS_BOT } : undefined,
+    bot: LOS_BOT.clientId ? { create: LOS_BOT } : undefined,
     roles: {
       create: [
         {
           name: 'CERTIFIED LEGENDS',
           conditions: { create: [LOS_CONDITION_NFT] },
-          permissions: { create: { botRoleId: `${LOS_SERVER}-${LOS_ROLE_CERTIFIED}` } },
+          permissions: LOS_BOT.clientId ? { create: { botRoleId: `${LOS_SERVER}-${LOS_ROLE_CERTIFIED}` } } : undefined,
         },
         {
           name: '$LEGEND HOLDER',

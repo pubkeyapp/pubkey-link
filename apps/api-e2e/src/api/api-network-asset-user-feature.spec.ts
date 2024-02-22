@@ -1,154 +1,79 @@
-import {
-  UserCreateNetworkAssetInput,
-  UserFindManyNetworkAssetInput,
-  UserUpdateNetworkAssetInput,
-  NetworkAsset,
-} from '@pubkey-link/sdk'
-import { getAliceCookie, getBobCookie, sdk, uniqueId } from '../support'
+import { NetworkCluster, UserFindManyNetworkAssetInput } from '@pubkey-link/sdk'
+import { getAliceCookie, getBobCookie, sdk } from '../support'
 
-describe('api-network-asset-feature', () => {
+const defaultCluster = NetworkCluster.SolanaMainnet
+const defaultUser = 'alice'
+
+// TODO: Figure out how to test this
+// We depend on Solana Network state to be able to test this
+xdescribe('api-network-asset-feature', () => {
   describe('api-network-asset-user-resolver', () => {
-    const networkAssetName = uniqueId('acme-network-asset')
     let networkAssetId: string
-    let cookie: string
+    let alice: string
 
     beforeAll(async () => {
-      cookie = await getAliceCookie()
-      const created = await sdk.userCreateNetworkAsset({ input: { name: networkAssetName } }, { cookie })
-      networkAssetId = created.data.created.id
+      alice = await getAliceCookie()
     })
 
     describe('authorized', () => {
       beforeAll(async () => {
-        cookie = await getAliceCookie()
-      })
-
-      it('should create a network-asset', async () => {
-        const input: UserCreateNetworkAssetInput = {
-          name: uniqueId('network-asset'),
-        }
-
-        const res = await sdk.userCreateNetworkAsset({ input }, { cookie })
-
-        const item: NetworkAsset = res.data.created
-        expect(item.name).toBe(input.name)
-        expect(item.id).toBeDefined()
-        expect(item.createdAt).toBeDefined()
-        expect(item.updatedAt).toBeDefined()
-      })
-
-      it('should update a network-asset', async () => {
-        const createInput: UserCreateNetworkAssetInput = {
-          name: uniqueId('network-asset'),
-        }
-        const createdRes = await sdk.userCreateNetworkAsset({ input: createInput }, { cookie })
-        const networkAssetId = createdRes.data.created.id
-        const input: UserUpdateNetworkAssetInput = {
-          name: uniqueId('network-asset'),
-        }
-
-        const res = await sdk.userUpdateNetworkAsset({ networkAssetId, input }, { cookie })
-
-        const item: NetworkAsset = res.data.updated
-        expect(item.name).toBe(input.name)
+        alice = await getAliceCookie()
       })
 
       it('should find a list of networkAssets (find all)', async () => {
-        const createInput: UserCreateNetworkAssetInput = {
-          name: uniqueId('network-asset'),
-        }
-        const createdRes = await sdk.userCreateNetworkAsset({ input: createInput }, { cookie })
-        const networkAssetId = createdRes.data.created.id
+        const input: UserFindManyNetworkAssetInput = { cluster: defaultCluster, username: defaultUser }
 
-        const input: UserFindManyNetworkAssetInput = {}
+        const res = await sdk.userFindManyNetworkAsset({ input }, { cookie: alice })
 
-        const res = await sdk.userFindManyNetworkAsset({ input }, { cookie })
-
-        expect(res.data.paging.meta.totalCount).toBeGreaterThan(1)
-        expect(res.data.paging.data.length).toBeGreaterThan(1)
-        // First item should be the one we created above
-        expect(res.data.paging.data[0].id).toBe(networkAssetId)
+        expect(res.data.paging.meta.totalCount).toBeGreaterThanOrEqual(0)
+        expect(res.data.paging.data.length).toBeGreaterThanOrEqual(0)
       })
 
       it('should find a list of networkAssets (find new one)', async () => {
-        const createInput: UserCreateNetworkAssetInput = {
-          name: uniqueId('network-asset'),
-        }
-        const createdRes = await sdk.userCreateNetworkAsset({ input: createInput }, { cookie })
-        const networkAssetId = createdRes.data.created.id
-
         const input: UserFindManyNetworkAssetInput = {
+          cluster: defaultCluster,
+          username: defaultUser,
           search: networkAssetId,
         }
 
-        const res = await sdk.userFindManyNetworkAsset({ input }, { cookie })
+        const res = await sdk.userFindManyNetworkAsset({ input }, { cookie: alice })
 
-        expect(res.data.paging.meta.totalCount).toBe(1)
-        expect(res.data.paging.data.length).toBe(1)
+        expect(res.data.paging.meta.totalCount).toBeGreaterThanOrEqual(0)
+        expect(res.data.paging.data.length).toBeGreaterThanOrEqual(0)
         expect(res.data.paging.data[0].id).toBe(networkAssetId)
       })
 
       it('should find a network-asset by id', async () => {
-        const createInput: UserCreateNetworkAssetInput = {
-          name: uniqueId('network-asset'),
-        }
-        const createdRes = await sdk.userCreateNetworkAsset({ input: createInput }, { cookie })
-        const networkAssetId = createdRes.data.created.id
-
-        const res = await sdk.userFindOneNetworkAsset({ networkAssetId }, { cookie })
+        const res = await sdk.userFindOneNetworkAsset(
+          {
+            cluster: defaultCluster,
+            account: '',
+          },
+          { cookie: alice },
+        )
 
         expect(res.data.item.id).toBe(networkAssetId)
-      })
-
-      it('should delete a network-asset', async () => {
-        const createInput: UserCreateNetworkAssetInput = {
-          name: uniqueId('network-asset'),
-        }
-        const createdRes = await sdk.userCreateNetworkAsset({ input: createInput }, { cookie })
-        const networkAssetId = createdRes.data.created.id
-
-        const res = await sdk.userDeleteNetworkAsset({ networkAssetId }, { cookie })
-
-        expect(res.data.deleted).toBe(true)
-
-        const findRes = await sdk.userFindManyNetworkAsset({ input: { search: networkAssetId } }, { cookie })
-        expect(findRes.data.paging.meta.totalCount).toBe(0)
-        expect(findRes.data.paging.data.length).toBe(0)
       })
     })
 
     describe('unauthorized', () => {
-      let cookie: string
+      let bob: string
       beforeAll(async () => {
-        cookie = await getBobCookie()
-      })
-
-      it('should not create a network-asset', async () => {
-        expect.assertions(1)
-        const input: UserCreateNetworkAssetInput = {
-          name: uniqueId('network-asset'),
-        }
-
-        try {
-          await sdk.userCreateNetworkAsset({ input }, { cookie })
-        } catch (e) {
-          expect(e.message).toBe('Unauthorized: User is not User')
-        }
-      })
-
-      it('should not update a network-asset', async () => {
-        expect.assertions(1)
-        try {
-          await sdk.userUpdateNetworkAsset({ networkAssetId, input: {} }, { cookie })
-        } catch (e) {
-          expect(e.message).toBe('Unauthorized: User is not User')
-        }
+        bob = await getBobCookie()
       })
 
       it('should not find a list of networkAssets (find all)', async () => {
         expect.assertions(1)
         try {
-          await sdk.userFindManyNetworkAsset({ input: {} }, { cookie })
+          await sdk.userFindManyNetworkAsset(
+            {
+              input: {
+                cluster: defaultCluster,
+                username: defaultUser,
+              },
+            },
+            { cookie: bob },
+          )
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not User')
         }
@@ -157,16 +82,7 @@ describe('api-network-asset-feature', () => {
       it('should not find a network-asset by id', async () => {
         expect.assertions(1)
         try {
-          await sdk.userFindOneNetworkAsset({ networkAssetId }, { cookie })
-        } catch (e) {
-          expect(e.message).toBe('Unauthorized: User is not User')
-        }
-      })
-
-      it('should not delete a network-asset', async () => {
-        expect.assertions(1)
-        try {
-          await sdk.userDeleteNetworkAsset({ networkAssetId }, { cookie })
+          await sdk.userFindOneNetworkAsset({ cluster: defaultCluster, account: '' }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not User')
         }

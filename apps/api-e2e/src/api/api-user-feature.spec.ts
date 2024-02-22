@@ -8,7 +8,7 @@ import {
 } from '@pubkey-link/sdk'
 import { getAliceCookie, getBobCookie, sdk, uniqueId } from '../support'
 
-function avatarUrl(name) {
+function avatarUrl(name: string) {
   return `https://source.boringavatars.com/pixel/120/pubkey-link-${name}`
 }
 
@@ -34,7 +34,7 @@ describe('api-user-feature', () => {
         expect(user.role).toBe(UserRole.User)
         expect(user.username).toBe(input.username)
         expect(user.avatarUrl).toBe(null)
-        expect(user.name).toBeNull()
+        expect(user.name).toBe(input.username)
         expect(user.id).toBeDefined()
         expect(user.createdAt).toBeDefined()
         expect(user.updatedAt).toBeDefined()
