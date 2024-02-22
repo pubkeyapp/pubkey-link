@@ -7,16 +7,15 @@ import { authenticateWithKeypair } from './authenticate-with-keypair'
 const home = process.env.HOME || process.env.USERPROFILE
 const config = `${home}/.config/pubkey-link`
 
-export async function getCliConfig(server: string) {
+export async function getCliConfig(server: string, keypairPath: string) {
   if (!server) {
     throw new Error('Server not defined')
   }
-  const idJson = `${config}/id.json`
-  const keypair = await getKeypairFromFile(idJson)
+  const keypair = await getKeypairFromFile(keypairPath)
 
   if (!keypair) {
     // TODO: Add instructions on how to create a keypair
-    throw new Error(`Keypair not found in ${idJson}`)
+    throw new Error(`Keypair not found: ${keypairPath}`)
   }
 
   const serversJson = `${config}/servers.json`

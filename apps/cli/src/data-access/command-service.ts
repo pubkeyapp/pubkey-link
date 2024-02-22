@@ -3,7 +3,7 @@ import { NetworkCluster } from '@pubkey-link/sdk'
 import { getCliConfig } from '../utils/get-cli-config'
 
 export class CommandService {
-  constructor(private readonly server: string) {}
+  constructor(private readonly config: { keypair: string; server: string }) {}
 
   async backupGet(name: string) {
     const { cookie, sdk } = await this.getConfig()
@@ -74,7 +74,7 @@ export class CommandService {
       console.log('No networks found')
       return
     }
-    console.log(`Found ${res.data.paging.meta.totalCount} networks on ${this.server}`)
+    console.log(`Found ${res.data.paging.meta.totalCount} networks on ${this.config.server}`)
     for (const { id, cluster, endpoint } of res.data.paging.data) {
       console.log(`- ${id} ${cluster} ${endpoint}`)
     }
@@ -136,7 +136,7 @@ export class CommandService {
   }
 
   private async getConfig() {
-    const { cookie, sdk } = await getCliConfig(this.server)
+    const { cookie, sdk } = await getCliConfig(this.config.server, this.config.keypair)
 
     return { cookie, sdk }
   }

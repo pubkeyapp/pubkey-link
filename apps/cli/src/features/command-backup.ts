@@ -7,14 +7,14 @@ export function commandBackup() {
   command
     .command('get')
     .argument('name', 'Name of the backup')
-    .action(async (name, _, cmd) => new CommandService(cmd.optsWithGlobals().server).backupGet(name))
+    .action(async (name, _, cmd) => new CommandService(cmd.optsWithGlobals()).backupGet(name))
 
-  command.command('list').action(async (_, cmd) => new CommandService(cmd.optsWithGlobals().server).backupList())
+  command.command('list').action(async (_, cmd) => new CommandService(cmd.optsWithGlobals()).backupList())
 
   command
     .command('restore')
     .argument('name', 'Name of the backup')
-    .action(async (name, _, cmd) => new CommandService(cmd.optsWithGlobals().server).backupRestore(name))
+    .action(async (name, _, cmd) => new CommandService(cmd.optsWithGlobals()).backupRestore(name))
 
   return command
 }
