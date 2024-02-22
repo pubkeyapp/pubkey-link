@@ -1,5 +1,6 @@
 import { names } from '@nx/devkit'
 import { NetworkCluster } from '@pubkey-link/sdk'
+import repl from 'node:repl'
 import { getCliConfig } from '../utils/get-cli-config'
 
 export class CommandService {
@@ -131,7 +132,7 @@ export class CommandService {
       console.log('Failed to get user')
       return
     }
-    console.log(res.data.uptime)
+    return res.data.uptime
   }
 
   async whoami() {
@@ -141,12 +142,28 @@ export class CommandService {
       console.log('Failed to get user')
       return
     }
-    console.log(res.data.me)
+    return res.data.me
   }
 
   private async getConfig() {
     const { cookie, sdk } = await getCliConfig(this.config.server, this.config.keypair)
 
     return { cookie, sdk }
+  }
+
+  async repl() {
+    const { cookie, sdk } = await this.getConfig()
+    console.log('Starting REPL connected to ', this.config.server)
+
+    const server = repl.start(`[${this.config.server}] $ `)
+
+    server.context.sdk = sdk
+    server.context.cookie = cookie
+    server.context.commands = this
+
+    server.on('exit', () => {
+      console.log('Exiting REPL')
+      process.exit()
+    })
   }
 }
