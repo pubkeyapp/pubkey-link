@@ -19,7 +19,7 @@ export function BotUiAvatar({ bot, to, ...props }: BotUiAvatarProps) {
       {firstLetter?.toUpperCase()}
     </Avatar>
   )
-  const color = bot?.started ? 'green' : 'red'
+  const color = bot?.started ? 'green' : 'gray'
 
   return (
     <UiAnchor to={to ?? undefined}>

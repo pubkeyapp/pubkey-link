@@ -64,10 +64,8 @@ export class ApiCoreProvisionService implements OnModuleInit {
       await this.core.createCommunity({ input }).then((community) => {
         this.core.logInfo(`Provisioned Community ${input.name}`, { communityId: community.id })
       })
-      this.logger.verbose(`Provisioned Community ${input.name}`)
       return
     }
-    this.logger.verbose(`Community ${input.name} already exists`)
   }
 
   private async provisionUsers() {
@@ -111,9 +109,6 @@ export class ApiCoreProvisionService implements OnModuleInit {
       )
       return
     }
-    this.logger.verbose(
-      `Log in with ${input.role} ${input.username} ${input.password ? 'and password' : 'an external provider'}`,
-    )
   }
 
   private async resetDatabase() {

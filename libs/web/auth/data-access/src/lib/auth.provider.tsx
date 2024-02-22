@@ -1,8 +1,7 @@
-import { AppConfig, IdentityProvider, LoginInput, RegisterInput, User, UserRole } from '@pubkey-link/sdk'
+import { IdentityProvider, LoginInput, RegisterInput, User, UserRole } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
-import { useQuery } from '@tanstack/react-query'
-import { createContext, ReactNode, useContext, useEffect, useMemo, useReducer } from 'react'
+import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react'
 import { useMe } from './use-me'
 
 type AuthStatus = 'authenticated' | 'unauthenticated' | 'loading' | 'error'
@@ -14,11 +13,7 @@ export interface AuthState {
 }
 
 export interface AuthProviderContext extends AuthState {
-  appConfig?: AppConfig | undefined
-  appConfigLoading: boolean
   authenticated: boolean
-  authEnabled: boolean
-  enabledProviders: IdentityProvider[]
   error?: unknown | undefined
   hasSolana: boolean
   isAdmin: boolean
@@ -68,19 +63,9 @@ function authReducer(state: AuthState, { type, payload }: AuthAction): AuthState
   }
 }
 
-export function useAppConfig() {
-  const sdk = useSdk()
-
-  return useQuery({
-    queryKey: ['app-config'],
-    queryFn: () => sdk.appConfig().then((res) => res.data),
-  })
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const sdk = useSdk()
   const me = useMe(sdk)
-  const configQuery = useAppConfig()
 
   const [state, dispatch] = useReducer(authReducer, { status: 'loading' })
 
@@ -94,30 +79,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     dispatchUser(me.data?.me)
   }, [me.isLoading, me.data?.me])
 
-  const authEnabled = useMemo(() => {
-    if (!configQuery.data?.config) return false
-    const { authLoginProviders, authPasswordEnabled, authRegisterEnabled } = configQuery.data.config
-    return !!authLoginProviders?.length || authRegisterEnabled || authPasswordEnabled
-  }, [configQuery.data?.config])
-
-  const enabledProviders: IdentityProvider[] = useMemo(
-    () =>
-      configQuery.data?.config
-        ? ((configQuery.data?.config.authLoginProviders ?? []).filter(Boolean) as IdentityProvider[])
-        : [],
-    [configQuery.data?.config],
-  )
-
   const hasSolana = (state.user?.identities ?? []).some(
     (identity) => identity.verified === true && identity.provider === IdentityProvider.Solana,
   )
 
   const value: AuthProviderContext = {
-    appConfig: configQuery.data?.config,
-    appConfigLoading: configQuery.isLoading,
-    authEnabled,
     authenticated: state.status === 'authenticated',
-    enabledProviders,
     error: state.error,
     hasSolana,
     isAdmin: state.user?.role === UserRole.Admin,

@@ -1,5 +1,5 @@
 import { AuthProvider } from '@pubkey-link/web-auth-data-access'
-import { SdkProvider } from '@pubkey-link/web-core-data-access'
+import { AppConfigProvider, SdkProvider } from '@pubkey-link/web-core-data-access'
 import { SolanaClusterProvider } from '@pubkey-link/web-solana-data-access'
 import { toastError, UiThemeLink, UiThemeProvider } from '@pubkey-ui/core'
 import '@pubkey-ui/core/index.esm.css'
@@ -26,13 +26,15 @@ export function ShellFeature() {
     <BrowserRouter>
       <QueryClientProvider client={client}>
         <SdkProvider>
-          <AuthProvider>
-            <UiThemeProvider link={ThemeLink}>
-              <SolanaClusterProvider>
-                <ShellRoutes />
-              </SolanaClusterProvider>
-            </UiThemeProvider>
-          </AuthProvider>
+          <AppConfigProvider>
+            <AuthProvider>
+              <UiThemeProvider link={ThemeLink}>
+                <SolanaClusterProvider>
+                  <ShellRoutes />
+                </SolanaClusterProvider>
+              </UiThemeProvider>
+            </AuthProvider>
+          </AppConfigProvider>
         </SdkProvider>
       </QueryClientProvider>
     </BrowserRouter>

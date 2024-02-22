@@ -6,10 +6,12 @@ import { useUserFindManyIdentity } from '@pubkey-link/web-identity-data-access'
 import { IdentityUiLinkButton } from '@pubkey-link/web-identity-ui'
 import { UiStack, useUiColorScheme } from '@pubkey-ui/core'
 import { Navigate, useNavigate } from 'react-router-dom'
+import { useAppConfig } from '@pubkey-link/web-core-data-access'
 
 export function OnboardingFeature() {
   const navigate = useNavigate()
-  const { user, appConfig, refresh, hasSolana } = useAuth()
+  const { appConfig } = useAppConfig()
+  const { user, refresh, hasSolana } = useAuth()
   const { query } = useUserFindManyIdentity({
     provider: IdentityProvider.Solana,
     username: user?.username as string,
