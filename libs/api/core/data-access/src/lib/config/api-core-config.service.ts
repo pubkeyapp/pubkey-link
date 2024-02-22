@@ -98,6 +98,10 @@ export class ApiCoreConfigService {
     return this.service.get<boolean>('authSolanaLoginEnabled') ?? false
   }
 
+  get authSolanaRegisterEnabled(): boolean {
+    return this.service.get<boolean>('authSolanaRegisterEnabled') ?? false
+  }
+
   get apiUrl(): string {
     return this.service.get<string>('apiUrl') as string
   }

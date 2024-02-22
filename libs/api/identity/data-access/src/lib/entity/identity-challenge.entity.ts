@@ -19,8 +19,6 @@ export class IdentityChallenge {
   @Field({ nullable: true })
   signature?: string
   @Field()
-  ip!: string
-  @Field()
   userAgent!: string
   @Field()
   verified!: boolean

@@ -1,19 +1,23 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { IdentityProvider } from '@prisma/client'
 import { ApiCoreService, BaseContext, getRequestDetails } from '@pubkey-link/api-core-data-access'
-import { PublicKey } from '@solana/web3.js'
 import { verifySignature } from '@pubkeyapp/solana-verify-wallet'
+import { PublicKey } from '@solana/web3.js'
 
 @Injectable()
 export class ApiSolanaIdentityService {
   private readonly logger = new Logger(ApiSolanaIdentityService.name)
   constructor(private readonly core: ApiCoreService) {}
 
-  ensureLinkProvider(provider: IdentityProvider) {
+  ensureAllowedProvider(provider: IdentityProvider) {
     if (provider !== IdentityProvider.Solana) {
       throw new Error(`Identity provider ${provider} not supported`)
     }
-    if (!this.core.config.authSolanaLinkEnabled && !this.core.config.authSolanaLoginEnabled) {
+    if (
+      !this.core.config.authSolanaLinkEnabled &&
+      !this.core.config.authSolanaLoginEnabled &&
+      !this.core.config.authSolanaRegisterEnabled
+    ) {
       throw new Error(`Solana login disabled`)
     }
   }
@@ -36,9 +40,9 @@ export class ApiSolanaIdentityService {
     const found = await this.ensureIdentityChallenge(provider, providerId, challenge)
 
     // Make sure the IP and user agent match the challenge
-    const { ip, userAgent } = getRequestDetails(ctx)
+    const { userAgent } = getRequestDetails(ctx)
 
-    if (found.ip !== ip || found.userAgent !== userAgent) {
+    if (found.userAgent !== userAgent) {
       throw new Error(`Identity challenge not found.`)
     }
 

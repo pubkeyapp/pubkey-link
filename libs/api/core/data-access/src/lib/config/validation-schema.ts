@@ -15,6 +15,7 @@ export const validationSchema = Joi.object({
   AUTH_SOLANA_ADMIN_IDS: Joi.string(),
   AUTH_SOLANA_LINK_ENABLED: Joi.boolean().default(true),
   AUTH_SOLANA_LOGIN_ENABLED: Joi.boolean().default(false),
+  AUTH_SOLANA_REGISTER_ENABLED: Joi.boolean().default(false),
   // Bot
   BOT_AUTO_START: Joi.boolean().default(true),
   CLOAK_MASTER_KEY: Joi.string().required().error(new Error(`CLOAK_MASTER_KEY is required.`)),

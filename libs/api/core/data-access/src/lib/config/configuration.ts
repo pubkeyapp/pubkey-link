@@ -33,6 +33,7 @@ export interface ApiCoreConfig {
   authSolanaAdminIds: string[]
   authSolanaLinkEnabled: boolean
   authSolanaLoginEnabled: boolean
+  authSolanaRegisterEnabled: boolean
   // Bot
   botAutoStart: boolean
   // Cookies
@@ -71,6 +72,7 @@ export function configuration(): ApiCoreConfig {
     authSolanaAdminIds: getFromEnvironment('AUTH_SOLANA_ADMIN_IDS'),
     authSolanaLinkEnabled: process.env['AUTH_SOLANA_LINK_ENABLED'] === 'true',
     authSolanaLoginEnabled: process.env['AUTH_SOLANA_LOGIN_ENABLED'] === 'true',
+    authSolanaRegisterEnabled: process.env['AUTH_SOLANA_REGISTER_ENABLED'] === 'true',
     botAutoStart: process.env['BOT_AUTO_START'] === 'true',
     cookieDomains,
     cookieName: '__session',

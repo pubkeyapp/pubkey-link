@@ -344,7 +344,6 @@ type IdentityChallenge {
   challenge: String!
   createdAt: DateTime!
   id: String!
-  ip: String!
   provider: IdentityProvider!
   providerId: String!
   signature: String

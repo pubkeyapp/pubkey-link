@@ -44,66 +44,84 @@ export class ApiAnonIdentityService {
   }
 
   async requestIdentityChallenge(ctx: BaseContext, { provider, providerId }: RequestIdentityChallengeInput) {
-    // Make sure we can link or login with the given provider
-    this.solana.ensureLinkProvider(provider)
+    // Make sure the provider is allowed
+    this.solana.ensureAllowedProvider(provider)
     // Make sure the providerId is valid
     this.solana.ensureValidProviderId(provider, providerId)
 
     // Check if we already have an identity for this provider
     const found = await this.solana.findIdentity(provider, providerId)
 
-    // If we found the identity, we need to check if we can log in with it
+    // Get the IP and user agent from the request
+    const { userAgent } = getRequestDetails(ctx)
+
+    // Generate a random challenge
+    const challenge = sha256(`${Math.random()}-${userAgent}-${provider}-${providerId}-${Math.random()}`)
+
+    // We found the identity so we are logging in
     if (found) {
       if (!this.core.config.authSolanaLoginEnabled) {
         throw new Error(`Solana login disabled`)
       }
-    } else if (!this.core.config.authSolanaLinkEnabled) {
-      throw new Error(`Solana link disabled`)
+      return this.core.data.identityChallenge.create({
+        data: {
+          identity: { connect: { provider_providerId: { provider, providerId } } },
+          userAgent,
+          challenge: `Approve this message sign in as ${found.owner.username}. #REF-${challenge}`,
+        },
+      })
     }
 
-    // Get the IP and user agent from the request
-    const { ip, userAgent } = getRequestDetails(ctx)
+    // We did not find the identity so we are registering
+    if (!this.core.config.authSolanaRegisterEnabled) {
+      throw new Error(`Solana register disabled`)
+    }
 
-    // Generate a random challenge
-    const challenge = sha256(`${Math.random()}-${ip}-${userAgent}-${provider}-${providerId}-${Math.random()}`)
     const admin = this.core.config.isAdminId(IdentityProvider.Solana, providerId)
-    // Store the challenge
-    return this.core.data.identityChallenge.create({
-      data: {
-        identity: {
-          connectOrCreate: {
-            where: { provider_providerId: { provider, providerId } },
-            create: {
-              name: providerId,
-              provider,
-              providerId,
-              verified: false,
-              owner: {
-                create: {
-                  username: slugifyId(`${ellipsify(providerId)}-${provider}`),
-                  role: admin ? UserRole.Admin : UserRole.User,
-                  status: UserStatus.Active,
-                  developer: admin,
+
+    return this.core.data.identityChallenge
+      .create({
+        data: {
+          identity: {
+            connectOrCreate: {
+              where: { provider_providerId: { provider, providerId } },
+              create: {
+                name: providerId,
+                provider,
+                providerId,
+                verified: false,
+                owner: {
+                  create: {
+                    username: slugifyId(`${ellipsify(providerId)}-${provider}`),
+                    role: admin ? UserRole.Admin : UserRole.User,
+                    status: UserStatus.Active,
+                    developer: admin,
+                  },
                 },
               },
             },
           },
+          userAgent,
+          challenge: `Approve this message sign up for a new account. #REF-${challenge}`,
         },
-        ip,
-        userAgent,
-        challenge: `Approve this message ${
-          found ? `sign in as ${found.owner.username}` : 'sign up for a new account'
-        }. #REF-${challenge}`,
-      },
-    })
+        include: { identity: { select: { ownerId: true } } },
+      })
+      .then(async (res) => {
+        await this.core.logInfo(`Registered new user with ${provider} ${providerId}`, {
+          userId: res.identity.ownerId,
+          identityProvider: provider,
+          identityProviderId: providerId,
+        })
+        return res
+      })
   }
 
   async verifyIdentityChallenge(
     ctx: BaseContext,
     { provider, providerId, challenge, signature, useLedger }: VerifyIdentityChallengeInput,
   ) {
-    // Make sure we can link the given provider
-    this.solana.ensureLinkProvider(provider)
+    // Make sure the provider is allowed
+    this.solana.ensureAllowedProvider(provider)
     // Make sure the providerId is valid
     this.solana.ensureValidProviderId(provider, providerId)
 
@@ -119,11 +137,13 @@ export class ApiAnonIdentityService {
 
     if (!found.identity.verified) {
       // Update the identity
-      await this.core.data.identity.update({
-        where: { id: found.identity.id },
-        data: { verified: true },
-      })
+      await this.core.data.identity.update({ where: { id: found.identity.id }, data: { verified: true } })
       this.logger.log(`Identity ${found.identity.id} verified`)
+      await this.core.logInfo(`${found.identity.provider} Identity ${found.identity.providerId} verified`, {
+        userId: found.identity.ownerId,
+        identityProvider: found.identity.provider,
+        identityProviderId: found.identity.providerId,
+      })
     }
 
     // Update the identity
@@ -138,12 +158,17 @@ export class ApiAnonIdentityService {
       include: { identity: { include: { owner: true } } },
     })
 
-    if (updated.identity.owner.status !== UserStatus.Active) {
+    if (updated.identity.owner.status === UserStatus.Created) {
       await this.core.data.user.update({
         where: { id: updated.identity.owner.id },
         data: { status: UserStatus.Active },
       })
       this.logger.log(`User ${updated.identity.owner.id} activated`)
+      await this.core.logInfo(`User ${updated.identity.owner.username} activated`, {
+        userId: updated.identity.owner.id,
+        identityProvider: found.identity.provider,
+        identityProviderId: found.identity.providerId,
+      })
     }
 
     if (updated.verified) {

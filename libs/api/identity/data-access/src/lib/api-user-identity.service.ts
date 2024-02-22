@@ -67,8 +67,8 @@ export class ApiUserIdentityService {
     userId: string,
     { provider, providerId }: RequestIdentityChallengeInput,
   ) {
-    // Make sure we can link the given provider
-    this.solana.ensureLinkProvider(provider)
+    // Make sure the provider is allowed
+    this.solana.ensureAllowedProvider(provider)
 
     // Make sure the provider is enabled
     if (!this.core.config.appConfig.authLinkProviders.includes(provider)) {
@@ -81,16 +81,15 @@ export class ApiUserIdentityService {
     await this.solana.ensureIdentityOwner(userId, provider, providerId)
 
     // Get the IP and user agent from the request
-    const { ip, userAgent } = getRequestDetails(ctx)
+    const { userAgent } = getRequestDetails(ctx)
 
     // Generate a random challenge
-    const challenge = sha256(`${Math.random()}-${ip}-${userAgent}-${userId}-${provider}-${providerId}-${Math.random()}`)
+    const challenge = sha256(`${Math.random()}-${userAgent}-${userId}-${provider}-${providerId}-${Math.random()}`)
 
     // Store the challenge
     return this.core.data.identityChallenge.create({
       data: {
         identity: { connect: { provider_providerId: { provider, providerId } } },
-        ip,
         userAgent,
         challenge: `Approve this message to verify your wallet. #REF-${challenge}`,
       },
@@ -102,19 +101,23 @@ export class ApiUserIdentityService {
     userId: string,
     { provider, providerId, challenge, signature, useLedger }: VerifyIdentityChallengeInput,
   ) {
-    // Make sure we can link the given provider
-    this.solana.ensureLinkProvider(provider)
+    // Make sure the provider is allowed
+    this.solana.ensureAllowedProvider(provider)
     // Make sure the providerId is valid
     this.solana.ensureValidProviderId(provider, providerId)
+    // Make sure the provider is enabled
+    if (!this.core.config.appConfig.authLinkProviders.includes(provider)) {
+      throw new Error(`Provider ${provider} not enabled for linking`)
+    }
     // Make sure the identity is owned by the user
     await this.solana.ensureIdentityOwner(userId, provider, providerId)
 
     // Make sure we find the challenge
     const found = await this.solana.ensureIdentityChallenge(provider, providerId, challenge)
 
-    const { ip, userAgent } = getRequestDetails(ctx)
+    const { userAgent } = getRequestDetails(ctx)
 
-    if (found.ip !== ip || found.userAgent !== userAgent) {
+    if (found.userAgent !== userAgent) {
       throw new Error(`Identity challenge not found.`)
     }
 
@@ -153,33 +156,27 @@ export class ApiUserIdentityService {
   }
 
   async linkIdentity(userId: string, { provider, providerId }: LinkIdentityInput) {
-    // Make sure we can link the given provider
-    this.solana.ensureLinkProvider(provider)
+    // Make sure the provider is allowed
+    this.solana.ensureAllowedProvider(provider)
+    // Make sure the provider is enabled
+    if (!this.core.config.appConfig.authLinkProviders.includes(provider)) {
+      throw new Error(`Provider ${provider} not enabled for linking`)
+    }
     // Make sure the identity does not exist
-    const found = await this.core.data.identity.findFirst({
-      where: {
-        provider,
-        providerId,
-      },
-    })
+    const found = await this.findOneIdentity(provider, providerId)
     if (found) {
       throw new Error(`Identity ${provider} ${providerId} already linked`)
     }
 
     if (provider === IdentityProvider.Discord) {
-      const existing = await this.core.data.identity.findFirst({
-        where: {
-          provider,
-          ownerId: userId,
-        },
-      })
+      const existing = await this.core.data.identity.findFirst({ where: { provider, ownerId: userId } })
       if (existing) {
         throw new Error(`Discord identity already linked`)
       }
     }
 
     // Create the identity
-    const created = await this.core.data.identity.create({
+    return this.core.data.identity.create({
       data: {
         name: providerId,
         ownerId: userId,
@@ -187,7 +184,6 @@ export class ApiUserIdentityService {
         providerId,
       },
     })
-    return created
   }
 
   findOneIdentity(provider: IdentityProvider, providerId: string) {

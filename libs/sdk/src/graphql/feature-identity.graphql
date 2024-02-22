@@ -32,7 +32,6 @@ fragment IdentityChallengeDetails on IdentityChallenge {
   providerId
   challenge
   signature
-  ip
   userAgent
   verified
 }

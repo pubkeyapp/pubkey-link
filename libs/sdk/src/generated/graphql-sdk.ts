@@ -375,7 +375,6 @@ export type IdentityChallenge = {
   challenge: Scalars['String']['output']
   createdAt: Scalars['DateTime']['output']
   id: Scalars['String']['output']
-  ip: Scalars['String']['output']
   provider: IdentityProvider
   providerId: Scalars['String']['output']
   signature?: Maybe<Scalars['String']['output']>
@@ -3372,7 +3371,6 @@ export type IdentityChallengeDetailsFragment = {
   providerId: string
   challenge: string
   signature?: string | null
-  ip: string
   userAgent: string
   verified: boolean
 }
@@ -3408,7 +3406,6 @@ export type AdminFindManyIdentityQuery = {
       providerId: string
       challenge: string
       signature?: string | null
-      ip: string
       userAgent: string
       verified: boolean
     }> | null
@@ -3552,7 +3549,6 @@ export type UserRequestIdentityChallengeQuery = {
     providerId: string
     challenge: string
     signature?: string | null
-    ip: string
     userAgent: string
     verified: boolean
   } | null
@@ -3573,7 +3569,6 @@ export type UserVerifyIdentityChallengeMutation = {
     providerId: string
     challenge: string
     signature?: string | null
-    ip: string
     userAgent: string
     verified: boolean
   } | null
@@ -3619,7 +3614,6 @@ export type AnonRequestIdentityChallengeQuery = {
     providerId: string
     challenge: string
     signature?: string | null
-    ip: string
     userAgent: string
     verified: boolean
   } | null
@@ -3668,7 +3662,6 @@ export type AnonVerifyIdentityChallengeMutation = {
     providerId: string
     challenge: string
     signature?: string | null
-    ip: string
     userAgent: string
     verified: boolean
   } | null
@@ -7163,7 +7156,6 @@ export const IdentityChallengeDetailsFragmentDoc = gql`
     providerId
     challenge
     signature
-    ip
     userAgent
     verified
   }

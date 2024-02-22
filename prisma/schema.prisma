@@ -131,7 +131,7 @@ model IdentityChallenge {
   updatedAt  DateTime         @updatedAt
   challenge  String           @unique
   signature  String?
-  ip         String
+  ip         String?
   userAgent  String
   verified   Boolean          @default(false)
   identity   Identity         @relation(fields: [provider, providerId], references: [provider, providerId], onDelete: Cascade)
