@@ -1,7 +1,7 @@
 import { Button, Group } from '@mantine/core'
 import { modals } from '@mantine/modals'
 import { Community } from '@pubkey-link/sdk'
-import { userUserSyncCommunityRoles, useUserFindManyRole } from '@pubkey-link/web-role-data-access'
+import { useUserFindManyRole, useUserSyncCommunityRoles } from '@pubkey-link/web-role-data-access'
 import { UserRoleUiTable } from '@pubkey-link/web-role-ui'
 import { UiSearchField } from '@pubkey-link/web-ui-core'
 import { UiDebug, UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
@@ -12,7 +12,7 @@ export function UserRoleListFeature({ community }: { community: Community }) {
     communityId: community.id,
   })
 
-  const syncCommunityRoles = userUserSyncCommunityRoles({ communityId: community.id })
+  const syncCommunityRoles = useUserSyncCommunityRoles({ communityId: community.id })
 
   return (
     <UiStack>

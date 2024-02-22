@@ -531,15 +531,16 @@ export class ApiBotManagerService implements OnModuleInit {
     url.searchParams.append('permissions', '2415935488')
     // url.searchParams.append('permissions', '268437504')
     url.searchParams.append('scope', ' bot role_connections.write')
-    url.searchParams.append('redirect_uri', this.redirectUrl(botId))
+    url.searchParams.append('redirect_uri', this.redirectUrl())
     url.searchParams.append('response_type', 'code')
 
     return url.toString()
   }
 
-  redirectUrl(_botId: string) {
-    return this.core.config.authDiscordStrategyOptions.callbackURL
+  redirectUrl() {
+    // TODO: Implement redirect URL for bot specific callback
     // return `${this.core.config.apiUrl}/bot/${botId}/callback`
+    return this.core.config.authDiscordStrategyOptions.callbackURL
   }
 
   verificationUrl(botId: string) {

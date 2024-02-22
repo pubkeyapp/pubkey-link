@@ -16,13 +16,13 @@ export class ApiBotResolver {
   }
 
   @ResolveField(() => String)
-  redirectUrl(@Parent() bot: Bot) {
-    return this.service.manager.redirectUrl(bot.id)
+  redirectUrl() {
+    return this.service.manager.redirectUrl()
   }
 
   @ResolveField(() => Boolean, { nullable: true })
   redirectUrlSet(@Parent() bot: Bot) {
-    const url = this.service.manager.redirectUrl(bot.id)
+    const url = this.service.manager.redirectUrl()
 
     return bot.application?.redirect_uris?.includes(url)
   }

@@ -6,8 +6,8 @@ services:
     ports:
       - 9090:9090
     volumes:
-        - ./tools/prometheus.yml:/etc/prometheus/prometheus.yml
-        - ./tmp/prometheus:/prometheus
+      - ./tools/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./tmp/prometheus:/prometheus
   grafana:
     image: grafana/grafana
     container_name: grafana

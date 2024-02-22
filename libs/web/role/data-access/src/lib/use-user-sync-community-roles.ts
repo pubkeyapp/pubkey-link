@@ -2,7 +2,7 @@ import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useMutation } from '@tanstack/react-query'
 
-export function userUserSyncCommunityRoles({ communityId }: { communityId: string }) {
+export function useUserSyncCommunityRoles({ communityId }: { communityId: string }) {
   const sdk = useSdk()
 
   return useMutation({

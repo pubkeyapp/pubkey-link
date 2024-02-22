@@ -1,4 +1,4 @@
-import {DasApiAsset} from "@metaplex-foundation/digital-asset-standard-api";
+import { DasApiAsset } from '@metaplex-foundation/digital-asset-standard-api'
 
 /**
  * Find the collection group value for the asset
