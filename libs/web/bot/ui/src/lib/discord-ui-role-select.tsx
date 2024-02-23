@@ -1,12 +1,13 @@
-import { ComboboxItem, Select, SelectProps } from '@mantine/core'
+import { ComboboxItem, MultiSelect, MultiSelectProps } from '@mantine/core'
 
-export function DiscordUiRoleSelect({ roles, ...props }: SelectProps & { roles: ComboboxItem[] }) {
+export function DiscordUiRoleSelect({ roles, ...props }: MultiSelectProps & { roles: ComboboxItem[] }) {
   return (
-    <Select
+    <MultiSelect
       label="Role"
       placeholder="Select or search role..."
       data={roles}
       searchable
+      multiple
       nothingFoundMessage="Nothing found..."
       {...props}
     />

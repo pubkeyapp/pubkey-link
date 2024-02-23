@@ -120,6 +120,7 @@ const PK_BOT: Prisma.BotCreateWithoutCommunityInput = {
         dryRun: true,
         verbose: true,
         botChannel: PK_SERVER_LOGS,
+        adminRoles: ['1074745981389770833', '1133792593768103996', '1080885049550966834', '1209487612595666954'],
       },
       {
         serverId: DL_SERVER,

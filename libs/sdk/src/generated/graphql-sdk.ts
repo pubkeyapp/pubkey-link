@@ -263,7 +263,7 @@ export type BotRole = {
 
 export type BotServer = {
   __typename?: 'BotServer'
-  adminRole?: Maybe<Scalars['String']['output']>
+  adminRoles?: Maybe<Array<Scalars['String']['output']>>
   botChannel?: Maybe<Scalars['String']['output']>
   botId: Scalars['String']['output']
   createdAt?: Maybe<Scalars['DateTime']['output']>
@@ -1469,7 +1469,7 @@ export type UserUpdateBotInput = {
 }
 
 export type UserUpdateBotServerInput = {
-  adminRole?: InputMaybe<Scalars['String']['input']>
+  adminRoles?: InputMaybe<Array<Scalars['String']['input']>>
   botChannel?: InputMaybe<Scalars['String']['input']>
   dryRun?: InputMaybe<Scalars['Boolean']['input']>
   enableSync?: InputMaybe<Scalars['Boolean']['input']>
@@ -1653,7 +1653,7 @@ export type BotServerDetailsFragment = {
   updatedAt?: Date | null
   botId: string
   serverId: string
-  adminRole?: string | null
+  adminRoles?: Array<string> | null
   botChannel?: string | null
   dryRun?: boolean | null
   enableSync?: boolean | null
@@ -1976,7 +1976,7 @@ export type UserFindOneBotServerQuery = {
     updatedAt?: Date | null
     botId: string
     serverId: string
-    adminRole?: string | null
+    adminRoles?: Array<string> | null
     botChannel?: string | null
     dryRun?: boolean | null
     enableSync?: boolean | null
@@ -2051,7 +2051,7 @@ export type UserTestBotServerConfigMutation = {
     updatedAt?: Date | null
     botId: string
     serverId: string
-    adminRole?: string | null
+    adminRoles?: Array<string> | null
     botChannel?: string | null
     dryRun?: boolean | null
     enableSync?: boolean | null
@@ -2076,7 +2076,7 @@ export type UserUpdateBotServerMutation = {
     updatedAt?: Date | null
     botId: string
     serverId: string
-    adminRole?: string | null
+    adminRoles?: Array<string> | null
     botChannel?: string | null
     dryRun?: boolean | null
     enableSync?: boolean | null
@@ -7173,7 +7173,7 @@ export const BotServerDetailsFragmentDoc = gql`
     updatedAt
     botId
     serverId
-    adminRole
+    adminRoles
     botChannel
     dryRun
     enableSync
@@ -11849,7 +11849,7 @@ export function UserUpdateBotInputSchema(): z.ZodObject<Properties<UserUpdateBot
 
 export function UserUpdateBotServerInputSchema(): z.ZodObject<Properties<UserUpdateBotServerInput>> {
   return z.object({
-    adminRole: z.string().nullish(),
+    adminRoles: z.array(z.string()).nullish(),
     botChannel: z.string().nullish(),
     dryRun: z.boolean().nullish(),
     enableSync: z.boolean().nullish(),

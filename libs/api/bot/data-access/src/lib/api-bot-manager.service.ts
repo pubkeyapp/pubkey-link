@@ -324,7 +324,12 @@ export class ApiBotManagerService {
           fields: [
             { name: 'Requester', value: `<@${identity.providerId}>` },
             { name: `Bot`, value: `<@${discordBot.client?.user?.id}>` },
-            { name: `Admin Role`, value: botServer.adminRole ? `<@&${botServer.adminRole}>` : 'Not set' },
+            {
+              name: `Admin Role`,
+              value: botServer.adminRoles?.length
+                ? botServer.adminRoles.map((role) => `<@&${role}>`).join(' ')
+                : 'Not set',
+            },
             { name: `Bot Channel`, value: `<#${botServer.botChannel}>` },
             { name: `Dry Run`, value: botServer.dryRun ? 'Enabled' : 'Disabled' },
             { name: `Enable Sync`, value: botServer.enableSync ? 'Enabled' : 'Disabled' },

@@ -18,8 +18,8 @@ export class BotServer {
   mentionUsers?: boolean
   @Field({ nullable: true })
   mentionRoles?: boolean
-  @Field({ nullable: true })
-  adminRole?: string
+  @Field(() => [String], { nullable: true })
+  adminRoles?: string[]
   @Field({ nullable: true })
   botChannel?: string
   @Field({ nullable: true })

@@ -38,20 +38,19 @@ model BotRole {
 }
 
 model BotServer {
-  id             String   @id @default(cuid())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  bot            Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
-  botId          String
-  serverId       String
-  enableSync     Boolean  @default(false)
-  dryRun         Boolean  @default(true)
-  mentionRoles   Boolean  @default(false)
-  mentionUsers   Boolean  @default(false)
-  verbose        Boolean  @default(false)
-  adminRole      String?
-  botChannel     String?
-  commandChannel String?
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  bot          Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  botId        String
+  serverId     String
+  enableSync   Boolean  @default(false)
+  dryRun       Boolean  @default(true)
+  mentionRoles Boolean  @default(false)
+  mentionUsers Boolean  @default(false)
+  verbose      Boolean  @default(false)
+  adminRoles   String[]
+  botChannel   String?
 
   @@unique([botId, serverId])
 }

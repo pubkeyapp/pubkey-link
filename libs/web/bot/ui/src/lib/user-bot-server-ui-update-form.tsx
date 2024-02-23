@@ -22,7 +22,7 @@ export function UserBotServerUiUpdateForm({
 }) {
   const form = useForm<UserUpdateBotServerInput>({
     initialValues: {
-      adminRole: botServer.adminRole,
+      adminRoles: botServer.adminRoles,
       botChannel: botServer.botChannel,
       dryRun: botServer.dryRun ?? false,
       enableSync: botServer.enableSync ?? false,
@@ -39,10 +39,10 @@ export function UserBotServerUiUpdateForm({
     <form onSubmit={form.onSubmit((values) => submit(values))}>
       <UiStack>
         <DiscordUiRoleSelect
-          label="Admin Role"
-          description="The role that a user must have to be able to manage the bot"
+          label="Admin Roles"
+          description="The selected roles will get Community Admin permissions."
           roles={roles}
-          {...form.getInputProps('adminRole')}
+          {...form.getInputProps('adminRoles')}
         />
         <DiscordUiChannelSelect
           label="Bot Channel"

@@ -21,7 +21,7 @@ fragment BotServerDetails on BotServer {
   updatedAt
   botId
   serverId
-  adminRole
+  adminRoles
   botChannel
   dryRun
   enableSync
