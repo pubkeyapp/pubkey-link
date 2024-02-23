@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 import { CommunityRole, IdentityProvider, LogLevel, LogRelatedType, Prisma, UserRole } from '@prisma/client'
 import { ApiCorePrismaClient, prismaClient } from './api-core-prisma-client'
 import { ApiCoreConfigService } from './config/api-core-config.service'
@@ -8,7 +9,7 @@ import { slugifyId, slugifyUsername } from './helpers/slugify-id'
 export class ApiCoreService {
   private readonly logger = new Logger(ApiCoreService.name)
   readonly data: ApiCorePrismaClient = prismaClient
-  constructor(readonly config: ApiCoreConfigService) {
+  constructor(readonly eventEmitter: EventEmitter2, readonly config: ApiCoreConfigService) {
     // Find the botServer entities that have a `commandChannel` value and migrate that to `botChannel`
     this.data.botServer.findMany({ where: { commandChannel: { not: null } } }).then((servers) =>
       servers.map((server) =>

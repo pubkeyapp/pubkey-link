@@ -77,6 +77,9 @@ dependencies:
   '@nestjs/core':
     specifier: 10.3.0
     version: 10.3.0(@nestjs/common@10.3.0)(@nestjs/platform-express@10.3.0)(reflect-metadata@0.1.14)(rxjs@7.8.1)
+  '@nestjs/event-emitter':
+    specifier: ^2.0.4
+    version: 2.0.4(@nestjs/common@10.3.0)(@nestjs/core@10.3.0)
   '@nestjs/graphql':
     specifier: ^12.0.11
     version: 12.0.11(@nestjs/common@10.3.0)(@nestjs/core@10.3.0)(graphql@16.8.1)(reflect-metadata@0.1.14)(ts-morph@21.0.1)
@@ -5469,6 +5472,17 @@ packages:
       uid: 2.0.2
     transitivePeerDependencies:
       - encoding
+
+  /@nestjs/event-emitter@2.0.4(@nestjs/common@10.3.0)(@nestjs/core@10.3.0):
+    resolution: {integrity: sha512-quMiw8yOwoSul0pp3mOonGz8EyXWHSBTqBy8B0TbYYgpnG1Ix2wGUnuTksLWaaBiiOTDhciaZ41Y5fJZsSJE1Q==}
+    peerDependencies:
+      '@nestjs/common': ^8.0.0 || ^9.0.0 || ^10.0.0
+      '@nestjs/core': ^8.0.0 || ^9.0.0 || ^10.0.0
+    dependencies:
+      '@nestjs/common': 10.3.0(reflect-metadata@0.1.14)(rxjs@7.8.1)
+      '@nestjs/core': 10.3.0(@nestjs/common@10.3.0)(@nestjs/platform-express@10.3.0)(reflect-metadata@0.1.14)(rxjs@7.8.1)
+      eventemitter2: 6.4.9
+    dev: false
 
   /@nestjs/graphql@12.0.11(@nestjs/common@10.3.0)(@nestjs/core@10.3.0)(graphql@16.8.1)(reflect-metadata@0.1.14)(ts-morph@21.0.1):
     resolution: {integrity: sha512-iCyVs9+utCQt9ehMhUjQcEdjRN/MrcTBINd7P44O1fzGENuWMbt1Z8RCoZbeGi5iVPBY63HgYik+BnnICqmxZw==}
@@ -13407,6 +13421,10 @@ packages:
   /eventemitter2@6.4.7:
     resolution: {integrity: sha512-tYUSVOGeQPKt/eC1ABfhHy5Xd96N3oIijJvN3O9+TsC28T5V9yX9oEfEK5faP0EFSNVOG97qtAS68GBrQB2hDg==}
     dev: true
+
+  /eventemitter2@6.4.9:
+    resolution: {integrity: sha512-JEPTiaOt9f04oa6NOkc4aH+nVp5I3wEjpHbIPqfgCdD5v5bUzy7xQqwcVO2aDQgOWhI28da57HksMrzK9HlRxg==}
+    dev: false
 
   /eventemitter3@3.1.2:
     resolution: {integrity: sha512-tvtQIeLVHjDkJYnzf2dgVMxfuSGJeM/7UCG17TT4EumTfNtF+0nebF/4zWOIkCreAbtNqhGEboB6BWrwqNaw4Q==}

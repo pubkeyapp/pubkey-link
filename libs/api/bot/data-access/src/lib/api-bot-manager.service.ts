@@ -1,4 +1,5 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
+import { OnEvent } from '@nestjs/event-emitter'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { Bot, IdentityProvider, UserStatus } from '@prisma/client'
 import {
@@ -14,13 +15,14 @@ import { BotStatus } from './entity/bot-status.enum'
 import { DiscordChannel, DiscordRole, DiscordServer } from './entity/discord-server.entity'
 
 @Injectable()
-export class ApiBotManagerService implements OnModuleInit {
+export class ApiBotManagerService {
   private readonly logger = new Logger(ApiBotManagerService.name)
   private readonly bots = new Map<string, DiscordBot>()
 
   constructor(private readonly core: ApiCoreService, private readonly botMember: ApiBotMemberService) {}
 
-  async onModuleInit() {
+  @OnEvent('app.started')
+  async onApplicationStarted() {
     if (!this.core.config.botAutoStart) {
       this.logger.verbose(`Bot auto start is disabled`)
       return

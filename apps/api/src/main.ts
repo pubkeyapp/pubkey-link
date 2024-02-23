@@ -31,6 +31,7 @@ async function bootstrap() {
     Logger.warn(`🐞 Application is running in development mode.`)
     exec('prettier --write ./api-schema.graphql ./api-swagger.json', { cwd: process.cwd() })
   }
+  core.eventEmitter.emit('app.started')
 }
 
 bootstrap()

@@ -1,4 +1,5 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
+import { OnEvent } from '@nestjs/event-emitter'
 import { LogLevel, Prisma, UserStatus } from '@prisma/client'
 import { fakeUsers, provisionCommunities, provisionUsers } from './api-core-provision-data'
 import { provisionNetworks } from './api-core-provision-data-networks'
@@ -7,12 +8,13 @@ import { hashPassword } from './helpers/hash-validate-password'
 import { slugifyId, slugifyUsername } from './helpers/slugify-id'
 
 @Injectable()
-export class ApiCoreProvisionService implements OnModuleInit {
+export class ApiCoreProvisionService {
   private readonly logger = new Logger(ApiCoreProvisionService.name)
 
   constructor(private readonly core: ApiCoreService) {}
 
-  async onModuleInit() {
+  @OnEvent('app.started')
+  async onApplicationStarted() {
     if (this.core.config.databaseReset) {
       await this.resetDatabase()
       this.logger.verbose(`Reset database`)
