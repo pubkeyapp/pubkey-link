@@ -6,6 +6,7 @@ import {
   CommunityMember,
   CommunityMemberPaging,
   CommunityRole,
+  UserCreateCommunityMemberInput,
   UserFindManyCommunityMemberInput,
   UserUpdateCommunityMemberInput,
 } from '@pubkey-link/api-community-member-data-access'
@@ -14,6 +15,15 @@ import {
 @UseGuards(ApiAuthGraphQLUserGuard)
 export class ApiUserCommunityMemberResolver {
   constructor(private readonly service: ApiCommunityMemberService) {}
+
+  @Mutation(() => CommunityMember, { nullable: true })
+  userCreateCommunityMember(
+    @CtxUserId() userId: string,
+    @Args('communityId') communityId: string,
+    @Args('input') input: UserCreateCommunityMemberInput,
+  ) {
+    return this.service.user.createCommunityMember(userId, communityId, input)
+  }
 
   @Mutation(() => Boolean, { nullable: true })
   userDeleteCommunityMember(@CtxUserId() userId: string, @Args('communityMemberId') communityMemberId: string) {

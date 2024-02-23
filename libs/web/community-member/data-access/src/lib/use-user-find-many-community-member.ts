@@ -1,6 +1,6 @@
-import { UserFindManyCommunityMemberInput } from '@pubkey-link/sdk'
+import { CommunityRole, UserCreateCommunityMemberInput, UserFindManyCommunityMemberInput } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
-import { toastSuccess } from '@pubkey-ui/core'
+import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
@@ -11,8 +11,9 @@ export function useUserFindManyCommunityMember(
   const [limit, setLimit] = useState(props?.limit ?? 10)
   const [page, setPage] = useState(props?.page ?? 1)
   const [search, setSearch] = useState<string>(props?.search ?? '')
+  const [role, setRole] = useState<CommunityRole | undefined>(props?.role ?? undefined)
 
-  const input: UserFindManyCommunityMemberInput = { page, limit, search, communityId: props.communityId }
+  const input: UserFindManyCommunityMemberInput = { page, limit, search, communityId: props.communityId, role }
   const query = useQuery({
     queryKey: ['user', 'find-many-community-member', input],
     queryFn: () => sdk.userFindManyCommunityMember({ input }).then((res) => res.data),
@@ -23,6 +24,8 @@ export function useUserFindManyCommunityMember(
   return {
     items,
     query,
+    role,
+    setRole,
     pagination: {
       page,
       setPage,
@@ -31,6 +34,20 @@ export function useUserFindManyCommunityMember(
       total,
     },
     setSearch,
+    createCommunityMember: (input: UserCreateCommunityMemberInput) =>
+      sdk
+        .userCreateCommunityMember({ communityId: props.communityId, input })
+        .then(async (res) => {
+          if (res.data?.created) {
+            toastSuccess('Community Member created')
+          } else {
+            toastError('Error creating Community Member')
+          }
+          await query.refetch()
+        })
+        .catch((error) => {
+          toastError(`Error creating Community Member: ${error}`)
+        }),
     deleteCommunityMember: (communityMemberId: string) =>
       sdk.userDeleteCommunityMember({ communityMemberId }).then(() => {
         toastSuccess('CommunityMember deleted')

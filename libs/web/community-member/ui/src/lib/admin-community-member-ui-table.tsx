@@ -1,8 +1,12 @@
-import { ActionIcon, Anchor, Group, ScrollArea } from '@mantine/core'
+import { ActionIcon, Group, ScrollArea } from '@mantine/core'
+import { modals } from '@mantine/modals'
 import { CommunityMember } from '@pubkey-link/sdk'
+import { useAdminFindOneCommunityMember } from '@pubkey-link/web-community-member-data-access'
+import { UserUiItem } from '@pubkey-link/web-user-ui'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
-import { Link } from 'react-router-dom'
+import { AdminCommunityMemberUiUpdateForm } from './admin-community-member-ui-update-form'
+import { CommunityMemberUiRole } from './community-member-ui-role'
 
 export function AdminCommunityMemberUiTable({
   deleteCommunityMember,
@@ -11,6 +15,7 @@ export function AdminCommunityMemberUiTable({
   page,
   recordsPerPage,
   totalRecords,
+  refresh,
 }: {
   deleteCommunityMember: (communityMember: CommunityMember) => void
   communityMembers: CommunityMember[]
@@ -18,6 +23,7 @@ export function AdminCommunityMemberUiTable({
   totalRecords: DataTableProps['totalRecords']
   recordsPerPage: DataTableProps['recordsPerPage']
   onPageChange: (page: number) => void
+  refresh: () => void
 }) {
   return (
     <ScrollArea>
@@ -31,12 +37,12 @@ export function AdminCommunityMemberUiTable({
         totalRecords={totalRecords ?? 1}
         columns={[
           {
+            accessor: 'user',
+            render: (item) => (item.user ? <UserUiItem user={item.user} to={item.user.profileUrl} /> : null),
+          },
+          {
             accessor: 'role',
-            render: (item) => (
-              <Anchor component={Link} to={`./${item.id}`} size="sm" fw={500}>
-                {item.role}
-              </Anchor>
-            ),
+            render: (item) => <CommunityMemberUiRole role={item.role} />,
           },
           {
             accessor: 'actions',
@@ -44,7 +50,18 @@ export function AdminCommunityMemberUiTable({
             textAlign: 'right',
             render: (item) => (
               <Group gap="xs" justify="right">
-                <ActionIcon color="brand" variant="light" size="sm" component={Link} to={`./${item.id}/settings`}>
+                <ActionIcon
+                  color="brand"
+                  variant="light"
+                  size="sm"
+                  onClick={() =>
+                    modals.open({
+                      centered: true,
+                      title: `Edit ${item.user?.username}`,
+                      children: <AdminCommunityMemberUiUpdateModal item={item} refresh={refresh} />,
+                    })
+                  }
+                >
                   <IconPencil size={16} />
                 </ActionIcon>
                 <ActionIcon color="red" variant="light" size="sm" onClick={() => deleteCommunityMember(item)}>
@@ -57,5 +74,22 @@ export function AdminCommunityMemberUiTable({
         records={communityMembers}
       />
     </ScrollArea>
+  )
+}
+
+function AdminCommunityMemberUiUpdateModal({ item, refresh }: { item: CommunityMember; refresh: () => void }) {
+  const { updateCommunityMember } = useAdminFindOneCommunityMember({ communityMemberId: item.id })
+
+  return (
+    <AdminCommunityMemberUiUpdateForm
+      communityMember={item}
+      submit={(value) =>
+        updateCommunityMember(value).then((res) => {
+          refresh()
+          modals.closeAll()
+          return res
+        })
+      }
+    />
   )
 }

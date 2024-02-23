@@ -30,6 +30,11 @@ query adminFindOneCommunityMember($communityMemberId: String!) {
   }
 }
 
+mutation adminCreateCommunityMember($communityId: String!, $input: AdminCreateCommunityMemberInput!) {
+  created: adminCreateCommunityMember(communityId: $communityId, input: $input) {
+    ...CommunityMemberDetails
+  }
+}
 mutation adminUpdateCommunityMember($communityMemberId: String!, $input: AdminUpdateCommunityMemberInput!) {
   updated: adminUpdateCommunityMember(communityMemberId: $communityMemberId, input: $input) {
     ...CommunityMemberDetails
@@ -57,6 +62,12 @@ query userFindManyCommunityMember($input: UserFindManyCommunityMemberInput!) {
 
 query userFindOneCommunityMember($communityMemberId: String!) {
   item: userFindOneCommunityMember(communityMemberId: $communityMemberId) {
+    ...CommunityMemberDetails
+  }
+}
+
+mutation userCreateCommunityMember($communityId: String!, $input: UserCreateCommunityMemberInput!) {
+  created: userCreateCommunityMember(communityId: $communityId, input: $input) {
     ...CommunityMemberDetails
   }
 }

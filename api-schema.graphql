@@ -21,6 +21,11 @@ input AdminCreateCommunityInput {
   websiteUrl: String
 }
 
+input AdminCreateCommunityMemberInput {
+  role: CommunityRole!
+  userId: String!
+}
+
 input AdminCreateIdentityInput {
   ownerId: String!
   provider: IdentityProvider!
@@ -420,6 +425,7 @@ type Mutation {
   adminCreateBackup: Boolean!
   adminCreateBot(input: AdminCreateBotInput!): Bot
   adminCreateCommunity(input: AdminCreateCommunityInput!): Community
+  adminCreateCommunityMember(communityId: String!, input: AdminCreateCommunityMemberInput!): CommunityMember
   adminCreateIdentity(input: AdminCreateIdentityInput!): Identity
   adminCreateNetwork(input: AdminCreateNetworkInput!): Network
   adminCreateNetworkToken(input: AdminCreateNetworkTokenInput!): NetworkToken
@@ -455,6 +461,7 @@ type Mutation {
   register(input: RegisterInput!): User
   userCreateBot(input: UserCreateBotInput!): Bot
   userCreateCommunity(input: UserCreateCommunityInput!): Community
+  userCreateCommunityMember(communityId: String!, input: UserCreateCommunityMemberInput!): CommunityMember
   userCreateRole(input: UserCreateRoleInput!): Role
   userCreateRoleCondition(input: UserCreateRoleConditionInput!): RoleCondition
   userCreateRolePermission(input: UserCreateRolePermissionInput!): RolePermission
@@ -771,6 +778,11 @@ input UserCreateCommunityInput {
   telegramUrl: String
   twitterUrl: String
   websiteUrl: String
+}
+
+input UserCreateCommunityMemberInput {
+  role: CommunityRole!
+  userId: String!
 }
 
 input UserCreateRoleConditionInput {

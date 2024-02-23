@@ -1,19 +1,8 @@
 import { Anchor, Button, Group, Paper, Text } from '@mantine/core'
-import { Bot, Community, UserCreateBotInput } from '@pubkey-link/sdk'
+import { Community, UserCreateBotInput } from '@pubkey-link/sdk'
 import { useUserFindOneBot } from '@pubkey-link/web-bot-data-access'
 import { BotUiItem, UserBotUiCreateForm } from '@pubkey-link/web-bot-ui'
-import {
-  toastError,
-  UiCard,
-  UiDebug,
-  UiError,
-  UiGroup,
-  UiInfo,
-  UiLoader,
-  UiStack,
-  UiTabRoutes,
-  UiWarning,
-} from '@pubkey-ui/core'
+import { toastError, UiCard, UiDebug, UiError, UiGroup, UiInfo, UiLoader, UiStack, UiTabRoutes } from '@pubkey-ui/core'
 import { UserBotCommands } from './user-bot-commands'
 import { UserBotDetailServerList } from './user-bot-detail-server-list'
 import { UserBotDetailSettingsTab } from './user-bot-detail-settings.tab'
@@ -57,23 +46,17 @@ export function UserBotDetailFeature({ community }: { community: Community }) {
 
   return (
     <UiStack>
+      <Paper withBorder p="md" radius="sm">
+        <UiGroup>
+          <BotUiItem bot={item} />
+          <Group>
+            <UserBotCommands bot={item} />
+          </Group>
+        </UiGroup>
+      </Paper>
       {item.started ? (
         <UiTabRoutes
           tabs={[
-            {
-              path: 'bot',
-              label: 'Bot',
-              element: (
-                <Paper withBorder p="md" radius="sm">
-                  <UiGroup>
-                    <BotUiItem bot={item} />
-                    <Group>
-                      <UserBotCommands bot={item} />
-                    </Group>
-                  </UiGroup>
-                </Paper>
-              ),
-            },
             {
               path: 'servers',
               label: 'Servers',
@@ -81,7 +64,7 @@ export function UserBotDetailFeature({ community }: { community: Community }) {
             },
             {
               path: 'settings',
-              label: 'Settings',
+              label: 'Bot Settings',
               element: (
                 <UiStack>
                   <UserBotDetailSettingsTab bot={item} />
@@ -90,13 +73,7 @@ export function UserBotDetailFeature({ community }: { community: Community }) {
                     title="Danger zone"
                     message={
                       <UiStack align="end">
-                        <Button
-                          variant="outline"
-                          color="red"
-                          onClick={() => {
-                            deleteBot(item.id)
-                          }}
-                        >
+                        <Button variant="outline" color="red" onClick={() => deleteBot(item.id)}>
                           Delete Bot
                         </Button>
                       </UiStack>
@@ -110,23 +87,9 @@ export function UserBotDetailFeature({ community }: { community: Community }) {
         />
       ) : (
         <UiStack>
-          <BotControls item={item} />
-          <UiWarning message="Bot not started." />
+          <UiInfo message="Start the bot to access the settings." />
         </UiStack>
       )}
     </UiStack>
-  )
-}
-
-function BotControls({ item }: { item: Bot }) {
-  return (
-    <Paper withBorder p="md" radius="sm">
-      <UiGroup>
-        <BotUiItem bot={item} />
-        <Group>
-          <UserBotCommands bot={item} />
-        </Group>
-      </UiGroup>
-    </Paper>
   )
 }

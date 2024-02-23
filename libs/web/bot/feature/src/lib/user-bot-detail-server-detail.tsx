@@ -51,14 +51,14 @@ export function UserBotDetailServerDetail({ bot }: { bot: Bot }) {
       <UiTabRoutes
         tabs={[
           {
+            path: 'server-settings',
+            label: 'Server Settings',
+            element: <UserBotDetailServerSettings botId={bot.id} serverId={serverId} />,
+          },
+          {
             path: 'permissions',
             label: 'Permissions',
             element: <UserBotDetailRolesTab bot={bot} serverId={serverId} />,
-          },
-          {
-            path: 'settings',
-            label: 'Settings',
-            element: <UserBotDetailServerSettings botId={bot.id} serverId={serverId} />,
           },
           {
             path: 'server-roles',

@@ -43,6 +43,11 @@ export type AdminCreateCommunityInput = {
   websiteUrl?: InputMaybe<Scalars['String']['input']>
 }
 
+export type AdminCreateCommunityMemberInput = {
+  role: CommunityRole
+  userId: Scalars['String']['input']
+}
+
 export type AdminCreateIdentityInput = {
   ownerId: Scalars['String']['input']
   provider: IdentityProvider
@@ -449,6 +454,7 @@ export type Mutation = {
   adminCreateBackup: Scalars['Boolean']['output']
   adminCreateBot?: Maybe<Bot>
   adminCreateCommunity?: Maybe<Community>
+  adminCreateCommunityMember?: Maybe<CommunityMember>
   adminCreateIdentity?: Maybe<Identity>
   adminCreateNetwork?: Maybe<Network>
   adminCreateNetworkToken?: Maybe<NetworkToken>
@@ -484,6 +490,7 @@ export type Mutation = {
   register?: Maybe<User>
   userCreateBot?: Maybe<Bot>
   userCreateCommunity?: Maybe<Community>
+  userCreateCommunityMember?: Maybe<CommunityMember>
   userCreateRole?: Maybe<Role>
   userCreateRoleCondition?: Maybe<RoleCondition>
   userCreateRolePermission?: Maybe<RolePermission>
@@ -520,6 +527,11 @@ export type MutationAdminCreateBotArgs = {
 
 export type MutationAdminCreateCommunityArgs = {
   input: AdminCreateCommunityInput
+}
+
+export type MutationAdminCreateCommunityMemberArgs = {
+  communityId: Scalars['String']['input']
+  input: AdminCreateCommunityMemberInput
 }
 
 export type MutationAdminCreateIdentityArgs = {
@@ -663,6 +675,11 @@ export type MutationUserCreateBotArgs = {
 
 export type MutationUserCreateCommunityArgs = {
   input: UserCreateCommunityInput
+}
+
+export type MutationUserCreateCommunityMemberArgs = {
+  communityId: Scalars['String']['input']
+  input: UserCreateCommunityMemberInput
 }
 
 export type MutationUserCreateRoleArgs = {
@@ -1318,6 +1335,11 @@ export type UserCreateCommunityInput = {
   telegramUrl?: InputMaybe<Scalars['String']['input']>
   twitterUrl?: InputMaybe<Scalars['String']['input']>
   websiteUrl?: InputMaybe<Scalars['String']['input']>
+}
+
+export type UserCreateCommunityMemberInput = {
+  role: CommunityRole
+  userId: Scalars['String']['input']
 }
 
 export type UserCreateRoleConditionInput = {
@@ -2475,6 +2497,110 @@ export type AdminFindOneCommunityMemberQuery = {
   } | null
 }
 
+export type AdminCreateCommunityMemberMutationVariables = Exact<{
+  communityId: Scalars['String']['input']
+  input: AdminCreateCommunityMemberInput
+}>
+
+export type AdminCreateCommunityMemberMutation = {
+  __typename?: 'Mutation'
+  created?: {
+    __typename?: 'CommunityMember'
+    communityId: string
+    createdAt?: Date | null
+    id: string
+    role: CommunityRole
+    updatedAt?: Date | null
+    userId: string
+    user?: {
+      __typename?: 'User'
+      avatarUrl?: string | null
+      createdAt?: Date | null
+      developer?: boolean | null
+      lastLogin?: Date | null
+      id: string
+      name?: string | null
+      profileUrl: string
+      role?: UserRole | null
+      status?: UserStatus | null
+      updatedAt?: Date | null
+      username?: string | null
+    } | null
+    roles?: Array<{
+      __typename?: 'Role'
+      createdAt?: Date | null
+      id: string
+      communityId: string
+      name: string
+      updatedAt?: Date | null
+      viewUrl?: string | null
+      conditions?: Array<{
+        __typename?: 'RoleCondition'
+        createdAt?: Date | null
+        id: string
+        type: NetworkTokenType
+        amount?: string | null
+        filters?: any | null
+        config?: any | null
+        tokenId?: string | null
+        roleId?: string | null
+        updatedAt?: Date | null
+        valid?: boolean | null
+        token?: {
+          __typename?: 'NetworkToken'
+          id: string
+          createdAt?: Date | null
+          updatedAt?: Date | null
+          cluster: NetworkCluster
+          type: NetworkTokenType
+          account: string
+          program: string
+          name: string
+          vault?: string | null
+          symbol?: string | null
+          description?: string | null
+          imageUrl?: string | null
+          metadataUrl?: string | null
+          raw?: any | null
+        } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      }> | null
+      permissions?: Array<{
+        __typename?: 'RolePermission'
+        createdAt?: Date | null
+        id: string
+        updatedAt?: Date | null
+        botId?: string | null
+        roleId?: string | null
+        botRole?: {
+          __typename?: 'BotRole'
+          botId?: string | null
+          createdAt?: Date | null
+          id: string
+          serverId?: string | null
+          updatedAt?: Date | null
+          serverRoleId?: string | null
+          serverRole?: {
+            __typename?: 'DiscordRole'
+            id: string
+            name: string
+            managed: boolean
+            color: number
+            position: number
+          } | null
+          server?: {
+            __typename?: 'DiscordServer'
+            id: string
+            name: string
+            icon?: string | null
+            permissions?: Array<string> | null
+          } | null
+        } | null
+      }> | null
+    }> | null
+  } | null
+}
+
 export type AdminUpdateCommunityMemberMutationVariables = Exact<{
   communityMemberId: Scalars['String']['input']
   input: AdminUpdateCommunityMemberInput
@@ -2714,6 +2840,110 @@ export type UserFindOneCommunityMemberQueryVariables = Exact<{
 export type UserFindOneCommunityMemberQuery = {
   __typename?: 'Query'
   item?: {
+    __typename?: 'CommunityMember'
+    communityId: string
+    createdAt?: Date | null
+    id: string
+    role: CommunityRole
+    updatedAt?: Date | null
+    userId: string
+    user?: {
+      __typename?: 'User'
+      avatarUrl?: string | null
+      createdAt?: Date | null
+      developer?: boolean | null
+      lastLogin?: Date | null
+      id: string
+      name?: string | null
+      profileUrl: string
+      role?: UserRole | null
+      status?: UserStatus | null
+      updatedAt?: Date | null
+      username?: string | null
+    } | null
+    roles?: Array<{
+      __typename?: 'Role'
+      createdAt?: Date | null
+      id: string
+      communityId: string
+      name: string
+      updatedAt?: Date | null
+      viewUrl?: string | null
+      conditions?: Array<{
+        __typename?: 'RoleCondition'
+        createdAt?: Date | null
+        id: string
+        type: NetworkTokenType
+        amount?: string | null
+        filters?: any | null
+        config?: any | null
+        tokenId?: string | null
+        roleId?: string | null
+        updatedAt?: Date | null
+        valid?: boolean | null
+        token?: {
+          __typename?: 'NetworkToken'
+          id: string
+          createdAt?: Date | null
+          updatedAt?: Date | null
+          cluster: NetworkCluster
+          type: NetworkTokenType
+          account: string
+          program: string
+          name: string
+          vault?: string | null
+          symbol?: string | null
+          description?: string | null
+          imageUrl?: string | null
+          metadataUrl?: string | null
+          raw?: any | null
+        } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      }> | null
+      permissions?: Array<{
+        __typename?: 'RolePermission'
+        createdAt?: Date | null
+        id: string
+        updatedAt?: Date | null
+        botId?: string | null
+        roleId?: string | null
+        botRole?: {
+          __typename?: 'BotRole'
+          botId?: string | null
+          createdAt?: Date | null
+          id: string
+          serverId?: string | null
+          updatedAt?: Date | null
+          serverRoleId?: string | null
+          serverRole?: {
+            __typename?: 'DiscordRole'
+            id: string
+            name: string
+            managed: boolean
+            color: number
+            position: number
+          } | null
+          server?: {
+            __typename?: 'DiscordServer'
+            id: string
+            name: string
+            icon?: string | null
+            permissions?: Array<string> | null
+          } | null
+        } | null
+      }> | null
+    }> | null
+  } | null
+}
+
+export type UserCreateCommunityMemberMutationVariables = Exact<{
+  communityId: Scalars['String']['input']
+  input: UserCreateCommunityMemberInput
+}>
+
+export type UserCreateCommunityMemberMutation = {
+  __typename?: 'Mutation'
+  created?: {
     __typename?: 'CommunityMember'
     communityId: string
     createdAt?: Date | null
@@ -7557,6 +7787,14 @@ export const AdminFindOneCommunityMemberDocument = gql`
   }
   ${CommunityMemberDetailsFragmentDoc}
 `
+export const AdminCreateCommunityMemberDocument = gql`
+  mutation adminCreateCommunityMember($communityId: String!, $input: AdminCreateCommunityMemberInput!) {
+    created: adminCreateCommunityMember(communityId: $communityId, input: $input) {
+      ...CommunityMemberDetails
+    }
+  }
+  ${CommunityMemberDetailsFragmentDoc}
+`
 export const AdminUpdateCommunityMemberDocument = gql`
   mutation adminUpdateCommunityMember($communityMemberId: String!, $input: AdminUpdateCommunityMemberInput!) {
     updated: adminUpdateCommunityMember(communityMemberId: $communityMemberId, input: $input) {
@@ -7592,6 +7830,14 @@ export const UserFindManyCommunityMemberDocument = gql`
 export const UserFindOneCommunityMemberDocument = gql`
   query userFindOneCommunityMember($communityMemberId: String!) {
     item: userFindOneCommunityMember(communityMemberId: $communityMemberId) {
+      ...CommunityMemberDetails
+    }
+  }
+  ${CommunityMemberDetailsFragmentDoc}
+`
+export const UserCreateCommunityMemberDocument = gql`
+  mutation userCreateCommunityMember($communityId: String!, $input: UserCreateCommunityMemberInput!) {
+    created: userCreateCommunityMember(communityId: $communityId, input: $input) {
       ...CommunityMemberDetails
     }
   }
@@ -8395,11 +8641,13 @@ const UserGetBotServersDocumentString = print(UserGetBotServersDocument)
 const UserGetBotServerDocumentString = print(UserGetBotServerDocument)
 const AdminFindManyCommunityMemberDocumentString = print(AdminFindManyCommunityMemberDocument)
 const AdminFindOneCommunityMemberDocumentString = print(AdminFindOneCommunityMemberDocument)
+const AdminCreateCommunityMemberDocumentString = print(AdminCreateCommunityMemberDocument)
 const AdminUpdateCommunityMemberDocumentString = print(AdminUpdateCommunityMemberDocument)
 const AdminDeleteCommunityMemberDocumentString = print(AdminDeleteCommunityMemberDocument)
 const UserGetCommunityRoleDocumentString = print(UserGetCommunityRoleDocument)
 const UserFindManyCommunityMemberDocumentString = print(UserFindManyCommunityMemberDocument)
 const UserFindOneCommunityMemberDocumentString = print(UserFindOneCommunityMemberDocument)
+const UserCreateCommunityMemberDocumentString = print(UserCreateCommunityMemberDocument)
 const UserUpdateCommunityMemberDocumentString = print(UserUpdateCommunityMemberDocument)
 const UserDeleteCommunityMemberDocumentString = print(UserDeleteCommunityMemberDocument)
 const AdminFindManyCommunityDocumentString = print(AdminFindManyCommunityDocument)
@@ -9161,6 +9409,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
+    adminCreateCommunityMember(
+      variables: AdminCreateCommunityMemberMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminCreateCommunityMemberMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminCreateCommunityMemberMutation>(AdminCreateCommunityMemberDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminCreateCommunityMember',
+        'mutation',
+        variables,
+      )
+    },
     adminUpdateCommunityMember(
       variables: AdminUpdateCommunityMemberMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -9263,6 +9532,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
           }),
         'userFindOneCommunityMember',
         'query',
+        variables,
+      )
+    },
+    userCreateCommunityMember(
+      variables: UserCreateCommunityMemberMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserCreateCommunityMemberMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserCreateCommunityMemberMutation>(UserCreateCommunityMemberDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userCreateCommunityMember',
+        'mutation',
         variables,
       )
     },
@@ -11141,6 +11431,13 @@ export function AdminCreateCommunityInputSchema(): z.ZodObject<Properties<AdminC
   })
 }
 
+export function AdminCreateCommunityMemberInputSchema(): z.ZodObject<Properties<AdminCreateCommunityMemberInput>> {
+  return z.object({
+    role: CommunityRoleSchema,
+    userId: z.string(),
+  })
+}
+
 export function AdminCreateIdentityInputSchema(): z.ZodObject<Properties<AdminCreateIdentityInput>> {
   return z.object({
     ownerId: z.string(),
@@ -11403,6 +11700,13 @@ export function UserCreateCommunityInputSchema(): z.ZodObject<Properties<UserCre
     telegramUrl: z.string().nullish(),
     twitterUrl: z.string().nullish(),
     websiteUrl: z.string().nullish(),
+  })
+}
+
+export function UserCreateCommunityMemberInputSchema(): z.ZodObject<Properties<UserCreateCommunityMemberInput>> {
+  return z.object({
+    role: CommunityRoleSchema,
+    userId: z.string(),
   })
 }
 

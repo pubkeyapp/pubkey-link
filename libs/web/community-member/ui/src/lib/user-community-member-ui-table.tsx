@@ -1,5 +1,7 @@
 import { ActionIcon, Anchor, Group, ScrollArea } from '@mantine/core'
+import { modals } from '@mantine/modals'
 import { CommunityMember } from '@pubkey-link/sdk'
+import { useUserFindOneCommunityMember } from '@pubkey-link/web-community-member-data-access'
 import { RoleUiItem } from '@pubkey-link/web-role-ui'
 import { UserUiItem } from '@pubkey-link/web-user-ui'
 import { UiDebugModal } from '@pubkey-ui/core'
@@ -7,6 +9,7 @@ import { IconPencil, IconTrash } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'
 import { CommunityMemberUiRole } from './community-member-ui-role'
+import { UserCommunityMemberUiUpdateForm } from './user-community-member-ui-update-form'
 
 export function UserCommunityMemberUiTable({
   deleteCommunityMember,
@@ -15,6 +18,7 @@ export function UserCommunityMemberUiTable({
   page,
   recordsPerPage,
   totalRecords,
+  refresh,
 }: {
   deleteCommunityMember: (communityMember: CommunityMember) => void
   communityMembers: CommunityMember[]
@@ -22,6 +26,7 @@ export function UserCommunityMemberUiTable({
   totalRecords: DataTableProps['totalRecords']
   recordsPerPage: DataTableProps['recordsPerPage']
   onPageChange: (page: number) => void
+  refresh: () => void
 }) {
   return (
     <ScrollArea>
@@ -52,11 +57,7 @@ export function UserCommunityMemberUiTable({
           },
           {
             accessor: 'role',
-            render: (item) => (
-              <Anchor component={Link} to={`./${item.id}`} size="sm" fw={500}>
-                <CommunityMemberUiRole role={item.role} />
-              </Anchor>
-            ),
+            render: (item) => <CommunityMemberUiRole role={item.role} />,
           },
           {
             accessor: 'actions',
@@ -65,7 +66,18 @@ export function UserCommunityMemberUiTable({
             render: (item) => (
               <Group gap="xs" justify="right">
                 <UiDebugModal data={item} />
-                <ActionIcon color="brand" variant="light" size="sm" component={Link} to={`./${item.id}/settings`}>
+                <ActionIcon
+                  color="brand"
+                  variant="light"
+                  size="sm"
+                  onClick={() =>
+                    modals.open({
+                      centered: true,
+                      title: `Edit ${item.user?.username}`,
+                      children: <UserCommunityMemberUiUpdateModal item={item} refresh={refresh} />,
+                    })
+                  }
+                >
                   <IconPencil size={16} />
                 </ActionIcon>
                 <ActionIcon color="red" variant="light" size="sm" onClick={() => deleteCommunityMember(item)}>
@@ -78,5 +90,22 @@ export function UserCommunityMemberUiTable({
         records={communityMembers}
       />
     </ScrollArea>
+  )
+}
+
+function UserCommunityMemberUiUpdateModal({ item, refresh }: { item: CommunityMember; refresh: () => void }) {
+  const { updateCommunityMember } = useUserFindOneCommunityMember({ communityMemberId: item.id })
+
+  return (
+    <UserCommunityMemberUiUpdateForm
+      communityMember={item}
+      submit={(value) =>
+        updateCommunityMember(value).then((res) => {
+          refresh()
+          modals.closeAll()
+          return res
+        })
+      }
+    />
   )
 }

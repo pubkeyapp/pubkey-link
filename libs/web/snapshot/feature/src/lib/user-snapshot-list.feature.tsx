@@ -4,14 +4,14 @@ import { Role, UserCreateSnapshotInput } from '@pubkey-link/sdk'
 import { useUserFindManyRole } from '@pubkey-link/web-role-data-access'
 import { useUserFindManySnapshot } from '@pubkey-link/web-snapshot-data-access'
 import { UserSnapshotUiTable } from '@pubkey-link/web-snapshot-ui'
-import { UiSearchField } from '@pubkey-link/web-ui-core'
+import { UiPageLimit, UiSearchField } from '@pubkey-link/web-ui-core'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function UserSnapshotListFeature({ communityId }: { communityId: string }) {
   const { items: roles } = useUserFindManyRole({ communityId })
   const { deleteSnapshot, items, pagination, query, createSnapshot, setSearch } = useUserFindManySnapshot({
     communityId,
-    limit: 12,
+    limit: 20,
   })
   return (
     <UiStack>
@@ -19,6 +19,7 @@ export function UserSnapshotListFeature({ communityId }: { communityId: string }
         <UiSearchField placeholder="Search snapshot" setSearch={setSearch} />
         <UiDebugModal data={items} />
         <CreateSnapshot createSnapshot={createSnapshot} roles={roles} />
+        <UiPageLimit limit={pagination.limit} setLimit={pagination.setLimit} setPage={pagination.setPage} />
       </Group>
 
       {query.isLoading ? (

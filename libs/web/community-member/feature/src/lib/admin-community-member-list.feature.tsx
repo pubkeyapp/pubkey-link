@@ -1,26 +1,23 @@
 import { Group } from '@mantine/core'
 import { useAdminFindManyCommunityMember } from '@pubkey-link/web-community-member-data-access'
-import { AdminCommunityMemberUiTable } from '@pubkey-link/web-community-member-ui'
+import { AdminCommunityMemberUiTable, AdminCreateCommunityMemberModal } from '@pubkey-link/web-community-member-ui'
+import { CommunityUiSelectRole } from '@pubkey-link/web-community-ui'
 import { UiPageLimit, UiSearchField } from '@pubkey-link/web-ui-core'
-import { UiBack, UiDebugModal, UiInfo, UiLoader, UiPage } from '@pubkey-ui/core'
+import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function AdminCommunityMemberListFeature({ communityId }: { communityId: string }) {
-  const { deleteCommunityMember, items, pagination, query, setSearch } = useAdminFindManyCommunityMember({
-    communityId,
-  })
+  const { createCommunityMember, deleteCommunityMember, items, pagination, query, role, setRole, setSearch } =
+    useAdminFindManyCommunityMember({
+      communityId,
+    })
 
   return (
-    <UiPage
-      title="CommunityMembers"
-      leftAction={<UiBack />}
-      rightAction={
-        <Group>
-          <UiDebugModal data={items} />
-        </Group>
-      }
-    >
+    <UiStack>
       <Group>
         <UiSearchField placeholder="Search member" setSearch={setSearch} />
+        <UiDebugModal data={items} />
+        <AdminCreateCommunityMemberModal create={createCommunityMember} />
+        <CommunityUiSelectRole placeholder="Filter by Role" value={role} setValue={setRole} />
         <UiPageLimit limit={pagination.limit} setLimit={pagination.setLimit} setPage={pagination.setPage} />
       </Group>
 
@@ -32,6 +29,7 @@ export function AdminCommunityMemberListFeature({ communityId }: { communityId: 
             if (!window.confirm('Are you sure?')) return
             return deleteCommunityMember(communityMember.id)
           }}
+          refresh={query.refetch}
           communityMembers={items}
           page={pagination.page}
           totalRecords={pagination.total}
@@ -41,6 +39,6 @@ export function AdminCommunityMemberListFeature({ communityId }: { communityId: 
       ) : (
         <UiInfo message="No members found." />
       )}
-    </UiPage>
+    </UiStack>
   )
 }

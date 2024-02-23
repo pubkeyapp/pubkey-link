@@ -14,7 +14,11 @@ export function UserCommunityMemberUiUpdateForm({
   }
 
   const fields: UiFormField<UserUpdateCommunityMemberInput>[] = [
-    formFieldSelect('role', { label: 'Role', options: getEnumOptions(CommunityRole) }),
+    formFieldSelect('role', {
+      label: 'Role',
+      description: 'The role of the user in the community.',
+      options: getEnumOptions(CommunityRole),
+    }),
   ]
   return (
     <UiForm model={model} fields={fields} submit={(res) => submit(res as UserUpdateCommunityMemberInput)}>

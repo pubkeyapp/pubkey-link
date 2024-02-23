@@ -66,16 +66,16 @@ export function UserCommunityDetailFeature() {
       leftSection: <UiIcon type="users" size={20} />,
     },
     communityAdmin && {
-      label: 'Logs',
-      path: 'logs',
-      element: <UserLogFeature communityId={item.id} />,
-      leftSection: <UiIcon type="logs" size={20} />,
-    },
-    communityAdmin && {
       label: 'Snapshots',
       path: 'snapshots',
       element: <UserSnapshotFeature communityId={item.id} />,
       leftSection: <UiIcon type="snapshot" size={20} />,
+    },
+    communityAdmin && {
+      label: 'Logs',
+      path: 'logs',
+      element: <UserLogFeature communityId={item.id} />,
+      leftSection: <UiIcon type="logs" size={20} />,
     },
     communityAdmin && {
       path: 'settings',

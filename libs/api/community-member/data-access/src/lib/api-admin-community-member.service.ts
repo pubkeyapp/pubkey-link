@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
+import { AdminCreateCommunityMemberInput } from './dto/admin-create-community-member-input'
 import { AdminFindManyCommunityMemberInput } from './dto/admin-find-many-community-member.input'
 import { AdminUpdateCommunityMemberInput } from './dto/admin-update-community-member.input'
 import { CommunityMemberPaging } from './entity/community-member-paging.entity'
@@ -8,6 +9,10 @@ import { getAdminCommunityMemberWhereInput } from './helpers/get-admin-community
 @Injectable()
 export class ApiAdminCommunityMemberService {
   constructor(private readonly core: ApiCoreService) {}
+
+  createCommunityMember(communityId: string, input: AdminCreateCommunityMemberInput) {
+    return this.core.data.communityMember.create({ data: { ...input, communityId } })
+  }
 
   async deleteCommunityMember(communityMemberId: string) {
     const deleted = await this.core.data.communityMember.delete({ where: { id: communityMemberId } })
@@ -19,6 +24,7 @@ export class ApiAdminCommunityMemberService {
       .paginate({
         orderBy: { createdAt: 'desc' },
         where: getAdminCommunityMemberWhereInput(input),
+        include: { user: true },
       })
       .withPages({ limit: input.limit, page: input.page })
       .then(([data, meta]) => ({ data, meta }))

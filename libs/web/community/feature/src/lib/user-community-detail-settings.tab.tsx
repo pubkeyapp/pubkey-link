@@ -32,8 +32,8 @@ export default function UserCommunityDetailSettingsTab({ community }: { communit
       <UiTabRoutes
         tabs={[
           {
-            path: 'general',
-            label: 'General',
+            path: 'community',
+            label: 'Community Settings',
             element: (
               <UiCard>
                 <UserCommunityUiUpdateForm community={item} submit={updateCommunity} />
