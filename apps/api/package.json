@@ -1,0 +1,9 @@
+{
+  "name": "api",
+  "version": "0.0.1",
+  "scripts": {
+    "prestart": "pnpm prisma db push",
+    "start": "NODE_ENV=production node ./main.js"
+  },
+  "dependencies": {}
+}

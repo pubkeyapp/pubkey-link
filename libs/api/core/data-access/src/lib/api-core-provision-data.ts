@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker'
 import {
   CommunityRole,
   IdentityProvider,
@@ -347,24 +346,3 @@ export const provisionUsers: Prisma.UserCreateInput[] = [
     status: UserStatus.Inactive,
   },
 ]
-
-export function fakeUsers(count: number): Prisma.UserCreateInput[] {
-  return Array.from({ length: count }, (_, index) => fakeUser(index))
-}
-
-export function fakeUser(index: number): Prisma.UserCreateInput {
-  faker.seed(index)
-  const username = faker.internet.userName()
-  const password = faker.internet.password()
-  const avatarUrl = faker.internet.avatar()
-  const name = faker.internet.displayName()
-
-  return {
-    avatarUrl,
-    name,
-    password,
-    role: UserRole.User,
-    status: UserStatus.Active,
-    username,
-  }
-}

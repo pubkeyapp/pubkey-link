@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
 import { LogLevel, Prisma, UserStatus } from '@prisma/client'
-import { fakeUsers, provisionCommunities, provisionUsers } from './api-core-provision-data'
+import { provisionCommunities, provisionUsers } from './api-core-provision-data'
 import { provisionNetworks } from './api-core-provision-data-networks'
 import { ApiCoreService } from './api-core.service'
 import { hashPassword } from './helpers/hash-validate-password'
@@ -23,14 +23,6 @@ export class ApiCoreProvisionService {
       await this.provisionDatabase()
       this.logger.verbose(`Provisioned database`)
     }
-    if (this.core.config.databaseReset && this.core.config.databaseRandomData) {
-      await this.generateRandomData()
-      this.logger.verbose(`Generated random data`)
-    }
-  }
-
-  private async generateRandomData() {
-    await Promise.all(fakeUsers(42).map((user) => this.provisionUser(user)))
   }
 
   private async provisionDatabase() {
