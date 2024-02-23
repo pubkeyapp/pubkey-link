@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { Bot, IdentityProvider, UserStatus } from '@prisma/client'
+import { Bot, BotServer, CommunityRole, IdentityProvider, UserStatus } from '@prisma/client'
 import {
   createDiscordRestClient,
   DiscordBot,
@@ -177,6 +177,68 @@ export class ApiBotManagerService {
     }
   }
 
+  async syncAdminUsers({ botServer, bot, guild }: { botServer: BotServer; bot: Bot; guild: Guild }) {
+    const adminRoles = botServer.adminRoles ?? []
+    if (!adminRoles?.length) {
+      return
+    }
+    const adminDiscordIds = adminRoles
+      .map((role) => guild.roles.cache.get(role)?.members.map((member) => member.user.id))
+      .flat() as string[]
+
+    if (!adminDiscordIds?.length) {
+      return
+    }
+
+    const uniqueAdminDiscordIds = [...new Set(adminDiscordIds)]
+    const users = await this.core.data.identity
+      .findMany({
+        where: { provider: IdentityProvider.Discord, providerId: { in: uniqueAdminDiscordIds } },
+        select: { ownerId: true },
+      })
+      .then((e) => e.map((e) => e.ownerId))
+
+    if (!users?.length) {
+      console.log('No users found for admin roles')
+      return
+    }
+
+    const existing = await this.core.data.communityMember
+      .findMany({
+        where: { userId: { in: users }, community: { bot: { id: bot.id } } },
+      })
+      .then((e) => e)
+
+    const nonAdmins = existing.filter((e) => e.role !== CommunityRole.Admin)
+    const nonExisting = users.filter((e) => !existing.find((m) => m.userId === e))
+
+    const toCreate = [...nonAdmins.map((e) => e.userId), ...nonExisting]
+
+    for (const userId of toCreate) {
+      const result = await this.core.data.communityMember.upsert({
+        where: { communityId_userId: { userId, communityId: bot.communityId } },
+        create: { userId, communityId: bot.communityId, role: CommunityRole.Admin },
+        update: { role: CommunityRole.Admin },
+        include: { user: true },
+      })
+      const isUpdated = result.createdAt !== result.updatedAt
+      if (isUpdated) {
+        await this.core.logInfo(`Updated ${result.user.username} to Admin`, {
+          botId: bot.id,
+          communityId: bot.communityId,
+          userId,
+        })
+      } else {
+        await this.core.logInfo(`Created ${result.user.username} as Admin`, {
+          botId: bot.id,
+          communityId: bot.communityId,
+          userId,
+        })
+      }
+    }
+    return uniqueAdminDiscordIds
+  }
+
   async syncBotServer(botId: string, serverId: string) {
     const [communityMembers, communityRoles, botMembers, botServer, botInstance] = await Promise.all([
       this.getCommunityMemberMap({ botId }),
@@ -190,6 +252,8 @@ export class ApiBotManagerService {
     if (!guild) {
       throw new Error(`Server ${serverId} not found for bot ${botId}`)
     }
+
+    await this.syncAdminUsers({ botServer, bot: botServer.bot, guild })
 
     const { dryRun, botChannel, mentionRoles, mentionUsers, verbose } = botServer
 
