@@ -24,7 +24,7 @@ export class ApiRoleResolverService {
     readonly networkAsset: ApiNetworkAssetService,
   ) {}
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_MINUTE)
   async syncAllCommunityRoles() {
     if (!this.core.config.syncCommunityRoles) {
       this.logger.log(`Role validation is disabled`)
@@ -146,7 +146,7 @@ export class ApiRoleResolverService {
       })
       .then((res) => res.map((r) => r.id))
 
-    const existing = await this.core.data.communityMember.findMany({ where: { communityId, userId: { in: userIds } } })
+    const existing = await this.core.data.communityMember.findMany({ where: { communityId } })
     const existingIds = existing.map((e) => e.userId)
 
     const newMembers: Prisma.CommunityMemberCreateManyInput[] = userIds
@@ -169,7 +169,7 @@ export class ApiRoleResolverService {
     // Now delete any members that are no longer owners of the tokens
     const deleteMembers = existing.filter((e) => !userIds.includes(e.userId))
     if (deleteMembers.length) {
-      for (const deleteMember of deleteMembers) {
+      for (const deleteMember of deleteMembers.filter((m) => m.role !== CommunityRole.Member)) {
         await this.core.data.communityMember.delete({ where: { id: deleteMember.id } })
         await this.core.logInfo(`Member removed`, { userId: deleteMember.userId, communityId })
       }

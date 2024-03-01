@@ -1,6 +1,6 @@
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq'
 import { Logger } from '@nestjs/common'
-import { Identity, NetworkCluster } from '@prisma/client'
+import { Identity, NetworkCluster, Prisma } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { Job } from 'bullmq'
 import { ApiNetworkAssetSyncService } from '../api-network-asset-sync.service'
@@ -18,7 +18,9 @@ export class ApiNetworkAssetSyncQueue extends WorkerHost {
     super()
   }
 
-  override async process(job: Job<ApiNetworkAssetIdentitySyncPayload, boolean | undefined, string>): Promise<void> {
+  override async process(
+    job: Job<ApiNetworkAssetIdentitySyncPayload, boolean | undefined, string>,
+  ): Promise<Prisma.NetworkAssetCreateInput[]> {
     this.logger.debug(`Dequeueing ${job.name} [${job.id}]`)
     await job.updateProgress(0)
     if (!job.data.identity.syncStarted) {
@@ -26,10 +28,10 @@ export class ApiNetworkAssetSyncQueue extends WorkerHost {
     }
     const synced = await this.sync.syncIdentity({ cluster: job.data.cluster, owner: job.data.identity.providerId })
 
-    if (synced > 0) {
+    if (synced.length > 0) {
       await job.log(`Synced ${job.data.identity.provider} identity ${job.data.identity.providerId}`)
       await this.core.logVerbose(
-        `Synced ${synced} assets for ${job.data.identity.provider} identity ${job.data.identity.providerId} `,
+        `Synced ${synced.length} assets for ${job.data.identity.provider} identity ${job.data.identity.providerId} `,
         {
           identityProvider: job.data.identity.provider,
           identityProviderId: job.data.identity.providerId,
@@ -47,6 +49,8 @@ export class ApiNetworkAssetSyncQueue extends WorkerHost {
         },
       )
     }
+
+    return synced
   }
 
   @OnWorkerEvent('completed')

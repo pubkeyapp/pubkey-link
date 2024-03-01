@@ -1,7 +1,15 @@
 import { InjectFlowProducer, InjectQueue } from '@nestjs/bullmq'
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { Identity, IdentityProvider, LogLevel, NetworkCluster, NetworkToken, NetworkTokenType } from '@prisma/client'
+import {
+  Identity,
+  IdentityProvider,
+  LogLevel,
+  NetworkCluster,
+  NetworkToken,
+  NetworkTokenType,
+  Prisma,
+} from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
 import { findNetworkAssetDiff, isNetworkAssetEqual, NetworkAssetInput } from '@pubkey-link/api-network-util'
@@ -74,7 +82,13 @@ export class ApiNetworkAssetSyncService {
     return results.every((r) => r)
   }
 
-  async syncIdentity({ cluster, owner }: { cluster: NetworkCluster; owner: string }): Promise<number> {
+  async syncIdentity({
+    cluster,
+    owner,
+  }: {
+    cluster: NetworkCluster
+    owner: string
+  }): Promise<Prisma.NetworkAssetCreateInput[]> {
     // Get the tokens for the cluster
     const tokens = await this.core.data.networkToken.findMany({ where: { network: { cluster } } })
 
@@ -95,11 +109,13 @@ export class ApiNetworkAssetSyncService {
       solanaFungibleTokens,
       solanaNonFungibleTokens,
     })
+    const assetIds = assets.map((a) => a.account)
 
     this.logger.verbose(`Resolved ${assets.length} assets for ${owner} on ${cluster}`)
     if (!assets.length) {
-      return 0
+      return []
     }
+
     // Upsert the assets
     await this.networkAssetUpsertFlow.add({
       name: ASSET_UPSERT_FLOW,
@@ -111,7 +127,22 @@ export class ApiNetworkAssetSyncService {
       })),
     })
 
-    return assets.length
+    // Remove any assets that are not in the list
+    const removedIds = await this.core.data.networkAsset.deleteMany({
+      where: {
+        owner,
+        NOT: { account: { in: assetIds } },
+      },
+    })
+
+    if (removedIds.count > 0) {
+      await this.core.logInfo(`Removed ${removedIds.count} assets for ${owner} on ${cluster}`, {
+        identityProvider: IdentityProvider.Solana,
+        identityProviderId: owner,
+      })
+    }
+
+    return assets
   }
 
   async upsertAsset({ asset, cluster }: { cluster: NetworkCluster; asset: NetworkAssetInput }) {
