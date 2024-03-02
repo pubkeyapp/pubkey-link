@@ -38,7 +38,10 @@ export class ApiRoleResolverService {
         enableSync: true,
       },
     })
-    this.logger.log(`Validating roles of ${communities.length} communities`)
+    if (!communities.filter((c) => c.enableSync).length) {
+      return
+    }
+    this.logger.verbose(`Validating roles of ${communities.length} communities`)
     for (const community of communities) {
       await this.syncCommunityRoles(community.id)
     }
@@ -69,10 +72,9 @@ export class ApiRoleResolverService {
     }
 
     if (!conditions?.length) {
-      await this.core.logInfo(`No conditions found for community ${communityId}`, { communityId })
       return result
     }
-    this.logger.log(`Validating ${conditions.length} conditions for ${users.length} users`)
+    this.logger.verbose(`Validating ${conditions.length} conditions for ${users.length} users`)
 
     for (const user of users) {
       // We are now in the context of a user
