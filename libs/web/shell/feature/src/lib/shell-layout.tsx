@@ -2,14 +2,25 @@ import { ActionIcon, Group } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { UiHeaderProfile } from '@pubkey-link/web-ui-core'
-import { UiHeader, UiLayout, UiLoader, UiLogoType } from '@pubkey-ui/core'
-import { IconBug, IconSettings, IconShield } from '@tabler/icons-react'
-import { ReactNode, Suspense } from 'react'
+import { UiHeader, UiHeaderLink, UiLayout, UiLoader, UiLogoType } from '@pubkey-ui/core'
+import { IconBug, IconSettings } from '@tabler/icons-react'
+import { ReactNode, Suspense, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 
 export function ShellLayout({ children }: { children: ReactNode }) {
   const { isAdmin, isDeveloper, user } = useAuth()
   const [opened, { toggle }] = useDisclosure(false)
+  const links: UiHeaderLink[] = useMemo(() => {
+    const items: UiHeaderLink[] = [
+      { link: '/c', label: 'Communities' },
+      { link: `${user?.profileUrl}`, label: 'Profile' },
+      { link: '/settings', label: 'Settings' },
+    ]
+    if (isAdmin) {
+      items.push({ link: '/admin', label: 'Admin' })
+    }
+    return items
+  }, [isAdmin, isDeveloper, user])
   return (
     <UiLayout
       header={
@@ -17,18 +28,9 @@ export function ShellLayout({ children }: { children: ReactNode }) {
           logoSmall={<UiLogoType height={28} />}
           opened={opened}
           toggle={toggle}
-          links={[
-            { link: '/c', label: 'Communities' },
-            { link: `${user?.profileUrl}`, label: 'Profile' },
-            { link: '/settings', label: 'Settings' },
-          ]}
+          links={links}
           profile={
             <Group gap="xs">
-              {isAdmin && (
-                <ActionIcon component={Link} to="/admin" variant="light" size="lg">
-                  <IconShield />
-                </ActionIcon>
-              )}
               {isAdmin && isDeveloper && (
                 <ActionIcon component={Link} to="/admin/development" variant="light" size="lg">
                   <IconBug />

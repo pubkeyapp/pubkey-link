@@ -36,6 +36,7 @@ export function UserUserDetailFeature() {
   }
 
   const isAuthAdmin = authUser?.role === UserRole.Admin
+  const isSelf = authUser?.id === user.id
 
   return (
     <UiContainer>
@@ -78,6 +79,13 @@ export function UserUserDetailFeature() {
                 </UiGroup>
               </UiCard>
             ))}
+            {isSelf && (
+              <Group justify="flex-end">
+                <Button size="xs" variant="light" component={Link} to="/settings">
+                  Manage Identities
+                </Button>
+              </Group>
+            )}
           </UiStack>
         }
       >
