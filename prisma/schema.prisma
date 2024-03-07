@@ -132,6 +132,7 @@ model IdentityChallenge {
   signature  String?
   ip         String?
   userAgent  String
+  blockhash  String?
   verified   Boolean          @default(false)
   identity   Identity         @relation(fields: [provider, providerId], references: [provider, providerId], onDelete: Cascade)
   provider   IdentityProvider

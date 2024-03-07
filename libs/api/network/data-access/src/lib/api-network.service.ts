@@ -13,7 +13,7 @@ import {
 } from '@pubkey-link/api-network-util'
 import { getTokenMetadata, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { TokenMetadata } from '@solana/spl-token-metadata'
-import { AccountInfo, ParsedAccountData, PublicKey } from '@solana/web3.js'
+import { AccountInfo, BlockhashWithExpiryBlockHeight, ParsedAccountData, PublicKey } from '@solana/web3.js'
 import { Token } from '@solflare-wallet/utl-sdk'
 import { LRUCache } from 'lru-cache'
 import { ApiAdminNetworkService } from './api-admin-network.service'
@@ -37,6 +37,15 @@ export class ApiNetworkService {
     ttl: 1000 * 60 * 60, // 1 hour
   })
 
+  readonly blockhashCache = new LRUCache<NetworkCluster, BlockhashWithExpiryBlockHeight>({
+    max: 1000,
+    ttl: 1000 * 30, // 30 seconds
+    fetchMethod: async (cluster: NetworkCluster) => {
+      this.logger.verbose(`blockhashCache: Cache miss for ${cluster}`)
+      return this.cluster.getConnection(cluster).then((conn) => conn.getLatestBlockhash())
+    },
+  })
+
   private readonly logger = new Logger(ApiNetworkService.name)
   constructor(
     readonly admin: ApiAdminNetworkService,
@@ -44,6 +53,14 @@ export class ApiNetworkService {
     readonly core: ApiCoreService,
     readonly resolver: ApiNetworkResolverService,
   ) {}
+
+  async ensureBlockhash(cluster: NetworkCluster) {
+    const res = await this.blockhashCache.fetch(cluster)
+    if (!res?.blockhash) {
+      throw new Error(`Blockhash not found`)
+    }
+    return res.blockhash
+  }
 
   async resolveAnybodiesAssets({ owners, vault }: { owners: string[]; vault: string }): Promise<SolanaNetworkAsset[]> {
     const snapshot: AnybodiesVaultSnapshot = await this.getCachedAnybodiesVaultSnapshot({ vault }).then((snapshot) =>

@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import { Identity as PrismaIdentity, IdentityProvider, NetworkCluster } from '@prisma/client'
 import { ApiCoreService, BaseContext, getRequestDetails } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-access'
+import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
 import { verifySignature } from '@pubkeyapp/solana-verify-wallet'
 import { ApiSolanaIdentityService } from './api-solana-identity.service'
 import { LinkIdentityInput } from './dto/link-identity-input'
@@ -16,6 +17,7 @@ export class ApiUserIdentityService {
   constructor(
     private readonly core: ApiCoreService,
     private readonly solana: ApiSolanaIdentityService,
+    private readonly network: ApiNetworkService,
     private readonly networkAsset: ApiNetworkAssetService,
   ) {}
 
@@ -86,9 +88,12 @@ export class ApiUserIdentityService {
     // Generate a random challenge
     const challenge = sha256(`${Math.random()}-${userAgent}-${userId}-${provider}-${providerId}-${Math.random()}`)
 
+    const blockhash = await this.network.ensureBlockhash(NetworkCluster.SolanaMainnet)
+
     // Store the challenge
     return this.core.data.identityChallenge.create({
       data: {
+        blockhash,
         identity: { connect: { provider_providerId: { provider, providerId } } },
         userAgent,
         challenge: `Approve this message to verify your wallet. #REF-${challenge}`,

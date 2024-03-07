@@ -49,12 +49,17 @@ export function IdentityProviderSolanaLink({ children, refresh }: { children: Re
       })
   }
 
-  async function signChallenge({ challenge, publicKey, useLedger }: LinkSignOptions & { challenge: string }) {
+  async function signChallenge({
+    challenge,
+    publicKey,
+    useLedger,
+    blockhash,
+  }: LinkSignOptions & { blockhash: string; challenge: string }) {
     if (!challenge || signMessage === undefined) {
       return false
     }
 
-    const signature = await createSignature({ challenge, publicKey, useLedger })
+    const signature = await createSignature({ challenge, publicKey, useLedger, blockhash })
     if (!signature) {
       throw new Error('No signature')
     }
@@ -88,7 +93,7 @@ export function IdentityProviderSolanaLink({ children, refresh }: { children: Re
       return false
     }
     // Sign challenge
-    return signChallenge({ challenge: request.challenge, publicKey, useLedger })
+    return signChallenge({ challenge: request.challenge, blockhash: request.blockhash ?? '', publicKey, useLedger })
   }
 
   async function linkAndSign({ useLedger, publicKey }: LinkSignOptions) {

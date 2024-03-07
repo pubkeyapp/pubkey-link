@@ -346,6 +346,7 @@ type Identity {
 }
 
 type IdentityChallenge {
+  blockhash: String
   challenge: String!
   createdAt: DateTime!
   id: String!
