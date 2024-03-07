@@ -42,9 +42,8 @@ export interface ApiCoreConfig {
   cookieSecure: boolean
   // CORS
   corsOrigins: string[]
-  // Database Seed
+  // Database Provisioning
   databaseProvision: boolean
-  databaseReset: boolean
   // Environment
   environment: Env
   host: string
@@ -84,7 +83,6 @@ export function configuration(): ApiCoreConfig {
     cookieSecure: process.env['COOKIE_SECURE'] === 'true',
     corsOrigins,
     databaseProvision: process.env['DATABASE_PROVISION'] === 'true',
-    databaseReset: process.env['DATABASE_RESET'] === 'true',
     environment: (process.env['NODE_ENV'] as Env) || 'development',
     host: process.env['HOST'] as string,
     jwtSecret: process.env['JWT_SECRET'] as string,

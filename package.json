@@ -40,7 +40,6 @@
     "@clack/prompts": "^0.7.0",
     "@coral-xyz/anchor": "^0.29.0",
     "@discordjs/rest": "^2.2.0",
-    "@faker-js/faker": "^8.3.1",
     "@mantine/core": "^7.4.1",
     "@mantine/dates": "^7.4.1",
     "@mantine/form": "^7.4.1",

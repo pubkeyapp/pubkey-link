@@ -14,7 +14,6 @@ env:
   CLOAK_MASTER_KEY: 'k1.aesgcm256.vG3cv8JCPJPHaEKmcDJMA2PeXDjoVlXCC9KLu96R_Rg='
   DATABASE_URL: postgresql://pubkey-link:pubkey-link@localhost:5432/pubkey-link?schema=public
   DATABASE_PROVISION: true
-  DATABASE_RESET: true
   HOST: 127.0.0.1
   REDIS_URL: redis://localhost:6379
   JWT_SECRET: 1dfe5003518560c6362eab48f8220edf8708bbc67efbd4ed8cdf621965e938ee
