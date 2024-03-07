@@ -3,7 +3,7 @@ import { Identity as PrismaIdentity, IdentityProvider, NetworkCluster } from '@p
 import { ApiCoreService, BaseContext, getRequestDetails } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-access'
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
-import { verifySignature } from '@pubkeyapp/solana-verify-wallet'
+import { verifySignature } from '@pubkey-link/verify-wallet'
 import { ApiSolanaIdentityService } from './api-solana-identity.service'
 import { LinkIdentityInput } from './dto/link-identity-input'
 import { RequestIdentityChallengeInput } from './dto/request-identity-challenge.input'

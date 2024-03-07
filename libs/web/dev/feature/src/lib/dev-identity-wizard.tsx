@@ -1,10 +1,10 @@
 import { Grid } from '@mantine/core'
 import { IdentityProvider } from '@pubkey-link/sdk'
+import { verifySignature } from '@pubkey-link/verify-wallet'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { useCreateSignature, useUserFindManyIdentity } from '@pubkey-link/web-identity-data-access'
 import { IdentityUiSolanaWizard, IdentityUiSolanaWizardModal } from '@pubkey-link/web-identity-ui'
 import { toastError, toastSuccess, UiCard, UiDebug, UiStack } from '@pubkey-ui/core'
-import { verifySignature } from '@pubkeyapp/solana-verify-wallet'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useCallback } from 'react'
 

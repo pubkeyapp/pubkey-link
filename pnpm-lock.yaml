@@ -113,9 +113,6 @@ dependencies:
   '@pubkey-ui/generators':
     specifier: ^1.4.2
     version: 1.4.2(@swc-node/register@1.6.8)(@swc/core@1.3.102)(@types/node@20.10.8)(eslint@8.56.0)(nx@17.2.8)(ts-node@10.9.2)(typescript@5.3.3)(webpack@5.89.0)
-  '@pubkeyapp/solana-verify-wallet':
-    specifier: ^1.3.3
-    version: 1.3.3
   '@pubkeyapp/wallet-adapter-mantine-ui':
     specifier: ^2.3.0
     version: 2.3.0(@mantine/core@7.4.1)(@solana/wallet-adapter-base@0.9.23)(@solana/wallet-adapter-react@0.15.35)(@tabler/icons-react@2.45.0)(react@18.2.0)
@@ -7551,10 +7548,6 @@ packages:
       - typescript
       - verdaccio
       - webpack
-    dev: false
-
-  /@pubkeyapp/solana-verify-wallet@1.3.3:
-    resolution: {integrity: sha512-37JhosEYn9lSzaiSPyCotgAopBCzLHes+F1teSLdS+wb17LDu/7oB5VVhW9ieFEdyHokgXZX4iVLK7MVv67DsQ==}
     dev: false
 
   /@pubkeyapp/wallet-adapter-mantine-ui@2.3.0(@mantine/core@7.4.1)(@solana/wallet-adapter-base@0.9.23)(@solana/wallet-adapter-react@0.15.35)(@tabler/icons-react@2.45.0)(react@18.2.0):

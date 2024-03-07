@@ -1,0 +1,12 @@
+{
+  "name": "@pubkey-link/verify-wallet",
+  "version": "0.0.1",
+  "dependencies": {
+    "@solana/web3.js": "^1.88.0",
+    "bs58": "^5.0.0",
+    "tweetnacl": "^1.0.3"
+  },
+  "type": "commonjs",
+  "main": "./index.cjs",
+  "module": "./index.js"
+}

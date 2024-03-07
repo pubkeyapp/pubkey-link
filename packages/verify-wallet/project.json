@@ -1,0 +1,33 @@
+{
+  "name": "verify-wallet",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/verify-wallet/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/verify-wallet",
+        "main": "packages/verify-wallet/src/index.ts",
+        "tsConfig": "packages/verify-wallet/tsconfig.lib.json",
+        "assets": [],
+        "project": "packages/verify-wallet/package.json",
+        "compiler": "swc",
+        "format": ["cjs", "esm"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/verify-wallet/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}
