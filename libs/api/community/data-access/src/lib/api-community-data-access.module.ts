@@ -5,10 +5,17 @@ import { ApiAdminCommunityService } from './api-admin-community.service'
 import { ApiAnonCommunityService } from './api-anon-community.service'
 import { ApiCommunityService } from './api-community.service'
 import { ApiUserCommunityService } from './api-user-community.service'
+import { ApiCommunityProvisionService } from './provision/api-community-provision.service'
 
 @Module({
   imports: [ApiCoreDataAccessModule, ApiCommunityMemberDataAccessModule],
-  providers: [ApiAdminCommunityService, ApiCommunityService, ApiAnonCommunityService, ApiUserCommunityService],
+  providers: [
+    ApiAdminCommunityService,
+    ApiCommunityService,
+    ApiAnonCommunityService,
+    ApiCommunityProvisionService,
+    ApiUserCommunityService,
+  ],
   exports: [ApiCommunityService],
 })
 export class ApiCommunityDataAccessModule {}

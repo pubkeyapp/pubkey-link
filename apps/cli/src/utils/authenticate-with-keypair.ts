@@ -37,6 +37,7 @@ async function verifyIdentityChallenge(sdk: Sdk, keypair: Keypair, challenge: st
       input: {
         provider: IdentityProvider.Solana,
         providerId: keypair.publicKey.toString(),
+        message: challenge,
         challenge,
         signature: bs58.encode(signature),
       },

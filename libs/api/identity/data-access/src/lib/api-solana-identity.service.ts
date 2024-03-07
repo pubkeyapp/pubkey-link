@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { IdentityProvider } from '@prisma/client'
 import { ApiCoreService, BaseContext, getRequestDetails } from '@pubkey-link/api-core-data-access'
-import { verifySignature } from '@pubkeyapp/solana-verify-wallet'
+import { verifyMessageSignature } from '@pubkey-link/verify-wallet'
+
 import { PublicKey } from '@solana/web3.js'
 
 @Injectable()
@@ -33,8 +34,8 @@ export class ApiSolanaIdentityService {
     provider: IdentityProvider,
     providerId: string,
     challenge: string,
+    message: string,
     signature: string,
-    useLedger: boolean,
   ) {
     // Make sure we find the challenge
     const found = await this.ensureIdentityChallenge(provider, providerId, challenge)
@@ -47,11 +48,10 @@ export class ApiSolanaIdentityService {
     }
 
     // Verify the signature
-    const verified = verifySignature({
-      challenge: found.challenge,
+    const verified = verifyMessageSignature({
+      message,
       publicKey: found.identity.providerId,
       signature,
-      useLedger,
     })
 
     if (!verified) {

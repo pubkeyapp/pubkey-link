@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
-import { ApiCoreService } from '@pubkey-link/api-core-data-access'
+import { ApiCoreService, EVENT_APP_STARTED } from '@pubkey-link/api-core-data-access'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import { exec } from 'node:child_process'
@@ -31,7 +31,7 @@ async function bootstrap() {
     Logger.warn(`🐞 Application is running in development mode.`)
     exec('prettier --write ./api-schema.graphql ./api-swagger.json', { cwd: process.cwd() })
   }
-  core.eventEmitter.emit('app.started')
+  core.eventEmitter.emit(EVENT_APP_STARTED)
 }
 
 bootstrap()

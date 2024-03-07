@@ -10,7 +10,6 @@ env:
   API_URL: http://localhost:3000/api
   DATABASE_URL: postgresql://pubkey-link:pubkey-link@localhost:5432/pubkey-link?schema=public
   DATABASE_PROVISION: true
-  DATABASE_RESET: true
   PORT: 3000
 
 jobs:

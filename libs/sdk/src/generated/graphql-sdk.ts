@@ -377,7 +377,7 @@ export type Identity = {
 
 export type IdentityChallenge = {
   __typename?: 'IdentityChallenge'
-  blockhash?: Maybe<Scalars['String']['output']>
+  blockhash: Scalars['String']['output']
   challenge: Scalars['String']['output']
   createdAt: Scalars['DateTime']['output']
   id: Scalars['String']['output']
@@ -1514,10 +1514,10 @@ export type UserUpdateUserInput = {
 
 export type VerifyIdentityChallengeInput = {
   challenge: Scalars['String']['input']
+  message: Scalars['String']['input']
   provider: IdentityProvider
   providerId: Scalars['String']['input']
   signature: Scalars['String']['input']
-  useLedger?: InputMaybe<Scalars['Boolean']['input']>
 }
 
 export type LoginMutationVariables = Exact<{
@@ -3602,7 +3602,7 @@ export type IdentityChallengeDetailsFragment = {
   providerId: string
   challenge: string
   signature?: string | null
-  blockhash?: string | null
+  blockhash: string
   userAgent: string
   verified: boolean
 }
@@ -3638,7 +3638,7 @@ export type AdminFindManyIdentityQuery = {
       providerId: string
       challenge: string
       signature?: string | null
-      blockhash?: string | null
+      blockhash: string
       userAgent: string
       verified: boolean
     }> | null
@@ -3782,7 +3782,7 @@ export type UserRequestIdentityChallengeQuery = {
     providerId: string
     challenge: string
     signature?: string | null
-    blockhash?: string | null
+    blockhash: string
     userAgent: string
     verified: boolean
   } | null
@@ -3803,7 +3803,7 @@ export type UserVerifyIdentityChallengeMutation = {
     providerId: string
     challenge: string
     signature?: string | null
-    blockhash?: string | null
+    blockhash: string
     userAgent: string
     verified: boolean
   } | null
@@ -3849,7 +3849,7 @@ export type AnonRequestIdentityChallengeQuery = {
     providerId: string
     challenge: string
     signature?: string | null
-    blockhash?: string | null
+    blockhash: string
     userAgent: string
     verified: boolean
   } | null
@@ -3898,7 +3898,7 @@ export type AnonVerifyIdentityChallengeMutation = {
     providerId: string
     challenge: string
     signature?: string | null
-    blockhash?: string | null
+    blockhash: string
     userAgent: string
     verified: boolean
   } | null
@@ -11913,9 +11913,9 @@ export function UserUpdateUserInputSchema(): z.ZodObject<Properties<UserUpdateUs
 export function VerifyIdentityChallengeInputSchema(): z.ZodObject<Properties<VerifyIdentityChallengeInput>> {
   return z.object({
     challenge: z.string(),
+    message: z.string(),
     provider: IdentityProviderSchema,
     providerId: z.string(),
     signature: z.string(),
-    useLedger: z.boolean().nullish(),
   })
 }

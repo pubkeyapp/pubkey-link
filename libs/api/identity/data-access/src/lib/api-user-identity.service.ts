@@ -3,7 +3,8 @@ import { Identity as PrismaIdentity, IdentityProvider, NetworkCluster } from '@p
 import { ApiCoreService, BaseContext, getRequestDetails } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-access'
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
-import { verifySignature } from '@pubkeyapp/solana-verify-wallet'
+import { verifyMessageSignature } from '@pubkey-link/verify-wallet'
+
 import { ApiSolanaIdentityService } from './api-solana-identity.service'
 import { LinkIdentityInput } from './dto/link-identity-input'
 import { RequestIdentityChallengeInput } from './dto/request-identity-challenge.input'
@@ -104,7 +105,7 @@ export class ApiUserIdentityService {
   async verifyIdentityChallenge(
     ctx: BaseContext,
     userId: string,
-    { provider, providerId, challenge, signature, useLedger }: VerifyIdentityChallengeInput,
+    { provider, providerId, challenge, message, signature }: VerifyIdentityChallengeInput,
   ) {
     // Make sure the provider is allowed
     this.solana.ensureAllowedProvider(provider)
@@ -126,11 +127,10 @@ export class ApiUserIdentityService {
       throw new Error(`Identity challenge not found.`)
     }
 
-    const verified = verifySignature({
-      challenge: found.challenge,
+    const verified = verifyMessageSignature({
+      message,
       publicKey: found.identity.providerId,
       signature,
-      useLedger,
     })
 
     if (!verified) {

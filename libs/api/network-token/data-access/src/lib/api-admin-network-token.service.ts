@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
 import { NetworkTokenType, Prisma } from '@prisma/client'
-import { ApiCoreService } from '@pubkey-link/api-core-data-access'
+import { ApiCoreService, EVENT_APP_STARTED } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
 import { getNetworkTokenType } from '@pubkey-link/api-network-util'
 import { AdminCreateNetworkTokenInput } from './dto/admin-create-network-token.input'
@@ -15,7 +15,7 @@ export class ApiAdminNetworkTokenService {
   private readonly logger = new Logger(ApiAdminNetworkTokenService.name)
   constructor(private readonly core: ApiCoreService, private readonly network: ApiNetworkService) {}
 
-  @OnEvent('app.started')
+  @OnEvent(EVENT_APP_STARTED)
   async onApplicationStarted() {
     const tokens = await this.core.data.networkToken.findMany({ where: { metadataUrl: null } })
     await Promise.all(tokens.map((token) => this.updateNetworkTokenMetadata(token.id)))
