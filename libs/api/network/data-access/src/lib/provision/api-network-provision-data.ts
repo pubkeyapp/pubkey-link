@@ -1,6 +1,6 @@
 import { NetworkCluster, NetworkTokenType, NetworkType, Prisma } from '@prisma/client'
+import { getCollectionId } from '@pubkey-link/api-network-util'
 import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
-import { getCollectionId } from './helpers/get-collection-id'
 
 const heliusApiKey = process.env['HELIUS_API_KEY'] as string
 

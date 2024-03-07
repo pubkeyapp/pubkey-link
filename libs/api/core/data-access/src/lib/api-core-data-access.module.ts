@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common'
 import { EventEmitterModule } from '@nestjs/event-emitter'
 import { ScheduleModule } from '@nestjs/schedule'
 import { ServeStaticModule } from '@nestjs/serve-static'
-import { ApiCoreProvisionService } from './api-core-provision.service'
 import { ApiCoreService } from './api-core.service'
 import { ApiCoreConfigModule } from './config/api-core-config.module'
 import { ApiCoreGraphQLModule } from './graphql/api-core-graphql.module'
@@ -20,7 +19,7 @@ import { ApiCoreQueuesModule } from './queues/api-core-queues.module'
     ScheduleModule.forRoot(),
     ServeStaticModule.forRootAsync({ useFactory: serveStaticFactory() }),
   ],
-  providers: [ApiCoreService, ApiCoreProvisionService],
+  providers: [ApiCoreService],
   exports: [ApiCoreService, ApiCoreMetricsModule],
 })
 export class ApiCoreDataAccessModule {}
