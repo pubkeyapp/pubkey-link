@@ -1,11 +1,6 @@
 import { IdentityProvider, Sdk } from '@pubkey-link/sdk'
+import { signWithKeypair } from '@pubkey-link/verify-wallet'
 import { Keypair } from '@solana/web3.js'
-import * as bs58 from 'bs58'
-import * as nacl from 'tweetnacl'
-
-export function signMessage(keypair: Keypair, message: string) {
-  return nacl.sign.detached(new TextEncoder().encode(message), keypair.secretKey)
-}
 
 export async function authenticateWithKeypair(sdk: Sdk, keypair: Keypair) {
   return (
@@ -30,16 +25,16 @@ async function getIdentityChallenge(sdk: Sdk, keypair: Keypair) {
 }
 
 async function verifyIdentityChallenge(sdk: Sdk, keypair: Keypair, challenge: string) {
-  const signature = signMessage(keypair, challenge)
+  const { message, signature } = signWithKeypair({ keypair, message: challenge })
 
   const req = await sdk.anonVerifyIdentityChallenge(
     {
       input: {
         provider: IdentityProvider.Solana,
         providerId: keypair.publicKey.toString(),
-        message: challenge,
         challenge,
-        signature: bs58.encode(signature),
+        message,
+        signature,
       },
     },
     {},

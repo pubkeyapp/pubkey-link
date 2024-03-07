@@ -1,5 +1,4 @@
 import { IdentityProvider } from '@pubkey-link/sdk'
-import * as bs58 from 'bs58'
 import { alice, getAliceCookie, getIdentityChallenge, sdk, signMessage } from '../support'
 import { breakStringSolana } from '../support/break-string'
 
@@ -9,7 +8,7 @@ describe('api-identity-feature', () => {
       const res = await getIdentityChallenge(alice)
 
       expect(res.data?.challenge.provider).toEqual(IdentityProvider.Solana)
-      expect(res.data?.challenge.providerId).toEqual(alice.solana.publicKey)
+      expect(res.data?.challenge.providerId).toEqual(alice.solana.publicKey.toString())
       expect(res.data?.challenge.challenge).toBeDefined()
       expect(res.data?.challenge.signature).toBeNull()
       expect(res.data?.challenge.verified).toBe(false)
@@ -21,7 +20,7 @@ describe('api-identity-feature', () => {
 
       try {
         await sdk.userRequestIdentityChallenge(
-          { input: { provider: IdentityProvider.Discord, providerId: alice.solana.publicKey } },
+          { input: { provider: IdentityProvider.Discord, providerId: alice.solana.publicKey.toString() } },
           { cookie },
         )
       } catch (e) {
@@ -47,7 +46,7 @@ describe('api-identity-feature', () => {
       const prepare = await getIdentityChallenge(alice)
 
       const challenge = prepare.data?.challenge.challenge as string
-      const signature = await signMessage(alice, challenge)
+      const { message, signature } = await signMessage(alice, challenge)
 
       // Sign the challenge
       const cookie = await getAliceCookie()
@@ -55,17 +54,17 @@ describe('api-identity-feature', () => {
         {
           input: {
             provider: IdentityProvider.Solana,
-            providerId: alice.solana.publicKey,
+            providerId: alice.solana.publicKey.toString(),
             challenge,
-            message: bs58.encode(new TextEncoder().encode(challenge)),
-            signature: bs58.encode(signature),
+            message,
+            signature,
           },
         },
         { cookie },
       )
 
       expect(res.data?.verified.provider).toEqual(IdentityProvider.Solana)
-      expect(res.data?.verified.providerId).toEqual(alice.solana.publicKey)
+      expect(res.data?.verified.providerId).toEqual(alice.solana.publicKey.toString())
       expect(res.data?.verified.challenge).toBeDefined()
       expect(res.data?.verified.signature).toBeDefined()
       expect(res.data?.verified.verified).toBe(true)
@@ -75,7 +74,7 @@ describe('api-identity-feature', () => {
       const prepare = await getIdentityChallenge(alice)
 
       const challenge = prepare.data?.challenge.challenge as string
-      const signature = await signMessage(alice, challenge)
+      const { message, signature } = await signMessage(alice, challenge)
 
       // Sign the challenge
       const cookie = await getAliceCookie()
@@ -85,10 +84,10 @@ describe('api-identity-feature', () => {
           {
             input: {
               provider: IdentityProvider.Solana,
-              providerId: alice.solana.publicKey,
+              providerId: alice.solana.publicKey.toString(),
               challenge: challenge.replace('A', 'B'),
-              message: bs58.encode(new TextEncoder().encode(challenge.replace('A', 'B'))),
-              signature: bs58.encode(signature),
+              message: message.replace('A', 'B'),
+              signature,
             },
           },
           { cookie },
@@ -102,7 +101,7 @@ describe('api-identity-feature', () => {
       const prepare = await getIdentityChallenge(alice)
 
       const challenge = prepare.data?.challenge.challenge as string
-      const signature = await signMessage(alice, challenge)
+      const { message, signature } = await signMessage(alice, challenge)
 
       // Sign the challenge
       const cookie = await getAliceCookie()
@@ -112,11 +111,11 @@ describe('api-identity-feature', () => {
           {
             input: {
               provider: IdentityProvider.Solana,
-              providerId: alice.solana.publicKey,
+              providerId: alice.solana.publicKey.toString(),
               challenge,
-              message: bs58.encode(new TextEncoder().encode(challenge)),
+              message,
               // Break the signature
-              signature: breakStringSolana(bs58.encode(signature)),
+              signature: breakStringSolana(signature),
             },
           },
           { cookie },

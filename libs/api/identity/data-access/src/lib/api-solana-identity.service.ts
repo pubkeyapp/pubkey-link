@@ -29,14 +29,21 @@ export class ApiSolanaIdentityService {
     }
   }
 
-  async ensureValidSignature(
-    ctx: BaseContext,
-    provider: IdentityProvider,
-    providerId: string,
-    challenge: string,
-    message: string,
-    signature: string,
-  ) {
+  async ensureValidSignature({
+    challenge,
+    ctx,
+    message,
+    provider,
+    providerId,
+    signature,
+  }: {
+    challenge: string
+    ctx: BaseContext
+    message: string
+    provider: IdentityProvider
+    providerId: string
+    signature: string
+  }) {
     // Make sure we find the challenge
     const found = await this.ensureIdentityChallenge(provider, providerId, challenge)
 

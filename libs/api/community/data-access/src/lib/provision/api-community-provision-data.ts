@@ -42,10 +42,21 @@ const DL_CONDITION_BV_EXP: Prisma.RoleConditionCreateWithoutRoleInput = {
   ...DL_CONDITION_BV,
   filters: { status: 'expired' },
 }
-const DL_CONDITION_HOLDER: Prisma.RoleConditionCreateWithoutRoleInput = {
+const DL_CONDITION_HOLDER_SHRIMP: Prisma.RoleConditionCreateWithoutRoleInput = {
   token: { connect: { account_cluster: { cluster, account: DL_TOKEN_FT } } },
   type: NetworkTokenType.Fungible,
-  amount: '100',
+  amount: '1',
+  amountMax: '1000000',
+}
+const DL_CONDITION_HOLDER_DOLPHIN: Prisma.RoleConditionCreateWithoutRoleInput = {
+  ...DL_CONDITION_HOLDER_SHRIMP,
+  amount: '1000001',
+  amountMax: '10000000',
+}
+const DL_CONDITION_HOLDER_WHALE: Prisma.RoleConditionCreateWithoutRoleInput = {
+  ...DL_CONDITION_HOLDER_DOLPHIN,
+  amount: '10000001',
+  amountMax: '',
 }
 
 const LOS_SERVER = '1190413756325429268'
@@ -139,8 +150,8 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     websiteUrl: 'https://app.pubkey.link',
     members: {
       create: [
-        { user: { connect: { id: 'beeman.dev' } }, role: CommunityRole.Admin },
-        { user: { connect: { id: 'alice' } }, role: CommunityRole.Member },
+        { user: { connect: { id: 'alice' } }, role: CommunityRole.Admin },
+        { user: { connect: { id: 'bob' } }, role: CommunityRole.Member },
       ],
     },
     bot: { create: PK_BOT.clientId ? PK_BOT : undefined },
@@ -167,18 +178,30 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
             : undefined,
         },
         {
-          id: 'dean-holder-pubkey',
-          name: 'DEAN HOLDER',
-          conditions: { create: [DL_CONDITION_HOLDER] },
+          id: 'dean-holder-pubkey-shrimp',
+          name: '$DEAN SHRIMP',
+          conditions: { create: [DL_CONDITION_HOLDER_SHRIMP] },
           permissions: PK_BOT.clientId ? { create: [{ botRoleId: `${PK_SERVER}-${PK_ROLE_DL_HOLDER}` }] } : undefined,
+        },
+        {
+          id: 'dean-holder-pubkey-dolphin',
+          name: '$DEAN DOLPHIN',
+          conditions: { create: [DL_CONDITION_HOLDER_DOLPHIN] },
+          // permissions: PK_BOT.clientId ? { create: [{ botRoleId: `${PK_SERVER}-${PK_ROLE_DL_HOLDER}` }] } : undefined,
+        },
+        {
+          id: 'dean-holder-pubkey-whale',
+          name: '$DEAN WHALE',
+          conditions: { create: [DL_CONDITION_HOLDER_WHALE] },
+          // permissions: PK_BOT.clientId ? { create: [{ botRoleId: `${PK_SERVER}-${PK_ROLE_DL_HOLDER}` }] } : undefined,
         },
       ],
     },
   },
   {
     cluster,
-    id: 'deans-list-dao',
-    name: "Dean's List DAO",
+    id: 'deanslist',
+    name: "Dean's List",
     featured: true,
     enableSync: true,
     description: 'A DAO turned Network State',
@@ -209,15 +232,15 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
         {
           id: 'dean-holder',
           name: 'DEAN Holder',
-          conditions: { create: [DL_CONDITION_HOLDER] },
+          conditions: { create: [{ ...DL_CONDITION_HOLDER_SHRIMP, amountMax: '' }] },
           permissions: DL_BOT.clientId ? { create: [{ botRoleId: `${DL_SERVER}-${DL_ROLE_HOLDER}` }] } : undefined,
         },
       ],
     },
     members: {
       create: [
-        { user: { connect: { id: 'beeman.dev' } }, role: CommunityRole.Admin },
         { user: { connect: { id: 'alice' } }, role: CommunityRole.Admin },
+        { user: { connect: { id: 'bob' } }, role: CommunityRole.Member },
       ],
     },
   },
@@ -228,24 +251,19 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     avatarUrl: 'https://avatars.githubusercontent.com/u/81361338?v=4',
     members: {
       create: [
-        { user: { connect: { id: 'beeman.dev' } }, role: CommunityRole.Admin },
+        { user: { connect: { id: 'alice' } }, role: CommunityRole.Admin },
         { user: { connect: { id: 'bob' } }, role: CommunityRole.Member },
       ],
     },
     roles: {
-      create: [{ name: 'MNDE Holders' }, { name: 'MNDE Holders (Shark)' }, { name: 'MNDE Holders (Whale)' }],
-    },
-  },
-  {
-    cluster,
-    name: 'Tatami',
-    description: 'A complete token launch suite',
-    avatarUrl: 'https://avatars.githubusercontent.com/u/147077786?v=4',
-    members: {
-      create: [{ user: { connect: { id: 'beeman.dev' } }, role: CommunityRole.Admin }],
-    },
-    roles: {
-      create: [{ name: 'NFT Holders' }],
+      create: [
+        {
+          name: 'MNDE Holders',
+          conditions: {},
+        },
+        { name: 'MNDE Holders (Shark)' },
+        { name: 'MNDE Holders (Whale)' },
+      ],
     },
   },
   {
@@ -262,7 +280,10 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     avatarUrl:
       'https://waq26xbzlmlh6koszuoh5k3ttw4op5fp3teymntjv5drqlkxlepq.arweave.net/sCGvXDlbFn8p0s0cfqtznbjn9K_cyYY2aa9HGC1XWR8',
     members: {
-      create: [{ user: { connect: { id: 'beeman.dev' } }, role: CommunityRole.Admin }],
+      create: [
+        { user: { connect: { id: 'alice' } }, role: CommunityRole.Admin },
+        { user: { connect: { id: 'bob' } }, role: CommunityRole.Member },
+      ],
     },
     bot: LOS_BOT.clientId ? { create: LOS_BOT } : undefined,
     roles: {

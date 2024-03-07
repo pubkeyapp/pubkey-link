@@ -169,9 +169,11 @@ export class ApiRoleResolverService {
     }
 
     // Now delete any members that are no longer owners of the tokens
-    const deleteMembers = existing.filter((e) => !userIds.includes(e.userId))
+    const deleteMembers = existing
+      .filter((e) => !userIds.includes(e.userId))
+      .filter((e) => e.role !== CommunityRole.Admin)
     if (deleteMembers.length) {
-      for (const deleteMember of deleteMembers.filter((m) => m.role !== CommunityRole.Member)) {
+      for (const deleteMember of deleteMembers) {
         await this.core.data.communityMember.delete({ where: { id: deleteMember.id } })
         await this.core.logInfo(`Member removed`, { userId: deleteMember.userId, communityId })
       }
