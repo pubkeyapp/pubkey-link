@@ -8,7 +8,7 @@ import {
   formatBotMessageAdd,
   formatBotMessageRemove,
 } from '@pubkey-link/api-bot-util'
-import { ApiCoreService } from '@pubkey-link/api-core-data-access'
+import { ApiCoreService, EVENT_APP_STARTED } from '@pubkey-link/api-core-data-access'
 import { ChannelType, Guild, PermissionsString, User } from 'discord.js'
 import { ApiBotMemberService } from './api-bot-member.service'
 import { BotStatus } from './entity/bot-status.enum'
@@ -21,7 +21,7 @@ export class ApiBotManagerService {
 
   constructor(private readonly core: ApiCoreService, private readonly botMember: ApiBotMemberService) {}
 
-  @OnEvent('app.started')
+  @OnEvent(EVENT_APP_STARTED)
   async onApplicationStarted() {
     if (!this.core.config.botAutoStart) {
       this.logger.verbose(`Bot auto start is disabled`)
