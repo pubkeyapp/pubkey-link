@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
-import { Prisma } from '@prisma/client'
+import { NetworkCluster, Prisma } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { provisionNetworks } from './api-network-provision-data'
+import { getProvisionNetworks, NetworkEndpointMap } from './api-network-provision-data'
 
 @Injectable()
 export class ApiNetworkProvisionService {
@@ -16,7 +16,33 @@ export class ApiNetworkProvisionService {
   }
 
   private async provisionNetworks() {
-    await Promise.all(provisionNetworks.map((network) => this.provisionNetwork(network)))
+    await Promise.all(
+      getProvisionNetworks({ endpoints: this.getEndpointMap() }).map((network) => this.provisionNetwork(network)),
+    )
+  }
+
+  private getEndpointMap(): NetworkEndpointMap {
+    const map: NetworkEndpointMap = new Map<NetworkCluster, string>()
+    const endpointCustom = this.core.config.solanaCustomEndpoint
+    if (endpointCustom) {
+      map.set(NetworkCluster.SolanaCustom, endpointCustom)
+    }
+    const endpointDevnet = this.core.config.solanaDevnetEndpoint
+    if (endpointDevnet) {
+      map.set(NetworkCluster.SolanaDevnet, endpointDevnet)
+    }
+    const endpointMainnet = this.core.config.solanaMainnetEndpoint
+    if (endpointMainnet) {
+      map.set(NetworkCluster.SolanaMainnet, endpointMainnet)
+    }
+    const endpointTestnet = this.core.config.solanaTestnetEndpoint
+    if (endpointTestnet) {
+      map.set(NetworkCluster.SolanaTestnet, endpointTestnet)
+    }
+    if (!map.size) {
+      throw new Error('No network endpoints configured. Configure at least one network endpoint')
+    }
+    return map
   }
 
   private async provisionNetwork(input: Prisma.NetworkCreateInput) {

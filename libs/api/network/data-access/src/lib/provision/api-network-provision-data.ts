@@ -2,15 +2,43 @@ import { NetworkCluster, NetworkTokenType, NetworkType, Prisma } from '@prisma/c
 import { getCollectionId } from '@pubkey-link/api-network-util'
 import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 
-const heliusApiKey = process.env['HELIUS_API_KEY'] as string
+export type NetworkEndpointMap = Map<NetworkCluster, string>
 
-export const provisionNetworks: Prisma.NetworkCreateInput[] = [
-  {
+export function getProvisionNetworks({ endpoints }: { endpoints: NetworkEndpointMap }) {
+  const inputs: Prisma.NetworkCreateInput[] = []
+
+  const endpointDevnet = endpoints.get(NetworkCluster.SolanaDevnet)
+  if (endpointDevnet) {
+    inputs.push(networkInputSolanaDevnet(endpointDevnet))
+  }
+  const endpointMainnet = endpoints.get(NetworkCluster.SolanaMainnet)
+  if (endpointMainnet) {
+    inputs.push(networkInputSolanaMainnet(endpointMainnet))
+  }
+  const endpointCustom = endpoints.get(NetworkCluster.SolanaCustom)
+  if (endpointCustom) {
+    inputs.push(networkInputSolanaCustom(endpointCustom))
+  }
+  return inputs
+}
+
+function networkInputSolanaCustom(endpoint: string): Prisma.NetworkCreateInput {
+  return {
+    id: 'solana-local',
+    name: 'Solana Local',
+    cluster: NetworkCluster.SolanaCustom,
+    type: NetworkType.Solana,
+    endpoint,
+  }
+}
+
+function networkInputSolanaDevnet(endpoint: string): Prisma.NetworkCreateInput {
+  return {
     id: 'solana-devnet',
     name: 'Solana Devnet',
     cluster: NetworkCluster.SolanaDevnet,
     type: NetworkType.Solana,
-    endpoint: `https://devnet.helius-rpc.com/?api-key=${heliusApiKey}`,
+    endpoint,
     tokens: {
       create: [
         {
@@ -24,13 +52,15 @@ export const provisionNetworks: Prisma.NetworkCreateInput[] = [
         },
       ],
     },
-  },
-  {
+  }
+}
+function networkInputSolanaMainnet(endpoint: string): Prisma.NetworkCreateInput {
+  return {
     id: 'solana-mainnet',
     name: 'Solana Mainnet',
     cluster: NetworkCluster.SolanaMainnet,
     type: NetworkType.Solana,
-    endpoint: `https://mainnet.helius-rpc.com/?api-key=${heliusApiKey}`,
+    endpoint,
     tokens: {
       create: [
         //     {
@@ -183,12 +213,5 @@ export const provisionNetworks: Prisma.NetworkCreateInput[] = [
         id: getCollectionId(NetworkCluster.SolanaMainnet, c.account),
       })),
     },
-  },
-  {
-    id: 'solana-local',
-    name: 'Solana Local',
-    cluster: NetworkCluster.SolanaCustom,
-    type: NetworkType.Solana,
-    endpoint: `http://localhost:8899`,
-  },
-]
+  }
+}

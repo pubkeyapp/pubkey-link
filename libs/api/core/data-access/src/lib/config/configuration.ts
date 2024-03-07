@@ -52,6 +52,12 @@ export interface ApiCoreConfig {
   port: number
   redisUrl: string
   sessionSecret: string
+  // Solana Endpoints
+  solanaCustomEndpoint: string
+  solanaDevnetEndpoint: string
+  solanaMainnetEndpoint: string
+  solanaTestnetEndpoint: string
+  // Sync
   syncBotServers: boolean
   syncCommunityRoles: boolean
   syncNetworkAssets: boolean
@@ -85,6 +91,10 @@ export function configuration(): ApiCoreConfig {
     port: parseInt(process.env['PORT'] as string, 10) || 3000,
     redisUrl: process.env['REDIS_URL'] as string,
     sessionSecret: process.env['SESSION_SECRET'] as string,
+    solanaCustomEndpoint: process.env['SOLANA_CUSTOM_ENDPOINT'] as string,
+    solanaDevnetEndpoint: process.env['SOLANA_DEVNET_ENDPOINT'] as string,
+    solanaMainnetEndpoint: process.env['SOLANA_MAINNET_ENDPOINT'] as string,
+    solanaTestnetEndpoint: process.env['SOLANA_TESTNET_ENDPOINT'] as string,
     syncBotServers: process.env['SYNC_BOT_SERVERS'] === 'true',
     syncCommunityRoles: process.env['SYNC_COMMUNITY_ROLES'] === 'true',
     syncNetworkAssets: process.env['SYNC_NETWORK_ASSETS'] === 'true',
