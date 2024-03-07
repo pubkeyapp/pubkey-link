@@ -10,7 +10,7 @@ export class VerifyIdentityChallengeInput {
   @Field()
   challenge!: string
   @Field()
+  message!: string
+  @Field()
   signature!: string
-  @Field({ nullable: true, defaultValue: false })
-  useLedger!: boolean
 }

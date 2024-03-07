@@ -1,10 +1,10 @@
 import { Grid } from '@mantine/core'
 import { IdentityProvider } from '@pubkey-link/sdk'
+import { verifyMessageSignature } from '@pubkey-link/verify-wallet'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { useCreateSignature, useUserFindManyIdentity } from '@pubkey-link/web-identity-data-access'
 import { IdentityUiSolanaWizard, IdentityUiSolanaWizardModal } from '@pubkey-link/web-identity-ui'
 import { toastError, toastSuccess, UiCard, UiDebug, UiStack } from '@pubkey-ui/core'
-import { verifySignature } from '@pubkeyapp/solana-verify-wallet'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useCallback } from 'react'
 
@@ -22,21 +22,20 @@ export function DevIdentityWizard() {
         return false
       }
 
-      const signature = await createSignature({
+      const { message, signature } = await createSignature({
         challenge,
         publicKey: publicKey.toString(),
         useLedger,
-      }).catch((err) => toastError({ message: `${err}`, title: 'Error signing message' }))
+      })
 
       if (!signature) {
         throw new Error('No signature')
       }
 
-      const verified = verifySignature({
-        challenge,
-        publicKey: publicKey.toString(),
-        signature,
-        useLedger,
+      const verified = verifyMessageSignature({
+        message,
+        publicKey,
+        signature: signature,
       })
 
       if (!verified) {
@@ -64,7 +63,16 @@ export function DevIdentityWizard() {
             <IdentityUiSolanaWizard sign={sign} />
           </UiCard>
           <UiCard title="Identity Wizard Modal">
-            <IdentityUiSolanaWizardModal sign={sign}>Verify your wallet</IdentityUiSolanaWizardModal>
+            <IdentityUiSolanaWizardModal
+              sign={(useLedger) =>
+                sign(useLedger).catch((err) => {
+                  toastError({ message: `${err}`, title: 'Error signing message' })
+                  return false
+                })
+              }
+            >
+              Verify your wallet
+            </IdentityUiSolanaWizardModal>
           </UiCard>
         </UiStack>
       </Grid.Col>

@@ -1,5 +1,5 @@
+import { CreateSignature, createSignature } from '@pubkey-link/verify-wallet'
 import { useAnchorWallet, useWallet } from '@solana/wallet-adapter-react'
-import { CreateSignature, createSignature } from './create-signature'
 
 export function useCreateSignature() {
   const wallet = useAnchorWallet()

@@ -124,7 +124,7 @@ export class ApiAnonIdentityService {
 
   async verifyIdentityChallenge(
     ctx: BaseContext,
-    { provider, providerId, challenge, signature, useLedger }: VerifyIdentityChallengeInput,
+    { provider, providerId, challenge, message, signature }: VerifyIdentityChallengeInput,
   ) {
     // Make sure the provider is allowed
     this.solana.ensureAllowedProvider(provider)
@@ -138,7 +138,7 @@ export class ApiAnonIdentityService {
       providerId,
       challenge,
       signature,
-      useLedger,
+      message,
     )
 
     if (!found.identity.verified) {
