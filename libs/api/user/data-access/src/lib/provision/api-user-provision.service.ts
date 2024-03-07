@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
 import { LogLevel, Prisma, UserStatus } from '@prisma/client'
-import { ApiCoreService, hashPassword, slugifyUsername } from '@pubkey-link/api-core-data-access'
+import { ApiCoreService, EVENT_APP_STARTED, hashPassword, slugifyUsername } from '@pubkey-link/api-core-data-access'
 import { provisionUsers } from './api-user-provision-data'
 
 @Injectable()
@@ -10,7 +10,7 @@ export class ApiUserProvisionService {
 
   constructor(private readonly core: ApiCoreService) {}
 
-  @OnEvent('app.started')
+  @OnEvent(EVENT_APP_STARTED)
   async onApplicationStarted() {
     if (this.core.config.databaseProvision) {
       await this.provisionUsers()

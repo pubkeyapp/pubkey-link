@@ -57,6 +57,7 @@ describe('api-identity-feature', () => {
             provider: IdentityProvider.Solana,
             providerId: alice.solana.publicKey,
             challenge,
+            message: bs58.encode(new TextEncoder().encode(challenge)),
             signature: bs58.encode(signature),
           },
         },
@@ -86,6 +87,7 @@ describe('api-identity-feature', () => {
               provider: IdentityProvider.Solana,
               providerId: alice.solana.publicKey,
               challenge: challenge.replace('A', 'B'),
+              message: bs58.encode(new TextEncoder().encode(challenge.replace('A', 'B'))),
               signature: bs58.encode(signature),
             },
           },
@@ -112,6 +114,7 @@ describe('api-identity-feature', () => {
               provider: IdentityProvider.Solana,
               providerId: alice.solana.publicKey,
               challenge,
+              message: bs58.encode(new TextEncoder().encode(challenge)),
               // Break the signature
               signature: breakStringSolana(bs58.encode(signature)),
             },
@@ -119,7 +122,7 @@ describe('api-identity-feature', () => {
           { cookie },
         )
       } catch (e) {
-        expect(e.message).toContain('Signature verification failed')
+        expect(e.message).toContain('Identity challenge verification failed.')
       }
     })
 

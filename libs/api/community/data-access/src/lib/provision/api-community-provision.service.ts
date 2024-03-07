@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
 import { Prisma } from '@prisma/client'
 import { ApiCoreService, slugifyId } from '@pubkey-link/api-core-data-access'
+import { EVENT_NETWORKS_PROVISIONED } from '@pubkey-link/api-network-data-access'
 import { provisionCommunities } from './api-community-provision-data'
 
 @Injectable()
@@ -10,7 +11,7 @@ export class ApiCommunityProvisionService {
 
   constructor(private readonly core: ApiCoreService) {}
 
-  @OnEvent('network.provisioned')
+  @OnEvent(EVENT_NETWORKS_PROVISIONED)
   async onApplicationStarted() {
     if (this.core.config.databaseProvision) {
       await this.provisionCommunities()

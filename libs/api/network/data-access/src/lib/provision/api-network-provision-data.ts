@@ -4,7 +4,7 @@ import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 
 export type NetworkEndpointMap = Map<NetworkCluster, string>
 
-export function getProvisionNetworks({ endpoints }: { endpoints: NetworkEndpointMap }) {
+export function getProvisionNetworks(endpoints: NetworkEndpointMap) {
   const inputs: Prisma.NetworkCreateInput[] = []
 
   const endpointDevnet = endpoints.get(NetworkCluster.SolanaDevnet)

@@ -1,4 +1,5 @@
 export * from './lib/api-network-data-access.module'
+export * from './lib/api-network.events'
 export * from './lib/api-network.service'
 export * from './lib/dto/admin-create-network.input'
 export * from './lib/dto/admin-find-many-network.input'

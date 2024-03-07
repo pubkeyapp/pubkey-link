@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
 import { NetworkCluster, Prisma } from '@prisma/client'
-import { ApiCoreService } from '@pubkey-link/api-core-data-access'
+import { ApiCoreService, EVENT_APP_STARTED } from '@pubkey-link/api-core-data-access'
+import { EVENT_NETWORKS_PROVISIONED } from '../api-network.events'
 import { getProvisionNetworks, NetworkEndpointMap } from './api-network-provision-data'
 
 @Injectable()
@@ -10,15 +11,15 @@ export class ApiNetworkProvisionService {
 
   constructor(private readonly core: ApiCoreService) {}
 
-  @OnEvent('app.started')
+  @OnEvent(EVENT_APP_STARTED)
   async onApplicationStarted() {
     await this.provisionNetworks()
   }
 
   private async provisionNetworks() {
-    await Promise.all(
-      getProvisionNetworks({ endpoints: this.getEndpointMap() }).map((network) => this.provisionNetwork(network)),
-    )
+    const endpoints = this.getEndpointMap()
+    await Promise.all(getProvisionNetworks(endpoints).map((network) => this.provisionNetwork(network)))
+    this.core.eventEmitter.emit(EVENT_NETWORKS_PROVISIONED)
   }
 
   private getEndpointMap(): NetworkEndpointMap {
@@ -53,10 +54,8 @@ export class ApiNetworkProvisionService {
       )
       await this.core.data.network.create({ data: { ...input } })
       this.logger.verbose(`Provisioned (${input.cluster}) name = ${input.name}, endpoint = ${input.endpoint}`)
-      this.core.eventEmitter.emit('network.provisioned', input)
       return
     }
     this.logger.verbose(`Found network (${input.cluster}) name = ${input.name}, endpoint = ${input.endpoint}`)
-    this.core.eventEmitter.emit('network.provisioned', input)
   }
 }
