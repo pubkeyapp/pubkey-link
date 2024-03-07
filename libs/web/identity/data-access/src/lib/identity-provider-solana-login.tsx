@@ -1,7 +1,6 @@
 import { IdentityProvider } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { createContext, ReactNode, useContext } from 'react'
 import { LinkSignOptions } from './identity-provider-solana-link'
 import { useCreateSignature } from './use-create-signature'
@@ -14,7 +13,6 @@ const Context = createContext<IdentityProviderSolanaLoginContext>({} as Identity
 
 export function IdentityProviderSolanaLogin({ children, refresh }: { children: ReactNode; refresh: () => void }) {
   const sdk = useSdk()
-  const { signMessage } = useWallet()
   const createSignature = useCreateSignature()
 
   async function requestChallenge({ publicKey }: { publicKey: string }) {
@@ -33,12 +31,13 @@ export function IdentityProviderSolanaLogin({ children, refresh }: { children: R
       })
   }
 
-  async function signChallenge({ challenge, publicKey, useLedger }: LinkSignOptions & { challenge: string }) {
-    if (!challenge || signMessage === undefined) {
-      return false
-    }
-
-    const signature = await createSignature({ challenge, publicKey, useLedger })
+  async function signChallenge({
+    challenge,
+    blockhash,
+    publicKey,
+    useLedger,
+  }: LinkSignOptions & { blockhash: string; challenge: string }) {
+    const { message, signature } = await createSignature({ challenge, blockhash, publicKey, useLedger })
     if (!signature) {
       throw new Error('No signature')
     }
@@ -49,8 +48,8 @@ export function IdentityProviderSolanaLogin({ children, refresh }: { children: R
           provider: IdentityProvider.Solana,
           providerId: publicKey,
           challenge: challenge,
+          message,
           signature,
-          useLedger,
         },
       })
       .then((res) => {
@@ -72,7 +71,7 @@ export function IdentityProviderSolanaLogin({ children, refresh }: { children: R
       return false
     }
     // Sign challenge
-    return signChallenge({ challenge: request.challenge, publicKey, useLedger })
+    return signChallenge({ challenge: request.challenge, blockhash: request.blockhash, publicKey, useLedger })
   }
 
   return <Context.Provider value={{ verifyAndSign }}>{children}</Context.Provider>

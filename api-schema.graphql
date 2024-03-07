@@ -346,6 +346,7 @@ type Identity {
 }
 
 type IdentityChallenge {
+  blockhash: String!
   challenge: String!
   createdAt: DateTime!
   id: String!
@@ -955,8 +956,8 @@ input UserUpdateUserInput {
 
 input VerifyIdentityChallengeInput {
   challenge: String!
+  message: String!
   provider: IdentityProvider!
   providerId: String!
   signature: String!
-  useLedger: Boolean = false
 }

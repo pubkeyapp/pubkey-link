@@ -144,10 +144,6 @@ export class ApiCoreConfigService {
     return this.service.get<boolean>('databaseProvision')
   }
 
-  get databaseReset() {
-    return this.service.get<boolean>('databaseReset')
-  }
-
   get environment() {
     return this.service.get('environment')
   }
@@ -200,6 +196,22 @@ export class ApiCoreConfigService {
 
   get sessionSecret() {
     return this.service.get<string>('sessionSecret') as string
+  }
+
+  get solanaCustomEndpoint() {
+    return this.service.get<string>('solanaCustomEndpoint') as string
+  }
+
+  get solanaDevnetEndpoint() {
+    return this.service.get<string>('solanaDevnetEndpoint') as string
+  }
+
+  get solanaMainnetEndpoint() {
+    return this.service.get<string>('solanaMainnetEndpoint') as string
+  }
+
+  get solanaTestnetEndpoint() {
+    return this.service.get<string>('solanaTestnetEndpoint') as string
   }
 
   get syncBotServers() {

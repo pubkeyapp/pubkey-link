@@ -19,6 +19,8 @@ export class IdentityChallenge {
   @Field({ nullable: true })
   signature?: string
   @Field()
+  blockhash!: string
+  @Field()
   userAgent!: string
   @Field()
   verified!: boolean

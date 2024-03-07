@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { IdentityProvider, UserRole, UserStatus } from '@prisma/client'
+import { IdentityProvider, NetworkCluster, UserRole, UserStatus } from '@prisma/client'
 import { ApiAuthService } from '@pubkey-link/api-auth-data-access'
 import { ApiCoreService, BaseContext, ellipsify, getRequestDetails, slugifyId } from '@pubkey-link/api-core-data-access'
+import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
 import { ApiSolanaIdentityService } from './api-solana-identity.service'
 import { RequestIdentityChallengeInput } from './dto/request-identity-challenge.input'
 import { VerifyIdentityChallengeInput } from './dto/verify-identity-challenge-input'
@@ -13,6 +14,7 @@ export class ApiAnonIdentityService {
   constructor(
     private readonly auth: ApiAuthService,
     private readonly core: ApiCoreService,
+    private readonly network: ApiNetworkService,
     private readonly solana: ApiSolanaIdentityService,
   ) {}
 
@@ -58,6 +60,8 @@ export class ApiAnonIdentityService {
     // Generate a random challenge
     const challenge = sha256(`${Math.random()}-${userAgent}-${provider}-${providerId}-${Math.random()}`)
 
+    const blockhash = await this.network.ensureBlockhash(NetworkCluster.SolanaMainnet)
+
     // We found the identity so we are logging in
     if (found) {
       if (!this.core.config.authSolanaLoginEnabled) {
@@ -65,6 +69,7 @@ export class ApiAnonIdentityService {
       }
       return this.core.data.identityChallenge.create({
         data: {
+          blockhash,
           identity: { connect: { provider_providerId: { provider, providerId } } },
           userAgent,
           challenge: `Approve this message sign in as ${found.owner.username}. #REF-${challenge}`,
@@ -82,6 +87,7 @@ export class ApiAnonIdentityService {
     return this.core.data.identityChallenge
       .create({
         data: {
+          blockhash,
           identity: {
             connectOrCreate: {
               where: { provider_providerId: { provider, providerId } },
@@ -118,7 +124,7 @@ export class ApiAnonIdentityService {
 
   async verifyIdentityChallenge(
     ctx: BaseContext,
-    { provider, providerId, challenge, signature, useLedger }: VerifyIdentityChallengeInput,
+    { provider, providerId, challenge, message, signature }: VerifyIdentityChallengeInput,
   ) {
     // Make sure the provider is allowed
     this.solana.ensureAllowedProvider(provider)
@@ -132,7 +138,7 @@ export class ApiAnonIdentityService {
       providerId,
       challenge,
       signature,
-      useLedger,
+      message,
     )
 
     if (!found.identity.verified) {

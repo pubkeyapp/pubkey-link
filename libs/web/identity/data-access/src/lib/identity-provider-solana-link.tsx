@@ -1,7 +1,6 @@
 import { IdentityProvider } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { createContext, ReactNode, useContext } from 'react'
 import { useCreateSignature } from './use-create-signature'
 
@@ -18,7 +17,6 @@ const Context = createContext<IdentityProviderSolanaContext>({} as IdentityProvi
 
 export function IdentityProviderSolanaLink({ children, refresh }: { children: ReactNode; refresh: () => void }) {
   const sdk = useSdk()
-  const { signMessage } = useWallet()
   const createSignature = useCreateSignature()
   async function linkIdentity({ publicKey }: { publicKey: string }) {
     return sdk
@@ -49,12 +47,13 @@ export function IdentityProviderSolanaLink({ children, refresh }: { children: Re
       })
   }
 
-  async function signChallenge({ challenge, publicKey, useLedger }: LinkSignOptions & { challenge: string }) {
-    if (!challenge || signMessage === undefined) {
-      return false
-    }
-
-    const signature = await createSignature({ challenge, publicKey, useLedger })
+  async function signChallenge({
+    challenge,
+    publicKey,
+    useLedger,
+    blockhash,
+  }: LinkSignOptions & { blockhash: string; challenge: string }) {
+    const { message, signature } = await createSignature({ challenge, publicKey, useLedger, blockhash })
     if (!signature) {
       throw new Error('No signature')
     }
@@ -65,8 +64,8 @@ export function IdentityProviderSolanaLink({ children, refresh }: { children: Re
           provider: IdentityProvider.Solana,
           providerId: publicKey,
           challenge: challenge,
+          message,
           signature,
-          useLedger,
         },
       })
       .then((res) => {
@@ -88,7 +87,7 @@ export function IdentityProviderSolanaLink({ children, refresh }: { children: Re
       return false
     }
     // Sign challenge
-    return signChallenge({ challenge: request.challenge, publicKey, useLedger })
+    return signChallenge({ challenge: request.challenge, blockhash: request.blockhash, publicKey, useLedger })
   }
 
   async function linkAndSign({ useLedger, publicKey }: LinkSignOptions) {

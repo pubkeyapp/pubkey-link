@@ -2,7 +2,9 @@ import { Injectable, Logger } from '@nestjs/common'
 import { Identity as PrismaIdentity, IdentityProvider, NetworkCluster } from '@prisma/client'
 import { ApiCoreService, BaseContext, getRequestDetails } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-access'
-import { verifySignature } from '@pubkeyapp/solana-verify-wallet'
+import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
+import { verifyMessageSignature } from '@pubkey-link/verify-wallet'
+
 import { ApiSolanaIdentityService } from './api-solana-identity.service'
 import { LinkIdentityInput } from './dto/link-identity-input'
 import { RequestIdentityChallengeInput } from './dto/request-identity-challenge.input'
@@ -16,6 +18,7 @@ export class ApiUserIdentityService {
   constructor(
     private readonly core: ApiCoreService,
     private readonly solana: ApiSolanaIdentityService,
+    private readonly network: ApiNetworkService,
     private readonly networkAsset: ApiNetworkAssetService,
   ) {}
 
@@ -86,9 +89,12 @@ export class ApiUserIdentityService {
     // Generate a random challenge
     const challenge = sha256(`${Math.random()}-${userAgent}-${userId}-${provider}-${providerId}-${Math.random()}`)
 
+    const blockhash = await this.network.ensureBlockhash(NetworkCluster.SolanaMainnet)
+
     // Store the challenge
     return this.core.data.identityChallenge.create({
       data: {
+        blockhash,
         identity: { connect: { provider_providerId: { provider, providerId } } },
         userAgent,
         challenge: `Approve this message to verify your wallet. #REF-${challenge}`,
@@ -99,7 +105,7 @@ export class ApiUserIdentityService {
   async verifyIdentityChallenge(
     ctx: BaseContext,
     userId: string,
-    { provider, providerId, challenge, signature, useLedger }: VerifyIdentityChallengeInput,
+    { provider, providerId, challenge, message, signature }: VerifyIdentityChallengeInput,
   ) {
     // Make sure the provider is allowed
     this.solana.ensureAllowedProvider(provider)
@@ -121,11 +127,10 @@ export class ApiUserIdentityService {
       throw new Error(`Identity challenge not found.`)
     }
 
-    const verified = verifySignature({
-      challenge: found.challenge,
+    const verified = verifyMessageSignature({
+      message,
       publicKey: found.identity.providerId,
       signature,
-      useLedger,
     })
 
     if (!verified) {
