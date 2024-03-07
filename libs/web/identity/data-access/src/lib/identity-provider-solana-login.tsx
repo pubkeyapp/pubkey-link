@@ -33,12 +33,17 @@ export function IdentityProviderSolanaLogin({ children, refresh }: { children: R
       })
   }
 
-  async function signChallenge({ challenge, publicKey, useLedger }: LinkSignOptions & { challenge: string }) {
+  async function signChallenge({
+    challenge,
+    blockhash,
+    publicKey,
+    useLedger,
+  }: LinkSignOptions & { blockhash: string; challenge: string }) {
     if (!challenge || signMessage === undefined) {
       return false
     }
 
-    const signature = await createSignature({ challenge, publicKey, useLedger })
+    const signature = await createSignature({ challenge, blockhash, publicKey, useLedger })
     if (!signature) {
       throw new Error('No signature')
     }
@@ -72,7 +77,7 @@ export function IdentityProviderSolanaLogin({ children, refresh }: { children: R
       return false
     }
     // Sign challenge
-    return signChallenge({ challenge: request.challenge, publicKey, useLedger })
+    return signChallenge({ challenge: request.challenge, blockhash: request.blockhash ?? '', publicKey, useLedger })
   }
 
   return <Context.Provider value={{ verifyAndSign }}>{children}</Context.Provider>
