@@ -1,5 +1,6 @@
 import { AdminCreateRoleInput, AdminFindManyRoleInput, AdminUpdateRoleInput, Role } from '@pubkey-link/sdk'
-import { getAliceCookie, getBobCookie, sdk, uniqueId } from '../support'
+import { getAliceCookie, getBobCookie, sdk } from '../support'
+import { uniqueId } from '../support/unique-id'
 
 const defaultCommunityId = 'pubkey'
 

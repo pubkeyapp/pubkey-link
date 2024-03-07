@@ -1,5 +1,6 @@
 import { IdentityProvider } from '@pubkey-link/sdk'
-import { alice, getAliceCookie, getIdentityChallenge, sdk, signMessage } from '../support'
+import { alice } from '../fixtures'
+import { getAliceCookie, getIdentityChallenge, sdk, signMessage } from '../support'
 import { breakStringSolana } from '../support/break-string'
 
 describe('api-identity-feature', () => {
@@ -46,7 +47,7 @@ describe('api-identity-feature', () => {
       const prepare = await getIdentityChallenge(alice)
 
       const challenge = prepare.data?.challenge.challenge as string
-      const { message, signature } = await signMessage(alice, challenge)
+      const { message, signature } = signMessage(alice, challenge)
 
       // Sign the challenge
       const cookie = await getAliceCookie()
@@ -74,7 +75,7 @@ describe('api-identity-feature', () => {
       const prepare = await getIdentityChallenge(alice)
 
       const challenge = prepare.data?.challenge.challenge as string
-      const { message, signature } = await signMessage(alice, challenge)
+      const { message, signature } = signMessage(alice, challenge)
 
       // Sign the challenge
       const cookie = await getAliceCookie()
@@ -101,7 +102,7 @@ describe('api-identity-feature', () => {
       const prepare = await getIdentityChallenge(alice)
 
       const challenge = prepare.data?.challenge.challenge as string
-      const { message, signature } = await signMessage(alice, challenge)
+      const { message, signature } = signMessage(alice, challenge)
 
       // Sign the challenge
       const cookie = await getAliceCookie()

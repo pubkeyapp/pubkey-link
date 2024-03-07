@@ -1,5 +1,6 @@
 import { RegisterInput, UserRole, UserStatus } from '@pubkey-link/sdk'
-import { sdk, uniqueId } from '../support'
+import { sdk } from '../support'
+import { uniqueId } from '../support/unique-id'
 
 describe('api-auth-feature', () => {
   describe('api-auth-resolver', () => {

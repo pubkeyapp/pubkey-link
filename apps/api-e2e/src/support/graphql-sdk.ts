@@ -1,16 +1,22 @@
-import { getGraphQLSdk, IdentityProvider, Sdk } from '@pubkey-link/sdk'
+import { authenticateWithKeypair, getGraphQLSdk, IdentityProvider, Sdk } from '@pubkey-link/sdk'
 import { signWithKeypair } from '@pubkey-link/verify-wallet'
+import { alice, bob, TestUser } from '../fixtures/test-users'
 import { getApiUrl } from './get-api.url'
-import { alice, bob, TestUser } from './user-identities'
 
 export const sdk: Sdk = getGraphQLSdk(getApiUrl('/graphql'))
 
-async function getUserCookie(user: TestUser) {
-  const res = await sdk.login({
-    input: { username: user.username, password: user.password },
-  })
+const cookieJar = new Map<TestUser, string>()
 
-  return res.headers.get('set-cookie')
+async function getUserCookie(user: TestUser) {
+  if (!cookieJar.has(user)) {
+    const { cookie } = await authenticateWithKeypair({ sdk, keypair: user.solana })
+
+    if (!cookie) {
+      throw new Error('No cookie set')
+    }
+    cookieJar.set(user, cookie)
+  }
+  return cookieJar.get(user)
 }
 
 export async function getAliceCookie() {
@@ -21,16 +27,12 @@ export async function getBobCookie() {
 }
 
 export async function getIdentityChallenge(user: TestUser) {
-  const cookie = await getUserCookie(user)
-  return sdk.userRequestIdentityChallenge(
-    {
-      input: {
-        provider: IdentityProvider.Solana,
-        providerId: user.solana.publicKey.toString(),
-      },
+  return sdk.anonRequestIdentityChallenge({
+    input: {
+      provider: IdentityProvider.Solana,
+      providerId: user.solana.publicKey.toString(),
     },
-    { cookie },
-  )
+  })
 }
 
 export function signMessage(user: TestUser, message: string) {

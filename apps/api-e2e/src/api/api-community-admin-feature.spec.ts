@@ -5,7 +5,8 @@ import {
   Community,
   NetworkCluster,
 } from '@pubkey-link/sdk'
-import { getAliceCookie, getBobCookie, sdk, uniqueId } from '../support'
+import { getAliceCookie, getBobCookie, sdk } from '../support'
+import { uniqueId } from '../support/unique-id'
 
 const defaultCluster = NetworkCluster.SolanaDevnet
 describe('api-community-feature', () => {

@@ -6,7 +6,8 @@ import {
   UserRole,
   UserStatus,
 } from '@pubkey-link/sdk'
-import { getAliceCookie, getBobCookie, sdk, uniqueId } from '../support'
+import { getAliceCookie, getBobCookie, sdk } from '../support'
+import { uniqueId } from '../support/unique-id'
 
 function avatarUrl(name: string) {
   return `https://source.boringavatars.com/pixel/120/pubkey-link-${name}`

@@ -6,7 +6,8 @@ import {
   NetworkToken,
 } from '@pubkey-link/sdk'
 import { Keypair } from '@solana/web3.js'
-import { getAliceCookie, getBobCookie, sdk, uniqueId } from '../support'
+import { getAliceCookie, getBobCookie, sdk } from '../support'
+import { uniqueId } from '../support/unique-id'
 
 const defaultCluster = NetworkCluster.SolanaDevnet
 function createNetworkTokenInput(account: string): AdminCreateNetworkTokenInput {
