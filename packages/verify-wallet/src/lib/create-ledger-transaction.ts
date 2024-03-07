@@ -1,18 +1,15 @@
-import { sha256 } from '@noble/hashes/sha256'
-import { bytesToHex } from '@noble/hashes/utils'
 import { PublicKey, TransactionInstruction, TransactionMessage, VersionedTransaction } from '@solana/web3.js'
 import { MEMO_PROGRAM_ID } from './constants'
+import { createLedgerPayload } from './create-ledger-payload'
 
-function hashMessage({ challenge, publicKey }: { challenge: string; publicKey: PublicKey | string }) {
-  const createdAt = Date.now()
-  const challengeStr = JSON.stringify({ challenge, publicKey, createdAt })
-  const hashStr = sha256(challengeStr)
-
-  return bytesToHex(hashStr)
-}
-
+/**
+ * Create a ledger transaction for a given challenge
+ * @param recentBlockhash string Recent blockhash
+ * @param challenge string Challenge to sign
+ * @param publicKey PublicKey | string Public key to sign with
+ */
 export function createLedgerTransaction({
-  blockhash,
+  blockhash: recentBlockhash,
   challenge,
   publicKey,
 }: {
@@ -20,19 +17,10 @@ export function createLedgerTransaction({
   challenge: string
   publicKey: PublicKey | string
 }): VersionedTransaction {
-  const message = hashMessage({ publicKey, challenge })
+  const payerKey = new PublicKey(publicKey)
+  const data = createLedgerPayload({ publicKey, challenge })
+  const ix = new TransactionInstruction({ data, keys: [], programId: new PublicKey(MEMO_PROGRAM_ID) })
+  const message = new TransactionMessage({ instructions: [ix], payerKey, recentBlockhash }).compileToV0Message()
 
-  const txMessage = new TransactionMessage({
-    instructions: [
-      new TransactionInstruction({
-        programId: new PublicKey(MEMO_PROGRAM_ID),
-        keys: [],
-        data: Buffer.from(message, 'utf8'),
-      }),
-    ],
-    payerKey: new PublicKey(publicKey),
-    recentBlockhash: blockhash,
-  }).compileToV0Message()
-
-  return new VersionedTransaction(txMessage)
+  return new VersionedTransaction(message)
 }
