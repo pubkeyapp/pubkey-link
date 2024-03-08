@@ -3,6 +3,7 @@ import type { Community } from '@pubkey-link/sdk'
 import { gridLimits, UiPageLimit } from '@pubkey-link/web-ui-core'
 import { UiDebugModal, UiGroup, UiStack } from '@pubkey-ui/core'
 import { DataTableProps } from 'mantine-datatable'
+import { useMemo } from 'react'
 import { CommunityUiGridItem } from './community-ui-grid-item'
 
 export function CommunityUiGrid({
@@ -23,9 +24,11 @@ export function CommunityUiGrid({
   setPage: (page: number) => void
 }) {
   const totalPages = totalRecords / limit + 1
+  const cols = useMemo(() => ({ base: 1, sm: communities.length === 1 ? 1 : 2 }), [communities.length])
+
   return (
     <UiStack>
-      <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+      <SimpleGrid cols={cols} spacing="md">
         {communities.map((community) => (
           <CommunityUiGridItem key={community.id} to={community.id} community={community} />
         ))}

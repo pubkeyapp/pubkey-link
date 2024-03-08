@@ -246,6 +246,9 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     name: 'Marinade',
     description: 'A DAO with a staking protocol built on Solana',
     avatarUrl: 'https://avatars.githubusercontent.com/u/81361338?v=4',
+    websiteUrl: 'https://marinade.finance',
+    twitterUrl: 'https://twitter.com/MarinadeFinance',
+    githubUrl: 'https://githun.com/marinade-finance',
     members: {
       create: [
         { user: { connect: { id: 'alice' } }, role: CommunityRole.Admin },
