@@ -8,23 +8,21 @@ const defaultCluster = NetworkCluster.SolanaDevnet
 xdescribe('api-network-asset-feature', () => {
   describe('api-network-asset-admin-resolver', () => {
     let networkAssetId: string
-    let cookie: string
+    let alice: string
+    let bob: string
 
     beforeAll(async () => {
-      cookie = await getAliceCookie()
+      alice = await getAliceCookie()
+      bob = await getBobCookie()
     })
 
     describe('authorized', () => {
-      beforeAll(async () => {
-        cookie = await getAliceCookie()
-      })
-
       it('should find a list of networkAssets (find all)', async () => {
         const input: AdminFindManyNetworkAssetInput = {
           cluster: defaultCluster,
         }
 
-        const res = await sdk.adminFindManyNetworkAsset({ input }, { cookie })
+        const res = await sdk.adminFindManyNetworkAsset({ input }, { cookie: alice })
         networkAssetId = res.data.paging.data[0].id ?? 'test'
         expect(res.data.paging.meta.totalCount).toBeGreaterThan(1)
         expect(res.data.paging.data.length).toBeGreaterThan(1)
@@ -38,7 +36,7 @@ xdescribe('api-network-asset-feature', () => {
           search: networkAssetId,
         }
 
-        const res = await sdk.adminFindManyNetworkAsset({ input }, { cookie })
+        const res = await sdk.adminFindManyNetworkAsset({ input }, { cookie: alice })
 
         expect(res.data.paging.meta.totalCount).toBe(1)
         expect(res.data.paging.data.length).toBe(1)
@@ -46,19 +44,19 @@ xdescribe('api-network-asset-feature', () => {
       })
 
       it('should find a network-asset by id', async () => {
-        const res = await sdk.adminFindOneNetworkAsset({ networkAssetId }, { cookie })
+        const res = await sdk.adminFindOneNetworkAsset({ networkAssetId }, { cookie: alice })
 
         expect(res.data.item.id).toBe(networkAssetId)
       })
 
       it('should delete a network-asset', async () => {
-        const res = await sdk.adminDeleteNetworkAsset({ networkAssetId }, { cookie })
+        const res = await sdk.adminDeleteNetworkAsset({ networkAssetId }, { cookie: alice })
 
         expect(res.data.deleted).toBe(true)
 
         const findRes = await sdk.adminFindManyNetworkAsset(
           { input: { cluster: defaultCluster, search: networkAssetId } },
-          { cookie },
+          { cookie: alice },
         )
         expect(findRes.data.paging.meta.totalCount).toBe(0)
         expect(findRes.data.paging.data.length).toBe(0)
@@ -66,11 +64,6 @@ xdescribe('api-network-asset-feature', () => {
     })
 
     describe('unauthorized', () => {
-      let cookie: string
-      beforeAll(async () => {
-        cookie = await getBobCookie()
-      })
-
       it('should not find a list of networkAssets (find all)', async () => {
         expect.assertions(1)
         try {
@@ -80,7 +73,7 @@ xdescribe('api-network-asset-feature', () => {
                 cluster: defaultCluster,
               },
             },
-            { cookie },
+            { cookie: bob },
           )
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
@@ -90,7 +83,7 @@ xdescribe('api-network-asset-feature', () => {
       it('should not find a network-asset by id', async () => {
         expect.assertions(1)
         try {
-          await sdk.adminFindOneNetworkAsset({ networkAssetId }, { cookie })
+          await sdk.adminFindOneNetworkAsset({ networkAssetId }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
@@ -99,7 +92,7 @@ xdescribe('api-network-asset-feature', () => {
       it('should not delete a network-asset', async () => {
         expect.assertions(1)
         try {
-          await sdk.adminDeleteNetworkAsset({ networkAssetId }, { cookie })
+          await sdk.adminDeleteNetworkAsset({ networkAssetId }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }

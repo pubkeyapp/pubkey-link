@@ -1,4 +1,4 @@
-import { IdentityProvider, LoginInput, RegisterInput, User, UserRole } from '@pubkey-link/sdk'
+import { IdentityProvider, User, UserRole } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { createContext, ReactNode, useContext, useEffect, useReducer } from 'react'
@@ -19,10 +19,8 @@ export interface AuthProviderContext extends AuthState {
   isAdmin: boolean
   isDeveloper: boolean
   loading: boolean
-  login: (input: LoginInput) => Promise<User | undefined>
   logout: () => Promise<boolean | undefined>
   refresh: () => Promise<boolean>
-  register: (input: RegisterInput) => Promise<User | undefined>
 }
 
 const Context = createContext<AuthProviderContext>({} as AuthProviderContext)
@@ -92,23 +90,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     user: state.user,
     status: state.status,
     loading: state.status === 'loading',
-
-    login: (input: LoginInput) =>
-      sdk
-        .login({ input })
-        .then((res) => {
-          if (res.data.login) {
-            toastSuccess('Login successful')
-            dispatch({ type: 'login', payload: res.data.login })
-            return res.data.login
-          }
-          toastError('Login failed')
-        })
-        .catch((err) => {
-          toastError(err.message)
-          dispatch({ type: 'error', payload: err })
-          return undefined
-        }),
     logout: () =>
       sdk
         .logout()
@@ -126,22 +107,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return undefined
         }),
     refresh: async () => me.refetch().then((res) => dispatchUser(res.data?.me)),
-    register: (input: RegisterInput) =>
-      sdk
-        .register({ input })
-        .then((res) => {
-          if (res.data.register) {
-            toastSuccess('Register successful')
-            dispatch({ type: 'login', payload: res.data.register })
-            return res.data.register
-          }
-          toastError('Register failed')
-        })
-        .catch((err) => {
-          toastError(err.message)
-          dispatch({ type: 'error', payload: err })
-          return undefined
-        }),
   }
 
   return <Context.Provider value={value}>{children}</Context.Provider>

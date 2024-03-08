@@ -1,13 +1,7 @@
 import { UseGuards } from '@nestjs/common'
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { Context, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { UserStatus } from '@prisma/client'
-import {
-  ApiAuthGraphQLUserGuard,
-  ApiAuthService,
-  CtxUser,
-  LoginInput,
-  RegisterInput,
-} from '@pubkey-link/api-auth-data-access'
+import { ApiAuthGraphQLUserGuard, ApiAuthService, CtxUser } from '@pubkey-link/api-auth-data-access'
 import { AppContext } from '@pubkey-link/api-core-data-access'
 import { User } from '@pubkey-link/api-user-data-access'
 
@@ -21,18 +15,8 @@ export class ApiAuthResolver {
     return user
   }
 
-  @Mutation(() => User, { nullable: true })
-  async login(@Context() context: AppContext, @Args('input') input: LoginInput) {
-    return this.service.login(context, input)
-  }
-
   @Mutation(() => Boolean, { nullable: true })
   async logout(@Context() context: AppContext) {
     return this.service.logout(context)
-  }
-
-  @Mutation(() => User, { nullable: true })
-  async register(@Context() context: AppContext, @Args('input') input: RegisterInput) {
-    return this.service.register(context, input)
   }
 }

@@ -7,8 +7,4 @@ export class AppConfig {
   authLoginProviders!: IdentityProvider[]
   @Field(() => [IdentityProvider], { nullable: true })
   authLinkProviders!: IdentityProvider[]
-  @Field()
-  authPasswordEnabled!: boolean
-  @Field()
-  authRegisterEnabled!: boolean
 }

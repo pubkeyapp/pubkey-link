@@ -9,11 +9,7 @@ import { ApiCoreConfig } from './configuration'
 @Injectable()
 export class ApiCoreConfigService {
   private readonly logger = new Logger(ApiCoreConfigService.name)
-  constructor(private readonly service: ConfigService<ApiCoreConfig>) {
-    if (this.authRegisterEnabled && !this.authPasswordEnabled) {
-      throw new Error('Configuration error: Cannot enable AUTH_REGISTER_ENABLED without enabling AUTH_PASSWORD_ENABLED')
-    }
-  }
+  constructor(private readonly service: ConfigService<ApiCoreConfig>) {}
 
   get appConfig(): AppConfig {
     const link: IdentityProvider[] = []
@@ -35,8 +31,6 @@ export class ApiCoreConfigService {
     return {
       authLinkProviders: link,
       authLoginProviders: login,
-      authPasswordEnabled: this.authPasswordEnabled,
-      authRegisterEnabled: this.authRegisterEnabled,
     }
   }
 
@@ -76,14 +70,6 @@ export class ApiCoreConfigService {
       scope: this.authDiscordScope,
       passReqToCallback: true,
     }
-  }
-
-  get authPasswordEnabled(): boolean {
-    return this.service.get<boolean>('authPasswordEnabled') ?? false
-  }
-
-  get authRegisterEnabled(): boolean {
-    return this.service.get<boolean>('authRegisterEnabled') ?? false
   }
 
   get authSolanaAdminIds() {

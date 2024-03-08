@@ -3,7 +3,6 @@ import { IdentityProvider, Prisma, UserRole, UserStatus } from '@prisma/client'
 export const provisionUsers: Prisma.UserCreateInput[] = [
   {
     username: 'alice',
-    password: 'password',
     role: UserRole.Admin,
     developer: true,
     identities: {
@@ -19,7 +18,6 @@ export const provisionUsers: Prisma.UserCreateInput[] = [
   },
   {
     username: 'bob',
-    password: 'password',
     role: UserRole.User,
     identities: {
       create: [
@@ -40,7 +38,6 @@ export const provisionUsers: Prisma.UserCreateInput[] = [
   // Dave is set to inactive, so they can't log in
   {
     username: 'dave',
-    password: 'password',
     role: UserRole.User,
     status: UserStatus.Inactive,
   },

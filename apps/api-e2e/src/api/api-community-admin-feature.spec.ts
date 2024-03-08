@@ -14,9 +14,11 @@ describe('api-community-feature', () => {
     const communityName = uniqueId('acme-community')
     let communityId: string
     let alice: string
+    let bob: string
 
     beforeAll(async () => {
       alice = await getAliceCookie()
+      bob = await getBobCookie()
       const created = await sdk.adminCreateCommunity(
         {
           input: {
@@ -30,10 +32,6 @@ describe('api-community-feature', () => {
     })
 
     describe('authorized', () => {
-      beforeAll(async () => {
-        alice = await getAliceCookie()
-      })
-
       it('should create a community', async () => {
         const input: AdminCreateCommunityInput = {
           cluster: defaultCluster,
@@ -125,11 +123,6 @@ describe('api-community-feature', () => {
     })
 
     describe('unauthorized', () => {
-      let bob: string
-      beforeAll(async () => {
-        bob = await getBobCookie()
-      })
-
       it('should not create a community', async () => {
         expect.assertions(1)
         const input: AdminCreateCommunityInput = { cluster: defaultCluster, name: uniqueId('community') }

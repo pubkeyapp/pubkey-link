@@ -76,7 +76,6 @@ describe('prisma-model generator', () => {
         avatarUrl String?
         developer Boolean  @default(false)
         name      String?
-        password  String?
         role      UserRole @default(User)
         username  String   @unique
         emails    Email[]

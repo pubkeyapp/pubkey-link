@@ -22,12 +22,6 @@ fragment UserDetails on User {
   username
 }
 
-mutation adminCreateUser($input: AdminCreateUserInput!) {
-  created: adminCreateUser(input: $input) {
-    ...UserDetails
-  }
-}
-
 mutation adminDeleteUser($userId: String!) {
   deleted: adminDeleteUser(userId: $userId)
 }

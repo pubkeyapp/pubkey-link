@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { User as PrismaUser } from '@prisma/client'
-import { ApiCoreService, hashPassword, slugifyId } from '@pubkey-link/api-core-data-access'
-import { AdminCreateUserInput } from './dto/admin-create-user.input'
+import { ApiCoreService, slugifyId } from '@pubkey-link/api-core-data-access'
 import { AdminFindManyUserInput } from './dto/admin-find-many-user.input'
 import { AdminUpdateUserInput } from './dto/admin-update-user.input'
 import { UserPaging } from './entity/user-paging.entity'
@@ -11,25 +10,6 @@ import { getAdminUserWhereInput } from './helpers/get-admin-user-where.input'
 export class ApiAdminUserService {
   private readonly logger = new Logger(ApiAdminUserService.name)
   constructor(private readonly core: ApiCoreService) {}
-
-  async createUser(input: AdminCreateUserInput): Promise<PrismaUser> {
-    const username = slugifyId(input.username)
-    if (!username.length) {
-      throw new Error(`Username ${input.username} is not valid`)
-    }
-    const exists = await this.core.data.user.findUnique({
-      where: { username: username },
-    })
-    if (exists) {
-      throw new Error(`User ${username} already exists`)
-    }
-    return this.core.data.user.create({
-      data: {
-        username,
-        password: input.password ? hashPassword(input.password) : undefined,
-      },
-    })
-  }
 
   async deleteUser(userId: string): Promise<boolean> {
     const exists = await this.findOneUser(userId)

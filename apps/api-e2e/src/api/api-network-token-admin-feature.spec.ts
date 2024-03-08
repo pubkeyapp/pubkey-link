@@ -22,26 +22,24 @@ xdescribe('api-network-token-feature', () => {
   describe('api-network-token-admin-resolver', () => {
     const networkTokenAccount = Keypair.generate().publicKey.toBase58()
     let networkTokenId: string
-    let cookie: string
+    let alice: string
+    let bob: string
 
     beforeAll(async () => {
-      cookie = await getAliceCookie()
+      alice = await getAliceCookie()
+      bob = await getBobCookie()
       const created = await sdk.adminCreateNetworkToken(
         { input: createNetworkTokenInput(networkTokenAccount) },
-        { cookie },
+        { cookie: alice },
       )
       networkTokenId = created.data.created.id
     })
 
     describe('authorized', () => {
-      beforeAll(async () => {
-        cookie = await getAliceCookie()
-      })
-
       it('should create a network-token', async () => {
         const input: AdminCreateNetworkTokenInput = createNetworkTokenInput(Keypair.generate().publicKey.toBase58())
 
-        const res = await sdk.adminCreateNetworkToken({ input }, { cookie })
+        const res = await sdk.adminCreateNetworkToken({ input }, { cookie: alice })
 
         const item: NetworkToken = res.data.created
         expect(item.account).toBe(input.account)
@@ -54,13 +52,13 @@ xdescribe('api-network-token-feature', () => {
         const createInput: AdminCreateNetworkTokenInput = createNetworkTokenInput(
           Keypair.generate().publicKey.toString(),
         )
-        const createdRes = await sdk.adminCreateNetworkToken({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateNetworkToken({ input: createInput }, { cookie: alice })
         const networkTokenId = createdRes.data.created.id
         const input: AdminUpdateNetworkTokenInput = {
           name: uniqueId('name'),
         }
 
-        const res = await sdk.adminUpdateNetworkToken({ networkTokenId, input }, { cookie })
+        const res = await sdk.adminUpdateNetworkToken({ networkTokenId, input }, { cookie: alice })
 
         const item: NetworkToken = res.data.updated
         expect(item.name).toBe(input.name)
@@ -70,14 +68,14 @@ xdescribe('api-network-token-feature', () => {
         const createInput: AdminCreateNetworkTokenInput = createNetworkTokenInput(
           Keypair.generate().publicKey.toString(),
         )
-        const createdRes = await sdk.adminCreateNetworkToken({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateNetworkToken({ input: createInput }, { cookie: alice })
         const networkTokenId = createdRes.data.created.id
 
         const input: AdminFindManyNetworkTokenInput = {
           cluster: defaultCluster,
         }
 
-        const res = await sdk.adminFindManyNetworkToken({ input }, { cookie })
+        const res = await sdk.adminFindManyNetworkToken({ input }, { cookie: alice })
 
         expect(res.data.paging.meta.totalCount).toBeGreaterThan(1)
         expect(res.data.paging.data.length).toBeGreaterThan(1)
@@ -89,7 +87,7 @@ xdescribe('api-network-token-feature', () => {
         const createInput: AdminCreateNetworkTokenInput = createNetworkTokenInput(
           Keypair.generate().publicKey.toString(),
         )
-        const createdRes = await sdk.adminCreateNetworkToken({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateNetworkToken({ input: createInput }, { cookie: alice })
         const networkTokenId = createdRes.data.created.id
 
         const input: AdminFindManyNetworkTokenInput = {
@@ -97,7 +95,7 @@ xdescribe('api-network-token-feature', () => {
           search: networkTokenId,
         }
 
-        const res = await sdk.adminFindManyNetworkToken({ input }, { cookie })
+        const res = await sdk.adminFindManyNetworkToken({ input }, { cookie: alice })
 
         expect(res.data.paging.meta.totalCount).toBe(1)
         expect(res.data.paging.data.length).toBe(1)
@@ -108,10 +106,10 @@ xdescribe('api-network-token-feature', () => {
         const createInput: AdminCreateNetworkTokenInput = createNetworkTokenInput(
           Keypair.generate().publicKey.toString(),
         )
-        const createdRes = await sdk.adminCreateNetworkToken({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateNetworkToken({ input: createInput }, { cookie: alice })
         const networkTokenId = createdRes.data.created.id
 
-        const res = await sdk.adminFindOneNetworkToken({ networkTokenId }, { cookie })
+        const res = await sdk.adminFindOneNetworkToken({ networkTokenId }, { cookie: alice })
 
         expect(res.data.item.id).toBe(networkTokenId)
       })
@@ -120,10 +118,10 @@ xdescribe('api-network-token-feature', () => {
         const createInput: AdminCreateNetworkTokenInput = createNetworkTokenInput(
           Keypair.generate().publicKey.toString(),
         )
-        const createdRes = await sdk.adminCreateNetworkToken({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateNetworkToken({ input: createInput }, { cookie: alice })
         const networkTokenId = createdRes.data.created.id
 
-        const res = await sdk.adminDeleteNetworkToken({ networkTokenId }, { cookie })
+        const res = await sdk.adminDeleteNetworkToken({ networkTokenId }, { cookie: alice })
 
         expect(res.data.deleted).toBe(true)
 
@@ -134,7 +132,7 @@ xdescribe('api-network-token-feature', () => {
               search: networkTokenId,
             },
           },
-          { cookie },
+          { cookie: alice },
         )
         expect(findRes.data.paging.meta.totalCount).toBe(0)
         expect(findRes.data.paging.data.length).toBe(0)
@@ -142,17 +140,12 @@ xdescribe('api-network-token-feature', () => {
     })
 
     describe('unauthorized', () => {
-      let cookie: string
-      beforeAll(async () => {
-        cookie = await getBobCookie()
-      })
-
       it('should not create a network-token', async () => {
         expect.assertions(1)
         const input: AdminCreateNetworkTokenInput = createNetworkTokenInput(Keypair.generate().publicKey.toString())
 
         try {
-          await sdk.adminCreateNetworkToken({ input }, { cookie })
+          await sdk.adminCreateNetworkToken({ input }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
@@ -161,7 +154,7 @@ xdescribe('api-network-token-feature', () => {
       it('should not update a network-token', async () => {
         expect.assertions(1)
         try {
-          await sdk.adminUpdateNetworkToken({ networkTokenId, input: {} }, { cookie })
+          await sdk.adminUpdateNetworkToken({ networkTokenId, input: {} }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
@@ -170,7 +163,7 @@ xdescribe('api-network-token-feature', () => {
       it('should not find a list of networkTokens (find all)', async () => {
         expect.assertions(1)
         try {
-          await sdk.adminFindManyNetworkToken({ input: { cluster: defaultCluster } }, { cookie })
+          await sdk.adminFindManyNetworkToken({ input: { cluster: defaultCluster } }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
@@ -179,7 +172,7 @@ xdescribe('api-network-token-feature', () => {
       it('should not find a network-token by id', async () => {
         expect.assertions(1)
         try {
-          await sdk.adminFindOneNetworkToken({ networkTokenId }, { cookie })
+          await sdk.adminFindOneNetworkToken({ networkTokenId }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
@@ -188,7 +181,7 @@ xdescribe('api-network-token-feature', () => {
       it('should not delete a network-token', async () => {
         expect.assertions(1)
         try {
-          await sdk.adminDeleteNetworkToken({ networkTokenId }, { cookie })
+          await sdk.adminDeleteNetworkToken({ networkTokenId }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }

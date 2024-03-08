@@ -283,7 +283,6 @@ model User {
   avatarUrl   String?
   developer   Boolean           @default(false)
   name        String?
-  password    String? /// @encrypted
   role        UserRole          @default(User)
   status      UserStatus        @default(Created)
   username    String            @unique

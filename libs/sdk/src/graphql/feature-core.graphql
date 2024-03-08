@@ -1,8 +1,6 @@
 fragment AppConfigDetails on AppConfig {
   authLinkProviders
   authLoginProviders
-  authPasswordEnabled
-  authRegisterEnabled
 }
 
 fragment PagingMetaDetails on PagingMeta {

@@ -10,23 +10,21 @@ const defaultCommunityId = 'pubkey'
 xdescribe('api-community-member-feature', () => {
   describe('api-community-member-user-resolver', () => {
     let communityMemberId: string
-    let cookie: string
+    let alice: string
+    let bob: string
 
     beforeAll(async () => {
-      cookie = await getAliceCookie()
+      alice = await getAliceCookie()
+      bob = await getBobCookie()
     })
 
     describe('authorized', () => {
-      beforeAll(async () => {
-        cookie = await getAliceCookie()
-      })
-
       it('should update a community-member', async () => {
         const input: UserUpdateCommunityMemberInput = {
           role: CommunityRole.Admin,
         }
 
-        const res = await sdk.userUpdateCommunityMember({ communityMemberId, input }, { cookie })
+        const res = await sdk.userUpdateCommunityMember({ communityMemberId, input }, { cookie: alice })
 
         const item: CommunityMember = res.data.updated
         expect(item.role).toBe(input.role)
@@ -37,7 +35,7 @@ xdescribe('api-community-member-feature', () => {
           communityId: defaultCommunityId,
         }
 
-        const res = await sdk.userFindManyCommunityMember({ input }, { cookie })
+        const res = await sdk.userFindManyCommunityMember({ input }, { cookie: alice })
 
         expect(res.data.paging.meta.totalCount).toBeGreaterThan(1)
         expect(res.data.paging.data.length).toBeGreaterThan(1)
@@ -51,7 +49,7 @@ xdescribe('api-community-member-feature', () => {
           search: communityMemberId,
         }
 
-        const res = await sdk.userFindManyCommunityMember({ input }, { cookie })
+        const res = await sdk.userFindManyCommunityMember({ input }, { cookie: alice })
 
         expect(res.data.paging.meta.totalCount).toBe(1)
         expect(res.data.paging.data.length).toBe(1)
@@ -59,13 +57,13 @@ xdescribe('api-community-member-feature', () => {
       })
 
       it('should find a community-member by id', async () => {
-        const res = await sdk.userFindOneCommunityMember({ communityMemberId }, { cookie })
+        const res = await sdk.userFindOneCommunityMember({ communityMemberId }, { cookie: alice })
 
         expect(res.data.item.id).toBe(communityMemberId)
       })
 
       it('should delete a community-member', async () => {
-        const res = await sdk.userDeleteCommunityMember({ communityMemberId }, { cookie })
+        const res = await sdk.userDeleteCommunityMember({ communityMemberId }, { cookie: alice })
 
         expect(res.data.deleted).toBe(true)
 
@@ -76,7 +74,7 @@ xdescribe('api-community-member-feature', () => {
               search: communityMemberId,
             },
           },
-          { cookie },
+          { cookie: alice },
         )
         expect(findRes.data.paging.meta.totalCount).toBe(0)
         expect(findRes.data.paging.data.length).toBe(0)
@@ -84,11 +82,6 @@ xdescribe('api-community-member-feature', () => {
     })
 
     describe('unauthorized', () => {
-      let cookie: string
-      beforeAll(async () => {
-        cookie = await getBobCookie()
-      })
-
       it('should not update a community-member', async () => {
         expect.assertions(1)
         try {
@@ -99,7 +92,7 @@ xdescribe('api-community-member-feature', () => {
                 role: CommunityRole.Admin,
               },
             },
-            { cookie },
+            { cookie: bob },
           )
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not User')
@@ -115,7 +108,7 @@ xdescribe('api-community-member-feature', () => {
                 communityId: defaultCommunityId,
               },
             },
-            { cookie },
+            { cookie: bob },
           )
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not User')
@@ -125,7 +118,7 @@ xdescribe('api-community-member-feature', () => {
       it('should not find a community-member by id', async () => {
         expect.assertions(1)
         try {
-          await sdk.userFindOneCommunityMember({ communityMemberId }, { cookie })
+          await sdk.userFindOneCommunityMember({ communityMemberId }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not User')
         }
@@ -134,7 +127,7 @@ xdescribe('api-community-member-feature', () => {
       it('should not delete a community-member', async () => {
         expect.assertions(1)
         try {
-          await sdk.userDeleteCommunityMember({ communityMemberId }, { cookie })
+          await sdk.userDeleteCommunityMember({ communityMemberId }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not User')
         }

@@ -15,23 +15,21 @@ const defaultInput: AdminCreateBotInput = {
 xdescribe('api-bot-feature', () => {
   describe('api-bot-admin-resolver', () => {
     let botId: string
-    let cookie: string
+    let alice: string
+    let bob: string
 
     beforeAll(async () => {
-      cookie = await getAliceCookie()
-      const created = await sdk.adminCreateBot({ input: defaultInput }, { cookie })
+      alice = await getAliceCookie()
+      bob = await getBobCookie()
+      const created = await sdk.adminCreateBot({ input: defaultInput }, { cookie: alice })
       botId = created.data.created.id
     })
 
     describe('authorized', () => {
-      beforeAll(async () => {
-        cookie = await getAliceCookie()
-      })
-
       it('should create a bot', async () => {
         const input: AdminCreateBotInput = defaultInput
 
-        const res = await sdk.adminCreateBot({ input }, { cookie })
+        const res = await sdk.adminCreateBot({ input }, { cookie: alice })
 
         const item: Bot = res.data.created
 
@@ -42,11 +40,11 @@ xdescribe('api-bot-feature', () => {
 
       it('should update a bot', async () => {
         const createInput: AdminCreateBotInput = defaultInput
-        const createdRes = await sdk.adminCreateBot({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateBot({ input: createInput }, { cookie: alice })
         const botId = createdRes.data.created.id
         const input: AdminUpdateBotInput = defaultInput
 
-        const res = await sdk.adminUpdateBot({ botId, input }, { cookie })
+        const res = await sdk.adminUpdateBot({ botId, input }, { cookie: alice })
 
         const item: Bot = res.data.updated
         expect(item.name).toBe(input.name)
@@ -54,14 +52,14 @@ xdescribe('api-bot-feature', () => {
 
       it('should find a list of bots (find all)', async () => {
         const createInput: AdminCreateBotInput = defaultInput
-        const createdRes = await sdk.adminCreateBot({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateBot({ input: createInput }, { cookie: alice })
         const botId = createdRes.data.created.id
 
         const input: AdminFindManyBotInput = {
           communityId: defaultCommunityId,
         }
 
-        const res = await sdk.adminFindManyBot({ input }, { cookie })
+        const res = await sdk.adminFindManyBot({ input }, { cookie: alice })
 
         expect(res.data.paging.meta.totalCount).toBeGreaterThan(1)
         expect(res.data.paging.data.length).toBeGreaterThan(1)
@@ -71,7 +69,7 @@ xdescribe('api-bot-feature', () => {
 
       it('should find a list of bots (find new one)', async () => {
         const createInput: AdminCreateBotInput = defaultInput
-        const createdRes = await sdk.adminCreateBot({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateBot({ input: createInput }, { cookie: alice })
         const botId = createdRes.data.created.id
 
         const input: AdminFindManyBotInput = {
@@ -79,7 +77,7 @@ xdescribe('api-bot-feature', () => {
           search: botId,
         }
 
-        const res = await sdk.adminFindManyBot({ input }, { cookie })
+        const res = await sdk.adminFindManyBot({ input }, { cookie: alice })
 
         expect(res.data.paging.meta.totalCount).toBe(1)
         expect(res.data.paging.data.length).toBe(1)
@@ -88,20 +86,20 @@ xdescribe('api-bot-feature', () => {
 
       it('should find a bot by id', async () => {
         const createInput: AdminCreateBotInput = defaultInput
-        const createdRes = await sdk.adminCreateBot({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateBot({ input: createInput }, { cookie: alice })
         const botId = createdRes.data.created.id
 
-        const res = await sdk.adminFindOneBot({ botId }, { cookie })
+        const res = await sdk.adminFindOneBot({ botId }, { cookie: alice })
 
         expect(res.data.item.id).toBe(botId)
       })
 
       it('should delete a bot', async () => {
         const createInput: AdminCreateBotInput = defaultInput
-        const createdRes = await sdk.adminCreateBot({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateBot({ input: createInput }, { cookie: alice })
         const botId = createdRes.data.created.id
 
-        const res = await sdk.adminDeleteBot({ botId }, { cookie })
+        const res = await sdk.adminDeleteBot({ botId }, { cookie: alice })
 
         expect(res.data.deleted).toBe(true)
 
@@ -112,7 +110,7 @@ xdescribe('api-bot-feature', () => {
               search: botId,
             },
           },
-          { cookie },
+          { cookie: alice },
         )
         expect(findRes.data.paging.meta.totalCount).toBe(0)
         expect(findRes.data.paging.data.length).toBe(0)
@@ -120,17 +118,12 @@ xdescribe('api-bot-feature', () => {
     })
 
     describe('unauthorized', () => {
-      let cookie: string
-      beforeAll(async () => {
-        cookie = await getBobCookie()
-      })
-
       it('should not create a bot', async () => {
         expect.assertions(1)
         const input: AdminCreateBotInput = defaultInput
 
         try {
-          await sdk.adminCreateBot({ input }, { cookie })
+          await sdk.adminCreateBot({ input }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
@@ -139,7 +132,7 @@ xdescribe('api-bot-feature', () => {
       it('should not update a bot', async () => {
         expect.assertions(1)
         try {
-          await sdk.adminUpdateBot({ botId, input: {} }, { cookie })
+          await sdk.adminUpdateBot({ botId, input: {} }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
@@ -148,7 +141,7 @@ xdescribe('api-bot-feature', () => {
       it('should not find a list of bots (find all)', async () => {
         expect.assertions(1)
         try {
-          await sdk.adminFindManyBot({ input: { communityId: defaultCommunityId } }, { cookie })
+          await sdk.adminFindManyBot({ input: { communityId: defaultCommunityId } }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
@@ -157,7 +150,7 @@ xdescribe('api-bot-feature', () => {
       it('should not find a bot by id', async () => {
         expect.assertions(1)
         try {
-          await sdk.adminFindOneBot({ botId }, { cookie })
+          await sdk.adminFindOneBot({ botId }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
@@ -166,7 +159,7 @@ xdescribe('api-bot-feature', () => {
       it('should not delete a bot', async () => {
         expect.assertions(1)
         try {
-          await sdk.adminDeleteBot({ botId }, { cookie })
+          await sdk.adminDeleteBot({ botId }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
