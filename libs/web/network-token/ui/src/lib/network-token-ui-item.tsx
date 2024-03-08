@@ -32,7 +32,7 @@ export function NetworkTokenUiItem({
     <UiAnchor to={to ?? undefined} underline="never" {...anchorProps}>
       <Group gap="sm" wrap="nowrap" {...groupProps}>
         <NetworkTokenUiAvatar networkToken={networkToken} {...avatarProps} />
-        <Stack gap={4}>
+        <Stack gap={4} align="start">
           <Group gap="xs" wrap="nowrap">
             <Text size="lg" fw={500}>
               {networkToken?.name}

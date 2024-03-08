@@ -1811,6 +1811,7 @@ export type UserFindManyBotRolesQuery = {
         id: string
         type: NetworkTokenType
         amount?: string | null
+        amountMax?: string | null
         filters?: any | null
         config?: any | null
         tokenId?: string | null
@@ -2143,6 +2144,7 @@ export type CommunityMemberDetailsFragment = {
       id: string
       type: NetworkTokenType
       amount?: string | null
+      amountMax?: string | null
       filters?: any | null
       config?: any | null
       tokenId?: string | null
@@ -2247,6 +2249,7 @@ export type AdminFindManyCommunityMemberQuery = {
           id: string
           type: NetworkTokenType
           amount?: string | null
+          amountMax?: string | null
           filters?: any | null
           config?: any | null
           tokenId?: string | null
@@ -2361,6 +2364,7 @@ export type AdminFindOneCommunityMemberQuery = {
         id: string
         type: NetworkTokenType
         amount?: string | null
+        amountMax?: string | null
         filters?: any | null
         config?: any | null
         tokenId?: string | null
@@ -2465,6 +2469,7 @@ export type AdminCreateCommunityMemberMutation = {
         id: string
         type: NetworkTokenType
         amount?: string | null
+        amountMax?: string | null
         filters?: any | null
         config?: any | null
         tokenId?: string | null
@@ -2569,6 +2574,7 @@ export type AdminUpdateCommunityMemberMutation = {
         id: string
         type: NetworkTokenType
         amount?: string | null
+        amountMax?: string | null
         filters?: any | null
         config?: any | null
         tokenId?: string | null
@@ -2686,6 +2692,7 @@ export type UserFindManyCommunityMemberQuery = {
           id: string
           type: NetworkTokenType
           amount?: string | null
+          amountMax?: string | null
           filters?: any | null
           config?: any | null
           tokenId?: string | null
@@ -2800,6 +2807,7 @@ export type UserFindOneCommunityMemberQuery = {
         id: string
         type: NetworkTokenType
         amount?: string | null
+        amountMax?: string | null
         filters?: any | null
         config?: any | null
         tokenId?: string | null
@@ -2904,6 +2912,7 @@ export type UserCreateCommunityMemberMutation = {
         id: string
         type: NetworkTokenType
         amount?: string | null
+        amountMax?: string | null
         filters?: any | null
         config?: any | null
         tokenId?: string | null
@@ -3008,6 +3017,7 @@ export type UserUpdateCommunityMemberMutation = {
         id: string
         type: NetworkTokenType
         amount?: string | null
+        amountMax?: string | null
         filters?: any | null
         config?: any | null
         tokenId?: string | null
@@ -3272,6 +3282,7 @@ export type UserGetCommunitiesQuery = {
         id: string
         type: NetworkTokenType
         amount?: string | null
+        amountMax?: string | null
         filters?: any | null
         config?: any | null
         tokenId?: string | null
@@ -3910,6 +3921,7 @@ export type LogDetailsFragment = {
       id: string
       type: NetworkTokenType
       amount?: string | null
+      amountMax?: string | null
       filters?: any | null
       config?: any | null
       tokenId?: string | null
@@ -4078,6 +4090,7 @@ export type UserFindManyLogQuery = {
           id: string
           type: NetworkTokenType
           amount?: string | null
+          amountMax?: string | null
           filters?: any | null
           config?: any | null
           tokenId?: string | null
@@ -4256,6 +4269,7 @@ export type UserFindOneLogQuery = {
         id: string
         type: NetworkTokenType
         amount?: string | null
+        amountMax?: string | null
         filters?: any | null
         config?: any | null
         tokenId?: string | null
@@ -4425,6 +4439,7 @@ export type AdminFindManyLogQuery = {
           id: string
           type: NetworkTokenType
           amount?: string | null
+          amountMax?: string | null
           filters?: any | null
           config?: any | null
           tokenId?: string | null
@@ -4603,6 +4618,7 @@ export type AdminFindOneLogQuery = {
         id: string
         type: NetworkTokenType
         amount?: string | null
+        amountMax?: string | null
         filters?: any | null
         config?: any | null
         tokenId?: string | null
@@ -5213,6 +5229,7 @@ export type RoleDetailsFragment = {
     id: string
     type: NetworkTokenType
     amount?: string | null
+    amountMax?: string | null
     filters?: any | null
     config?: any | null
     tokenId?: string | null
@@ -5278,6 +5295,7 @@ export type RoleConditionDetailsFragment = {
   id: string
   type: NetworkTokenType
   amount?: string | null
+  amountMax?: string | null
   filters?: any | null
   config?: any | null
   tokenId?: string | null
@@ -5359,6 +5377,7 @@ export type AdminFindManyRoleQuery = {
         id: string
         type: NetworkTokenType
         amount?: string | null
+        amountMax?: string | null
         filters?: any | null
         config?: any | null
         tokenId?: string | null
@@ -5450,6 +5469,7 @@ export type AdminFindOneRoleQuery = {
       id: string
       type: NetworkTokenType
       amount?: string | null
+      amountMax?: string | null
       filters?: any | null
       config?: any | null
       tokenId?: string | null
@@ -5530,6 +5550,7 @@ export type AdminCreateRoleMutation = {
       id: string
       type: NetworkTokenType
       amount?: string | null
+      amountMax?: string | null
       filters?: any | null
       config?: any | null
       tokenId?: string | null
@@ -5611,6 +5632,7 @@ export type AdminUpdateRoleMutation = {
       id: string
       type: NetworkTokenType
       amount?: string | null
+      amountMax?: string | null
       filters?: any | null
       config?: any | null
       tokenId?: string | null
@@ -5699,6 +5721,7 @@ export type UserFindManyRoleQuery = {
         id: string
         type: NetworkTokenType
         amount?: string | null
+        amountMax?: string | null
         filters?: any | null
         config?: any | null
         tokenId?: string | null
@@ -5822,6 +5845,7 @@ export type UserFindOneRoleQuery = {
       id: string
       type: NetworkTokenType
       amount?: string | null
+      amountMax?: string | null
       filters?: any | null
       config?: any | null
       tokenId?: string | null
@@ -5870,6 +5894,7 @@ export type UserCreateRoleMutation = {
       id: string
       type: NetworkTokenType
       amount?: string | null
+      amountMax?: string | null
       filters?: any | null
       config?: any | null
       tokenId?: string | null
@@ -5942,6 +5967,7 @@ export type UserCreateRoleConditionMutation = {
     id: string
     type: NetworkTokenType
     amount?: string | null
+    amountMax?: string | null
     filters?: any | null
     config?: any | null
     tokenId?: string | null
@@ -6030,6 +6056,7 @@ export type UserUpdateRoleMutation = {
       id: string
       type: NetworkTokenType
       amount?: string | null
+      amountMax?: string | null
       filters?: any | null
       config?: any | null
       tokenId?: string | null
@@ -6103,6 +6130,7 @@ export type UserUpdateRoleConditionMutation = {
     id: string
     type: NetworkTokenType
     amount?: string | null
+    amountMax?: string | null
     filters?: any | null
     config?: any | null
     tokenId?: string | null
@@ -6175,6 +6203,7 @@ export type SnapshotDetailsFragment = {
       id: string
       type: NetworkTokenType
       amount?: string | null
+      amountMax?: string | null
       filters?: any | null
       config?: any | null
       tokenId?: string | null
@@ -6278,6 +6307,7 @@ export type UserFindManySnapshotQuery = {
           id: string
           type: NetworkTokenType
           amount?: string | null
+          amountMax?: string | null
           filters?: any | null
           config?: any | null
           tokenId?: string | null
@@ -6390,6 +6420,7 @@ export type UserFindOneSnapshotQuery = {
         id: string
         type: NetworkTokenType
         amount?: string | null
+        amountMax?: string | null
         filters?: any | null
         config?: any | null
         tokenId?: string | null
@@ -6478,6 +6509,7 @@ export type UserCreateSnapshotMutation = {
         id: string
         type: NetworkTokenType
         amount?: string | null
+        amountMax?: string | null
         filters?: any | null
         config?: any | null
         tokenId?: string | null
@@ -6574,6 +6606,7 @@ export type AdminFindManySnapshotQuery = {
           id: string
           type: NetworkTokenType
           amount?: string | null
+          amountMax?: string | null
           filters?: any | null
           config?: any | null
           tokenId?: string | null
@@ -6686,6 +6719,7 @@ export type AdminFindOneSnapshotQuery = {
         id: string
         type: NetworkTokenType
         amount?: string | null
+        amountMax?: string | null
         filters?: any | null
         config?: any | null
         tokenId?: string | null
@@ -6774,6 +6808,7 @@ export type AdminCreateSnapshotMutation = {
         id: string
         type: NetworkTokenType
         amount?: string | null
+        amountMax?: string | null
         filters?: any | null
         config?: any | null
         tokenId?: string | null
@@ -7134,6 +7169,7 @@ export const RoleConditionDetailsFragmentDoc = gql`
     id
     type
     amount
+    amountMax
     filters
     config
     token {

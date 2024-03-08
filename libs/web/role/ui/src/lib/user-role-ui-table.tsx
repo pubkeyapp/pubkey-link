@@ -1,8 +1,11 @@
-import { ActionIcon, Badge, Group, ScrollArea } from '@mantine/core'
+import { ActionIcon, Group, ScrollArea } from '@mantine/core'
 import { Role } from '@pubkey-link/sdk'
+import { NetworkTokenUiLabel } from '@pubkey-link/web-network-token-ui'
+import { UiStack } from '@pubkey-ui/core'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'
+import { RoleConditionUiAmount } from './role-condition-ui-amount'
 import { RoleUiItem } from './role-ui-item'
 
 export function UserRoleUiTable({
@@ -36,21 +39,17 @@ export function UserRoleUiTable({
             render: (item) => <RoleUiItem role={item} to={`./${item.id}`} />,
           },
           {
-            textAlign: 'center',
             accessor: 'conditions',
             render: (item) => (
-              <Badge variant="light" color={item?.conditions?.length ? 'brand' : 'yellow'}>
-                {item.conditions?.length ?? 0}
-              </Badge>
-            ),
-          },
-          {
-            textAlign: 'center',
-            accessor: 'permissions',
-            render: (item) => (
-              <Badge variant="light" color={item?.permissions?.length ? 'brand' : 'yellow'}>
-                {item.permissions?.length ?? 0}
-              </Badge>
+              <UiStack gap={0}>
+                {item.conditions?.map((condition) => (
+                  <UiStack key={condition.id} gap={0}>
+                    <NetworkTokenUiLabel networkToken={condition.token}>
+                      <RoleConditionUiAmount condition={condition} />
+                    </NetworkTokenUiLabel>
+                  </UiStack>
+                ))}
+              </UiStack>
             ),
           },
           {

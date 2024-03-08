@@ -18,6 +18,7 @@ fragment RoleConditionDetails on RoleCondition {
   id
   type
   amount
+  amountMax
   filters
   config
   token {

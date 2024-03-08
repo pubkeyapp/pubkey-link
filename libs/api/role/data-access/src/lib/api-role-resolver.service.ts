@@ -388,6 +388,7 @@ export class ApiRoleResolverService {
         where: { role: { communityId } },
         select: {
           amount: true,
+          amountMax: true,
           config: true,
           filters: true,
           id: true,
