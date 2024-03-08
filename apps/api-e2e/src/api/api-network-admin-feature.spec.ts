@@ -5,7 +5,8 @@ import {
   Network,
   NetworkCluster,
 } from '@pubkey-link/sdk'
-import { getAliceCookie, getBobCookie, sdk, uniqueId } from '../support'
+import { getAliceCookie, getBobCookie, sdk } from '../support'
+import { uniqueId } from '../support/unique-id'
 
 const defaultInput: AdminCreateNetworkInput = {
   endpoint: 'http://localhost:8899',
@@ -18,25 +19,23 @@ const defaultInput: AdminCreateNetworkInput = {
 xdescribe('api-network-feature', () => {
   describe('api-network-admin-resolver', () => {
     let networkId: string
-    let cookie: string
+    let alice: string
+    let bob: string
 
     beforeAll(async () => {
-      cookie = await getAliceCookie()
-      const created = await sdk.adminCreateNetwork({ input: defaultInput }, { cookie })
+      alice = await getAliceCookie()
+      bob = await getBobCookie()
+      const created = await sdk.adminCreateNetwork({ input: defaultInput }, { cookie: alice })
       networkId = created.data.created.id
     })
 
     describe('authorized', () => {
-      beforeAll(async () => {
-        cookie = await getAliceCookie()
-      })
-
       it('should update a network', async () => {
         const input: AdminUpdateNetworkInput = {
           name: uniqueId('network'),
         }
 
-        const res = await sdk.adminUpdateNetwork({ networkId, input }, { cookie })
+        const res = await sdk.adminUpdateNetwork({ networkId, input }, { cookie: alice })
 
         const item: Network = res.data.updated
         expect(item.name).toBe(input.name)
@@ -45,7 +44,7 @@ xdescribe('api-network-feature', () => {
       it('should find a list of networks (find all)', async () => {
         const input: AdminFindManyNetworkInput = {}
 
-        const res = await sdk.adminFindManyNetwork({ input }, { cookie })
+        const res = await sdk.adminFindManyNetwork({ input }, { cookie: alice })
 
         expect(res.data.paging.meta.totalCount).toBeGreaterThan(1)
         expect(res.data.paging.data.length).toBeGreaterThan(1)
@@ -58,7 +57,7 @@ xdescribe('api-network-feature', () => {
           search: networkId,
         }
 
-        const res = await sdk.adminFindManyNetwork({ input }, { cookie })
+        const res = await sdk.adminFindManyNetwork({ input }, { cookie: alice })
 
         expect(res.data.paging.meta.totalCount).toBe(1)
         expect(res.data.paging.data.length).toBe(1)
@@ -66,28 +65,23 @@ xdescribe('api-network-feature', () => {
       })
 
       it('should find a network by id', async () => {
-        const res = await sdk.adminFindOneNetwork({ networkId }, { cookie })
+        const res = await sdk.adminFindOneNetwork({ networkId }, { cookie: alice })
 
         expect(res.data.item.id).toBe(networkId)
       })
 
       it('should delete a network', async () => {
-        const res = await sdk.adminDeleteNetwork({ networkId }, { cookie })
+        const res = await sdk.adminDeleteNetwork({ networkId }, { cookie: alice })
 
         expect(res.data.deleted).toBe(true)
 
-        const findRes = await sdk.adminFindManyNetwork({ input: { search: networkId } }, { cookie })
+        const findRes = await sdk.adminFindManyNetwork({ input: { search: networkId } }, { cookie: alice })
         expect(findRes.data.paging.meta.totalCount).toBe(0)
         expect(findRes.data.paging.data.length).toBe(0)
       })
     })
 
     describe('unauthorized', () => {
-      let bob: string
-      beforeAll(async () => {
-        bob = await getBobCookie()
-      })
-
       it('should not create a network', async () => {
         expect.assertions(1)
         const input: AdminCreateNetworkInput = defaultInput

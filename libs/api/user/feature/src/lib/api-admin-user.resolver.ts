@@ -2,7 +2,6 @@ import { UseGuards } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { ApiAuthGraphQLAdminGuard } from '@pubkey-link/api-auth-data-access'
 import {
-  AdminCreateUserInput,
   AdminFindManyUserInput,
   AdminUpdateUserInput,
   ApiUserService,
@@ -14,11 +13,6 @@ import {
 @UseGuards(ApiAuthGraphQLAdminGuard)
 export class ApiAdminUserResolver {
   constructor(private readonly service: ApiUserService) {}
-
-  @Mutation(() => User, { nullable: true })
-  adminCreateUser(@Args('input') input: AdminCreateUserInput) {
-    return this.service.admin.createUser(input)
-  }
 
   @Mutation(() => Boolean, { nullable: true })
   adminDeleteUser(@Args('userId') userId: string) {

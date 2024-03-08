@@ -3,6 +3,7 @@ import { OnEvent } from '@nestjs/event-emitter'
 import { Prisma } from '@prisma/client'
 import { ApiCoreService, slugifyId } from '@pubkey-link/api-core-data-access'
 import { EVENT_NETWORKS_PROVISIONED } from '@pubkey-link/api-network-data-access'
+import { EVENT_COMMUNITIES_PROVISIONED } from '../api-community.events'
 import { provisionCommunities } from './api-community-provision-data'
 
 @Injectable()
@@ -21,6 +22,7 @@ export class ApiCommunityProvisionService {
 
   private async provisionCommunities() {
     await Promise.all(provisionCommunities.map((community) => this.provisionCommunity(community)))
+    this.core.eventEmitter.emit(EVENT_COMMUNITIES_PROVISIONED)
   }
 
   private async provisionCommunity(input: Prisma.CommunityCreateInput) {

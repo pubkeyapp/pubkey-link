@@ -132,14 +132,14 @@ export class ApiAnonIdentityService {
     this.solana.ensureValidProviderId(provider, providerId)
 
     // Ensure the signature is valid
-    const { found, verified } = await this.solana.ensureValidSignature(
+    const { found, verified } = await this.solana.ensureValidSignature({
+      challenge,
       ctx,
+      message,
       provider,
       providerId,
-      challenge,
       signature,
-      message,
-    )
+    })
 
     if (!found.identity.verified) {
       // Update the identity

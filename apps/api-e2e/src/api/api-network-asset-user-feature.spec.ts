@@ -10,16 +10,14 @@ xdescribe('api-network-asset-feature', () => {
   describe('api-network-asset-user-resolver', () => {
     let networkAssetId: string
     let alice: string
+    let bob: string
 
     beforeAll(async () => {
       alice = await getAliceCookie()
+      bob = await getBobCookie()
     })
 
     describe('authorized', () => {
-      beforeAll(async () => {
-        alice = await getAliceCookie()
-      })
-
       it('should find a list of networkAssets (find all)', async () => {
         const input: UserFindManyNetworkAssetInput = { cluster: defaultCluster, username: defaultUser }
 
@@ -57,11 +55,6 @@ xdescribe('api-network-asset-feature', () => {
     })
 
     describe('unauthorized', () => {
-      let bob: string
-      beforeAll(async () => {
-        bob = await getBobCookie()
-      })
-
       it('should not find a list of networkAssets (find all)', async () => {
         expect.assertions(1)
         try {

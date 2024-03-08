@@ -1,16 +1,9 @@
 import { Injectable, Logger, Res } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { User, UserStatus } from '@prisma/client'
-import {
-  ApiCoreService,
-  AppContext,
-  hashPassword,
-  slugifyId,
-  validatePassword,
-} from '@pubkey-link/api-core-data-access'
+import { User } from '@prisma/client'
+import { ApiCoreService, AppContext } from '@pubkey-link/api-core-data-access'
 import { Response } from 'express-serve-static-core'
-import { LoginInput } from './dto/login.input'
-import { RegisterInput } from './dto/register.input'
+
 import { ApiAuthRequest } from './interfaces/api-auth.request'
 
 @Injectable()
@@ -18,65 +11,9 @@ export class ApiAuthService {
   private readonly logger = new Logger(ApiAuthService.name)
   constructor(readonly core: ApiCoreService, private readonly jwt: JwtService) {}
 
-  async login(context: AppContext, input: LoginInput) {
-    if (!this.core.config.authPasswordEnabled) {
-      throw new Error(`Login with username and password is not allowed.`)
-    }
-    if (input?.password.length < 8) {
-      throw new Error('Password is too short.')
-    }
-    const user = await this.validateUser(input)
-    this.signAndSetCookie(context, { username: user.username, id: user.id })
-
-    return user
-  }
-
   logout(context: AppContext) {
     this.resetCookie(context)
     return Promise.resolve(true)
-  }
-
-  async register(context: AppContext, input: RegisterInput) {
-    if (!this.core.config.authRegisterEnabled) {
-      throw new Error(`Registration is disabled.`)
-    }
-    if (input?.password.length < 8) {
-      throw new Error('Password is too short.')
-    }
-    const username = slugifyId(input.username)
-    const exists = await this.core.data.user.findUnique({ where: { username } })
-    if (exists) {
-      throw new Error('User already exists.')
-    }
-    const user = await this.core.data.user.create({
-      data: {
-        username,
-        password: hashPassword(input.password),
-        status: UserStatus.Created,
-      },
-    })
-
-    this.signAndSetCookie(context, { username: user.username, id: user.id })
-
-    return user
-  }
-
-  private async validateUser({ username, password }: LoginInput) {
-    const user = await this.core.data.user.findUnique({ where: { username } })
-    if (!user) {
-      throw new Error('User not found.')
-    }
-    if (!user.password) {
-      throw new Error('Password login not allowed.')
-    }
-    if (user.status === UserStatus.Inactive) {
-      throw new Error('User is inactive.')
-    }
-    if (!validatePassword(password, user.password)) {
-      throw new Error('Password is incorrect.')
-    }
-    user.password = null
-    return user
   }
 
   signAndSetCookie(context: AppContext, { id, username }: { username: string; id: string }) {

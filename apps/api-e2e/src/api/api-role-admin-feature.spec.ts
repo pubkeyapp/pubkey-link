@@ -1,5 +1,6 @@
 import { AdminCreateRoleInput, AdminFindManyRoleInput, AdminUpdateRoleInput, Role } from '@pubkey-link/sdk'
-import { getAliceCookie, getBobCookie, sdk, uniqueId } from '../support'
+import { getAliceCookie, getBobCookie, sdk } from '../support'
+import { uniqueId } from '../support/unique-id'
 
 const defaultCommunityId = 'pubkey'
 
@@ -7,10 +8,12 @@ describe('api-role-feature', () => {
   describe('api-role-admin-resolver', () => {
     const roleName = uniqueId('acme-role')
     let roleId: string
-    let cookie: string
+    let alice: string
+    let bob: string
 
     beforeAll(async () => {
-      cookie = await getAliceCookie()
+      alice = await getAliceCookie()
+      bob = await getBobCookie()
       const created = await sdk.adminCreateRole(
         {
           input: {
@@ -18,23 +21,19 @@ describe('api-role-feature', () => {
             name: roleName,
           },
         },
-        { cookie },
+        { cookie: alice },
       )
       roleId = created.data.created.id
     })
 
     describe('authorized', () => {
-      beforeAll(async () => {
-        cookie = await getAliceCookie()
-      })
-
       it('should create a role', async () => {
         const input: AdminCreateRoleInput = {
           communityId: defaultCommunityId,
           name: uniqueId('role'),
         }
 
-        const res = await sdk.adminCreateRole({ input }, { cookie })
+        const res = await sdk.adminCreateRole({ input }, { cookie: alice })
 
         const item: Role = res.data.created
         expect(item.name).toBe(input.name)
@@ -48,13 +47,13 @@ describe('api-role-feature', () => {
           communityId: defaultCommunityId,
           name: uniqueId('role'),
         }
-        const createdRes = await sdk.adminCreateRole({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateRole({ input: createInput }, { cookie: alice })
         const roleId = createdRes.data.created.id
         const input: AdminUpdateRoleInput = {
           name: uniqueId('role'),
         }
 
-        const res = await sdk.adminUpdateRole({ roleId, input }, { cookie })
+        const res = await sdk.adminUpdateRole({ roleId, input }, { cookie: alice })
 
         const item: Role = res.data.updated
         expect(item.name).toBe(input.name)
@@ -65,7 +64,7 @@ describe('api-role-feature', () => {
           communityId: defaultCommunityId,
         }
 
-        const res = await sdk.adminFindManyRole({ input }, { cookie })
+        const res = await sdk.adminFindManyRole({ input }, { cookie: alice })
 
         expect(res.data.paging.meta.totalCount).toBeGreaterThan(1)
         expect(res.data.paging.data.length).toBeGreaterThan(1)
@@ -76,7 +75,7 @@ describe('api-role-feature', () => {
           communityId: defaultCommunityId,
           name: uniqueId('role'),
         }
-        const createdRes = await sdk.adminCreateRole({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateRole({ input: createInput }, { cookie: alice })
         const roleId = createdRes.data.created.id
 
         const input: AdminFindManyRoleInput = {
@@ -84,7 +83,7 @@ describe('api-role-feature', () => {
           search: roleId,
         }
 
-        const res = await sdk.adminFindManyRole({ input }, { cookie })
+        const res = await sdk.adminFindManyRole({ input }, { cookie: alice })
 
         expect(res.data.paging.meta.totalCount).toBe(1)
         expect(res.data.paging.data.length).toBe(1)
@@ -96,10 +95,10 @@ describe('api-role-feature', () => {
           communityId: defaultCommunityId,
           name: uniqueId('role'),
         }
-        const createdRes = await sdk.adminCreateRole({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateRole({ input: createInput }, { cookie: alice })
         const roleId = createdRes.data.created.id
 
-        const res = await sdk.adminFindOneRole({ roleId }, { cookie })
+        const res = await sdk.adminFindOneRole({ roleId }, { cookie: alice })
 
         expect(res.data.item.id).toBe(roleId)
       })
@@ -109,10 +108,10 @@ describe('api-role-feature', () => {
           communityId: defaultCommunityId,
           name: uniqueId('role'),
         }
-        const createdRes = await sdk.adminCreateRole({ input: createInput }, { cookie })
+        const createdRes = await sdk.adminCreateRole({ input: createInput }, { cookie: alice })
         const roleId = createdRes.data.created.id
 
-        const res = await sdk.adminDeleteRole({ roleId }, { cookie })
+        const res = await sdk.adminDeleteRole({ roleId }, { cookie: alice })
 
         expect(res.data.deleted).toBe(true)
 
@@ -123,7 +122,7 @@ describe('api-role-feature', () => {
               search: roleId,
             },
           },
-          { cookie },
+          { cookie: alice },
         )
         expect(findRes.data.paging.meta.totalCount).toBe(0)
         expect(findRes.data.paging.data.length).toBe(0)
@@ -131,11 +130,6 @@ describe('api-role-feature', () => {
     })
 
     describe('unauthorized', () => {
-      let cookie: string
-      beforeAll(async () => {
-        cookie = await getBobCookie()
-      })
-
       it('should not create a role', async () => {
         expect.assertions(1)
         const input: AdminCreateRoleInput = {
@@ -144,7 +138,7 @@ describe('api-role-feature', () => {
         }
 
         try {
-          await sdk.adminCreateRole({ input }, { cookie })
+          await sdk.adminCreateRole({ input }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
@@ -153,7 +147,7 @@ describe('api-role-feature', () => {
       it('should not update a role', async () => {
         expect.assertions(1)
         try {
-          await sdk.adminUpdateRole({ roleId, input: {} }, { cookie })
+          await sdk.adminUpdateRole({ roleId, input: {} }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
@@ -168,7 +162,7 @@ describe('api-role-feature', () => {
                 communityId: defaultCommunityId,
               },
             },
-            { cookie },
+            { cookie: bob },
           )
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
@@ -178,7 +172,7 @@ describe('api-role-feature', () => {
       it('should not find a role by id', async () => {
         expect.assertions(1)
         try {
-          await sdk.adminFindOneRole({ roleId }, { cookie })
+          await sdk.adminFindOneRole({ roleId }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }
@@ -187,7 +181,7 @@ describe('api-role-feature', () => {
       it('should not delete a role', async () => {
         expect.assertions(1)
         try {
-          await sdk.adminDeleteRole({ roleId }, { cookie })
+          await sdk.adminDeleteRole({ roleId }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }

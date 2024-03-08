@@ -1,8 +1,7 @@
-import { getGraphQLSdk, Sdk } from '@pubkey-link/sdk'
+import { authenticateWithKeypair, getGraphQLSdk, Sdk } from '@pubkey-link/sdk'
 import { getKeypairFromFile } from '@solana-developers/helpers'
 import fs from 'fs'
 import { PubKeyServer } from '../data-access/pubkey-server'
-import { authenticateWithKeypair } from './authenticate-with-keypair'
 
 const home = process.env.HOME || process.env.USERPROFILE
 const config = `${home}/.config/pubkey-link`
@@ -33,7 +32,7 @@ export async function getCliConfig(server: string, keypairPath: string) {
 
   const sdk: Sdk = getGraphQLSdk(`${found.endpoint}/graphql`)
 
-  const cookie = await authenticateWithKeypair(sdk, keypair)
+  const { cookie } = await authenticateWithKeypair({ keypair, sdk })
 
   return {
     cookie,

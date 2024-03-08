@@ -1,9 +1,8 @@
-import { Button, Group } from '@mantine/core'
+import { Group } from '@mantine/core'
 import { UiPageLimit, UiSearchField } from '@pubkey-link/web-ui-core'
 import { useAdminFindManyUser } from '@pubkey-link/web-user-data-access'
 import { AdminUserUiTable } from '@pubkey-link/web-user-ui'
 import { UiBack, UiDebugModal, UiInfo, UiLoader, UiPage } from '@pubkey-ui/core'
-import { Link } from 'react-router-dom'
 import { AdminUserUiSelectRole } from './admin-user-ui-select-role'
 import { AdminUserUiSelectStatus } from './admin-user-ui-select-status'
 
@@ -11,18 +10,7 @@ export function AdminUserListFeature() {
   const { deleteUser, items, pagination, query, role, setRole, setSearch, setStatus, status } = useAdminFindManyUser()
 
   return (
-    <UiPage
-      title="Users"
-      leftAction={<UiBack />}
-      rightAction={
-        <Group>
-          <UiDebugModal data={items} />
-          <Button component={Link} to="create">
-            Create
-          </Button>
-        </Group>
-      }
-    >
+    <UiPage title="Users" leftAction={<UiBack />} rightAction={<UiDebugModal data={items} />}>
       <Group>
         <UiSearchField placeholder="Search user" setSearch={setSearch} />
         <AdminUserUiSelectRole value={role} setValue={setRole} />

@@ -1,4 +1,4 @@
-import { AuthLoginFeature, AuthRegisterFeature } from '@pubkey-link/web-auth-feature'
+import { AuthLoginFeature } from '@pubkey-link/web-auth-feature'
 import { HomeFeature } from '@pubkey-link/web-home-feature'
 import { OnboardingFeature } from '@pubkey-link/web-onboarding-feature'
 import { AnonVerifyFeature } from '@pubkey-link/web-verify-feature'
@@ -32,7 +32,6 @@ export function ShellRoutes() {
       { path: '/verify/*', element: <AnonVerifyFeature /> },
       // Routes for the auth feature
       { path: '/login', element: <AuthLoginFeature /> },
-      { path: '/register', element: <AuthRegisterFeature /> },
       // Homepage
       { path: '/*', element: <HomeFeature /> },
       // Routes for the 404 page

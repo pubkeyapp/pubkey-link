@@ -1,43 +1,52 @@
-import { getGraphQLSdk, IdentityProvider, Sdk } from '@pubkey-link/sdk'
+import { authenticateWithKeypair, getGraphQLSdk, IdentityProvider, Sdk, User } from '@pubkey-link/sdk'
+import { signWithKeypair } from '@pubkey-link/verify-wallet'
 import { Keypair } from '@solana/web3.js'
-import * as nacl from 'tweetnacl'
+import { alice, bob, TestUser } from '../fixtures/test-users'
 import { getApiUrl } from './get-api.url'
-import { alice, bob, TestUser } from './user-identities'
 
 export const sdk: Sdk = getGraphQLSdk(getApiUrl('/graphql'))
 
-async function getUserCookie(user: TestUser) {
-  const res = await sdk.login({
-    input: { username: user.username, password: user.password },
-  })
+export type UserCookie = { cookie: string; user: User }
 
-  return res.headers.get('set-cookie')
+const cookieJar = new Map<TestUser, UserCookie>()
+
+export async function getUserCookie(testUser: TestUser): Promise<UserCookie> {
+  if (!cookieJar.has(testUser)) {
+    const { cookie } = await authenticateWithKeypair({ sdk, keypair: testUser.solana })
+
+    if (!cookie) {
+      throw new Error('No cookie set')
+    }
+    const user = await sdk.me({}, { cookie }).then((res) => res.data.me)
+
+    cookieJar.set(testUser, { cookie, user })
+  }
+  return cookieJar.get(testUser)
 }
 
 export async function getAliceCookie() {
-  return getUserCookie(alice)
+  return getUserCookie(alice).then((res) => res.cookie)
 }
 export async function getBobCookie() {
-  return getUserCookie(bob)
+  return getUserCookie(bob).then((res) => res.cookie)
 }
 
 export async function getIdentityChallenge(user: TestUser) {
-  const cookie = await getUserCookie(user)
-  return sdk.userRequestIdentityChallenge(
-    {
-      input: {
-        provider: IdentityProvider.Solana,
-        providerId: user.solana.publicKey,
-      },
+  return sdk.anonRequestIdentityChallenge({
+    input: {
+      provider: IdentityProvider.Solana,
+      providerId: user.solana.publicKey.toString(),
     },
-    { cookie },
-  )
-}
-
-export function getUserKeypair(user: TestUser): Keypair {
-  return Keypair.fromSecretKey(Uint8Array.from(user.solana.secret))
+  })
 }
 
 export function signMessage(user: TestUser, message: string) {
-  return nacl.sign.detached(new TextEncoder().encode(message), Uint8Array.from(user.solana.secret))
+  return signWithKeypair({ keypair: user.solana, message })
+}
+
+export async function authenticate({ keypair }: { keypair: Keypair }): Promise<UserCookie> {
+  const { cookie } = await authenticateWithKeypair({ sdk, keypair })
+  const user = await sdk.me({}, { cookie }).then((res) => res.data.me)
+
+  return { user, cookie }
 }

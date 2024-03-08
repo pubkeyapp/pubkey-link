@@ -21,8 +21,8 @@ export function AppConfigProvider({ children }: { children: ReactNode }) {
 
   const authEnabled = useMemo(() => {
     if (!configQuery.data?.config) return false
-    const { authLoginProviders, authPasswordEnabled, authRegisterEnabled } = configQuery.data.config
-    return !!authLoginProviders?.length || authRegisterEnabled || authPasswordEnabled
+    const { authLoginProviders } = configQuery.data.config
+    return !!authLoginProviders?.length
   }, [configQuery.data?.config])
 
   const enabledProviders: IdentityProvider[] = useMemo(

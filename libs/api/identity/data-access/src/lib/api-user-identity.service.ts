@@ -33,7 +33,7 @@ export class ApiUserIdentityService {
     if (found.provider === IdentityProvider.Discord) {
       throw new Error(`Cannot delete Discord identity`)
     }
-    if (found.owner.identities.length === 1 && !found.owner.password) {
+    if (found.owner.identities.length === 1) {
       throw new Error(`Cannot delete last identity`)
     }
     const deleted = await this.core.data.identity.delete({ where: { id: identityId } })

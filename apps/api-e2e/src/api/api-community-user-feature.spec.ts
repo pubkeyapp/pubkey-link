@@ -5,17 +5,20 @@ import {
   UserFindManyCommunityInput,
   UserUpdateCommunityInput,
 } from '@pubkey-link/sdk'
-import { getAliceCookie, getBobCookie, sdk, uniqueId } from '../support'
+import { getAliceCookie, getBobCookie, sdk } from '../support'
+import { uniqueId } from '../support/unique-id'
 
 const defaultCluster = NetworkCluster.SolanaDevnet
 xdescribe('api-community-feature', () => {
   describe('api-community-user-resolver', () => {
     const communityName = uniqueId('acme-community')
     let communityId: string
-    let cookie: string
+    let alice: string
+    let bob: string
 
     beforeAll(async () => {
-      cookie = await getAliceCookie()
+      alice = await getAliceCookie()
+      bob = await getBobCookie()
       const created = await sdk.userCreateCommunity(
         {
           input: {
@@ -23,23 +26,19 @@ xdescribe('api-community-feature', () => {
             name: communityName,
           },
         },
-        { cookie },
+        { cookie: alice },
       )
       communityId = created.data.created.id
     })
 
     describe('authorized', () => {
-      beforeAll(async () => {
-        cookie = await getAliceCookie()
-      })
-
       it('should create a community', async () => {
         const input: UserCreateCommunityInput = {
           cluster: defaultCluster,
           name: uniqueId('community'),
         }
 
-        const res = await sdk.userCreateCommunity({ input }, { cookie })
+        const res = await sdk.userCreateCommunity({ input }, { cookie: alice })
 
         const item: Community = res.data.created
         expect(item.name).toBe(input.name)
@@ -53,13 +52,13 @@ xdescribe('api-community-feature', () => {
           cluster: defaultCluster,
           name: uniqueId('community'),
         }
-        const createdRes = await sdk.userCreateCommunity({ input: createInput }, { cookie })
+        const createdRes = await sdk.userCreateCommunity({ input: createInput }, { cookie: alice })
         const communityId = createdRes.data.created.id
         const input: UserUpdateCommunityInput = {
           name: uniqueId('community'),
         }
 
-        const res = await sdk.userUpdateCommunity({ communityId, input }, { cookie })
+        const res = await sdk.userUpdateCommunity({ communityId, input }, { cookie: alice })
 
         const item: Community = res.data.updated
         expect(item.name).toBe(input.name)
@@ -70,12 +69,12 @@ xdescribe('api-community-feature', () => {
           cluster: defaultCluster,
           name: uniqueId('community'),
         }
-        const createdRes = await sdk.userCreateCommunity({ input: createInput }, { cookie })
+        const createdRes = await sdk.userCreateCommunity({ input: createInput }, { cookie: alice })
         const communityId = createdRes.data.created.id
 
         const input: UserFindManyCommunityInput = {}
 
-        const res = await sdk.userFindManyCommunity({ input }, { cookie })
+        const res = await sdk.userFindManyCommunity({ input }, { cookie: alice })
 
         expect(res.data.paging.meta.totalCount).toBeGreaterThan(1)
         expect(res.data.paging.data.length).toBeGreaterThan(1)
@@ -88,14 +87,14 @@ xdescribe('api-community-feature', () => {
           cluster: defaultCluster,
           name: uniqueId('community'),
         }
-        const createdRes = await sdk.userCreateCommunity({ input: createInput }, { cookie })
+        const createdRes = await sdk.userCreateCommunity({ input: createInput }, { cookie: alice })
         const communityId = createdRes.data.created.id
 
         const input: UserFindManyCommunityInput = {
           search: communityId,
         }
 
-        const res = await sdk.userFindManyCommunity({ input }, { cookie })
+        const res = await sdk.userFindManyCommunity({ input }, { cookie: alice })
 
         expect(res.data.paging.meta.totalCount).toBe(1)
         expect(res.data.paging.data.length).toBe(1)
@@ -107,10 +106,10 @@ xdescribe('api-community-feature', () => {
           cluster: defaultCluster,
           name: uniqueId('community'),
         }
-        const createdRes = await sdk.userCreateCommunity({ input: createInput }, { cookie })
+        const createdRes = await sdk.userCreateCommunity({ input: createInput }, { cookie: alice })
         const communityId = createdRes.data.created.id
 
-        const res = await sdk.userFindOneCommunity({ communityId }, { cookie })
+        const res = await sdk.userFindOneCommunity({ communityId }, { cookie: alice })
 
         expect(res.data.item.id).toBe(communityId)
       })
@@ -120,25 +119,20 @@ xdescribe('api-community-feature', () => {
           cluster: defaultCluster,
           name: uniqueId('community'),
         }
-        const createdRes = await sdk.userCreateCommunity({ input: createInput }, { cookie })
+        const createdRes = await sdk.userCreateCommunity({ input: createInput }, { cookie: alice })
         const communityId = createdRes.data.created.id
 
-        const res = await sdk.userDeleteCommunity({ communityId }, { cookie })
+        const res = await sdk.userDeleteCommunity({ communityId }, { cookie: alice })
 
         expect(res.data.deleted).toBe(true)
 
-        const findRes = await sdk.userFindManyCommunity({ input: { search: communityId } }, { cookie })
+        const findRes = await sdk.userFindManyCommunity({ input: { search: communityId } }, { cookie: alice })
         expect(findRes.data.paging.meta.totalCount).toBe(0)
         expect(findRes.data.paging.data.length).toBe(0)
       })
     })
 
     describe('unauthorized', () => {
-      let cookie: string
-      beforeAll(async () => {
-        cookie = await getBobCookie()
-      })
-
       it('should not create a community', async () => {
         expect.assertions(1)
         const input: UserCreateCommunityInput = {
@@ -147,7 +141,7 @@ xdescribe('api-community-feature', () => {
         }
 
         try {
-          await sdk.userCreateCommunity({ input }, { cookie })
+          await sdk.userCreateCommunity({ input }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not User')
         }
@@ -156,7 +150,7 @@ xdescribe('api-community-feature', () => {
       it('should not update a community', async () => {
         expect.assertions(1)
         try {
-          await sdk.userUpdateCommunity({ communityId, input: {} }, { cookie })
+          await sdk.userUpdateCommunity({ communityId, input: {} }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not User')
         }
@@ -165,7 +159,7 @@ xdescribe('api-community-feature', () => {
       it('should not find a list of communities (find all)', async () => {
         expect.assertions(1)
         try {
-          await sdk.userFindManyCommunity({ input: {} }, { cookie })
+          await sdk.userFindManyCommunity({ input: {} }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not User')
         }
@@ -174,7 +168,7 @@ xdescribe('api-community-feature', () => {
       it('should not find a community by id', async () => {
         expect.assertions(1)
         try {
-          await sdk.userFindOneCommunity({ communityId }, { cookie })
+          await sdk.userFindOneCommunity({ communityId }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not User')
         }
@@ -183,7 +177,7 @@ xdescribe('api-community-feature', () => {
       it('should not delete a community', async () => {
         expect.assertions(1)
         try {
-          await sdk.userDeleteCommunity({ communityId }, { cookie })
+          await sdk.userDeleteCommunity({ communityId }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not User')
         }

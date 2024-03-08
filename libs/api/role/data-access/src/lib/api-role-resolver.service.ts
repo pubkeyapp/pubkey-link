@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { OnEvent } from '@nestjs/event-emitter'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import {
   CommunityRole,
@@ -25,6 +26,7 @@ export class ApiRoleResolverService {
   ) {}
 
   @Cron(CronExpression.EVERY_MINUTE)
+  @OnEvent('communities.provisioned', { async: true })
   async syncAllCommunityRoles() {
     if (!this.core.config.syncCommunityRoles) {
       this.logger.log(`Role validation is disabled`)
@@ -71,7 +73,7 @@ export class ApiRoleResolverService {
       totalGranted: 0,
     }
 
-    if (!conditions?.length) {
+    if (!conditions?.length || !users?.length) {
       return result
     }
     this.logger.verbose(`Validating ${conditions.length} conditions for ${users.length} users`)
@@ -169,9 +171,11 @@ export class ApiRoleResolverService {
     }
 
     // Now delete any members that are no longer owners of the tokens
-    const deleteMembers = existing.filter((e) => !userIds.includes(e.userId))
+    const deleteMembers = existing
+      .filter((e) => !userIds.includes(e.userId))
+      .filter((e) => e.role !== CommunityRole.Admin)
     if (deleteMembers.length) {
-      for (const deleteMember of deleteMembers.filter((m) => m.role !== CommunityRole.Member)) {
+      for (const deleteMember of deleteMembers) {
         await this.core.data.communityMember.delete({ where: { id: deleteMember.id } })
         await this.core.logInfo(`Member removed`, { userId: deleteMember.userId, communityId })
       }
@@ -179,7 +183,7 @@ export class ApiRoleResolverService {
     }
 
     if (!newMembers.length && !deleteMembers.length) {
-      this.logger.verbose(`No members to sync for community ${communityId}`)
+      this.logger.verbose(`Members in community ${communityId} are in sync`)
     }
 
     return
