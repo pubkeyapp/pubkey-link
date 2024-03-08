@@ -1,6 +1,6 @@
-import { AdminCreateUserInput, AdminFindManyUserInput, UserRole, UserStatus } from '@pubkey-link/sdk'
+import { AdminFindManyUserInput, UserRole, UserStatus } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
-import { toastError, toastSuccess } from '@pubkey-ui/core'
+import { toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
@@ -44,22 +44,6 @@ export function useAdminFindManyUser(props?: AdminFindManyUserInput) {
       setPage(1)
       setStatus(status)
     },
-    createUser: (input: AdminCreateUserInput) =>
-      sdk
-        .adminCreateUser({ input })
-        .then((res) => res.data)
-        .then((res) => {
-          if (res.created) {
-            toastSuccess(`User  created`)
-          } else {
-            toastError(`User not created`)
-          }
-          return res.created
-        })
-        .catch((err) => {
-          toastError(err.message)
-          return undefined
-        }),
     deleteUser: (userId: string) =>
       sdk.adminDeleteUser({ userId }).then(() => {
         toastSuccess('User deleted')

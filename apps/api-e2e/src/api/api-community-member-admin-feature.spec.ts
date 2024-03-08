@@ -11,15 +11,15 @@ xdescribe('api-community-member-feature', () => {
   describe('api-community-member-admin-resolver', () => {
     let communityMemberId: string
     let alice: string
+    let bob: string
 
     beforeAll(async () => {
       alice = await getAliceCookie()
+      bob = await getBobCookie()
     })
 
     describe('authorized', () => {
       beforeAll(async () => {
-        alice = await getAliceCookie()
-
         communityMemberId = await sdk
           .adminFindManyCommunityMember({ input: { communityId: defaultCommunityId } }, { cookie: alice })
           .then((res) => res.data.paging.data[0].id)
@@ -89,11 +89,6 @@ xdescribe('api-community-member-feature', () => {
     })
 
     describe('unauthorized', () => {
-      let bob: string
-      beforeAll(async () => {
-        bob = await getBobCookie()
-      })
-
       it('should not update a community-member', async () => {
         expect.assertions(1)
         try {

@@ -26,9 +26,6 @@ export interface ApiCoreConfig {
   authDiscordClientSecret: string
   authDiscordLinkEnabled: boolean
   authDiscordLoginEnabled: boolean
-  // Username and Password Authentication
-  authPasswordEnabled: boolean
-  authRegisterEnabled: boolean
   // Solana Authentication
   authSolanaAdminIds: string[]
   authSolanaLinkEnabled: boolean
@@ -71,8 +68,6 @@ export function configuration(): ApiCoreConfig {
     authDiscordClientSecret: process.env['AUTH_DISCORD_CLIENT_SECRET'] as string,
     authDiscordLinkEnabled: process.env['AUTH_DISCORD_LINK_ENABLED'] === 'true',
     authDiscordLoginEnabled: process.env['AUTH_DISCORD_LOGIN_ENABLED'] === 'true',
-    authPasswordEnabled: process.env['AUTH_PASSWORD_ENABLED'] === 'true',
-    authRegisterEnabled: process.env['AUTH_REGISTER_ENABLED'] === 'true',
     authSolanaAdminIds: getFromEnvironment('AUTH_SOLANA_ADMIN_IDS'),
     authSolanaLinkEnabled: process.env['AUTH_SOLANA_LINK_ENABLED'] === 'true',
     authSolanaLoginEnabled: process.env['AUTH_SOLANA_LOGIN_ENABLED'] === 'true',

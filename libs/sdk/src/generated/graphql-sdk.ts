@@ -74,11 +74,6 @@ export type AdminCreateSnapshotInput = {
   roleId: Scalars['String']['input']
 }
 
-export type AdminCreateUserInput = {
-  password?: InputMaybe<Scalars['String']['input']>
-  username: Scalars['String']['input']
-}
-
 export type AdminFindManyBotInput = {
   communityId: Scalars['String']['input']
   limit?: InputMaybe<Scalars['Int']['input']>
@@ -218,8 +213,6 @@ export type AppConfig = {
   __typename?: 'AppConfig'
   authLinkProviders?: Maybe<Array<IdentityProvider>>
   authLoginProviders?: Maybe<Array<IdentityProvider>>
-  authPasswordEnabled: Scalars['Boolean']['output']
-  authRegisterEnabled: Scalars['Boolean']['output']
 }
 
 export type Bot = {
@@ -445,11 +438,6 @@ export enum LogRelatedType {
   User = 'User',
 }
 
-export type LoginInput = {
-  password: Scalars['String']['input']
-  username: Scalars['String']['input']
-}
-
 export type Mutation = {
   __typename?: 'Mutation'
   adminCreateBackup: Scalars['Boolean']['output']
@@ -461,7 +449,6 @@ export type Mutation = {
   adminCreateNetworkToken?: Maybe<NetworkToken>
   adminCreateRole?: Maybe<Role>
   adminCreateSnapshot?: Maybe<Snapshot>
-  adminCreateUser?: Maybe<User>
   adminDeleteBackup: Scalars['Boolean']['output']
   adminDeleteBot?: Maybe<Scalars['Boolean']['output']>
   adminDeleteCommunity?: Maybe<Scalars['Boolean']['output']>
@@ -486,9 +473,7 @@ export type Mutation = {
   adminUpdateRole?: Maybe<Role>
   adminUpdateUser?: Maybe<User>
   anonVerifyIdentityChallenge?: Maybe<IdentityChallenge>
-  login?: Maybe<User>
   logout?: Maybe<Scalars['Boolean']['output']>
-  register?: Maybe<User>
   userCreateBot?: Maybe<Bot>
   userCreateCommunity?: Maybe<Community>
   userCreateCommunityMember?: Maybe<CommunityMember>
@@ -553,10 +538,6 @@ export type MutationAdminCreateRoleArgs = {
 
 export type MutationAdminCreateSnapshotArgs = {
   input: AdminCreateSnapshotInput
-}
-
-export type MutationAdminCreateUserArgs = {
-  input: AdminCreateUserInput
 }
 
 export type MutationAdminDeleteBackupArgs = {
@@ -660,14 +641,6 @@ export type MutationAdminUpdateUserArgs = {
 
 export type MutationAnonVerifyIdentityChallengeArgs = {
   input: VerifyIdentityChallengeInput
-}
-
-export type MutationLoginArgs = {
-  input: LoginInput
-}
-
-export type MutationRegisterArgs = {
-  input: RegisterInput
 }
 
 export type MutationUserCreateBotArgs = {
@@ -1200,11 +1173,6 @@ export type QueryUserRequestIdentityChallengeArgs = {
   input: RequestIdentityChallengeInput
 }
 
-export type RegisterInput = {
-  password: Scalars['String']['input']
-  username: Scalars['String']['input']
-}
-
 export type RequestIdentityChallengeInput = {
   provider: IdentityProvider
   providerId: Scalars['String']['input']
@@ -1520,53 +1488,9 @@ export type VerifyIdentityChallengeInput = {
   signature: Scalars['String']['input']
 }
 
-export type LoginMutationVariables = Exact<{
-  input: LoginInput
-}>
-
-export type LoginMutation = {
-  __typename?: 'Mutation'
-  login?: {
-    __typename?: 'User'
-    avatarUrl?: string | null
-    createdAt?: Date | null
-    developer?: boolean | null
-    lastLogin?: Date | null
-    id: string
-    name?: string | null
-    profileUrl: string
-    role?: UserRole | null
-    status?: UserStatus | null
-    updatedAt?: Date | null
-    username?: string | null
-  } | null
-}
-
 export type LogoutMutationVariables = Exact<{ [key: string]: never }>
 
 export type LogoutMutation = { __typename?: 'Mutation'; logout?: boolean | null }
-
-export type RegisterMutationVariables = Exact<{
-  input: RegisterInput
-}>
-
-export type RegisterMutation = {
-  __typename?: 'Mutation'
-  register?: {
-    __typename?: 'User'
-    avatarUrl?: string | null
-    createdAt?: Date | null
-    developer?: boolean | null
-    lastLogin?: Date | null
-    id: string
-    name?: string | null
-    profileUrl: string
-    role?: UserRole | null
-    status?: UserStatus | null
-    updatedAt?: Date | null
-    username?: string | null
-  } | null
-}
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>
 
@@ -3533,8 +3457,6 @@ export type AppConfigDetailsFragment = {
   __typename?: 'AppConfig'
   authLinkProviders?: Array<IdentityProvider> | null
   authLoginProviders?: Array<IdentityProvider> | null
-  authPasswordEnabled: boolean
-  authRegisterEnabled: boolean
 }
 
 export type PagingMetaDetailsFragment = {
@@ -3560,8 +3482,6 @@ export type AppConfigQuery = {
     __typename?: 'AppConfig'
     authLinkProviders?: Array<IdentityProvider> | null
     authLoginProviders?: Array<IdentityProvider> | null
-    authPasswordEnabled: boolean
-    authRegisterEnabled: boolean
   }
 }
 
@@ -6947,28 +6867,6 @@ export type UserDetailsFragment = {
   username?: string | null
 }
 
-export type AdminCreateUserMutationVariables = Exact<{
-  input: AdminCreateUserInput
-}>
-
-export type AdminCreateUserMutation = {
-  __typename?: 'Mutation'
-  created?: {
-    __typename?: 'User'
-    avatarUrl?: string | null
-    createdAt?: Date | null
-    developer?: boolean | null
-    lastLogin?: Date | null
-    id: string
-    name?: string | null
-    profileUrl: string
-    role?: UserRole | null
-    status?: UserStatus | null
-    updatedAt?: Date | null
-    username?: string | null
-  } | null
-}
-
 export type AdminDeleteUserMutationVariables = Exact<{
   userId: Scalars['String']['input']
 }>
@@ -7359,8 +7257,6 @@ export const AppConfigDetailsFragmentDoc = gql`
   fragment AppConfigDetails on AppConfig {
     authLinkProviders
     authLoginProviders
-    authPasswordEnabled
-    authRegisterEnabled
   }
 `
 export const PagingMetaDetailsFragmentDoc = gql`
@@ -7550,26 +7446,10 @@ export const UserSummaryFragmentDoc = gql`
     username
   }
 `
-export const LoginDocument = gql`
-  mutation login($input: LoginInput!) {
-    login(input: $input) {
-      ...UserDetails
-    }
-  }
-  ${UserDetailsFragmentDoc}
-`
 export const LogoutDocument = gql`
   mutation logout {
     logout
   }
-`
-export const RegisterDocument = gql`
-  mutation register($input: RegisterInput!) {
-    register(input: $input) {
-      ...UserDetails
-    }
-  }
-  ${UserDetailsFragmentDoc}
 `
 export const MeDocument = gql`
   query me {
@@ -8522,14 +8402,6 @@ export const AdminDeleteSnapshotDocument = gql`
     deleted: adminDeleteSnapshot(snapshotId: $snapshotId)
   }
 `
-export const AdminCreateUserDocument = gql`
-  mutation adminCreateUser($input: AdminCreateUserInput!) {
-    created: adminCreateUser(input: $input) {
-      ...UserDetails
-    }
-  }
-  ${UserDetailsFragmentDoc}
-`
 export const AdminDeleteUserDocument = gql`
   mutation adminDeleteUser($userId: String!) {
     deleted: adminDeleteUser(userId: $userId)
@@ -8616,9 +8488,7 @@ export type SdkFunctionWrapper = <T>(
 ) => Promise<T>
 
 const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, variables) => action()
-const LoginDocumentString = print(LoginDocument)
 const LogoutDocumentString = print(LogoutDocument)
-const RegisterDocumentString = print(RegisterDocument)
 const MeDocumentString = print(MeDocument)
 const AdminCreateBackupDocumentString = print(AdminCreateBackupDocument)
 const AdminDeleteBackupDocumentString = print(AdminDeleteBackupDocument)
@@ -8734,7 +8604,6 @@ const AdminFindManySnapshotDocumentString = print(AdminFindManySnapshotDocument)
 const AdminFindOneSnapshotDocumentString = print(AdminFindOneSnapshotDocument)
 const AdminCreateSnapshotDocumentString = print(AdminCreateSnapshotDocument)
 const AdminDeleteSnapshotDocumentString = print(AdminDeleteSnapshotDocument)
-const AdminCreateUserDocumentString = print(AdminCreateUserDocument)
 const AdminDeleteUserDocumentString = print(AdminDeleteUserDocument)
 const AdminFindManyUserDocumentString = print(AdminFindManyUserDocument)
 const AdminFindOneUserDocumentString = print(AdminFindOneUserDocument)
@@ -8745,21 +8614,6 @@ const UserFindOneUserByIdDocumentString = print(UserFindOneUserByIdDocument)
 const UserUpdateUserDocumentString = print(UserUpdateUserDocument)
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    login(
-      variables: LoginMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<{ data: LoginMutation; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number }> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.rawRequest<LoginMutation>(LoginDocumentString, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
-          }),
-        'login',
-        'mutation',
-        variables,
-      )
-    },
     logout(
       variables?: LogoutMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -8771,27 +8625,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'logout',
-        'mutation',
-        variables,
-      )
-    },
-    register(
-      variables: RegisterMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<{
-      data: RegisterMutation
-      errors?: GraphQLError[]
-      extensions?: any
-      headers: Headers
-      status: number
-    }> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.rawRequest<RegisterMutation>(RegisterDocumentString, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
-          }),
-        'register',
         'mutation',
         variables,
       )
@@ -11191,27 +11024,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
-    adminCreateUser(
-      variables: AdminCreateUserMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<{
-      data: AdminCreateUserMutation
-      errors?: GraphQLError[]
-      extensions?: any
-      headers: Headers
-      status: number
-    }> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.rawRequest<AdminCreateUserMutation>(AdminCreateUserDocumentString, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
-          }),
-        'adminCreateUser',
-        'mutation',
-        variables,
-      )
-    },
     adminDeleteUser(
       variables: AdminDeleteUserMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -11482,13 +11294,6 @@ export function AdminCreateSnapshotInputSchema(): z.ZodObject<Properties<AdminCr
   })
 }
 
-export function AdminCreateUserInputSchema(): z.ZodObject<Properties<AdminCreateUserInput>> {
-  return z.object({
-    password: z.string().nullish(),
-    username: z.string(),
-  })
-}
-
 export function AdminFindManyBotInputSchema(): z.ZodObject<Properties<AdminFindManyBotInput>> {
   return z.object({
     communityId: z.string(),
@@ -11664,20 +11469,6 @@ export function LinkIdentityInputSchema(): z.ZodObject<Properties<LinkIdentityIn
   return z.object({
     provider: IdentityProviderSchema,
     providerId: z.string(),
-  })
-}
-
-export function LoginInputSchema(): z.ZodObject<Properties<LoginInput>> {
-  return z.object({
-    password: z.string(),
-    username: z.string(),
-  })
-}
-
-export function RegisterInputSchema(): z.ZodObject<Properties<RegisterInput>> {
-  return z.object({
-    password: z.string(),
-    username: z.string(),
   })
 }
 

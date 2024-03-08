@@ -52,11 +52,6 @@ input AdminCreateSnapshotInput {
   roleId: String!
 }
 
-input AdminCreateUserInput {
-  password: String
-  username: String!
-}
-
 input AdminFindManyBotInput {
   communityId: String!
   limit: Int = 10
@@ -195,8 +190,6 @@ input AdminUpdateUserInput {
 type AppConfig {
   authLinkProviders: [IdentityProvider!]
   authLoginProviders: [IdentityProvider!]
-  authPasswordEnabled: Boolean!
-  authRegisterEnabled: Boolean!
 }
 
 type Bot {
@@ -417,11 +410,6 @@ enum LogRelatedType {
   User
 }
 
-input LoginInput {
-  password: String!
-  username: String!
-}
-
 type Mutation {
   adminCreateBackup: Boolean!
   adminCreateBot(input: AdminCreateBotInput!): Bot
@@ -432,7 +420,6 @@ type Mutation {
   adminCreateNetworkToken(input: AdminCreateNetworkTokenInput!): NetworkToken
   adminCreateRole(input: AdminCreateRoleInput!): Role
   adminCreateSnapshot(input: AdminCreateSnapshotInput!): Snapshot
-  adminCreateUser(input: AdminCreateUserInput!): User
   adminDeleteBackup(name: String!): Boolean!
   adminDeleteBot(botId: String!): Boolean
   adminDeleteCommunity(communityId: String!): Boolean
@@ -457,9 +444,7 @@ type Mutation {
   adminUpdateRole(input: AdminUpdateRoleInput!, roleId: String!): Role
   adminUpdateUser(input: AdminUpdateUserInput!, userId: String!): User
   anonVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
-  login(input: LoginInput!): User
   logout: Boolean
-  register(input: RegisterInput!): User
   userCreateBot(input: UserCreateBotInput!): Bot
   userCreateCommunity(input: UserCreateCommunityInput!): Community
   userCreateCommunityMember(communityId: String!, input: UserCreateCommunityMemberInput!): CommunityMember
@@ -652,11 +637,6 @@ type Query {
   userGetTokenAccounts(account: String!, cluster: NetworkCluster!): JSON
   userGetTokenMetadata(account: String!, cluster: NetworkCluster!): JSON
   userRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
-}
-
-input RegisterInput {
-  password: String!
-  username: String!
 }
 
 input RequestIdentityChallengeInput {

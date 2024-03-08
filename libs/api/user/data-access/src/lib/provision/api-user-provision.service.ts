@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
 import { LogLevel, Prisma, UserStatus } from '@prisma/client'
-import { ApiCoreService, EVENT_APP_STARTED, hashPassword, slugifyUsername } from '@pubkey-link/api-core-data-access'
+import { ApiCoreService, EVENT_APP_STARTED, slugifyUsername } from '@pubkey-link/api-core-data-access'
 import { provisionUsers } from './api-user-provision-data'
 
 @Injectable()
@@ -31,7 +31,6 @@ export class ApiUserProvisionService {
         data: {
           ...input,
           id: username,
-          password: input.password ? hashPassword(input.password) : undefined,
           status: input.status ?? UserStatus.Active,
           logs: {
             create: [
@@ -54,9 +53,7 @@ export class ApiUserProvisionService {
         },
         include: { logs: true },
       })
-      this.logger.verbose(
-        `Provisioned ${input.role} ${input.username} ${input.password ? 'and password' : 'and external provider'}`,
-      )
+      this.logger.verbose(`Provisioned ${input.role} ${input.username} with ${identities.length} identities`)
       return
     }
   }

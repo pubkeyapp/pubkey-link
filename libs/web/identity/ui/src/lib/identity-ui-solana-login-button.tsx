@@ -1,11 +1,11 @@
 import { Button, type ButtonProps } from '@mantine/core'
+import { modals } from '@mantine/modals'
 import { IdentityProvider } from '@pubkey-link/sdk'
 import { IdentityProviderSolanaLogin } from '@pubkey-link/web-identity-data-access'
 import { SolanaClusterProvider } from '@pubkey-link/web-solana-data-access'
 import { IconCurrencySolana } from '@tabler/icons-react'
 import { getIdentityProviderColor } from './get-identity-provider-color'
 import { IdentityUiSolanaLoginWizard } from './identity-ui-solana-login-wizard'
-import { modals } from '@mantine/modals'
 
 export function IdentityUiSolanaLoginButton({ refresh, ...props }: ButtonProps & { refresh: () => void }) {
   return (
@@ -16,6 +16,7 @@ export function IdentityUiSolanaLoginButton({ refresh, ...props }: ButtonProps &
       onClick={() => {
         modals.open({
           title: 'Sign in with Solana',
+          centered: true,
           children: (
             <SolanaClusterProvider autoConnect={true}>
               <IdentityProviderSolanaLogin refresh={refresh}>
@@ -24,7 +25,6 @@ export function IdentityUiSolanaLoginButton({ refresh, ...props }: ButtonProps &
                   px="md"
                   refresh={() => {
                     refresh()
-                    // close()
                     modals.closeAll()
                   }}
                 />

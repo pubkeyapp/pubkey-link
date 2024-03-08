@@ -3,18 +3,16 @@ import { getAliceCookie, getBobCookie, sdk } from '../support'
 
 describe('api-log-feature', () => {
   describe('api-log-admin-resolver', () => {
-    let alice: string
     let logId: string
+    let alice: string
+    let bob: string
 
     beforeAll(async () => {
       alice = await getAliceCookie()
+      bob = await getBobCookie()
     })
 
     describe('authorized', () => {
-      beforeAll(async () => {
-        alice = await getAliceCookie()
-      })
-
       it('should find a list of logs (find all)', async () => {
         const input: AdminFindManyLogInput = {}
 
@@ -54,11 +52,6 @@ describe('api-log-feature', () => {
     })
 
     describe('unauthorized', () => {
-      let bob: string
-      beforeAll(async () => {
-        bob = await getBobCookie()
-      })
-
       it('should not find a list of logs (find all)', async () => {
         expect.assertions(1)
         try {

@@ -8,9 +8,6 @@ export const validationSchema = Joi.object({
   AUTH_DISCORD_CLIENT_SECRET: Joi.string(),
   AUTH_DISCORD_LINK_ENABLED: Joi.boolean().default(false),
   AUTH_DISCORD_LOGIN_ENABLED: Joi.boolean().default(true),
-  // Username and Password Authentication
-  AUTH_PASSWORD_ENABLED: Joi.boolean().default(false),
-  AUTH_REGISTER_ENABLED: Joi.boolean().default(false),
   // Solana Authentication
   AUTH_SOLANA_ADMIN_IDS: Joi.string(),
   AUTH_SOLANA_LINK_ENABLED: Joi.boolean().default(true),

@@ -7,18 +7,16 @@ describe('api-snapshot-feature', () => {
   describe('api-snapshot-user-resolver', () => {
     let snapshotId: string
     let alice: string
+    let bob: string
 
     beforeAll(async () => {
       alice = await getAliceCookie()
+      bob = await getBobCookie()
       const created = await sdk.userCreateSnapshot({ input: { roleId: defaultRoleId } }, { cookie: alice })
       snapshotId = created.data.created.id
     })
 
     describe('authorized', () => {
-      beforeAll(async () => {
-        alice = await getAliceCookie()
-      })
-
       it('should create a snapshot', async () => {
         const input: UserCreateSnapshotInput = {
           roleId: defaultRoleId,
@@ -98,11 +96,6 @@ describe('api-snapshot-feature', () => {
     })
 
     describe('unauthorized', () => {
-      let cookie: string
-      beforeAll(async () => {
-        cookie = await getBobCookie()
-      })
-
       it('should not create a snapshot', async () => {
         expect.assertions(1)
         const input: UserCreateSnapshotInput = {
@@ -110,7 +103,7 @@ describe('api-snapshot-feature', () => {
         }
 
         try {
-          await sdk.userCreateSnapshot({ input }, { cookie })
+          await sdk.userCreateSnapshot({ input }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('User bob is not a member of community pubkey')
         }
@@ -119,7 +112,7 @@ describe('api-snapshot-feature', () => {
       it('should not find a list of snapshots (find all)', async () => {
         expect.assertions(1)
         try {
-          await sdk.userFindManySnapshot({ input: { communityId: defaultCommunityId } }, { cookie })
+          await sdk.userFindManySnapshot({ input: { communityId: defaultCommunityId } }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('User bob is not a member of community pubkey')
         }
@@ -128,7 +121,7 @@ describe('api-snapshot-feature', () => {
       it('should not find a snapshot by id', async () => {
         expect.assertions(1)
         try {
-          await sdk.userFindOneSnapshot({ snapshotId }, { cookie })
+          await sdk.userFindOneSnapshot({ snapshotId }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('User bob is not a member of community pubkey')
         }
@@ -137,7 +130,7 @@ describe('api-snapshot-feature', () => {
       it('should not delete a snapshot', async () => {
         expect.assertions(1)
         try {
-          await sdk.userDeleteSnapshot({ snapshotId }, { cookie })
+          await sdk.userDeleteSnapshot({ snapshotId }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('User bob is not a member of community pubkey')
         }
