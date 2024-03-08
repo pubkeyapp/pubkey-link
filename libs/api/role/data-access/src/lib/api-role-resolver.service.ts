@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { OnEvent } from '@nestjs/event-emitter'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import {
   CommunityRole,
@@ -25,6 +26,7 @@ export class ApiRoleResolverService {
   ) {}
 
   @Cron(CronExpression.EVERY_MINUTE)
+  @OnEvent('communities.provisioned', { async: true })
   async syncAllCommunityRoles() {
     if (!this.core.config.syncCommunityRoles) {
       this.logger.log(`Role validation is disabled`)
@@ -71,7 +73,7 @@ export class ApiRoleResolverService {
       totalGranted: 0,
     }
 
-    if (!conditions?.length) {
+    if (!conditions?.length || !users?.length) {
       return result
     }
     this.logger.verbose(`Validating ${conditions.length} conditions for ${users.length} users`)
@@ -181,7 +183,7 @@ export class ApiRoleResolverService {
     }
 
     if (!newMembers.length && !deleteMembers.length) {
-      this.logger.verbose(`No members to sync for community ${communityId}`)
+      this.logger.verbose(`Members in community ${communityId} are in sync`)
     }
 
     return

@@ -1,4 +1,5 @@
 export * from './lib/api-community-data-access.module'
+export * from './lib/api-community.events'
 export * from './lib/api-community.service'
 export * from './lib/entity/community.entity'
 export * from './lib/dto/admin-create-community.input'
