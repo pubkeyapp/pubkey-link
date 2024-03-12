@@ -1312,13 +1312,8 @@ export type UserCreateCommunityMemberInput = {
 }
 
 export type UserCreateRoleConditionInput = {
-  amount?: InputMaybe<Scalars['String']['input']>
-  amountMax?: InputMaybe<Scalars['String']['input']>
-  config?: InputMaybe<Scalars['JSON']['input']>
-  filters?: InputMaybe<Scalars['JSON']['input']>
   roleId: Scalars['String']['input']
   tokenId: Scalars['String']['input']
-  type: NetworkTokenType
 }
 
 export type UserCreateRoleInput = {
@@ -11547,13 +11542,8 @@ export function UserCreateCommunityMemberInputSchema(): z.ZodObject<Properties<U
 
 export function UserCreateRoleConditionInputSchema(): z.ZodObject<Properties<UserCreateRoleConditionInput>> {
   return z.object({
-    amount: z.string().nullish(),
-    amountMax: z.string().nullish(),
-    config: definedNonNullAnySchema.nullish(),
-    filters: definedNonNullAnySchema.nullish(),
     roleId: z.string(),
     tokenId: z.string(),
-    type: NetworkTokenTypeSchema,
   })
 }
 
