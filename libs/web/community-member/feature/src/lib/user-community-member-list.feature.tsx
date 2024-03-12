@@ -3,7 +3,7 @@ import { Community } from '@pubkey-link/sdk'
 import { useUserFindManyCommunityMember } from '@pubkey-link/web-community-member-data-access'
 import { UserCommunityMemberUiTable, UserCreateCommunityMemberModal } from '@pubkey-link/web-community-member-ui'
 import { CommunityUiSelectRole } from '@pubkey-link/web-community-ui'
-import { UiPageLimit, UiSearchField } from '@pubkey-link/web-ui-core'
+import { UiPageLimit, UiSearchField } from '@pubkey-link/web-core-ui'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function UserCommunityMemberListFeature({ community }: { community: Community }) {

@@ -9,8 +9,7 @@ import {
 } from '@pubkey-link/sdk'
 import { NetworkTokenUiItem } from '@pubkey-link/web-network-token-ui'
 import { useUserFindOneRole } from '@pubkey-link/web-role-data-access'
-import { UiKeyValueTable } from '@pubkey-link/web-ui-core'
-import { toastError, toastSuccess, UiCard, UiDebug, UiInfo, UiStack } from '@pubkey-ui/core'
+import { toastError, toastSuccess, UiCard, UiDebug, UiInfo, UiInfoTable, UiStack } from '@pubkey-ui/core'
 import { useMemo, useState } from 'react'
 import { RoleConditionUiItem } from './role-condition-ui-item'
 import { RoleConditionUiNavLink } from './role-condition-ui-nav-link'
@@ -127,7 +126,7 @@ export function RoleConditionUiCreateWizard(props: { role: Role; community: Comm
             <Stepper.Step label="Confirm" description="Confirm and create condition">
               {networkTokenType && networkToken ? (
                 <UiStack>
-                  <UiKeyValueTable
+                  <UiInfoTable
                     items={[
                       ['Role', <RoleUiItem role={props.role} />],
                       ['Type', <RoleConditionUiItem type={networkTokenType} />],

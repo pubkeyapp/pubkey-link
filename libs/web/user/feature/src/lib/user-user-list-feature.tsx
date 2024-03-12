@@ -1,5 +1,5 @@
 import { Group } from '@mantine/core'
-import { UiSearchField } from '@pubkey-link/web-ui-core'
+import { UiSearchField } from '@pubkey-link/web-core-ui'
 import { useUserFindManyUser } from '@pubkey-link/web-user-data-access'
 import { UserUiGrid } from '@pubkey-link/web-user-ui'
 import { UiInfo, UiLoader, UiPage } from '@pubkey-ui/core'

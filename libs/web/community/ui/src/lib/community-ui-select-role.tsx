@@ -1,6 +1,6 @@
 import { SelectProps } from '@mantine/core'
 import { CommunityRole, getEnumOptions } from '@pubkey-link/sdk'
-import { UiSelectEnumOption } from '@pubkey-link/web-ui-core'
+import { UiSelectEnum } from '@pubkey-ui/core'
 
 export function CommunityUiSelectRole({
   label = 'Select Role',
@@ -13,7 +13,7 @@ export function CommunityUiSelectRole({
   setValue: (role: CommunityRole | undefined) => void
 }) {
   return (
-    <UiSelectEnumOption<CommunityRole>
+    <UiSelectEnum<CommunityRole>
       value={value}
       setValue={setValue}
       options={[...getEnumOptions(CommunityRole)]}

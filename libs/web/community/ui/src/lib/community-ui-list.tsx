@@ -1,4 +1,4 @@
-import type { Community } from '@pubkey-link/sdk'
+import { Community } from '@pubkey-link/sdk'
 import { RoleUiList } from '@pubkey-link/web-role-ui'
 import { UiDebugModal, UiGroup, UiInfo, UiStack } from '@pubkey-ui/core'
 import { Button, Paper } from '@mantine/core'

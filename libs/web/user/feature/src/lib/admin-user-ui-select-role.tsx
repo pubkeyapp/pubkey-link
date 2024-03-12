@@ -1,5 +1,5 @@
 import { getEnumOptions, UserRole } from '@pubkey-link/sdk'
-import { UiSelectEnumOption } from '@pubkey-link/web-ui-core'
+import { UiSelectEnum } from '@pubkey-ui/core'
 
 export function AdminUserUiSelectRole({
   value,
@@ -9,10 +9,12 @@ export function AdminUserUiSelectRole({
   setValue: (role: UserRole | undefined) => void
 }) {
   return (
-    <UiSelectEnumOption<UserRole>
+    <UiSelectEnum<UserRole>
       value={value}
       setValue={setValue}
-      options={[{ value: '', label: 'Filter by role' }, ...getEnumOptions(UserRole)]}
+      placeholder="Filter by role"
+      clearable
+      options={getEnumOptions(UserRole)}
     />
   )
 }

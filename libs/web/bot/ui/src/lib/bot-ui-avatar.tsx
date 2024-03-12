@@ -1,7 +1,6 @@
 import { Avatar, Indicator } from '@mantine/core'
-import { Bot, getRandomInt } from '@pubkey-link/sdk'
-import { UiAvatarProps } from '@pubkey-link/web-ui-core'
-import { getColorByIndex, UiAnchor } from '@pubkey-ui/core'
+import { Bot } from '@pubkey-link/sdk'
+import { getColorByIndex, getIntFromString, UiAnchor, UiAvatarProps } from '@pubkey-ui/core'
 
 export type BotUiAvatarProps = UiAvatarProps & {
   bot?: Bot
@@ -15,7 +14,7 @@ export function BotUiAvatar({ bot, to, ...props }: BotUiAvatarProps) {
   const avatar = avatarUrl?.length ? (
     <Avatar radius={100} src={avatarUrl} alt={`${name} avatar`} {...props} />
   ) : (
-    <Avatar radius={100} color={getColorByIndex(getRandomInt(name ?? ''))} {...props}>
+    <Avatar radius={100} color={getColorByIndex(getIntFromString(name ?? ''))} {...props}>
       {firstLetter?.toUpperCase()}
     </Avatar>
   )

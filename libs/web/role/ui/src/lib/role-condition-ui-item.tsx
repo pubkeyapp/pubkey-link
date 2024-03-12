@@ -5,7 +5,7 @@ import {
   getNetworkTokenTypeTitle,
 } from '@pubkey-link/resolvers'
 import { NetworkTokenType } from '@pubkey-link/sdk'
-import { UiIconAvatar } from '@pubkey-link/web-ui-core'
+import { UiIconAvatar } from '@pubkey-link/web-core-ui'
 import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core'
 import { ReactNode } from 'react'
 import { getRoleConditionIconType } from './get-role-condition-icon-type'

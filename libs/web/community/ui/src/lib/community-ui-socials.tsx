@@ -7,7 +7,7 @@ import {
   UiSocialTelegram,
   UiSocialWebsite,
   UiSocialX,
-} from '@pubkey-link/web-ui-core'
+} from '@pubkey-link/web-core-ui'
 import { ReactNode } from 'react'
 
 export function CommunityUiSocials({

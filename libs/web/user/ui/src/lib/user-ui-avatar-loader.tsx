@@ -1,7 +1,6 @@
 import { Text } from '@mantine/core'
-import { UiAvatar, UiAvatarProps } from '@pubkey-link/web-ui-core'
 import { useUserFindOneUserById } from '@pubkey-link/web-user-data-access'
-import { UiAnchor, UiLoader } from '@pubkey-ui/core'
+import { UiAnchor, UiAvatar, UiAvatarProps, UiLoader } from '@pubkey-ui/core'
 import { UserUiAvatar } from './user-ui-avatar'
 
 export function UserUiAvatarLoader({

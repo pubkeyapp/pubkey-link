@@ -1,5 +1,5 @@
 import { Button, Group } from '@mantine/core'
-import { UiPageLimit, UiSearchField } from '@pubkey-link/web-ui-core'
+import { UiPageLimit, UiSearchField } from '@pubkey-link/web-core-ui'
 import { useAdminFindManyNetwork } from '@pubkey-link/web-network-data-access'
 import { AdminNetworkUiTable } from '@pubkey-link/web-network-ui'
 import { UiBack, UiDebugModal, UiInfo, UiLoader, UiPage } from '@pubkey-ui/core'

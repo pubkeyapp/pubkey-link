@@ -1,6 +1,6 @@
 import { AvatarProps, Group, type GroupProps, Stack, Text } from '@mantine/core'
 import { ellipsify, Identity } from '@pubkey-link/sdk'
-import { IdentityUiAvatar } from '@pubkey-link/web-ui-core'
+import { IdentityUiAvatar } from '@pubkey-link/web-core-ui'
 import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core'
 import { IdentityUiProviderTag } from './identity-ui-provider-tag'
 

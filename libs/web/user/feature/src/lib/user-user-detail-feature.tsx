@@ -4,7 +4,7 @@ import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { useUserFindManyIdentity } from '@pubkey-link/web-identity-data-access'
 import { IdentityRefreshIcon, IdentityUiIcon, IdentityUiLink } from '@pubkey-link/web-identity-ui'
 import { UserNetworkTokenFeature } from '@pubkey-link/web-network-token-feature'
-import { UiGrid } from '@pubkey-link/web-ui-core'
+import { UiGrid } from '@pubkey-link/web-core-ui'
 import { useUserFineOneUser } from '@pubkey-link/web-user-data-access'
 import { UserUiProfile } from '@pubkey-link/web-user-ui'
 import {

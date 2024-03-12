@@ -1,6 +1,6 @@
 import { Group, Pagination, SimpleGrid } from '@mantine/core'
-import type { NetworkToken } from '@pubkey-link/sdk'
-import { gridLimits, UiPageLimit } from '@pubkey-link/web-ui-core'
+import { NetworkToken } from '@pubkey-link/sdk'
+import { gridLimits, UiPageLimit } from '@pubkey-link/web-core-ui'
 import { UiDebugModal, UiGroup, UiStack } from '@pubkey-ui/core'
 import { DataTableProps } from 'mantine-datatable'
 import { NetworkTokenUiGridItem } from './network-token-ui-grid-item'

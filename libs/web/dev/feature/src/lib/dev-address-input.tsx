@@ -14,7 +14,7 @@ import { toastSuccess, UiCard, UiDebug, UiStack } from '@pubkey-ui/core'
 import { useForm } from '@mantine/form'
 import { useEffect, useState } from 'react'
 import { IconCurrencySolana, IconX } from '@tabler/icons-react'
-import { validateSolanaPublicKey } from '@pubkey-link/web-ui-core'
+import { validateSolanaPublicKey } from '@pubkey-link/web-core-ui'
 import { useLocalStorage } from '@mantine/hooks'
 
 export function useRecentAddress() {

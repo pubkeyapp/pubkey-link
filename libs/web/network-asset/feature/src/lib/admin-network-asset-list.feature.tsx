@@ -3,7 +3,7 @@ import { NetworkCluster } from '@pubkey-link/sdk'
 import { useAdminFindManyNetworkAsset } from '@pubkey-link/web-network-asset-data-access'
 import { AdminNetworkAssetUiTable } from '@pubkey-link/web-network-asset-ui'
 import { NetworkTokenUiSelectType } from '@pubkey-link/web-network-token-ui'
-import { UiPageLimit, UiSearchField } from '@pubkey-link/web-ui-core'
+import { UiPageLimit, UiSearchField } from '@pubkey-link/web-core-ui'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function AdminNetworkAssetListFeature({ cluster }: { cluster: NetworkCluster }) {

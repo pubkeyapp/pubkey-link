@@ -7,7 +7,7 @@ import { UserLogFeature } from '@pubkey-link/web-log-feature'
 import { NetworkUiClusterBadge } from '@pubkey-link/web-network-ui'
 import { UserRoleFeature } from '@pubkey-link/web-role-feature'
 import { UserSnapshotFeature } from '@pubkey-link/web-snapshot-feature'
-import { UiIcon } from '@pubkey-link/web-ui-core'
+import { UiIcon } from '@pubkey-link/web-core-ui'
 import {
   UiBack,
   UiContainer,

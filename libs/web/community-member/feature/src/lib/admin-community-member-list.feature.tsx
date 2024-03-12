@@ -2,7 +2,7 @@ import { Group } from '@mantine/core'
 import { useAdminFindManyCommunityMember } from '@pubkey-link/web-community-member-data-access'
 import { AdminCommunityMemberUiTable, AdminCreateCommunityMemberModal } from '@pubkey-link/web-community-member-ui'
 import { CommunityUiSelectRole } from '@pubkey-link/web-community-ui'
-import { UiPageLimit, UiSearchField } from '@pubkey-link/web-ui-core'
+import { UiPageLimit, UiSearchField } from '@pubkey-link/web-core-ui'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function AdminCommunityMemberListFeature({ communityId }: { communityId: string }) {

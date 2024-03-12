@@ -1,6 +1,6 @@
 import { ActionIcon, Badge, Group, Menu, Text } from '@mantine/core'
 import { Identity, IdentityProvider } from '@pubkey-link/sdk'
-import { IdentityUiAvatar } from '@pubkey-link/web-ui-core'
+import { IdentityUiAvatar } from '@pubkey-link/web-core-ui'
 import { UiCard, UiCopy, UiDebugModal, UiGroup, UiStack } from '@pubkey-ui/core'
 import { IconDotsVertical, IconTrash } from '@tabler/icons-react'
 import { IdentityUiLink } from './identity-ui-link'

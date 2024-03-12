@@ -1,5 +1,5 @@
 import { getEnumOptions, NetworkCluster } from '@pubkey-link/sdk'
-import { UiSelectEnumOption } from '@pubkey-link/web-ui-core'
+import { UiSelectEnum } from '@pubkey-ui/core'
 
 export function NetworkUiSelectCluster({
   value,
@@ -9,11 +9,11 @@ export function NetworkUiSelectCluster({
   setValue: (role: NetworkCluster) => void
 }) {
   return (
-    <UiSelectEnumOption<NetworkCluster>
+    <UiSelectEnum<NetworkCluster>
       value={value}
       setValue={(value) => setValue(value ?? NetworkCluster.SolanaMainnet)}
+      clearable
       options={[
-        { value: '', label: 'Filter by cluster' },
         ...getEnumOptions(NetworkCluster)
           .filter((item) => ![NetworkCluster.SolanaCustom, NetworkCluster.SolanaTestnet].includes(item.value))
           .map(({ label, value }) => ({

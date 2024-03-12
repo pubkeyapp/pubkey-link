@@ -1,5 +1,5 @@
 import { Avatar, Tooltip } from '@mantine/core'
-import type { Identity } from '@pubkey-link/sdk'
+import { Identity } from '@pubkey-link/sdk'
 import { IdentityUiAvatar } from './identity-ui-avatar'
 
 export function IdentityUiAvatarGroup({ identities, limit = 5 }: { identities: Identity[]; limit?: number }) {

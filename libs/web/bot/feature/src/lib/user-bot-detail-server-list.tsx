@@ -1,7 +1,7 @@
 import { Anchor, SimpleGrid, Text } from '@mantine/core'
 import { Bot, DiscordServer } from '@pubkey-link/sdk'
 import { useUserGetBotServers } from '@pubkey-link/web-bot-data-access'
-import { UiDiscordServerItem } from '@pubkey-link/web-ui-core'
+import { UiDiscordServerItem } from '@pubkey-link/web-core-ui'
 import { UiAlert, UiCard, UiLoader } from '@pubkey-ui/core'
 import { Navigate, Route, Routes } from 'react-router-dom'
 

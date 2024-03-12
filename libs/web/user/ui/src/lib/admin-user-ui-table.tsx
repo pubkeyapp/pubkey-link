@@ -1,6 +1,6 @@
 import { ActionIcon, Alert, Group, ScrollArea } from '@mantine/core'
 import { User } from '@pubkey-link/sdk'
-import { IdentityUiAvatarGroup } from '@pubkey-link/web-ui-core'
+import { IdentityUiAvatarGroup } from '@pubkey-link/web-core-ui'
 import { UiTime } from '@pubkey-ui/core'
 import { IconPencil, IconTrash, IconUser } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'

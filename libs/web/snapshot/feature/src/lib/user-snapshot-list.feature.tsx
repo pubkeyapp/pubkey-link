@@ -4,7 +4,7 @@ import { Role, UserCreateSnapshotInput } from '@pubkey-link/sdk'
 import { useUserFindManyRole } from '@pubkey-link/web-role-data-access'
 import { useUserFindManySnapshot } from '@pubkey-link/web-snapshot-data-access'
 import { UserSnapshotUiTable } from '@pubkey-link/web-snapshot-ui'
-import { UiPageLimit, UiSearchField } from '@pubkey-link/web-ui-core'
+import { UiPageLimit, UiSearchField } from '@pubkey-link/web-core-ui'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function UserSnapshotListFeature({ communityId }: { communityId: string }) {

@@ -1,5 +1,5 @@
 import { Accordion } from '@mantine/core'
-import { UiGrid } from '@pubkey-link/web-ui-core'
+import { UiGrid } from '@pubkey-link/web-core-ui'
 import { useUserProfile } from '@pubkey-link/web-user-data-access'
 import { UserUiProfile, UserUiUpdateForm } from '@pubkey-link/web-user-ui'
 import { UiCardTitle, UiContainer, UiLoader, UiStack, UiWarning } from '@pubkey-ui/core'
