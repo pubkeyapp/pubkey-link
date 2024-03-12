@@ -767,13 +767,8 @@ input UserCreateCommunityMemberInput {
 }
 
 input UserCreateRoleConditionInput {
-  amount: String
-  amountMax: String
-  config: JSON
-  filters: JSON
   roleId: String!
   tokenId: String!
-  type: NetworkTokenType!
 }
 
 input UserCreateRoleInput {

@@ -23,13 +23,15 @@ export class ApiUserRoleService {
 
   async createRoleCondition(userId: string, input: UserCreateRoleConditionInput) {
     await this.ensureRoleAdmin({ userId, roleId: input.roleId })
+    const token = await this.core.data.networkToken.findUnique({ where: { id: input.tokenId } })
+    if (!token) {
+      throw new Error('Token not found')
+    }
     return this.core.data.roleCondition.create({
       data: {
-        config: input.config ?? undefined,
-        filters: input.filters ?? undefined,
         role: { connect: { id: input.roleId } },
         token: { connect: { id: input.tokenId } },
-        type: input.type,
+        type: token.type,
       },
     })
   }
@@ -120,11 +122,23 @@ export class ApiUserRoleService {
       throw new Error('Role condition not found')
     }
     await this.ensureRoleAdmin({ userId, roleId: found.roleId })
+    // Amount is at least 1
+    let amount = parseFloat(input.amount ?? '1')
+    if (amount < 1) {
+      amount = 1
+    }
+    // Amount Max must be higher than amount
+    const amountMax = input.amountMax ? parseFloat(input.amountMax) : undefined
+    if (amountMax && amountMax < amount) {
+      throw new Error('Amount max must be higher than amount')
+    }
+
     return this.core.data.roleCondition.update({
       where: { id: roleConditionId },
       data: {
         ...input,
-        amount: input.amount ?? undefined,
+        amount: amount.toString(),
+        amountMax: amountMax?.toString(),
         config: input.config ?? undefined,
         filters: input.filters ?? undefined,
       },

@@ -1,27 +1,18 @@
 import { Box, Button, Group, Stepper } from '@mantine/core'
-import {
-  Community,
-  getEnumOptions,
-  NetworkToken,
-  NetworkTokenType,
-  Role,
-  UserCreateRoleConditionInput,
-} from '@pubkey-link/sdk'
+import { Community, getEnumOptions, NetworkToken, NetworkTokenType, Role } from '@pubkey-link/sdk'
 import { NetworkTokenUiItem } from '@pubkey-link/web-network-token-ui'
 import { useUserFindOneRole } from '@pubkey-link/web-role-data-access'
-import { toastError, toastSuccess, UiCard, UiDebug, UiInfo, UiInfoTable, UiStack } from '@pubkey-ui/core'
+import { toastError, toastSuccess, UiCard, UiInfo, UiInfoTable, UiStack } from '@pubkey-ui/core'
 import { useMemo, useState } from 'react'
 import { RoleConditionUiItem } from './role-condition-ui-item'
 import { RoleConditionUiNavLink } from './role-condition-ui-nav-link'
-import { RoleConditionUiAmountForm, RoleConditionUiTypeForm } from './role-condition-ui-type-form'
+import { RoleConditionUiTypeForm } from './role-condition-ui-type-form'
 import { RoleUiItem } from './role-ui-item'
 
 export function RoleConditionUiCreateWizard(props: { role: Role; community: Community; tokens: NetworkToken[] }) {
   const { query, createRoleCondition } = useUserFindOneRole({ roleId: props.role.id })
   const [networkTokenType, setNetworkTokenType] = useState<NetworkTokenType | undefined>(undefined)
   const [networkToken, setNetworkToken] = useState<NetworkToken | undefined>(undefined)
-  const [amount, setAmount] = useState<string>('0')
-  const [amountMax, setAmountMax] = useState<string>('0')
   const tokens: NetworkToken[] = useMemo(() => {
     if (networkTokenType === NetworkTokenType.Fungible) {
       return props.tokens.filter((token) => token.type === NetworkTokenType.Fungible)
@@ -32,39 +23,8 @@ export function RoleConditionUiCreateWizard(props: { role: Role; community: Comm
     return []
   }, [networkTokenType, props.tokens])
 
-  const config: UserCreateRoleConditionInput = useMemo(() => {
-    const base: UserCreateRoleConditionInput = {
-      roleId: props.role.id,
-      type: networkTokenType ?? NetworkTokenType.Fungible,
-      tokenId: networkToken?.id ?? '',
-    }
-    if (networkTokenType === NetworkTokenType.Fungible && networkToken) {
-      return {
-        ...base,
-        tokenId: networkToken?.id,
-        amount: amount ?? '0',
-        amountMax: amountMax ?? '0',
-        config: {},
-        filters: {},
-      }
-    }
-    if (networkTokenType === NetworkTokenType.NonFungible && networkToken) {
-      return {
-        ...base,
-        tokenId: networkToken?.id,
-        amount: amount ?? '0',
-        amountMax: amountMax ?? '0',
-        config: {},
-        filters: {},
-      }
-    }
-    return {
-      ...base,
-    }
-  }, [props.role.id, networkTokenType, networkToken, amount, amountMax])
-
-  async function addCondition(type: NetworkTokenType, token: NetworkToken) {
-    createRoleCondition({ ...config, type, tokenId: token.id })
+  async function addCondition(tokenId: string) {
+    createRoleCondition({ roleId: props.role.id, tokenId })
       .then(async (res) => {
         toastSuccess('Condition created')
         await query.refetch()
@@ -132,16 +92,9 @@ export function RoleConditionUiCreateWizard(props: { role: Role; community: Comm
                       ['Type', <RoleConditionUiItem type={networkTokenType} />],
                       networkToken ? ['Token', <NetworkTokenUiItem networkToken={networkToken} />] : undefined,
                       [
-                        'Amount',
-                        <Group>
-                          <RoleConditionUiAmountForm label="Amount (min)" amount={amount} setAmount={setAmount} />
-                          <RoleConditionUiAmountForm label="Amount (max)" amount={amountMax} setAmount={setAmountMax} />
-                        </Group>,
-                      ],
-                      [
                         '',
-                        <Group justify="end">
-                          <Button size="xl" onClick={() => addCondition(networkTokenType, networkToken)}>
+                        <Group justify="end" mt="md">
+                          <Button size="lg" onClick={() => addCondition(networkToken.id)}>
                             Create Condition
                           </Button>
                         </Group>,
@@ -157,7 +110,6 @@ export function RoleConditionUiCreateWizard(props: { role: Role; community: Comm
           </Stepper>
         </UiStack>
       </UiCard>
-      <UiDebug data={config} />
     </UiStack>
   )
 }

@@ -9,7 +9,7 @@ export function UserRoleConditionListFeature(props: { role: Role; community: Com
   return (
     <UiStack>
       <Text size="sm">The following conditions must be satisfied to receive the permissions below.</Text>
-      <Accordion multiple variant="separated">
+      <Accordion multiple variant="separated" defaultValue={[...conditions.map((condition) => condition.id)]}>
         {conditions?.map((condition) => (
           <Accordion.Item key={condition.id} value={condition.id}>
             <Accordion.Control>
