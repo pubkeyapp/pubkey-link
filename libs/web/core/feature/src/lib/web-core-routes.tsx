@@ -7,10 +7,10 @@ import { lazy } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useGuardedRoutes } from './use-guarded-routes'
 
-export const LazyAdminFeature = lazy(() => import('./shell-admin.routes'))
-export const LazyUserFeature = lazy(() => import('./shell-user.routes'))
+export const LazyAdminFeature = lazy(() => import('./web-core-routes-admin'))
+export const LazyUserFeature = lazy(() => import('./web-core-routes-user'))
 
-export function ShellRoutes() {
+export function WebCoreRoutes() {
   return useGuardedRoutes({
     index: '/dashboard',
     admin: [

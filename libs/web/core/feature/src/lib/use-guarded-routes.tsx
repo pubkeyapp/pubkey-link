@@ -8,7 +8,7 @@ import {
 import { UiLoader } from '@pubkey-ui/core'
 
 import { Navigate, Outlet, RouteObject, useRoutes } from 'react-router-dom'
-import { ShellLayout } from './shell-layout'
+import { WebCoreLayout } from './web-core-layout'
 
 export function useGuardedRoutes({
   admin,
@@ -40,9 +40,9 @@ export function useGuardedRoutes({
                 {
                   // This adds the main layout to the routes
                   element: (
-                    <ShellLayout>
+                    <WebCoreLayout>
                       <Outlet />
-                    </ShellLayout>
+                    </WebCoreLayout>
                   ),
                   children: [
                     {

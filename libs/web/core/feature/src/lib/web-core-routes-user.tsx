@@ -26,6 +26,6 @@ const routes: RouteObject[] = [
   { path: '/users', element: <Navigate to="/u" replace /> },
 ]
 
-export default function ShellUserRoutes() {
+export default function WebCoreRoutesUser() {
   return useRoutes(routes)
 }

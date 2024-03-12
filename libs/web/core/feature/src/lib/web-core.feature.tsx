@@ -6,7 +6,7 @@ import '@pubkey-ui/core/index.esm.css'
 import 'mantine-datatable/styles.layer.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Link } from 'react-router-dom'
-import { ShellRoutes } from './shell.routes'
+import { WebCoreRoutes } from './web-core-routes'
 
 const client = new QueryClient({
   defaultOptions: {
@@ -21,7 +21,7 @@ const client = new QueryClient({
 // eslint-disable-next-line func-style
 export const ThemeLink: UiThemeLink = ({ children, ...props }) => <Link {...props}>{children}</Link>
 
-export function ShellFeature() {
+export function WebCoreFeature() {
   return (
     <BrowserRouter>
       <QueryClientProvider client={client}>
@@ -30,7 +30,7 @@ export function ShellFeature() {
             <AuthProvider>
               <UiThemeProvider link={ThemeLink}>
                 <SolanaClusterProvider>
-                  <ShellRoutes />
+                  <WebCoreRoutes />
                 </SolanaClusterProvider>
               </UiThemeProvider>
             </AuthProvider>

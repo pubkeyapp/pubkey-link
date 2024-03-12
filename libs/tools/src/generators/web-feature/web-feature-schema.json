@@ -40,7 +40,7 @@
     "skipUi": {
       "type": "boolean",
       "description": "Do not create a ui library for this feature.",
-      "default": true
+      "default": false
     }
   },
   "required": ["model"]
