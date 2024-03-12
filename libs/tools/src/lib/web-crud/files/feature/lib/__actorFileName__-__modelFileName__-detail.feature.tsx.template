@@ -1,6 +1,7 @@
 import { Group } from '@mantine/core'
 import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoutes } from '@pubkey-ui/core'
 import { use<%= actor.className %>FindOne<%= model.className %> } from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-data-access'
+import { <%= model.className %>UiItem } from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-ui'
 import { useParams } from 'react-router-dom'
 import { <%= actor.className %><%= model.className %>DetailInfoTab } from './<%= actor.propertyName %>-<%= model.fileName %>-detail-info.tab'
 import { <%= actor.className %><%= model.className %>DetailSettingsTab } from './<%= actor.propertyName %>-<%= model.fileName %>-detail-settings.tab'
@@ -18,7 +19,7 @@ export function <%= actor.className %><%= model.className %>DetailFeature() {
 
   return (
     <UiPage
-      title={<Group>{item.<%= label.propertyName %>}</Group> }
+      title={<<%= model.className %>UiItem <%= model.propertyName %>={item} />}
       leftAction={<UiBack />}
       rightAction={
         <Group>

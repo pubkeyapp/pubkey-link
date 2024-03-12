@@ -1,11 +1,13 @@
 import { AvatarProps, Group, type GroupProps, Stack, Text } from '@mantine/core'
 import { User } from '@pubkey-link/sdk'
 import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core'
+import { ReactNode } from 'react'
 import { UserUiAvatar } from './user-ui-avatar'
 
 export function UserUiItem({
   anchorProps,
   avatarProps,
+  children,
   groupProps,
   user,
   to,
@@ -13,6 +15,7 @@ export function UserUiItem({
   anchorProps?: UiAnchorProps
   avatarProps?: Omit<AvatarProps, 'src'>
   groupProps?: GroupProps
+  children?: ReactNode
   user?: User
   to?: string | null
 }) {
@@ -26,7 +29,9 @@ export function UserUiItem({
           <Text size="lg" fw="bold">
             {user?.username}
           </Text>
-          {user.name ? (
+          {children ? (
+            children
+          ) : user.name ? (
             <Text size="sm" c="dimmed">
               {user.name}
             </Text>
