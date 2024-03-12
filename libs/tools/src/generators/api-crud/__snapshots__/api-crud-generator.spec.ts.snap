@@ -174,7 +174,7 @@ exports[`api-crud generator should create crud with parent ID 1`] = `
                           "phone?: string;",
                           "@Field(() => String)",
                           "ownerId!: string;",
-                          "@Field(() => () => User, { nullable: true })",
+                          "@Field(() => User, { nullable: true })",
                           "owner?: User;",
                           "}",
                           "@ObjectType()",

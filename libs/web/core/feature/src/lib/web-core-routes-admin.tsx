@@ -1,13 +1,12 @@
-import { IconSettings } from '@tabler/icons-react'
 import { AdminCommunityFeature } from '@pubkey-link/web-community-feature'
 import { DevAdminRoutes } from '@pubkey-link/web-dev-feature'
 import { AdminLogFeature } from '@pubkey-link/web-log-feature'
 import { AdminNetworkFeature } from '@pubkey-link/web-network-feature'
+import { AdminSnapshotFeature } from '@pubkey-link/web-snapshot-feature'
 import { AdminUserFeature } from '@pubkey-link/web-user-feature'
 import { UiContainer, UiDashboardGrid, UiDashboardItem, UiNotFound } from '@pubkey-ui/core'
-import { IconFileText, IconNetwork, IconUsers, IconUsersGroup } from '@tabler/icons-react'
+import { IconFileText, IconNetwork, IconSettings, IconUsers, IconUsersGroup } from '@tabler/icons-react'
 import { Navigate, RouteObject, useRoutes } from 'react-router-dom'
-import { AdminSnapshotFeature } from '@pubkey-link/web-snapshot-feature'
 
 const links: UiDashboardItem[] = [
   // Admin Dashboard Links are added by the web-crud generator
@@ -28,7 +27,7 @@ const routes: RouteObject[] = [
   { path: 'snapshots/*', element: <AdminSnapshotFeature /> },
 ]
 
-export default function ShellAdminRoutes() {
+export default function WebCoreRoutesAdmin() {
   return useRoutes([
     { index: true, element: <Navigate to="dashboard" replace /> },
     {

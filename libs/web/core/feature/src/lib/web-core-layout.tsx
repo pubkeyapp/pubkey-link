@@ -7,7 +7,7 @@ import { IconBug, IconSettings } from '@tabler/icons-react'
 import { ReactNode, Suspense, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 
-export function ShellLayout({ children }: { children: ReactNode }) {
+export function WebCoreLayout({ children }: { children: ReactNode }) {
   const { isAdmin, isDeveloper, user } = useAuth()
   const [opened, { toggle }] = useDisclosure(false)
   const links: UiHeaderLink[] = useMemo(() => {
