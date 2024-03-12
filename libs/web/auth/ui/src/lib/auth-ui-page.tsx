@@ -1,7 +1,7 @@
 import { Anchor, Flex, Group, Paper, rem, Stack, useMantineTheme } from '@mantine/core'
 import { useMediaQuery } from '@mantine/hooks'
 import { CommunityUiFeatured } from '@pubkey-link/web-community-ui'
-import { UiBackgroundImage, UiSocialDiscord, UiSocialGithub, UiSocialX } from '@pubkey-link/web-ui-core'
+import { UiBackgroundImage, UiSocialDiscord, UiSocialGithub, UiSocialX } from '@pubkey-link/web-core-ui'
 import { UiLogoType, UiStack, useUiColorScheme } from '@pubkey-ui/core'
 import { ReactNode } from 'react'
 import { AuthUiEnabled } from './auth-ui-enabled'

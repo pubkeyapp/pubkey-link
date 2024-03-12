@@ -4,7 +4,7 @@ import { useUserFindManyNetworkToken } from '@pubkey-link/web-network-token-data
 import { NetworkTokenUiDetail } from './network-token-ui-detail'
 
 import { NetworkTokenUiSelectType } from '@pubkey-link/web-network-token-ui'
-import { UiSearchField } from '@pubkey-link/web-ui-core'
+import { UiSearchField } from '@pubkey-link/web-core-ui'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function UserNetworkTokenListFeature({ cluster, username }: { cluster: NetworkCluster; username: string }) {

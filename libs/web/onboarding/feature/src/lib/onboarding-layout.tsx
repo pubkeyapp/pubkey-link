@@ -1,7 +1,6 @@
 import { Button, Group } from '@mantine/core'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
-import { UiAvatar } from '@pubkey-link/web-ui-core'
-import { UiHeader, UiLayout, UiLoader, UiLogoType } from '@pubkey-ui/core'
+import { UiAvatar, UiHeader, UiLayout, UiLoader, UiLogoType } from '@pubkey-ui/core'
 import { IconLogout } from '@tabler/icons-react'
 import { ReactNode, Suspense } from 'react'
 
@@ -20,7 +19,7 @@ export function OnboardingLayout({ children }: { children: ReactNode }) {
                 Logout
               </Button>
               <UiAvatar
-                avatarUrl={user?.avatarUrl}
+                url={user?.avatarUrl}
                 name={user?.username}
                 alt={user?.username ?? 'User Avatar'}
                 radius={100}

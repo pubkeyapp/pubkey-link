@@ -1,5 +1,5 @@
 import { Paper } from '@mantine/core'
-import type { NetworkToken } from '@pubkey-link/sdk'
+import { NetworkToken } from '@pubkey-link/sdk'
 import { UiDebugModal, UiGroup } from '@pubkey-ui/core'
 import { NetworkTokenUiItem } from './network-token-ui-item'
 

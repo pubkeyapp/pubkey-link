@@ -1,7 +1,7 @@
 import { ActionIcon, Group } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
-import { UiHeaderProfile } from '@pubkey-link/web-ui-core'
+import { UiHeaderProfile } from '@pubkey-link/web-core-ui'
 import { UiHeader, UiHeaderLink, UiLayout, UiLoader, UiLogoType } from '@pubkey-ui/core'
 import { IconBug, IconSettings } from '@tabler/icons-react'
 import { ReactNode, Suspense, useMemo } from 'react'

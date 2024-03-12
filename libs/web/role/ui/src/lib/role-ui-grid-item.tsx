@@ -1,5 +1,5 @@
 import { Paper } from '@mantine/core'
-import type { Role } from '@pubkey-link/sdk'
+import { Role } from '@pubkey-link/sdk'
 import { UiDebugModal, UiGroup } from '@pubkey-ui/core'
 import { RoleUiItem } from './role-ui-item'
 

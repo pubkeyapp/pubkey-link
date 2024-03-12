@@ -1,5 +1,5 @@
 import { Paper } from '@mantine/core'
-import type { Snapshot } from '@pubkey-link/sdk'
+import { Snapshot } from '@pubkey-link/sdk'
 import { UiDebugModal, UiGroup } from '@pubkey-ui/core'
 import { SnapshotUiItem } from './snapshot-ui-item'
 

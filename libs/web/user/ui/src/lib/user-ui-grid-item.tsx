@@ -1,5 +1,5 @@
 import { Paper } from '@mantine/core'
-import type { User } from '@pubkey-link/sdk'
+import { User } from '@pubkey-link/sdk'
 import { UiDebugModal, UiGroup } from '@pubkey-ui/core'
 import { UserUiItem } from './user-ui-item'
 

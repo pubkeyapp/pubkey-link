@@ -6,8 +6,7 @@ import {
   NetworkTokenUiItem,
   useNetworkTokenSummary,
 } from '@pubkey-link/web-network-token-ui'
-import { UiKeyValueTable } from '@pubkey-link/web-ui-core'
-import { UiCard, UiGroup, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
+import { UiCard, UiGroup, UiInfo, UiInfoTable, UiLoader, UiStack } from '@pubkey-ui/core'
 import { useState } from 'react'
 
 export function NetworkTokenUiDetailFungible({ token, username }: { token: NetworkToken; username: string }) {
@@ -37,7 +36,7 @@ export function NetworkTokenUiDetailFungible({ token, username }: { token: Netwo
         <UiLoader />
       ) : items.length ? (
         showDetails ? (
-          <UiKeyValueTable
+          <UiInfoTable
             mt="lg"
             items={items.map((item) => [
               <UiStack gap={0}>

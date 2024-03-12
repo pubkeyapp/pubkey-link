@@ -1,5 +1,5 @@
 import { Paper } from '@mantine/core'
-import type { CommunityMember } from '@pubkey-link/sdk'
+import { CommunityMember } from '@pubkey-link/sdk'
 import { UiDebugModal, UiGroup } from '@pubkey-ui/core'
 import { CommunityMemberUiItem } from './community-member-ui-item'
 

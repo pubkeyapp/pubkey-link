@@ -1,5 +1,5 @@
 import { Paper } from '@mantine/core'
-import type { Bot } from '@pubkey-link/sdk'
+import { Bot } from '@pubkey-link/sdk'
 import { UiDebugModal, UiGroup } from '@pubkey-ui/core'
 import { BotUiItem } from './bot-ui-item'
 

@@ -1,7 +1,6 @@
 import { ActionIcon, Anchor, Box, Group, ScrollArea, Tooltip } from '@mantine/core'
 import { getEnumOptions, Log, LogLevel } from '@pubkey-link/sdk'
-import { UiSelectEnumOption } from '@pubkey-link/web-ui-core'
-import { UiDebugModal, UiTime } from '@pubkey-ui/core'
+import { UiDebugModal, UiSelectEnum, UiTime } from '@pubkey-ui/core'
 import { IconTrash, IconUser, IconUsers } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'
@@ -111,7 +110,7 @@ export function AdminLogUiSelectLevel({
   setValue: (value: LogLevel | undefined) => void
 }) {
   return (
-    <UiSelectEnumOption<LogLevel>
+    <UiSelectEnum<LogLevel>
       value={value}
       setValue={setValue}
       options={[{ value: '', label: 'Filter by level' }, ...getEnumOptions(LogLevel)]}

@@ -2,7 +2,7 @@ import { Button, Group, Stack, Text } from '@mantine/core'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { useUserFindManyCommunity } from '@pubkey-link/web-community-data-access'
 import { CommunityUiFeatured, CommunityUiGrid } from '@pubkey-link/web-community-ui'
-import { UiSearchField } from '@pubkey-link/web-ui-core'
+import { UiSearchField } from '@pubkey-link/web-core-ui'
 import { UiContainer, UiDebugModal, UiGroup, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 import { Link } from 'react-router-dom'
 

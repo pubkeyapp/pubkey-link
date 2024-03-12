@@ -1,5 +1,5 @@
 import { getEnumOptions, NetworkTokenType } from '@pubkey-link/sdk'
-import { UiSelectEnumOption } from '@pubkey-link/web-ui-core'
+import { UiSelectEnum } from '@pubkey-ui/core'
 
 export function NetworkTokenUiSelectType({
   value,
@@ -9,7 +9,7 @@ export function NetworkTokenUiSelectType({
   setValue: (role: NetworkTokenType | undefined) => void
 }) {
   return (
-    <UiSelectEnumOption<NetworkTokenType>
+    <UiSelectEnum<NetworkTokenType>
       value={value}
       setValue={setValue}
       options={[{ value: '', label: 'Filter by type' }, ...getEnumOptions(NetworkTokenType)]}

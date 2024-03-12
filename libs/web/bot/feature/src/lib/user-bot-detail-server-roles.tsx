@@ -1,6 +1,6 @@
 import { Group, Stack, Table, Text } from '@mantine/core'
 import { useUserGetBotRoles } from '@pubkey-link/web-bot-data-access'
-import { UiDiscordRoleColor } from '@pubkey-link/web-ui-core'
+import { UiDiscordRoleColor } from '@pubkey-link/web-core-ui'
 import { UiAlert, UiCard, UiDebug, UiDebugModal, UiLoader, UiStack } from '@pubkey-ui/core'
 import { IconBrandDiscord } from '@tabler/icons-react'
 

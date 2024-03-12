@@ -1,5 +1,5 @@
 import { Button } from '@mantine/core'
-import type { User } from '@pubkey-link/sdk'
+import { User } from '@pubkey-link/sdk'
 import { UserUiAvatar } from '@pubkey-link/web-user-ui'
 import { UiStack } from '@pubkey-ui/core'
 import { IconDoorExit } from '@tabler/icons-react'

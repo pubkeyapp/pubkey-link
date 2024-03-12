@@ -1,10 +1,10 @@
 import { Community } from '@pubkey-link/sdk'
-import { UiAvatar, UiAvatarProps } from '@pubkey-link/web-ui-core'
+import { UiAvatar, UiAvatarProps } from '@pubkey-ui/core'
 
 export type CommunityUiAvatarProps = UiAvatarProps & {
   community?: Community
 }
 
 export function CommunityUiAvatar({ community, ...props }: CommunityUiAvatarProps) {
-  return <UiAvatar avatarUrl={community?.avatarUrl} name={community?.name} {...props} />
+  return <UiAvatar url={community?.avatarUrl} name={community?.name} {...props} />
 }

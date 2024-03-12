@@ -1,5 +1,5 @@
 import { Grid } from '@mantine/core'
-import type { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 export function UiGrid({ children, sidebar }: { children: ReactNode; sidebar: ReactNode }) {
   return (

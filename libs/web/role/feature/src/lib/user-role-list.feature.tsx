@@ -3,7 +3,7 @@ import { modals } from '@mantine/modals'
 import { Community } from '@pubkey-link/sdk'
 import { useUserFindManyRole, useUserSyncCommunityRoles } from '@pubkey-link/web-role-data-access'
 import { UserRoleUiTable } from '@pubkey-link/web-role-ui'
-import { UiSearchField } from '@pubkey-link/web-ui-core'
+import { UiSearchField } from '@pubkey-link/web-core-ui'
 import { UiDebug, UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 import { Link } from 'react-router-dom'
 

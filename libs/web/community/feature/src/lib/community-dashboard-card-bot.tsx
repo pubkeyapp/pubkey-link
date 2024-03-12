@@ -2,7 +2,7 @@ import { Button } from '@mantine/core'
 import { Community } from '@pubkey-link/sdk'
 import { useUserFindOneBot, useUserGetBotServers } from '@pubkey-link/web-bot-data-access'
 import { BotUiItem } from '@pubkey-link/web-bot-ui'
-import { UiDiscordServerItem } from '@pubkey-link/web-ui-core'
+import { UiDiscordServerItem } from '@pubkey-link/web-core-ui'
 import { UiCard, UiCardTitle, UiGroup, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 import { Link } from 'react-router-dom'
 

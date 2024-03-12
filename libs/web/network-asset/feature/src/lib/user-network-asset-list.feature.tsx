@@ -3,7 +3,7 @@ import { NetworkCluster, NetworkTokenType } from '@pubkey-link/sdk'
 import { useUserFindManyNetworkAsset } from '@pubkey-link/web-network-asset-data-access'
 import { NetworkAssetUiGrid } from '@pubkey-link/web-network-asset-ui'
 import { NetworkUiSelectCluster } from '@pubkey-link/web-network-ui'
-import { UiSearchField } from '@pubkey-link/web-ui-core'
+import { UiSearchField } from '@pubkey-link/web-core-ui'
 import { UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export default function UserNetworkAssetListFeature({

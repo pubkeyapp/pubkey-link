@@ -1,8 +1,7 @@
 import { IdentityProvider, NetworkCluster } from '@pubkey-link/sdk'
 import { IdentityUiItemById } from '@pubkey-link/web-identity-ui'
 import { useUserFindOneNetworkAsset } from '@pubkey-link/web-network-asset-data-access'
-import { UiKeyValueTable } from '@pubkey-link/web-ui-core'
-import { UiCard, UiDebug, UiError, UiLoader, UiStack } from '@pubkey-ui/core'
+import { UiCard, UiDebug, UiError, UiInfoTable, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function UserNetworkAssetDetailOverviewTab({ account, cluster }: { account: string; cluster: NetworkCluster }) {
   const { item, query } = useUserFindOneNetworkAsset({ account, cluster })
@@ -21,7 +20,7 @@ export function UserNetworkAssetDetailOverviewTab({ account, cluster }: { accoun
       </UiCard>
       {item.attributes && (
         <UiCard title="Attributes">
-          <UiKeyValueTable items={item.attributes} />
+          <UiInfoTable items={item.attributes} />
         </UiCard>
       )}
       <UiDebug data={item} />

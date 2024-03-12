@@ -1,9 +1,9 @@
 {
-  "name": "web-ui-core",
+  "name": "web-core-ui",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/web/ui/core/src",
+  "sourceRoot": "libs/web/core/ui/src",
   "projectType": "library",
-  "tags": [],
+  "tags": ["app:web", "type:ui"],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint",

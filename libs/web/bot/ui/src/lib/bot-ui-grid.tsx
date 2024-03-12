@@ -1,5 +1,5 @@
 import { SimpleGrid } from '@mantine/core'
-import type { Bot } from '@pubkey-link/sdk'
+import { Bot } from '@pubkey-link/sdk'
 import { UiStack } from '@pubkey-ui/core'
 import { BotUiGridItem } from './bot-ui-grid-item'
 
