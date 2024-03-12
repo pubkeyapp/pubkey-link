@@ -15,6 +15,7 @@ import { ApiSnapshotFeatureModule } from '@pubkey-link/api-snapshot-feature'
 import { ApiUserFeatureModule } from '@pubkey-link/api-user-feature'
 import { ApiCoreController } from './api-core.controller'
 import { ApiCoreResolver } from './api-core.resolver'
+import { ApiTeamFeatureModule } from '@pubkey-link/api-team-feature'
 
 const imports = [
   // The api-feature generator will add the imports here
@@ -32,6 +33,7 @@ const imports = [
   ApiRoleFeatureModule,
   ApiSnapshotFeatureModule,
   ApiUserFeatureModule,
+  ApiTeamFeatureModule,
 ]
 
 @Module({
