@@ -7,7 +7,7 @@ export const APP_MEMBER_ROLE_COLORS: Record<CommunityRole, string> = {
   [CommunityRole.Member]: 'blue',
 }
 
-export function CommunityMemberUiRole({ role, ...props }: BadgeProps & { role: CommunityRole }) {
+export function CommunityMemberUiRoleBadge({ role, ...props }: BadgeProps & { role: CommunityRole }) {
   const { colorScheme } = useUiColorScheme()
   return (
     <Badge color={APP_MEMBER_ROLE_COLORS[role]} variant={colorScheme === 'dark' ? 'light' : 'outline'} {...props}>

@@ -1,4 +1,9 @@
-import { CommunityRole, UserCreateCommunityMemberInput, UserFindManyCommunityMemberInput } from '@pubkey-link/sdk'
+import {
+  CommunityMember,
+  CommunityRole,
+  UserCreateCommunityMemberInput,
+  UserFindManyCommunityMemberInput,
+} from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
@@ -19,7 +24,7 @@ export function useUserFindManyCommunityMember(
     queryFn: () => sdk.userFindManyCommunityMember({ input }).then((res) => res.data),
   })
   const total = query.data?.paging?.meta?.totalCount ?? 0
-  const items = query.data?.paging.data ?? []
+  const items: CommunityMember[] = query.data?.paging.data ?? []
 
   return {
     items,

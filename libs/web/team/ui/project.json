@@ -1,0 +1,13 @@
+{
+  "name": "web-team-ui",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/web/team/ui/src",
+  "projectType": "library",
+  "tags": ["app:web", "type:ui"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    }
+  }
+}
