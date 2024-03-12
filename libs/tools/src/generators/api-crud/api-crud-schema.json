@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "$id": "ApiCrudSchema",
+  "$id": "ApiCrudGeneratorSchema",
   "title": "",
   "type": "object",
   "properties": {
@@ -25,6 +25,14 @@
       "type": "string",
       "description": "The name of the model for this feature.",
       "x-prompt": "What is the name of the model for this feature?"
+    },
+    "modelParentId": {
+      "type": "string",
+      "description": "The id field of the model owner. Generally 'userId' or 'ownerId'."
+    },
+    "modelParent": {
+      "type": "string",
+      "description": "The name of the model owner. Generally 'User'."
     }
   },
   "required": ["app", "actor", "model"]

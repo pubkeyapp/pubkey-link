@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "$id": "ApiFeature",
+  "$id": "ApiFeatureGeneratorSchema",
   "title": "",
   "type": "object",
   "properties": {
@@ -12,6 +12,14 @@
         "$source": "argv",
         "index": 0
       }
+    },
+    "modelParentId": {
+      "type": "string",
+      "description": "The id field of the model owner. Generally 'userId' or 'ownerId'."
+    },
+    "modelParent": {
+      "type": "string",
+      "description": "The name of the model owner. Generally 'User'."
     },
     "app": {
       "type": "string",
@@ -25,8 +33,7 @@
     },
     "crud": {
       "type": "string",
-      "description": "Command separated list of actors to create CRUD for.",
-      "default": "admin,user"
+      "description": "Command separated list of actors to create CRUD for."
     },
     "skipDataAccess": {
       "type": "boolean",

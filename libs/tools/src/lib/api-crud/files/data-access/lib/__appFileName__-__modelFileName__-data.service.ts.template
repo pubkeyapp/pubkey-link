@@ -1,0 +1,37 @@
+import { Injectable } from '@nestjs/common'
+import { Prisma } from '@prisma/client'
+import { <%= app.className %>CoreService, type PagingInputFields } from '@<%= npmScope %>/<%= app.fileName %>-core-data-access'
+import { <%= model.className %>Paging } from './entity/<%= model.fileName %>.entity'
+
+@Injectable()
+export class <%= app.className %><%= model.className %>DataService {
+  constructor(private readonly core: <%= app.className %>CoreService) {}
+
+  async create(input: Prisma.<%= model.className %>UncheckedCreateInput) {
+    return this.core.data.<%= model.propertyName %>.create({ data: input })
+  }
+
+  async delete(<%= model.propertyName %>Id: string) {
+    const deleted = await this.core.data.<%= model.propertyName %>.delete({ where: { id: <%= model.propertyName %>Id } })
+    return !!deleted
+  }
+
+  async findMany({
+    limit = 10,
+    page = 1,
+    ...input
+  }: Prisma.<%= model.className %>FindManyArgs & PagingInputFields): Promise<<%= model.className %>Paging> {
+    return this.core.data.<%= model.propertyName %>
+      .paginate(input)
+      .withPages({ limit, page })
+      .then(([data, meta]) => ({ data, meta }))
+  }
+
+  async findOne(<%= model.propertyName %>Id: string) {
+    return this.core.data.<%= model.propertyName %>.findUnique({ where: { id: <%= model.propertyName %>Id } })
+  }
+
+  async update(<%= model.propertyName %>Id: string, input: Prisma.<%= model.className %>UpdateInput) {
+    return this.core.data.<%= model.propertyName %>.update({ where: { id: <%= model.propertyName %>Id }, data: input })
+  }
+}

@@ -211,8 +211,8 @@ export function useUserFindOneTest({ testId }: { testId: string }) {
 `;
 
 exports[`web-feature generator should run successfully with crud 9`] = `
-"export const AdminTestFeature = lazy(() => import('./lib/admin-test.routes'));
-import { lazy } from 'react';
+"import { lazy } from 'react';
+export const AdminTestFeature = lazy(() => import('./lib/admin-test.routes'));
 
 export const UserTestFeature = lazy(() => import('./lib/user-test.routes'));
 "
@@ -233,7 +233,7 @@ export function AdminTestCreateFeature() {
     return createTest(input)
       .then((res) => {
         if (res) {
-          navigate(\`/admin/tests/\${res?.id}\`);
+          navigate(\`../\${res?.id}\`);
         }
       })
       .then(() => true)
@@ -256,9 +256,10 @@ export function AdminTestCreateFeature() {
 
 exports[`web-feature generator should run successfully with crud 11`] = `
 "import { useAdminFindOneTest } from '@proj/web-test-data-access';
+import { TestUiInfo } from '@proj/web-test-ui';
 import { UiCard, UiDebug, UiError, UiLoader } from '@pubkey-ui/core';
 
-export function AdminTestDetailOverviewTab({ testId }: { testId: string }) {
+export function AdminTestDetailInfoTab({ testId }: { testId: string }) {
   const { item, query } = useAdminFindOneTest({ testId });
 
   if (query.isLoading) {
@@ -270,7 +271,7 @@ export function AdminTestDetailOverviewTab({ testId }: { testId: string }) {
 
   return (
     <UiCard>
-      <UiDebug data={item} open />
+      <TestUiInfo test={item} />
     </UiCard>
   );
 }
@@ -313,7 +314,7 @@ import {
 } from '@pubkey-ui/core';
 import { useAdminFindOneTest } from '@proj/web-test-data-access';
 import { useParams } from 'react-router-dom';
-import { AdminTestDetailOverviewTab } from './admin-test-detail-overview.tab';
+import { AdminTestDetailInfoTab } from './admin-test-detail-info.tab';
 import { AdminTestDetailSettingsTab } from './admin-test-detail-settings.tab';
 
 export function AdminTestDetailFeature() {
@@ -340,9 +341,9 @@ export function AdminTestDetailFeature() {
       <UiTabRoutes
         tabs={[
           {
-            path: 'overview',
-            label: 'Overview',
-            element: <AdminTestDetailOverviewTab testId={testId} />,
+            path: 'info',
+            label: 'Info',
+            element: <AdminTestDetailInfoTab testId={testId} />,
           },
           {
             path: 'settings',
@@ -359,7 +360,7 @@ export function AdminTestDetailFeature() {
 
 exports[`web-feature generator should run successfully with crud 14`] = `
 "import { Button, Group } from '@mantine/core';
-import { UiPageLimit, UiSearchField } from '@proj/web-ui-core';
+import { UiPageLimit, UiSearchField } from '@proj/web-core-ui';
 import { useAdminFindManyTest } from '@proj/web-test-data-access';
 import { AdminTestUiTable } from '@proj/web-test-ui';
 import {
@@ -456,7 +457,7 @@ export function UserTestCreateFeature() {
     return createTest(input)
       .then((res) => {
         if (res) {
-          navigate(\`/tests/\${res?.id}\`);
+          navigate(\`../\${res?.id}\`);
         }
       })
       .then(() => true)
@@ -479,9 +480,10 @@ export function UserTestCreateFeature() {
 
 exports[`web-feature generator should run successfully with crud 17`] = `
 "import { useUserFindOneTest } from '@proj/web-test-data-access';
+import { TestUiInfo } from '@proj/web-test-ui';
 import { UiCard, UiDebug, UiError, UiLoader } from '@pubkey-ui/core';
 
-export function UserTestDetailOverviewTab({ testId }: { testId: string }) {
+export function UserTestDetailInfoTab({ testId }: { testId: string }) {
   const { item, query } = useUserFindOneTest({ testId });
 
   if (query.isLoading) {
@@ -493,7 +495,7 @@ export function UserTestDetailOverviewTab({ testId }: { testId: string }) {
 
   return (
     <UiCard>
-      <UiDebug data={item} open />
+      <TestUiInfo test={item} />
     </UiCard>
   );
 }
@@ -536,7 +538,7 @@ import {
 } from '@pubkey-ui/core';
 import { useUserFindOneTest } from '@proj/web-test-data-access';
 import { useParams } from 'react-router-dom';
-import { UserTestDetailOverviewTab } from './user-test-detail-overview.tab';
+import { UserTestDetailInfoTab } from './user-test-detail-info.tab';
 import { UserTestDetailSettingsTab } from './user-test-detail-settings.tab';
 
 export function UserTestDetailFeature() {
@@ -563,9 +565,9 @@ export function UserTestDetailFeature() {
       <UiTabRoutes
         tabs={[
           {
-            path: 'overview',
-            label: 'Overview',
-            element: <UserTestDetailOverviewTab testId={testId} />,
+            path: 'info',
+            label: 'Info',
+            element: <UserTestDetailInfoTab testId={testId} />,
           },
           {
             path: 'settings',
@@ -582,7 +584,7 @@ export function UserTestDetailFeature() {
 
 exports[`web-feature generator should run successfully with crud 20`] = `
 "import { Button, Group } from '@mantine/core';
-import { UiPageLimit, UiSearchField } from '@proj/web-ui-core';
+import { UiPageLimit, UiSearchField } from '@proj/web-core-ui';
 import { useUserFindManyTest } from '@proj/web-test-data-access';
 import { TestUiGrid } from '@proj/web-test-ui';
 import {
@@ -664,6 +666,7 @@ export * from './lib/admin-test-ui-update-form';
 export * from './lib/test-ui-avatar';
 export * from './lib/test-ui-grid';
 export * from './lib/test-ui-grid-item';
+export * from './lib/test-ui-info';
 export * from './lib/test-ui-item';
 export * from './lib/user-test-ui-create-form';
 export * from './lib/user-test-ui-table';
@@ -740,12 +743,7 @@ export function AdminTestUiTable({
           {
             accessor: 'name',
             render: (item) => (
-              <Anchor
-                component={Link}
-                to={\`/admin/tests/\${item.id}\`}
-                size="sm"
-                fw={500}
-              >
+              <Anchor component={Link} to={\`./\${item.id}\`} size="sm" fw={500}>
                 {item.name}
               </Anchor>
             ),
@@ -761,7 +759,7 @@ export function AdminTestUiTable({
                   variant="light"
                   size="sm"
                   component={Link}
-                  to={\`/admin/tests/\${item.id}/settings\`}
+                  to={\`./\${item.id}/settings\`}
                 >
                   <IconPencil size={16} />
                 </ActionIcon>
@@ -820,22 +818,22 @@ export function AdminTestUiUpdateForm({
 `;
 
 exports[`web-feature generator should run successfully with crud 26`] = `
-"import { Test } from '@pubkey-link/sdk';
-import { UiAvatar, UiAvatarProps } from '@pubkey-link/web-ui-core';
+"import { Test } from '@proj/sdk';
+import { UiAvatar, UiAvatarProps } from '@pubkey-ui/core';
 
 export type TestUiAvatarProps = UiAvatarProps & {
   test?: Test;
 };
 
 export function TestUiAvatar({ test, ...props }: TestUiAvatarProps) {
-  return <UiAvatar avatarUrl={undefined} name={test?.name} {...props} />;
+  return <UiAvatar url={undefined} name={test?.name} {...props} />;
 }
 "
 `;
 
 exports[`web-feature generator should run successfully with crud 27`] = `
 "import { Paper } from '@mantine/core';
-import type { Test } from '@pubkey-link/sdk';
+import { Test } from '@proj/sdk';
 import { UiDebugModal, UiGroup } from '@pubkey-ui/core';
 import { TestUiItem } from './test-ui-item';
 
@@ -854,8 +852,8 @@ export function TestUiGridItem({ test, to }: { test: Test; to?: string }) {
 
 exports[`web-feature generator should run successfully with crud 28`] = `
 "import { Group, Pagination, SimpleGrid } from '@mantine/core';
-import type { Test } from '@pubkey-link/sdk';
-import { gridLimits, UiPageLimit } from '@pubkey-link/web-ui-core';
+import { Test } from '@proj/sdk';
+import { gridLimits, UiPageLimit } from '@proj/web-core-ui';
 import { UiDebugModal, UiGroup, UiStack } from '@pubkey-ui/core';
 import { DataTableProps } from 'mantine-datatable';
 import { TestUiGridItem } from './test-ui-grid-item';
@@ -909,6 +907,30 @@ export function TestUiGrid({
 `;
 
 exports[`web-feature generator should run successfully with crud 29`] = `
+"import { Test } from '@proj/sdk';
+import { UiInfoItems, UiInfoTable, UiTime } from '@pubkey-ui/core';
+
+export function TestUiInfo({ test }: { test?: Test }) {
+  if (!test) return null;
+
+  const items: UiInfoItems = [
+    ['name', test.name],
+    [
+      'Created At',
+      <UiTime size="xs" c="dimmed" date={new Date(test.createdAt ?? '0')} />,
+    ],
+    [
+      'Updated At',
+      <UiTime size="xs" c="dimmed" date={new Date(test.updatedAt ?? '0')} />,
+    ],
+  ];
+
+  return <UiInfoTable items={items} />;
+}
+"
+`;
+
+exports[`web-feature generator should run successfully with crud 30`] = `
 "import {
   AvatarProps,
   Group,
@@ -916,7 +938,7 @@ exports[`web-feature generator should run successfully with crud 29`] = `
   Stack,
   Text,
 } from '@mantine/core';
-import { Test } from '@pubkey-link/sdk';
+import { Test } from '@proj/sdk';
 import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core';
 import { TestUiAvatar } from './test-ui-avatar';
 
@@ -951,7 +973,7 @@ export function TestUiItem({
 "
 `;
 
-exports[`web-feature generator should run successfully with crud 30`] = `
+exports[`web-feature generator should run successfully with crud 31`] = `
 "import { Button, Group } from '@mantine/core';
 import { UserCreateTestInput } from '@proj/sdk';
 import { formFieldText, UiForm, UiFormField } from '@pubkey-ui/core';
@@ -984,7 +1006,7 @@ export function UserTestUiCreateForm({
 "
 `;
 
-exports[`web-feature generator should run successfully with crud 31`] = `
+exports[`web-feature generator should run successfully with crud 32`] = `
 "import { ActionIcon, Anchor, Group, ScrollArea } from '@mantine/core';
 import { Test } from '@proj/sdk';
 import { IconPencil, IconTrash } from '@tabler/icons-react';
@@ -1020,12 +1042,7 @@ export function UserTestUiTable({
           {
             accessor: 'name',
             render: (item) => (
-              <Anchor
-                component={Link}
-                to={\`/tests/\${item.id}\`}
-                size="sm"
-                fw={500}
-              >
+              <Anchor component={Link} to={\`./\${item.id}\`} size="sm" fw={500}>
                 {item.name}
               </Anchor>
             ),
@@ -1041,7 +1058,7 @@ export function UserTestUiTable({
                   variant="light"
                   size="sm"
                   component={Link}
-                  to={\`/tests/\${item.id}/settings\`}
+                  to={\`./\${item.id}/settings\`}
                 >
                   <IconPencil size={16} />
                 </ActionIcon>
@@ -1065,7 +1082,7 @@ export function UserTestUiTable({
 "
 `;
 
-exports[`web-feature generator should run successfully with crud 32`] = `
+exports[`web-feature generator should run successfully with crud 33`] = `
 "import { Button, Group } from '@mantine/core';
 import { UserUpdateTestInput, Test } from '@proj/sdk';
 import { formFieldText, UiForm, UiFormField } from '@pubkey-ui/core';

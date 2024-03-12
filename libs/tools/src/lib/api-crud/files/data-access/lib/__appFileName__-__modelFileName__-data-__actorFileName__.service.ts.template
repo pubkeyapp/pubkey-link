@@ -1,0 +1,38 @@
+import { Injectable } from '@nestjs/common'
+import { <%= actor.className %>Create<%= model.className %>Input } from './dto/<%= actor.fileName %>-create-<%= model.fileName %>.input'
+import { <%= actor.className %>FindMany<%= model.className %>Input } from './dto/<%= actor.fileName %>-find-many-<%= model.fileName %>.input'
+import { <%= actor.className %>Update<%= model.className %>Input } from './dto/<%= actor.fileName %>-update-<%= model.fileName %>.input'
+import { <%= model.className %>Paging } from './entity/<%= model.fileName %>.entity'
+import { get<%= model.className %>Where<%= actor.className %>Input } from './helpers/get-<%= model.fileName %>-where-<%= actor.fileName %>.input'
+import { <%= app.className %><%= model.className %>DataService } from './<%= app.fileName %>-<%= model.fileName %>-data.service'
+
+
+@Injectable()
+export class <%= app.className %><%= model.className %>Data<%= actor.className %>Service {
+  constructor(private readonly data: <%= app.className %><%= model.className %>DataService) {}
+
+  async create<%= model.className %>(<% if(parent){ %><%= parentId %>: string, <% } %>input: <%= actor.className %>Create<%= model.className %>Input) {
+    return this.data.create(<% if(parent && parent.className !== 'User'){ %>{...input, <%= parentId %> }<% } else { %>input<% } %>)
+  }
+
+  async delete<%= model.className %>(<% if(parent){ %><%= parentId %>: string, <% } %><%= model.propertyName %>Id: string) {
+    return this.data.delete(<%= model.propertyName %>Id)
+  }
+
+  async findMany<%= model.className %>(input: <%= actor.className %>FindMany<%= model.className %>Input): Promise<<%= model.className %>Paging> {
+    return this.data.findMany({
+        orderBy: { createdAt: 'desc' },
+        where: get<%= model.className %>Where<%= actor.className %>Input(input),
+        limit: input.limit,
+        page: input.page
+      })
+  }
+
+  async findOne<%= model.className %>(<% if(parent){ %><%= parentId %>: string, <% } %><%= model.propertyName %>Id: string) {
+    return this.data.findOne(<%= model.propertyName %>Id)
+  }
+
+  async update<%= model.className %>(<% if(parent){ %><%= parentId %>: string, <% } %><%= model.propertyName %>Id: string, input: <%= actor.className %>Update<%= model.className %>Input) {
+    return this.data.update(<%= model.propertyName %>Id, input)
+  }
+}

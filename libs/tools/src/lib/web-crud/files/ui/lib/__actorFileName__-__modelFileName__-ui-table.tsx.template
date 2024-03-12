@@ -33,7 +33,7 @@ export function <%= actor.className %><%= model.className %>UiTable({
           {
             accessor: '<%= label.propertyName %>',
             render: (item) => (
-              <Anchor component={Link} to={`<% if(actorAdmin){ %>/admin/<% } else{ %>/<% } %><%= plural.propertyName %>/${item.id}`} size="sm" fw={500}>
+              <Anchor component={Link} to={`./${item.id}`} size="sm" fw={500}>
                 {item.<%= label.propertyName %>}
               </Anchor>
             ),
@@ -44,7 +44,7 @@ export function <%= actor.className %><%= model.className %>UiTable({
             textAlign: 'right',
             render: (item) => (
               <Group gap="xs" justify="right">
-                <ActionIcon color="brand" variant="light" size="sm" component={Link} to={`<% if(actorAdmin){ %>/admin/<% } else{ %>/<% } %><%= plural.propertyName %>/${item.id}/settings`}>
+                <ActionIcon color="brand" variant="light" size="sm" component={Link} to={`./${item.id}/settings`}>
                   <IconPencil size={16} />
                 </ActionIcon>
                 <ActionIcon color="red" variant="light" size="sm" onClick={() => delete<%= model.className %>(item)}>

@@ -1,5 +1,5 @@
 import { Button, Group } from '@mantine/core'
-import { UiPageLimit, UiSearchField } from '@<%= npmScope %>/<%= app.fileName %>-ui-core'
+import { UiPageLimit, UiSearchField } from '@<%= npmScope %>/<%= app.fileName %>-core-ui'
 import { use<%= actor.className %>FindMany<%= model.className %> } from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-data-access'
 import { <% if(actorAdmin){ %><%= actor.className %><%= model.className %>UiTable<% } else { %><%= model.className %>UiGrid<% } %> } from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-ui'
 import { UiBack, UiDebugModal, UiInfo, UiLoader, UiPage } from '@pubkey-ui/core'

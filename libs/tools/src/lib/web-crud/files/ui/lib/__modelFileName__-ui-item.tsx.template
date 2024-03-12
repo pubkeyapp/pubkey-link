@@ -1,5 +1,5 @@
 import { AvatarProps, Group, type GroupProps, Stack, Text } from '@mantine/core'
-import { <%= model.className %> } from '@pubkey-link/sdk'
+import { <%= model.className %> } from '@<%= npmScope %>/sdk'
 import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core'
 import { <%= model.className %>UiAvatar } from './<%= model.fileName %>-ui-avatar'
 
@@ -23,7 +23,7 @@ export function <%= model.className %>UiItem({
       <Group gap="sm" {...groupProps}>
         <<%= model.className %>UiAvatar <%= model.propertyName %>={<%= model.propertyName %>} {...avatarProps} />
         <Stack gap={1}>
-          <Text size="lg" fw={500}>
+          <Text size="sm" fw={500}>
             {<%= model.propertyName %>?.<%= label.propertyName %>}
           </Text>
         </Stack>

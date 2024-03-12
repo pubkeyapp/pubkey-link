@@ -1,5 +1,4 @@
-import type { Field } from '@mrleebo/prisma-ast'
-import { Model } from '@mrleebo/prisma-ast'
+import { Field, Model } from '@mrleebo/prisma-ast'
 import { Tree } from '@nx/devkit'
 import { getPrismaSchema } from './get-prisma-schema'
 
@@ -9,7 +8,7 @@ export function getPrismaModels(tree: Tree, schemaPath = 'prisma/schema.prisma')
   return schema.list.filter((item) => item.type === 'model') as Model[]
 }
 
-interface PrismaModelField {
+export interface PrismaModelField {
   name: string
   type: string
   optional: boolean
@@ -26,7 +25,7 @@ function getField(type: string) {
     case 'DateTime':
       return 'Date'
     default:
-      return 'string'
+      return type
   }
 }
 

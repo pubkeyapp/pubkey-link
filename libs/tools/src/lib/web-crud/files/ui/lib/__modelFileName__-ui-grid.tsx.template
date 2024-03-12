@@ -1,9 +1,9 @@
 import { Group, Pagination, SimpleGrid } from '@mantine/core'
-import type { <%= model.className %> } from '@pubkey-link/sdk'
-import { gridLimits, UiPageLimit } from '@pubkey-link/web-ui-core'
+import { <%= model.className %> } from '@<%= npmScope %>/sdk'
+import { gridLimits, UiPageLimit } from '@<%= npmScope %>/<%= app.fileName %>-core-ui'
 import { UiDebugModal, UiGroup, UiStack } from '@pubkey-ui/core'
 import { DataTableProps } from 'mantine-datatable'
-import { <%= model.className %>UiGridItem } from './<%= model.propertyName %>-ui-grid-item'
+import { <%= model.className %>UiGridItem } from './<%= model.fileName %>-ui-grid-item'
 
 export function <%= model.className %>UiGrid({
   <%= plural.propertyName %> = [],

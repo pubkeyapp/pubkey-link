@@ -1,9 +1,14 @@
 import { Field, InputType } from '@nestjs/graphql'
+<% if(parent && parent.className !== 'User'){ %> import { <%= parent.className %> } from '@<%= npmScope %>/<%= app.fileName %>-<%= parent.fileName %>-data-access' <% } %>
 
 @InputType()
 export class <%= actor.className %>Create<%= model.className %>Input {
 <% for (let field of fields){ %>
   @Field(<% if(field.optional){ %>{ nullable: true }<% } %>)
   <%= field.name %><% if(field.optional){ %>?<% } else { %>!<% } %>: <%= field.type %>
+<% } %>
+<% if(parent && parent.className !== 'User'){ %>
+  @Field(() => String)
+  <%= parentId %>!: string
 <% } %>
 }

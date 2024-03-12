@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "$id": "PrismaSyncSchema",
+  "$id": "PrismaSyncGeneratorSchema",
   "title": "",
   "type": "object",
   "properties": {

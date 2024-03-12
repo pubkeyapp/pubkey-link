@@ -36,14 +36,14 @@ describe('api-feature generator', () => {
     expect(sourceFilesDataAccess).toMatchInlineSnapshot(`
       [
         "libs/api/test/data-access/src/index.ts",
-        "libs/api/test/data-access/src/lib/api-test-data-access.module.ts",
+        "libs/api/test/data-access/src/lib/api-test.data-access.module.ts",
         "libs/api/test/data-access/src/lib/api-test.service.ts",
       ]
     `)
     expect(sourceFilesFeature).toMatchInlineSnapshot(`
       [
         "libs/api/test/feature/src/index.ts",
-        "libs/api/test/feature/src/lib/api-test-feature.module.ts",
+        "libs/api/test/feature/src/lib/api-test.feature.module.ts",
         "libs/api/test/feature/src/lib/api-test.resolver.ts",
       ]
     `)
@@ -77,29 +77,29 @@ describe('api-feature generator', () => {
     expect(sourceFilesDataAccess).toMatchInlineSnapshot(`
       [
         "libs/api/test/data-access/src/index.ts",
-        "libs/api/test/data-access/src/lib/api-admin-test.service.ts",
-        "libs/api/test/data-access/src/lib/api-test-data-access.module.ts",
+        "libs/api/test/data-access/src/lib/api-test-data-admin.service.ts",
+        "libs/api/test/data-access/src/lib/api-test-data-user.service.ts",
+        "libs/api/test/data-access/src/lib/api-test-data.service.ts",
+        "libs/api/test/data-access/src/lib/api-test.data-access.module.ts",
         "libs/api/test/data-access/src/lib/api-test.service.ts",
-        "libs/api/test/data-access/src/lib/api-user-test.service.ts",
         "libs/api/test/data-access/src/lib/dto/admin-create-test.input.ts",
         "libs/api/test/data-access/src/lib/dto/admin-find-many-test.input.ts",
         "libs/api/test/data-access/src/lib/dto/admin-update-test.input.ts",
         "libs/api/test/data-access/src/lib/dto/user-create-test.input.ts",
         "libs/api/test/data-access/src/lib/dto/user-find-many-test.input.ts",
         "libs/api/test/data-access/src/lib/dto/user-update-test.input.ts",
-        "libs/api/test/data-access/src/lib/entity/test-paging.entity.ts",
         "libs/api/test/data-access/src/lib/entity/test.entity.ts",
-        "libs/api/test/data-access/src/lib/helpers/get-admin-test-where.input.ts",
-        "libs/api/test/data-access/src/lib/helpers/get-user-test-where.input.ts",
+        "libs/api/test/data-access/src/lib/helpers/get-test-where-admin.input.ts",
+        "libs/api/test/data-access/src/lib/helpers/get-test-where-user.input.ts",
       ]
     `)
     expect(sourceFilesFeature).toMatchInlineSnapshot(`
       [
         "libs/api/test/feature/src/index.ts",
-        "libs/api/test/feature/src/lib/api-admin-test.resolver.ts",
-        "libs/api/test/feature/src/lib/api-test-feature.module.ts",
+        "libs/api/test/feature/src/lib/api-test-admin.resolver.ts",
+        "libs/api/test/feature/src/lib/api-test-user.resolver.ts",
+        "libs/api/test/feature/src/lib/api-test.feature.module.ts",
         "libs/api/test/feature/src/lib/api-test.resolver.ts",
-        "libs/api/test/feature/src/lib/api-user-test.resolver.ts",
       ]
     `)
 

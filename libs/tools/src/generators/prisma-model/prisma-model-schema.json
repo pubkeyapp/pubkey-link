@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "$id": "PrismaModel",
+  "$id": "PrismaModelGeneratorSchema",
   "title": "",
   "type": "object",
   "properties": {
@@ -18,7 +18,11 @@
       "description": "The label field for the model. Generally 'name' or 'title'.",
       "default": "name"
     },
-    "field": {
+    "schemaFile": {
+      "type": "string",
+      "description": "The path to the schema file to add the model to. Defaults to 'prisma/schema.prisma'."
+    },
+    "fields": {
       "type": "array",
       "description": "The field to add to the model, in the format 'name:type'. Use this flag multiple times to add multiple fields.",
       "items": {
