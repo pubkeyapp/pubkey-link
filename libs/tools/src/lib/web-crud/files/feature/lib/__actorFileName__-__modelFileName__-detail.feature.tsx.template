@@ -2,7 +2,7 @@ import { Group } from '@mantine/core'
 import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoutes } from '@pubkey-ui/core'
 import { use<%= actor.className %>FindOne<%= model.className %> } from '@<%= npmScope %>/<%= app.fileName %>-<%= model.fileName %>-data-access'
 import { useParams } from 'react-router-dom'
-import { <%= actor.className %><%= model.className %>DetailOverviewTab } from './<%= actor.propertyName %>-<%= model.fileName %>-detail-overview.tab'
+import { <%= actor.className %><%= model.className %>DetailInfoTab } from './<%= actor.propertyName %>-<%= model.fileName %>-detail-info.tab'
 import { <%= actor.className %><%= model.className %>DetailSettingsTab } from './<%= actor.propertyName %>-<%= model.fileName %>-detail-settings.tab'
 
 export function <%= actor.className %><%= model.className %>DetailFeature() {
@@ -29,9 +29,9 @@ export function <%= actor.className %><%= model.className %>DetailFeature() {
       <UiTabRoutes
         tabs={[
           {
-            path: 'overview',
-            label: 'Overview',
-            element: <<%= actor.className %><%= model.className %>DetailOverviewTab <%= model.propertyName %>Id={<%= model.propertyName %>Id} />,
+            path: 'info',
+            label: 'Info',
+            element: <<%= actor.className %><%= model.className %>DetailInfoTab <%= model.propertyName %>Id={<%= model.propertyName %>Id} />,
           },
           {
             path: 'settings',

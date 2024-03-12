@@ -18,3 +18,8 @@ export function addExports(tree: Tree, path: string, exportPaths: string | strin
     return source
   })
 }
+
+export function replaceExports(tree: Tree, path: string, exportPaths: string | string[]) {
+  tree.write(path, '')
+  return addExports(tree, path, exportPaths)
+}

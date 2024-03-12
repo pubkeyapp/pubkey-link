@@ -1,9 +1,10 @@
 import { Tree } from '@nx/devkit'
 import { libraryGenerator } from '@nx/nest'
-import { NormalizedApiFeatureSchema } from '../../generators/api-feature/api-feature-schema'
+
 import { ApiLibType } from '../types/api-feature'
 import { generateApiLibDataAccess } from './generate-api-lib-data-access'
 import { generateApiLibFeature } from './generate-api-lib-feature'
+import { NormalizedApiFeatureSchema } from './normalized-api-feature-schema'
 
 export async function generateApiLib(tree: Tree, type: ApiLibType, options: NormalizedApiFeatureSchema) {
   const generated = await libraryGenerator(tree, {

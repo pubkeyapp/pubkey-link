@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "$id": "WebFeature",
+  "$id": "WebFeatureGeneratorSchema",
   "title": "",
   "type": "object",
   "properties": {
@@ -25,8 +25,7 @@
     },
     "crud": {
       "type": "string",
-      "description": "Command separated list of actors to create CRUD for.",
-      "default": "admin,user"
+      "description": "Command separated list of actors to create CRUD for."
     },
     "skipDataAccess": {
       "type": "boolean",
@@ -38,9 +37,9 @@
       "description": "Do not create a feature library for this feature.",
       "default": false
     },
-    "skipUtil": {
+    "skipUi": {
       "type": "boolean",
-      "description": "Do not create a util library for this feature.",
+      "description": "Do not create a ui library for this feature.",
       "default": true
     }
   },

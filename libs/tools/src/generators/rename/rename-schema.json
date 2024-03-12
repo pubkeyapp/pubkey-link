@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "$id": "Rename",
+  "$id": "RenameGeneratorSchema",
   "title": "",
   "type": "object",
   "properties": {
@@ -17,7 +17,7 @@
     "search": {
       "type": "string",
       "description": "Search for this text",
-      "default": "PubKey Link"
+      "default": "PubKey Stack"
     },
     "replace": {
       "type": "string",

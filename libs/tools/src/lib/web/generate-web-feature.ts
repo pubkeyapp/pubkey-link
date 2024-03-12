@@ -1,7 +1,7 @@
 import { getProjects, Tree } from '@nx/devkit'
 import webCrudGenerator from '../../generators/web-crud/web-crud-generator'
-import { NormalizedWebFeatureSchema } from '../../generators/web-feature/web-feature-schema'
 import { generateWebLib } from './generate-web-lib'
+import { NormalizedWebFeatureSchema } from './normalized-web-feature-schema'
 
 export async function generateWebFeature(tree: Tree, options: NormalizedWebFeatureSchema) {
   const projects = getProjects(tree)

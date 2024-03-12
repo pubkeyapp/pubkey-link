@@ -2,8 +2,9 @@ import { Tree } from '@nx/devkit'
 import { Linter } from '@nx/eslint'
 import { getNpmScope } from '@nx/js/src/utils/package-json/get-npm-scope'
 import { libraryGenerator } from '@nx/react'
-import { NormalizedWebFeatureSchema } from '../../generators/web-feature/web-feature-schema'
+
 import { WebLibType } from '../types/web-feature'
+import { NormalizedWebFeatureSchema } from './normalized-web-feature-schema'
 
 export async function generateWebLib(tree: Tree, type: WebLibType, options: NormalizedWebFeatureSchema) {
   const generated = await libraryGenerator(tree, {

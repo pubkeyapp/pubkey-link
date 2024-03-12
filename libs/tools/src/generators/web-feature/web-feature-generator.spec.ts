@@ -4,12 +4,13 @@ import { createMockApiApp } from '../../lib/api/create-mock-api-app'
 
 import { getRecursiveFileNames } from '../../lib/utils/get-recursive-file-names'
 import { createMockWebApp, normalizeWebFeatureSchema } from '../../lib/web'
+import { NormalizedWebFeatureSchema } from '../../lib/web/normalized-web-feature-schema'
 import apiFeatureGenerator from '../api-feature/api-feature-generator'
 
 import { webFeatureGenerator } from './web-feature-generator'
-import { type NormalizedWebFeatureSchema, WebFeatureGeneratorSchema } from './web-feature-schema'
+import { WebFeatureGeneratorSchema } from './web-feature-schema'
 
-xdescribe('web-feature generator', () => {
+describe('web-feature generator', () => {
   let tree: Tree
   const rawOptions: WebFeatureGeneratorSchema = { app: 'web', model: 'test' }
   let options: NormalizedWebFeatureSchema
@@ -81,13 +82,13 @@ xdescribe('web-feature generator', () => {
       [
         "libs/web/test/feature/src/index.ts",
         "libs/web/test/feature/src/lib/admin-test-create.feature.tsx",
-        "libs/web/test/feature/src/lib/admin-test-detail-overview.tab.tsx",
+        "libs/web/test/feature/src/lib/admin-test-detail-info.tab.tsx",
         "libs/web/test/feature/src/lib/admin-test-detail-settings.tab.tsx",
         "libs/web/test/feature/src/lib/admin-test-detail.feature.tsx",
         "libs/web/test/feature/src/lib/admin-test-list.feature.tsx",
         "libs/web/test/feature/src/lib/admin-test.routes.tsx",
         "libs/web/test/feature/src/lib/user-test-create.feature.tsx",
-        "libs/web/test/feature/src/lib/user-test-detail-overview.tab.tsx",
+        "libs/web/test/feature/src/lib/user-test-detail-info.tab.tsx",
         "libs/web/test/feature/src/lib/user-test-detail-settings.tab.tsx",
         "libs/web/test/feature/src/lib/user-test-detail.feature.tsx",
         "libs/web/test/feature/src/lib/user-test-list.feature.tsx",
@@ -103,6 +104,7 @@ xdescribe('web-feature generator', () => {
         "libs/web/test/ui/src/lib/test-ui-avatar.tsx",
         "libs/web/test/ui/src/lib/test-ui-grid-item.tsx",
         "libs/web/test/ui/src/lib/test-ui-grid.tsx",
+        "libs/web/test/ui/src/lib/test-ui-info.tsx",
         "libs/web/test/ui/src/lib/test-ui-item.tsx",
         "libs/web/test/ui/src/lib/user-test-ui-create-form.tsx",
         "libs/web/test/ui/src/lib/user-test-ui-table.tsx",

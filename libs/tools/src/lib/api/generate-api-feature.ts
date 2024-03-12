@@ -1,7 +1,8 @@
 import { getProjects, Tree } from '@nx/devkit'
 import apiCrudGenerator from '../../generators/api-crud/api-crud-generator'
-import { NormalizedApiFeatureSchema } from '../../generators/api-feature/api-feature-schema'
+
 import { generateApiLib } from './generate-api-lib'
+import { NormalizedApiFeatureSchema } from './normalized-api-feature-schema'
 
 export async function generateApiFeature(tree: Tree, options: NormalizedApiFeatureSchema) {
   const projects = getProjects(tree)

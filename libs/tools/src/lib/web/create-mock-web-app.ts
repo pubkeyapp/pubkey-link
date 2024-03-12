@@ -3,7 +3,7 @@ import { Linter } from '@nx/eslint'
 import { applicationGenerator, componentGenerator, libraryGenerator } from '@nx/react'
 
 export async function createMockWebApp(tree: Tree, app: string) {
-  // Build the mock app and shell libs
+  // Build the mock app and core libs
   await applicationGenerator(tree, {
     directory: `apps/${app}`,
     e2eTestRunner: 'none',
@@ -14,33 +14,33 @@ export async function createMockWebApp(tree: Tree, app: string) {
     skipFormat: true,
     style: 'css',
   })
-  // Create the shell data access lib
+  // Create the core data access lib
   await libraryGenerator(tree, {
     directory: `libs/${app}/core/data-access`,
     linter: Linter.EsLint,
-    name: `${app}-shell-data-access`,
+    name: `${app}-core-data-access`,
     projectNameAndRootFormat: 'as-provided',
     skipFormat: true,
     style: 'css',
   })
 
-  // Create the shell feature lib
+  // Create the core feature lib
   await libraryGenerator(tree, {
-    directory: `libs/${app}/shell/feature`,
+    directory: `libs/${app}/core/feature`,
     linter: Linter.EsLint,
-    name: `${app}-shell-feature`,
+    name: `${app}-core-feature`,
     projectNameAndRootFormat: 'as-provided',
     skipFormat: true,
     style: 'css',
   })
 
-  // Create the shell feature lib
-  await createMockComponent(tree, `${app}-shell-feature`, `${app}-shell-feature`)
+  // Create the core feature lib
+  await createMockComponent(tree, `${app}-core-feature`, `${app}-core-feature`)
 
-  // Create the shell routes libs
-  await createMockComponent(tree, `${app}-shell-feature`, `shell.routes`)
-  await createMockComponent(tree, `${app}-shell-feature`, `shell-admin.routes`)
-  await createMockComponent(tree, `${app}-shell-feature`, `shell-user.routes`)
+  // Create the core routes libs
+  await createMockComponent(tree, `${app}-core-feature`, `web-core-routes`)
+  await createMockComponent(tree, `${app}-core-feature`, `web-core-routes-admin`)
+  await createMockComponent(tree, `${app}-core-feature`, `web-core-routes-user`)
 }
 
 function createMockComponent(tree: Tree, project: string, name: string) {
@@ -51,5 +51,6 @@ function createMockComponent(tree: Tree, project: string, name: string) {
     nameAndDirectoryFormat: 'as-provided',
     style: 'none',
     skipTests: true,
+    skipFormat: true,
   })
 }

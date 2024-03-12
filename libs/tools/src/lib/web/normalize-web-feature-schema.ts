@@ -1,6 +1,7 @@
 import { Tree } from '@nx/devkit'
 import { getNpmScope } from '@nx/js/src/utils/package-json/get-npm-scope'
-import { NormalizedWebFeatureSchema, WebFeatureGeneratorSchema } from '../../generators/web-feature/web-feature-schema'
+import { WebFeatureGeneratorSchema } from '../../generators/web-feature/web-feature-schema'
+import { NormalizedWebFeatureSchema } from './normalized-web-feature-schema'
 
 export function normalizeWebFeatureSchema(tree: Tree, schema: WebFeatureGeneratorSchema): NormalizedWebFeatureSchema {
   const model = schema.model

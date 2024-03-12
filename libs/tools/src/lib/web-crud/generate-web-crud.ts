@@ -1,5 +1,6 @@
 import { generateFiles, type ProjectConfiguration, Tree } from '@nx/devkit'
-import type { NormalizedApiCrudSchema } from '../../generators/api-crud/api-crud-schema'
+
+import { NormalizedApiCrudSchema } from '../api-crud/normalized-api-crud.schema'
 import { addArrayItem } from '../utils/add-array-item'
 import { addExports } from '../utils/add-export'
 import { addNamedImport } from '../utils/add-named-import'
@@ -29,23 +30,23 @@ export function generateWebCrud(tree: Tree, options: NormalizedApiCrudSchema) {
     `${vars.app.fileName}-${vars.model.fileName}-data-access`,
     `${vars.app.fileName}-${vars.model.fileName}-feature`,
     `${vars.app.fileName}-${vars.model.fileName}-ui`,
-    `${vars.app.fileName}-shell-feature`,
+    `${vars.app.fileName}-core-feature`,
   ].map((project) => ensureNxProjectExists(tree, project))
 
   const [dataAccess, feature, ui, shellFeature] = projects
 
-  const requiredFields = [
-    `${shellFeature.sourceRoot}/lib/shell-${vars.actor.fileName}.routes.tsx`,
-    `${shellFeature.sourceRoot}/lib/shell-${vars.actor.fileName}.routes.tsx`,
+  const requiredFiles = [
+    `${shellFeature.sourceRoot}/lib/${options.app}-core-routes-${vars.actor.fileName}.tsx`,
+    `${shellFeature.sourceRoot}/lib/${options.app}-core-routes-${vars.actor.fileName}.tsx`,
     `${feature.sourceRoot}/index.ts`,
   ]
-  for (const field of requiredFields) {
-    if (!tree.exists(field)) {
-      throw new Error(`Required file not found: ${field}`)
+  for (const file of requiredFiles) {
+    if (!tree.exists(file)) {
+      throw new Error(`Required file not found: ${file}`)
     }
   }
 
-  const [adminRoutes, userRoutes, featureIndex] = requiredFields
+  const [adminRoutes, userRoutes, featureIndex] = requiredFiles
 
   const routesFile = vars.actorAdmin ? adminRoutes : userRoutes
 
@@ -68,7 +69,7 @@ export function generateWebCrud(tree: Tree, options: NormalizedApiCrudSchema) {
   const importSnippet = `import { lazy } from 'react'`
   // Check if the featureIndex file already has the above import featureIndex
   if (!tree.read(featureIndex).toString().includes(importSnippet)) {
-    imports.push(importSnippet)
+    imports.unshift(importSnippet)
   }
 
   // Add the imports to the featureIndex file
@@ -88,7 +89,7 @@ export function generateWebCrud(tree: Tree, options: NormalizedApiCrudSchema) {
   }
   const route = {
     name: 'routes',
-    content: `{ path: '${vars.plural.propertyName}/*', element: <${vars.actor.className}${vars.model.className}Feature /> },`,
+    content: `{ path: '/${vars.plural.fileName}/*', element: <${vars.actor.className}${vars.model.className}Feature /> },`,
   }
 
   updateSourceFile(tree, routesFile, (source) => {
@@ -117,6 +118,7 @@ export function generateWebCrud(tree: Tree, options: NormalizedApiCrudSchema) {
     `./lib/${vars.model.fileName}-ui-avatar`,
     `./lib/${vars.model.fileName}-ui-grid`,
     `./lib/${vars.model.fileName}-ui-grid-item`,
+    `./lib/${vars.model.fileName}-ui-info`,
     `./lib/${vars.model.fileName}-ui-item`,
   ])
 }

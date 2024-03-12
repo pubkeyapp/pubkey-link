@@ -1,6 +1,7 @@
 import { Tree } from '@nx/devkit'
 import { getNpmScope } from '@nx/js/src/utils/package-json/get-npm-scope'
-import { ApiFeatureGeneratorSchema, NormalizedApiFeatureSchema } from '../../generators/api-feature/api-feature-schema'
+import { ApiFeatureGeneratorSchema } from '../../generators/api-feature/api-feature-schema'
+import { NormalizedApiFeatureSchema } from './normalized-api-feature-schema'
 
 export function normalizeApiFeatureSchema(tree: Tree, schema: ApiFeatureGeneratorSchema): NormalizedApiFeatureSchema {
   const model = schema.model
@@ -11,6 +12,8 @@ export function normalizeApiFeatureSchema(tree: Tree, schema: ApiFeatureGenerato
     label: schema.label ?? 'name',
     crud: schema.crud?.length ? schema.crud.split(',') : [],
     model,
+    modelParent: schema.modelParent ?? undefined,
+    modelParentId: schema.modelParentId ?? undefined,
     npmScope,
     skipDataAccess: schema.skipDataAccess ?? false,
     skipFeature: schema.skipFeature ?? false,

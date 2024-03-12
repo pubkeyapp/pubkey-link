@@ -1,5 +1,5 @@
 import { Paper } from '@mantine/core'
-import type { <%= model.className %> } from '@pubkey-link/sdk'
+import { <%= model.className %> } from '@<%= npmScope %>/sdk'
 import { UiDebugModal, UiGroup } from '@pubkey-ui/core'
 import { <%= model.className %>UiItem } from './<%= model.fileName %>-ui-item'
 

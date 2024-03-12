@@ -27,4 +27,15 @@ describe('api-crud generator', () => {
     })
     expect(contents).toMatchSnapshot()
   })
+  it('should create crud with parent ID', async () => {
+    await apiCrudGenerator(tree, { ...options, modelParent: 'User', modelParentId: 'ownerId' })
+    const config = readProjectConfiguration(tree, 'test')
+    expect(config).toBeDefined()
+
+    const contents = getRecursiveFileContents({
+      tree,
+      path: 'libs/test',
+    })
+    expect(contents).toMatchSnapshot()
+  })
 })

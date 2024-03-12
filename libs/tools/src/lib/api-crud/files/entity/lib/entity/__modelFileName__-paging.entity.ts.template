@@ -1,6 +1,0 @@
-import { ObjectType } from '@nestjs/graphql'
-import { PagingResponse } from '@<%= npmScope %>/<%= app.fileName %>-core-data-access'
-import { <%= model.className %> } from './<%= model.fileName %>.entity'
-
-@ObjectType()
-export class <%= model.className %>Paging extends PagingResponse<<%= model.className %>>(<%= model.className %>) {}

@@ -12,7 +12,7 @@ export function <%= actor.className %><%= model.className %>CreateFeature() {
     return create<%= model.className %>(input)
       .then((res) => {
          if (res) {
-           navigate(`<% if(actorAdmin){ %>/admin/<% } else{ %>/<% } %><%= plural.propertyName %>/${res?.id}`)
+           navigate(`../${res?.id}`)
          }
        })
       .then(() => true)

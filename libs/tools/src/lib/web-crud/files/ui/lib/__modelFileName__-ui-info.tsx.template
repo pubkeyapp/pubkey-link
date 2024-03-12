@@ -1,0 +1,14 @@
+import { <%= model.className %> } from '@<%= npmScope %>/sdk'
+import { UiInfoItems, UiInfoTable, UiTime } from '@pubkey-ui/core'
+
+export function <%= model.className %>UiInfo({ <%= model.propertyName %> }: { <%= model.propertyName %>?: <%= model.className %> }) {
+  if (!<%= model.propertyName %>) return null
+
+  const items: UiInfoItems = [
+    ['name', <%= model.propertyName %>.<%= label.propertyName %>],
+    ['Created At', <UiTime size="xs" c="dimmed" date={new Date(<%= model.propertyName %>.createdAt ?? '0')} />],
+    ['Updated At', <UiTime size="xs" c="dimmed" date={new Date(<%= model.propertyName %>.updatedAt ?? '0')} />],
+  ]
+
+  return <UiInfoTable items={items} />
+}

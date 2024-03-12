@@ -1,4 +1,4 @@
-import type { Enum } from '@mrleebo/prisma-ast'
+import { Enum } from '@mrleebo/prisma-ast'
 import { Tree } from '@nx/devkit'
 import { getPrismaSchema } from './get-prisma-schema'
 
