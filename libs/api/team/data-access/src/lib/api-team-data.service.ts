@@ -27,14 +27,14 @@ export class ApiTeamDataService {
     const where: Prisma.TeamWhereUniqueInput = { id: teamId }
     if (userId) {
       where.OR = [
-        { ownerId: userId },
+        { identity: { ownerId: userId } },
         { members: { some: { userId } } },
         { community: { members: { some: { userId, role: CommunityRole.Admin } } } },
       ]
     }
     return this.core.data.team.findUnique({
       where,
-      include: { members: { include: { user: true } }, owner: true },
+      include: { members: { include: { user: true } }, identity: { include: { owner: true } } },
     })
   }
 

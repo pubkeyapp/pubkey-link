@@ -6,6 +6,4 @@ export class AdminUpdateTeamInput {
   name?: string
   @Field({ nullable: true })
   avatarUrl?: string
-  @Field({ nullable: true })
-  ownerId?: string
 }

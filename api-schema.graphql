@@ -188,7 +188,6 @@ input AdminUpdateRoleInput {
 input AdminUpdateTeamInput {
   avatarUrl: String
   name: String
-  ownerId: String
 }
 
 input AdminUpdateUserInput {
@@ -338,7 +337,7 @@ type Identity {
   createdAt: DateTime
   expired: Boolean
   id: String!
-  name: String
+  name: String!
   owner: User
   ownerId: String
   profile: JSON
@@ -757,10 +756,10 @@ type Team {
   communityId: String!
   createdAt: DateTime
   id: String!
+  identity: Identity
+  identityId: String!
   members: [CommunityMember!]
   name: String!
-  owner: User
-  ownerId: String!
   updatedAt: DateTime
 }
 
@@ -831,6 +830,7 @@ input UserCreateSnapshotInput {
 
 input UserCreateTeamInput {
   communityId: String!
+  identityId: String!
   name: String!
 }
 

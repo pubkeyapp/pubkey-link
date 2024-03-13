@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { IdentityProvider } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { ApiTeamDataService } from './api-team-data.service'
 import { UserCreateTeamInput } from './dto/user-create-team.input'
@@ -13,9 +14,25 @@ export class ApiTeamDataUserService {
 
   async createTeam(ownerId: string, input: UserCreateTeamInput) {
     await this.core.ensureCommunityAccess({ communityId: input.communityId, userId: ownerId })
+    const identity = await this.core.data.identity.findFirst({
+      where: { id: input.identityId },
+      include: { teams: true },
+    })
+    if (!identity) {
+      throw new Error('Identity not found')
+    }
+    if (identity.ownerId !== ownerId) {
+      throw new Error('You do not own this identity')
+    }
+    if (identity.provider !== IdentityProvider.Solana) {
+      throw new Error('Identity must be a Solana identity')
+    }
+    if (identity.teams.find((t) => t.communityId === input.communityId)) {
+      throw new Error('Identity is already linked to a team in this community')
+    }
+
     return this.data.create({
       ...input,
-      ownerId,
       members: { connect: { communityId_userId: { userId: ownerId, communityId: input.communityId } } },
     })
   }
@@ -57,6 +74,11 @@ export class ApiTeamDataUserService {
     if (found) {
       throw new Error('User is already a member of this team')
     }
+    const communityMember = await this.core.ensureCommunityAccess({ userId, communityId: team.communityId })
+    if (!communityMember) {
+      throw new Error(`User ${userId} is not a member of community ${team.communityId}`)
+    }
+
     const updated = await this.data.update(teamId, {
       members: { connect: { communityId_userId: { userId, communityId: team.communityId } } },
     })
@@ -77,7 +99,7 @@ export class ApiTeamDataUserService {
 
   private async ensureTeamOwner({ ownerId, teamId }: { ownerId: string; teamId: string }) {
     const team = await this.data.findOne(teamId)
-    if (team?.ownerId !== ownerId) {
+    if (team?.identity.ownerId !== ownerId) {
       throw new Error('You are not the owner of this team')
     }
     return team

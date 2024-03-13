@@ -2,7 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql'
 import { Community } from '@pubkey-link/api-community-data-access'
 import { CommunityMember } from '@pubkey-link/api-community-member-data-access'
 import { PagingResponse } from '@pubkey-link/api-core-data-access'
-import { User } from '@pubkey-link/api-user-data-access'
+import { Identity } from '@pubkey-link/api-identity-data-access'
 
 @ObjectType()
 export class Team {
@@ -23,9 +23,9 @@ export class Team {
   @Field(() => Community, { nullable: true })
   community?: Community
   @Field()
-  ownerId!: string
-  @Field(() => User, { nullable: true })
-  owner?: User
+  identityId!: string
+  @Field(() => Identity, { nullable: true })
+  identity?: Identity
 }
 
 @ObjectType()
