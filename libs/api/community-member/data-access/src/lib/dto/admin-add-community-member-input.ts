@@ -2,7 +2,7 @@ import { Field, InputType } from '@nestjs/graphql'
 import { CommunityRole } from '../entity/community-role.enum'
 
 @InputType()
-export class UserCreateCommunityMemberInput {
+export class AdminAddCommunityMemberInput {
   @Field()
   userId!: string
   @Field(() => CommunityRole)

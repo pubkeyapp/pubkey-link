@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { CommunityRole } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { UserCreateCommunityMemberInput } from './dto/user-create-community-member-input'
+import { UserAddCommunityMemberInput } from './dto/user-add-community-member-input'
 import { UserFindManyCommunityMemberInput } from './dto/user-find-many-community-member.input'
 import { UserUpdateCommunityMemberInput } from './dto/user-update-community-member.input'
 import { CommunityMemberPaging } from './entity/community-member-paging.entity'
@@ -11,13 +11,13 @@ import { getUserCommunityMemberWhereInput } from './helpers/get-user-community-m
 export class ApiUserCommunityMemberService {
   constructor(private readonly core: ApiCoreService) {}
 
-  async createCommunityMember(userId: string, communityId: string, input: UserCreateCommunityMemberInput) {
+  async addCommunityMember(userId: string, communityId: string, input: UserAddCommunityMemberInput) {
     await this.core.ensureCommunityAdmin({ communityId, userId })
 
     return this.core.data.communityMember.create({ data: { ...input, communityId } })
   }
 
-  async deleteCommunityMember(userId: string, communityMemberId: string) {
+  async removeCommunityMember(userId: string, communityMemberId: string) {
     const { role } = await this.ensureCommunityMemberAccess({ communityMemberId, userId })
     if (role !== CommunityRole.Admin) {
       throw new Error('Community member not found')
