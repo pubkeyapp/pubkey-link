@@ -1,7 +1,7 @@
 import {
   CommunityMember,
   CommunityRole,
-  UserCreateCommunityMemberInput,
+  UserAddCommunityMemberInput,
   UserFindManyCommunityMemberInput,
 } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
@@ -39,23 +39,23 @@ export function useUserFindManyCommunityMember(
       total,
     },
     setSearch,
-    createCommunityMember: (input: UserCreateCommunityMemberInput) =>
+    addCommunityMember: (input: UserAddCommunityMemberInput) =>
       sdk
-        .userCreateCommunityMember({ communityId: props.communityId, input })
+        .userAddCommunityMember({ communityId: props.communityId, input })
         .then(async (res) => {
           if (res.data?.created) {
-            toastSuccess('Community Member created')
+            toastSuccess('Community Member added')
           } else {
-            toastError('Error creating Community Member')
+            toastError('Error adding Community Member')
           }
           await query.refetch()
         })
         .catch((error) => {
-          toastError(`Error creating Community Member: ${error}`)
+          toastError(`Error adding Community Member: ${error}`)
         }),
-    deleteCommunityMember: (communityMemberId: string) =>
-      sdk.userDeleteCommunityMember({ communityMemberId }).then(() => {
-        toastSuccess('CommunityMember deleted')
+    removeCommunityMember: (communityMemberId: string) =>
+      sdk.userRemoveCommunityMember({ communityMemberId }).then(() => {
+        toastSuccess('CommunityMember removed')
         return query.refetch()
       }),
   }
