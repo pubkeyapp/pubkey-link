@@ -149,25 +149,9 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     twitterUrl: 'https://twitter.com/PubKeyApp',
     websiteUrl: 'https://app.pubkey.link',
     members: {
-      create: [{ user: { connect: { id: 'alice' } }, role: CommunityRole.Admin }],
-    },
-    teams: {
       create: [
-        {
-          ownerId: 'alice',
-          name: 'Triton',
-          avatarUrl: 'https://avatars.githubusercontent.com/u/82511886?s=200&v=4',
-        },
-        {
-          ownerId: 'alice',
-          name: 'Stakewiz',
-          avatarUrl: 'https://pbs.twimg.com/profile_images/1651152043107667971/pZ8MC6p5_400x400.png',
-        },
-        {
-          ownerId: 'alice',
-          name: 'Staking Facilities',
-          avatarUrl: 'https://prod-validators.nyc3.digitaloceanspaces.com/62py3esfjv7y7ll9nvvk4l3il8sk',
-        },
+        { user: { connect: { id: 'alice' } }, role: CommunityRole.Admin },
+        { user: { connect: { id: 'dave' } }, role: CommunityRole.Admin },
       ],
     },
     bot: { create: PK_BOT.clientId ? PK_BOT : undefined },

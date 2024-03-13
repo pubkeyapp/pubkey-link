@@ -20,7 +20,7 @@ export class Identity {
   provider!: IdentityProvider
   @Field()
   providerId!: string
-  @Field({ nullable: true })
+  @Field()
   name?: string
   @Field(() => GraphQLJSON, { nullable: true })
   profile?: JSON

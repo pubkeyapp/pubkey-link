@@ -1,5 +1,5 @@
 import { AvatarProps, Group, type GroupProps, Stack, Text } from '@mantine/core'
-import { Team } from '@pubkey-link/sdk'
+import { ellipsify, Team } from '@pubkey-link/sdk'
 import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core'
 import { TeamUiAvatar } from './team-ui-avatar'
 
@@ -23,7 +23,7 @@ export function TeamUiItem({
       <Group gap="sm" {...groupProps}>
         <TeamUiAvatar team={team} {...avatarProps} />
         <Stack gap={1}>
-          <Text>{team?.name}</Text>
+          <Text>{ellipsify(team?.name, 8)}</Text>
         </Stack>
       </Group>
     </UiAnchor>

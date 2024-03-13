@@ -26,7 +26,7 @@ export function AdminIdentityUiTable({ deleteIdentity, identities = [] }: AdminI
                   <IdentityUiAvatar item={item} />
                   <Stack gap={0}>
                     <Anchor size="lg" fw={500} component="a" href={item.url ?? ''} target="_blank" rel="noreferrer">
-                      {ellipsify(item.name ?? item.providerId, 6)}
+                      {ellipsify(item.name, 6)}
                     </Anchor>
                     <Text size="sm" c="dimmed">
                       {item.provider}

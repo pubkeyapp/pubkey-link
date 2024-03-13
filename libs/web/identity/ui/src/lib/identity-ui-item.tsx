@@ -25,7 +25,7 @@ export function IdentityUiItem({
         <IdentityUiAvatar item={identity} {...avatarProps} />
         <Stack gap={1}>
           <Text size="sm" fw="bold">
-            {ellipsify(identity?.name ?? '', 8)}
+            {ellipsify(identity?.name, 8)}
           </Text>
           <IdentityUiProviderTag provider={identity.provider} />
         </Stack>

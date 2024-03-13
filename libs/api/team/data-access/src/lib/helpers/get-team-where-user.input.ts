@@ -5,7 +5,7 @@ export function getTeamWhereUserInput(userId: string, input: UserFindManyTeamInp
   const where: Prisma.TeamWhereInput = { communityId: input.communityId }
 
   where.OR = [
-    { ownerId: userId },
+    { identity: { ownerId: userId } },
     { members: { some: { userId } } },
     { community: { members: { some: { userId, role: CommunityRole.Admin } } } },
   ]
