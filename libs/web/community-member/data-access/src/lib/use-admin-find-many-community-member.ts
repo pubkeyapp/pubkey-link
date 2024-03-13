@@ -1,4 +1,4 @@
-import { AdminFindManyCommunityMemberInput, CommunityRole, UserCreateCommunityMemberInput } from '@pubkey-link/sdk'
+import { AdminFindManyCommunityMemberInput, CommunityRole, UserAddCommunityMemberInput } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
@@ -34,23 +34,23 @@ export function useAdminFindManyCommunityMember(
       total,
     },
     setSearch,
-    createCommunityMember: (input: UserCreateCommunityMemberInput) =>
+    addCommunityMember: (input: UserAddCommunityMemberInput) =>
       sdk
-        .adminCreateCommunityMember({ communityId: props.communityId, input })
+        .adminAddCommunityMember({ communityId: props.communityId, input })
         .then(async (res) => {
           if (res.data?.created) {
-            toastSuccess('Community Member created')
+            toastSuccess('Community Member added')
           } else {
-            toastError('Error creating Community Member')
+            toastError('Error adding Community Member')
           }
           await query.refetch()
         })
         .catch((error) => {
-          toastError(`Error creating Community Member: ${error}`)
+          toastError(`Error adding Community Member: ${error}`)
         }),
-    deleteCommunityMember: (communityMemberId: string) =>
-      sdk.adminDeleteCommunityMember({ communityMemberId }).then(() => {
-        toastSuccess('CommunityMember deleted')
+    removeCommunityMember: (communityMemberId: string) =>
+      sdk.adminRemoveCommunityMember({ communityMemberId }).then(() => {
+        toastSuccess('CommunityMember removed')
         return query.refetch()
       }),
   }

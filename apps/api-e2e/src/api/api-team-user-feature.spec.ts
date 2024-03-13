@@ -32,7 +32,7 @@ describe('api-team-feature', () => {
           { cookie: alice },
         )
         .then((res) => res.data.created.id)
-      await sdk.userCreateCommunityMember(
+      await sdk.userAddCommunityMember(
         { communityId, input: { userId: 'dave', role: CommunityRole.Admin } },
         { cookie: alice },
       )

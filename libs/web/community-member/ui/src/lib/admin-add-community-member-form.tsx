@@ -1,14 +1,14 @@
 import { Button, Group } from '@mantine/core'
-import { CommunityRole, User, UserCreateCommunityMemberInput } from '@pubkey-link/sdk'
+import { AdminAddCommunityMemberInput, CommunityRole, User } from '@pubkey-link/sdk'
 import { CommunityUiSelectRole } from '@pubkey-link/web-community-ui'
 import { UserUiSearch } from '@pubkey-link/web-user-ui'
 import { UiStack } from '@pubkey-ui/core'
 import { useState } from 'react'
 
-export function UserCreateCommunityMemberForm({
+export function AdminAddCommunityMemberForm({
   create,
 }: {
-  create: (input: UserCreateCommunityMemberInput) => Promise<void>
+  create: (input: AdminAddCommunityMemberInput) => Promise<void>
 }) {
   const [userResult, setUserResult] = useState<User | undefined>(undefined)
   const [role, communityRole] = useState<CommunityRole>(CommunityRole.Member)

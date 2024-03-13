@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { AdminCreateCommunityMemberInput } from './dto/admin-create-community-member-input'
+import { AdminAddCommunityMemberInput } from './dto/admin-add-community-member-input'
 import { AdminFindManyCommunityMemberInput } from './dto/admin-find-many-community-member.input'
 import { AdminUpdateCommunityMemberInput } from './dto/admin-update-community-member.input'
 import { CommunityMemberPaging } from './entity/community-member-paging.entity'
@@ -10,11 +10,11 @@ import { getAdminCommunityMemberWhereInput } from './helpers/get-admin-community
 export class ApiAdminCommunityMemberService {
   constructor(private readonly core: ApiCoreService) {}
 
-  createCommunityMember(communityId: string, input: AdminCreateCommunityMemberInput) {
+  addCommunityMember(communityId: string, input: AdminAddCommunityMemberInput) {
     return this.core.data.communityMember.create({ data: { ...input, communityId } })
   }
 
-  async deleteCommunityMember(communityMemberId: string) {
+  async removeCommunityMember(communityMemberId: string) {
     const deleted = await this.core.data.communityMember.delete({ where: { id: communityMemberId } })
     return !!deleted
   }

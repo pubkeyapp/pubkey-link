@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AdminAddCommunityMemberInput {
+  role: CommunityRole!
+  userId: String!
+}
+
 input AdminCreateBotInput {
   clientId: String!
   clientSecret: String!
@@ -19,11 +24,6 @@ input AdminCreateCommunityInput {
   telegramUrl: String
   twitterUrl: String
   websiteUrl: String
-}
-
-input AdminCreateCommunityMemberInput {
-  role: CommunityRole!
-  userId: String!
 }
 
 input AdminCreateIdentityInput {
@@ -423,10 +423,10 @@ enum LogRelatedType {
 }
 
 type Mutation {
+  adminAddCommunityMember(communityId: String!, input: AdminAddCommunityMemberInput!): CommunityMember
   adminCreateBackup: Boolean!
   adminCreateBot(input: AdminCreateBotInput!): Bot
   adminCreateCommunity(input: AdminCreateCommunityInput!): Community
-  adminCreateCommunityMember(communityId: String!, input: AdminCreateCommunityMemberInput!): CommunityMember
   adminCreateIdentity(input: AdminCreateIdentityInput!): Identity
   adminCreateNetwork(input: AdminCreateNetworkInput!): Network
   adminCreateNetworkToken(input: AdminCreateNetworkTokenInput!): NetworkToken
@@ -435,7 +435,6 @@ type Mutation {
   adminDeleteBackup(name: String!): Boolean!
   adminDeleteBot(botId: String!): Boolean
   adminDeleteCommunity(communityId: String!): Boolean
-  adminDeleteCommunityMember(communityMemberId: String!): Boolean
   adminDeleteIdentity(identityId: String!): Boolean
   adminDeleteLog(logId: String!): Boolean
   adminDeleteNetwork(networkId: String!): Boolean
@@ -446,6 +445,7 @@ type Mutation {
   adminDeleteTeam(teamId: String!): Boolean
   adminDeleteUser(userId: String!): Boolean
   adminFetchBackup(url: String!): Boolean!
+  adminRemoveCommunityMember(communityMemberId: String!): Boolean
   adminRestoreBackup(name: String!): Boolean!
   adminSyncNetworkAssets(cluster: NetworkCluster): Boolean
   adminUpdateBot(botId: String!, input: AdminUpdateBotInput!): Bot
@@ -459,10 +459,10 @@ type Mutation {
   adminUpdateUser(input: AdminUpdateUserInput!, userId: String!): User
   anonVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
   logout: Boolean
+  userAddCommunityMember(communityId: String!, input: UserAddCommunityMemberInput!): CommunityMember
   userAddTeamMember(teamId: String!, userId: String!): Boolean
   userCreateBot(input: UserCreateBotInput!): Bot
   userCreateCommunity(input: UserCreateCommunityInput!): Community
-  userCreateCommunityMember(communityId: String!, input: UserCreateCommunityMemberInput!): CommunityMember
   userCreateRole(input: UserCreateRoleInput!): Role
   userCreateRoleCondition(input: UserCreateRoleConditionInput!): RoleCondition
   userCreateRolePermission(input: UserCreateRolePermissionInput!): RolePermission
@@ -470,7 +470,6 @@ type Mutation {
   userCreateTeam(input: UserCreateTeamInput!): Team
   userDeleteBot(botId: String!): Boolean
   userDeleteCommunity(communityId: String!): Boolean
-  userDeleteCommunityMember(communityMemberId: String!): Boolean
   userDeleteIdentity(identityId: String!): Boolean
   userDeleteRole(roleId: String!): Boolean
   userDeleteRoleCondition(roleConditionId: String!): Boolean
@@ -480,6 +479,7 @@ type Mutation {
   userLeaveBotServer(botId: String!, serverId: String!): Boolean
   userLinkIdentity(input: LinkIdentityInput!): Identity
   userRefreshIdentity(identityId: String!): Boolean
+  userRemoveCommunityMember(communityMemberId: String!): Boolean
   userRemoveTeamMember(teamId: String!, userId: String!): Boolean
   userStartBot(botId: String!): Boolean
   userStopBot(botId: String!): Boolean
@@ -783,6 +783,11 @@ type User {
   username: String
 }
 
+input UserAddCommunityMemberInput {
+  role: CommunityRole!
+  userId: String!
+}
+
 input UserCreateBotInput {
   clientId: String!
   clientSecret: String!
@@ -800,11 +805,6 @@ input UserCreateCommunityInput {
   telegramUrl: String
   twitterUrl: String
   websiteUrl: String
-}
-
-input UserCreateCommunityMemberInput {
-  role: CommunityRole!
-  userId: String!
 }
 
 input UserCreateRoleConditionInput {

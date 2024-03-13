@@ -1,13 +1,13 @@
 import { Group } from '@mantine/core'
 import { Community } from '@pubkey-link/sdk'
 import { useUserFindManyCommunityMember } from '@pubkey-link/web-community-member-data-access'
-import { UserCommunityMemberUiTable, UserCreateCommunityMemberModal } from '@pubkey-link/web-community-member-ui'
+import { UserAddCommunityMemberModal, UserCommunityMemberUiTable } from '@pubkey-link/web-community-member-ui'
 import { CommunityUiSelectRole } from '@pubkey-link/web-community-ui'
 import { UiPageLimit, UiSearchField } from '@pubkey-link/web-core-ui'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function UserCommunityMemberListFeature({ community }: { community: Community }) {
-  const { createCommunityMember, deleteCommunityMember, items, pagination, query, setSearch, role, setRole } =
+  const { addCommunityMember, removeCommunityMember, items, pagination, query, setSearch, role, setRole } =
     useUserFindManyCommunityMember({
       communityId: community.id,
       limit: 20,
@@ -18,7 +18,7 @@ export function UserCommunityMemberListFeature({ community }: { community: Commu
       <Group>
         <UiSearchField placeholder="Search member" setSearch={setSearch} />
         <UiDebugModal data={items} />
-        <UserCreateCommunityMemberModal create={createCommunityMember} />
+        <UserAddCommunityMemberModal add={addCommunityMember} />
         <CommunityUiSelectRole placeholder="Filter by Role" value={role} setValue={setRole} />
         <UiPageLimit limit={pagination.limit} setLimit={pagination.setLimit} setPage={pagination.setPage} />
       </Group>
@@ -30,7 +30,7 @@ export function UserCommunityMemberListFeature({ community }: { community: Commu
           refresh={query.refetch}
           deleteCommunityMember={(communityMember) => {
             if (!window.confirm('Are you sure?')) return
-            return deleteCommunityMember(communityMember.id)
+            return removeCommunityMember(communityMember.id)
           }}
           communityMembers={items}
           page={pagination.page}
