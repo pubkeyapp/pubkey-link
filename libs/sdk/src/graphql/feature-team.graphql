@@ -7,9 +7,12 @@ fragment TeamDetails on Team {
   members {
     ...CommunityMemberDetails
   }
-  ownerId
-  owner {
-    ...UserDetails
+  identityId
+  identity {
+    ...IdentityDetails
+    owner {
+      ...UserDetails
+    }
   }
   updatedAt
 }

@@ -210,7 +210,6 @@ export type AdminUpdateRoleInput = {
 export type AdminUpdateTeamInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>
   name?: InputMaybe<Scalars['String']['input']>
-  ownerId?: InputMaybe<Scalars['String']['input']>
 }
 
 export type AdminUpdateUserInput = {
@@ -368,7 +367,7 @@ export type Identity = {
   createdAt?: Maybe<Scalars['DateTime']['output']>
   expired?: Maybe<Scalars['Boolean']['output']>
   id: Scalars['String']['output']
-  name?: Maybe<Scalars['String']['output']>
+  name: Scalars['String']['output']
   owner?: Maybe<User>
   ownerId?: Maybe<Scalars['String']['output']>
   profile?: Maybe<Scalars['JSON']['output']>
@@ -1350,10 +1349,10 @@ export type Team = {
   communityId: Scalars['String']['output']
   createdAt?: Maybe<Scalars['DateTime']['output']>
   id: Scalars['String']['output']
+  identity?: Maybe<Identity>
+  identityId: Scalars['String']['output']
   members?: Maybe<Array<CommunityMember>>
   name: Scalars['String']['output']
-  owner?: Maybe<User>
-  ownerId: Scalars['String']['output']
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
@@ -1426,6 +1425,7 @@ export type UserCreateSnapshotInput = {
 
 export type UserCreateTeamInput = {
   communityId: Scalars['String']['input']
+  identityId: Scalars['String']['input']
   name: Scalars['String']['input']
 }
 
@@ -1617,7 +1617,7 @@ export type MeQuery = {
       __typename?: 'Identity'
       avatarUrl?: string | null
       id: string
-      name?: string | null
+      name: string
       provider: IdentityProvider
       providerId: string
       verified?: boolean | null
@@ -3604,7 +3604,7 @@ export type IdentitySummaryFragment = {
   __typename?: 'Identity'
   avatarUrl?: string | null
   id: string
-  name?: string | null
+  name: string
   provider: IdentityProvider
   providerId: string
   verified?: boolean | null
@@ -3618,7 +3618,7 @@ export type IdentityDetailsFragment = {
   syncEnded?: Date | null
   expired?: boolean | null
   id: string
-  name?: string | null
+  name: string
   ownerId?: string | null
   profile?: any | null
   provider: IdentityProvider
@@ -3656,7 +3656,7 @@ export type AdminFindManyIdentityQuery = {
     syncEnded?: Date | null
     expired?: boolean | null
     id: string
-    name?: string | null
+    name: string
     ownerId?: string | null
     profile?: any | null
     provider: IdentityProvider
@@ -3708,7 +3708,7 @@ export type AdminCreateIdentityMutation = {
     syncEnded?: Date | null
     expired?: boolean | null
     id: string
-    name?: string | null
+    name: string
     ownerId?: string | null
     profile?: any | null
     provider: IdentityProvider
@@ -3739,7 +3739,7 @@ export type UserFindManyIdentityQuery = {
     syncEnded?: Date | null
     expired?: boolean | null
     id: string
-    name?: string | null
+    name: string
     ownerId?: string | null
     profile?: any | null
     provider: IdentityProvider
@@ -3765,7 +3765,7 @@ export type UserFindOneIdentityQuery = {
     syncEnded?: Date | null
     expired?: boolean | null
     id: string
-    name?: string | null
+    name: string
     ownerId?: string | null
     profile?: any | null
     provider: IdentityProvider
@@ -3858,7 +3858,7 @@ export type UserLinkIdentityMutation = {
     syncEnded?: Date | null
     expired?: boolean | null
     id: string
-    name?: string | null
+    name: string
     ownerId?: string | null
     profile?: any | null
     provider: IdentityProvider
@@ -3910,7 +3910,7 @@ export type AnonFindUserByIdentityQuery = {
       __typename?: 'Identity'
       avatarUrl?: string | null
       id: string
-      name?: string | null
+      name: string
       provider: IdentityProvider
       providerId: string
       verified?: boolean | null
@@ -3981,7 +3981,7 @@ export type LogDetailsFragment = {
     syncEnded?: Date | null
     expired?: boolean | null
     id: string
-    name?: string | null
+    name: string
     ownerId?: string | null
     profile?: any | null
     provider: IdentityProvider
@@ -4150,7 +4150,7 @@ export type UserFindManyLogQuery = {
         syncEnded?: Date | null
         expired?: boolean | null
         id: string
-        name?: string | null
+        name: string
         ownerId?: string | null
         profile?: any | null
         provider: IdentityProvider
@@ -4329,7 +4329,7 @@ export type UserFindOneLogQuery = {
       syncEnded?: Date | null
       expired?: boolean | null
       id: string
-      name?: string | null
+      name: string
       ownerId?: string | null
       profile?: any | null
       provider: IdentityProvider
@@ -4499,7 +4499,7 @@ export type AdminFindManyLogQuery = {
         syncEnded?: Date | null
         expired?: boolean | null
         id: string
-        name?: string | null
+        name: string
         ownerId?: string | null
         profile?: any | null
         provider: IdentityProvider
@@ -4678,7 +4678,7 @@ export type AdminFindOneLogQuery = {
       syncEnded?: Date | null
       expired?: boolean | null
       id: string
-      name?: string | null
+      name: string
       ownerId?: string | null
       profile?: any | null
       provider: IdentityProvider
@@ -6987,7 +6987,7 @@ export type TeamDetailsFragment = {
   name: string
   communityId: string
   avatarUrl?: string | null
-  ownerId: string
+  identityId: string
   updatedAt?: Date | null
   members?: Array<{
     __typename?: 'CommunityMember'
@@ -7085,19 +7085,36 @@ export type TeamDetailsFragment = {
       }> | null
     }> | null
   }> | null
-  owner?: {
-    __typename?: 'User'
+  identity?: {
+    __typename?: 'Identity'
     avatarUrl?: string | null
     createdAt?: Date | null
-    developer?: boolean | null
-    lastLogin?: Date | null
+    syncStarted?: Date | null
+    syncEnded?: Date | null
+    expired?: boolean | null
     id: string
-    name?: string | null
-    profileUrl: string
-    role?: UserRole | null
-    status?: UserStatus | null
+    name: string
+    ownerId?: string | null
+    profile?: any | null
+    provider: IdentityProvider
+    providerId: string
     updatedAt?: Date | null
-    username?: string | null
+    url?: string | null
+    verified?: boolean | null
+    owner?: {
+      __typename?: 'User'
+      avatarUrl?: string | null
+      createdAt?: Date | null
+      developer?: boolean | null
+      lastLogin?: Date | null
+      id: string
+      name?: string | null
+      profileUrl: string
+      role?: UserRole | null
+      status?: UserStatus | null
+      updatedAt?: Date | null
+      username?: string | null
+    } | null
   } | null
 }
 
@@ -7116,7 +7133,7 @@ export type AdminFindManyTeamQuery = {
       name: string
       communityId: string
       avatarUrl?: string | null
-      ownerId: string
+      identityId: string
       updatedAt?: Date | null
       members?: Array<{
         __typename?: 'CommunityMember'
@@ -7214,19 +7231,36 @@ export type AdminFindManyTeamQuery = {
           }> | null
         }> | null
       }> | null
-      owner?: {
-        __typename?: 'User'
+      identity?: {
+        __typename?: 'Identity'
         avatarUrl?: string | null
         createdAt?: Date | null
-        developer?: boolean | null
-        lastLogin?: Date | null
+        syncStarted?: Date | null
+        syncEnded?: Date | null
+        expired?: boolean | null
         id: string
-        name?: string | null
-        profileUrl: string
-        role?: UserRole | null
-        status?: UserStatus | null
+        name: string
+        ownerId?: string | null
+        profile?: any | null
+        provider: IdentityProvider
+        providerId: string
         updatedAt?: Date | null
-        username?: string | null
+        url?: string | null
+        verified?: boolean | null
+        owner?: {
+          __typename?: 'User'
+          avatarUrl?: string | null
+          createdAt?: Date | null
+          developer?: boolean | null
+          lastLogin?: Date | null
+          id: string
+          name?: string | null
+          profileUrl: string
+          role?: UserRole | null
+          status?: UserStatus | null
+          updatedAt?: Date | null
+          username?: string | null
+        } | null
       } | null
     }>
     meta: {
@@ -7255,7 +7289,7 @@ export type AdminFindOneTeamQuery = {
     name: string
     communityId: string
     avatarUrl?: string | null
-    ownerId: string
+    identityId: string
     updatedAt?: Date | null
     members?: Array<{
       __typename?: 'CommunityMember'
@@ -7353,19 +7387,36 @@ export type AdminFindOneTeamQuery = {
         }> | null
       }> | null
     }> | null
-    owner?: {
-      __typename?: 'User'
+    identity?: {
+      __typename?: 'Identity'
       avatarUrl?: string | null
       createdAt?: Date | null
-      developer?: boolean | null
-      lastLogin?: Date | null
+      syncStarted?: Date | null
+      syncEnded?: Date | null
+      expired?: boolean | null
       id: string
-      name?: string | null
-      profileUrl: string
-      role?: UserRole | null
-      status?: UserStatus | null
+      name: string
+      ownerId?: string | null
+      profile?: any | null
+      provider: IdentityProvider
+      providerId: string
       updatedAt?: Date | null
-      username?: string | null
+      url?: string | null
+      verified?: boolean | null
+      owner?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
     } | null
   } | null
 }
@@ -7384,7 +7435,7 @@ export type AdminUpdateTeamMutation = {
     name: string
     communityId: string
     avatarUrl?: string | null
-    ownerId: string
+    identityId: string
     updatedAt?: Date | null
     members?: Array<{
       __typename?: 'CommunityMember'
@@ -7482,19 +7533,36 @@ export type AdminUpdateTeamMutation = {
         }> | null
       }> | null
     }> | null
-    owner?: {
-      __typename?: 'User'
+    identity?: {
+      __typename?: 'Identity'
       avatarUrl?: string | null
       createdAt?: Date | null
-      developer?: boolean | null
-      lastLogin?: Date | null
+      syncStarted?: Date | null
+      syncEnded?: Date | null
+      expired?: boolean | null
       id: string
-      name?: string | null
-      profileUrl: string
-      role?: UserRole | null
-      status?: UserStatus | null
+      name: string
+      ownerId?: string | null
+      profile?: any | null
+      provider: IdentityProvider
+      providerId: string
       updatedAt?: Date | null
-      username?: string | null
+      url?: string | null
+      verified?: boolean | null
+      owner?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
     } | null
   } | null
 }
@@ -7520,7 +7588,7 @@ export type UserFindManyTeamQuery = {
       name: string
       communityId: string
       avatarUrl?: string | null
-      ownerId: string
+      identityId: string
       updatedAt?: Date | null
       members?: Array<{
         __typename?: 'CommunityMember'
@@ -7618,19 +7686,36 @@ export type UserFindManyTeamQuery = {
           }> | null
         }> | null
       }> | null
-      owner?: {
-        __typename?: 'User'
+      identity?: {
+        __typename?: 'Identity'
         avatarUrl?: string | null
         createdAt?: Date | null
-        developer?: boolean | null
-        lastLogin?: Date | null
+        syncStarted?: Date | null
+        syncEnded?: Date | null
+        expired?: boolean | null
         id: string
-        name?: string | null
-        profileUrl: string
-        role?: UserRole | null
-        status?: UserStatus | null
+        name: string
+        ownerId?: string | null
+        profile?: any | null
+        provider: IdentityProvider
+        providerId: string
         updatedAt?: Date | null
-        username?: string | null
+        url?: string | null
+        verified?: boolean | null
+        owner?: {
+          __typename?: 'User'
+          avatarUrl?: string | null
+          createdAt?: Date | null
+          developer?: boolean | null
+          lastLogin?: Date | null
+          id: string
+          name?: string | null
+          profileUrl: string
+          role?: UserRole | null
+          status?: UserStatus | null
+          updatedAt?: Date | null
+          username?: string | null
+        } | null
       } | null
     }>
     meta: {
@@ -7659,7 +7744,7 @@ export type UserFindOneTeamQuery = {
     name: string
     communityId: string
     avatarUrl?: string | null
-    ownerId: string
+    identityId: string
     updatedAt?: Date | null
     members?: Array<{
       __typename?: 'CommunityMember'
@@ -7757,19 +7842,36 @@ export type UserFindOneTeamQuery = {
         }> | null
       }> | null
     }> | null
-    owner?: {
-      __typename?: 'User'
+    identity?: {
+      __typename?: 'Identity'
       avatarUrl?: string | null
       createdAt?: Date | null
-      developer?: boolean | null
-      lastLogin?: Date | null
+      syncStarted?: Date | null
+      syncEnded?: Date | null
+      expired?: boolean | null
       id: string
-      name?: string | null
-      profileUrl: string
-      role?: UserRole | null
-      status?: UserStatus | null
+      name: string
+      ownerId?: string | null
+      profile?: any | null
+      provider: IdentityProvider
+      providerId: string
       updatedAt?: Date | null
-      username?: string | null
+      url?: string | null
+      verified?: boolean | null
+      owner?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
     } | null
   } | null
 }
@@ -7787,7 +7889,7 @@ export type UserCreateTeamMutation = {
     name: string
     communityId: string
     avatarUrl?: string | null
-    ownerId: string
+    identityId: string
     updatedAt?: Date | null
     members?: Array<{
       __typename?: 'CommunityMember'
@@ -7885,19 +7987,36 @@ export type UserCreateTeamMutation = {
         }> | null
       }> | null
     }> | null
-    owner?: {
-      __typename?: 'User'
+    identity?: {
+      __typename?: 'Identity'
       avatarUrl?: string | null
       createdAt?: Date | null
-      developer?: boolean | null
-      lastLogin?: Date | null
+      syncStarted?: Date | null
+      syncEnded?: Date | null
+      expired?: boolean | null
       id: string
-      name?: string | null
-      profileUrl: string
-      role?: UserRole | null
-      status?: UserStatus | null
+      name: string
+      ownerId?: string | null
+      profile?: any | null
+      provider: IdentityProvider
+      providerId: string
       updatedAt?: Date | null
-      username?: string | null
+      url?: string | null
+      verified?: boolean | null
+      owner?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
     } | null
   } | null
 }
@@ -7916,7 +8035,7 @@ export type UserUpdateTeamMutation = {
     name: string
     communityId: string
     avatarUrl?: string | null
-    ownerId: string
+    identityId: string
     updatedAt?: Date | null
     members?: Array<{
       __typename?: 'CommunityMember'
@@ -8014,19 +8133,36 @@ export type UserUpdateTeamMutation = {
         }> | null
       }> | null
     }> | null
-    owner?: {
-      __typename?: 'User'
+    identity?: {
+      __typename?: 'Identity'
       avatarUrl?: string | null
       createdAt?: Date | null
-      developer?: boolean | null
-      lastLogin?: Date | null
+      syncStarted?: Date | null
+      syncEnded?: Date | null
+      expired?: boolean | null
       id: string
-      name?: string | null
-      profileUrl: string
-      role?: UserRole | null
-      status?: UserStatus | null
+      name: string
+      ownerId?: string | null
+      profile?: any | null
+      provider: IdentityProvider
+      providerId: string
       updatedAt?: Date | null
-      username?: string | null
+      url?: string | null
+      verified?: boolean | null
+      owner?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
     } | null
   } | null
 }
@@ -8112,7 +8248,7 @@ export type AdminFindManyUserQuery = {
         syncEnded?: Date | null
         expired?: boolean | null
         id: string
-        name?: string | null
+        name: string
         ownerId?: string | null
         profile?: any | null
         provider: IdentityProvider
@@ -8656,13 +8792,17 @@ export const TeamDetailsFragmentDoc = gql`
     members {
       ...CommunityMemberDetails
     }
-    ownerId
-    owner {
-      ...UserDetails
+    identityId
+    identity {
+      ...IdentityDetails
+      owner {
+        ...UserDetails
+      }
     }
     updatedAt
   }
   ${CommunityMemberDetailsFragmentDoc}
+  ${IdentityDetailsFragmentDoc}
   ${UserDetailsFragmentDoc}
 `
 export const UserSummaryFragmentDoc = gql`
@@ -13027,7 +13167,6 @@ export function AdminUpdateTeamInputSchema(): z.ZodObject<Properties<AdminUpdate
   return z.object({
     avatarUrl: z.string().nullish(),
     name: z.string().nullish(),
-    ownerId: z.string().nullish(),
   })
 }
 
@@ -13118,6 +13257,7 @@ export function UserCreateSnapshotInputSchema(): z.ZodObject<Properties<UserCrea
 export function UserCreateTeamInputSchema(): z.ZodObject<Properties<UserCreateTeamInput>> {
   return z.object({
     communityId: z.string(),
+    identityId: z.string(),
     name: z.string(),
   })
 }

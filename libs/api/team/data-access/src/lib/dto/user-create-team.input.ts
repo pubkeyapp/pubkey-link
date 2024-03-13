@@ -4,7 +4,8 @@ import { Field, InputType } from '@nestjs/graphql'
 export class UserCreateTeamInput {
   @Field()
   name!: string
-
-  @Field(() => String)
+  @Field()
   communityId!: string
+  @Field()
+  identityId!: string
 }

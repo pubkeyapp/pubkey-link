@@ -1,10 +1,10 @@
 import { Button, Group, Stack, Text } from '@mantine/core'
 import { ellipsify, NetworkCluster, UserRole } from '@pubkey-link/sdk'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
+import { UiGrid } from '@pubkey-link/web-core-ui'
 import { useUserFindManyIdentity } from '@pubkey-link/web-identity-data-access'
 import { IdentityRefreshIcon, IdentityUiIcon, IdentityUiLink } from '@pubkey-link/web-identity-ui'
 import { UserNetworkTokenFeature } from '@pubkey-link/web-network-token-feature'
-import { UiGrid } from '@pubkey-link/web-core-ui'
 import { useUserFineOneUser } from '@pubkey-link/web-user-data-access'
 import { UserUiProfile } from '@pubkey-link/web-user-ui'
 import {
@@ -60,7 +60,7 @@ export function UserUserDetailFeature() {
                     <IdentityUiIcon size={28} provider={identity.provider} />
                     <Stack gap={0}>
                       <Text size="sm" fw="bold">
-                        {ellipsify(identity.name ?? identity.providerId, 6)}
+                        {ellipsify(identity.name, 8)}
                       </Text>
                       {identity.syncEnded ? (
                         <UiTime size="xs" c="dimmed" prefix="Synced " date={new Date(identity.syncEnded)} />

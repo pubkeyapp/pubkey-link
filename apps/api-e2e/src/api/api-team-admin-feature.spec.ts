@@ -1,4 +1,4 @@
-import { AdminFindManyTeamInput, AdminUpdateTeamInput, NetworkCluster, Team } from '@pubkey-link/sdk'
+import { AdminFindManyTeamInput, AdminUpdateTeamInput, IdentityProvider, NetworkCluster, Team } from '@pubkey-link/sdk'
 import { getAliceCookie, getBobCookie, sdk, uniqueId } from '../support'
 
 describe('api-team-feature', () => {
@@ -13,7 +13,9 @@ describe('api-team-feature', () => {
     beforeAll(async () => {
       alice = await getAliceCookie()
       bob = await getBobCookie()
-
+      const identityId = await sdk
+        .me(undefined, { cookie: alice })
+        .then((res) => res.data.me?.identities?.find((i) => i.provider === IdentityProvider.Solana)?.id)
       communityId = await sdk
         .userCreateCommunity(
           {
@@ -22,7 +24,10 @@ describe('api-team-feature', () => {
           { cookie: alice },
         )
         .then((res) => res.data.created.id)
-      const created = await sdk.userCreateTeam({ input: { name: teamName, communityId } }, { cookie: alice })
+      const created = await sdk.userCreateTeam(
+        { input: { name: teamName, communityId, identityId } },
+        { cookie: alice },
+      )
       teamId = created.data.created.id
     })
 
