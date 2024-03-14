@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { ApiUserUserService } from './api-user-user.service'
-import { ApiAdminUserService } from './api-admin-user.service'
+import { ApiUserDataAdminService } from './api-user-data-admin.service'
+import { ApiUserDataUserService } from './api-user-data-user.service'
 
 @Injectable()
 export class ApiUserService {
-  constructor(readonly admin: ApiAdminUserService, readonly user: ApiUserUserService) {}
+  constructor(readonly admin: ApiUserDataAdminService, readonly user: ApiUserDataUserService) {}
 }
