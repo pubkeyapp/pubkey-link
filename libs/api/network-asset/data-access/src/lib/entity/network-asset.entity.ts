@@ -1,5 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { Prisma } from '@prisma/client'
+import { PagingResponse } from '@pubkey-link/api-core-data-access'
 import { NetworkCluster, NetworkResolver } from '@pubkey-link/api-network-data-access'
 import { NetworkTokenType } from '@pubkey-link/api-network-token-data-access'
 import { GraphQLJSON } from 'graphql-scalars'
@@ -43,3 +44,6 @@ export class NetworkAsset {
   @Field(() => GraphQLJSON, { nullable: true })
   metadata?: Prisma.JsonValue | null
 }
+
+@ObjectType()
+export class NetworkAssetPaging extends PagingResponse<NetworkAsset>(NetworkAsset) {}
