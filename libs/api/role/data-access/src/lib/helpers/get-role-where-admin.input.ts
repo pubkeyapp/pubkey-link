@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
 import { AdminFindManyRoleInput } from '../dto/admin-find-many-role.input'
 
-export function getAdminRoleWhereInput(input: AdminFindManyRoleInput): Prisma.RoleWhereInput {
+export function getRoleWhereAdminInput(input: AdminFindManyRoleInput): Prisma.RoleWhereInput {
   const where: Prisma.RoleWhereInput = {
     communityId: input.communityId,
   }
