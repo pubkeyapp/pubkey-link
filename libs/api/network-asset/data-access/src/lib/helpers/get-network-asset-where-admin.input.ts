@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
 import { AdminFindManyNetworkAssetInput } from '../dto/admin-find-many-network-asset.input'
 
-export function getAdminNetworkAssetWhereInput(input: AdminFindManyNetworkAssetInput): Prisma.NetworkAssetWhereInput {
+export function getNetworkAssetWhereAdminInput(input: AdminFindManyNetworkAssetInput): Prisma.NetworkAssetWhereInput {
   const where: Prisma.NetworkAssetWhereInput = {
     cluster: input.cluster,
     type: input.type ?? undefined,
