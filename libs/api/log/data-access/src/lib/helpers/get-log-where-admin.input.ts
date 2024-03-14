@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
 import { AdminFindManyLogInput } from '../dto/admin-find-many-log.input'
 
-export function getAdminLogWhereInput(input: AdminFindManyLogInput): Prisma.LogWhereInput {
+export function getLogWhereAdminInput(input: AdminFindManyLogInput): Prisma.LogWhereInput {
   const where: Prisma.LogWhereInput = {
     communityId: input.communityId ?? undefined,
     level: input.level ?? undefined,
