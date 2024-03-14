@@ -5,7 +5,7 @@ import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-acce
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
 import { verifyMessageSignature } from '@pubkey-link/verify-wallet'
 
-import { ApiSolanaIdentityService } from './api-solana-identity.service'
+import { ApiIdentitySolanaService } from './api-identity-solana.service'
 import { LinkIdentityInput } from './dto/link-identity-input'
 import { RequestIdentityChallengeInput } from './dto/request-identity-challenge.input'
 import { UserFindManyIdentityInput } from './dto/user-find-many-identity-input'
@@ -13,11 +13,11 @@ import { VerifyIdentityChallengeInput } from './dto/verify-identity-challenge-in
 import { sha256 } from './helpers/sha256'
 
 @Injectable()
-export class ApiUserIdentityService {
-  private readonly logger = new Logger(ApiUserIdentityService.name)
+export class ApiIdentityDataUserService {
+  private readonly logger = new Logger(ApiIdentityDataUserService.name)
   constructor(
     private readonly core: ApiCoreService,
-    private readonly solana: ApiSolanaIdentityService,
+    private readonly solana: ApiIdentitySolanaService,
     private readonly network: ApiNetworkService,
     private readonly networkAsset: ApiNetworkAssetService,
   ) {}

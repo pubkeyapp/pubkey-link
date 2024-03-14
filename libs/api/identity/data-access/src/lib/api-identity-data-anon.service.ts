@@ -3,19 +3,19 @@ import { IdentityProvider, NetworkCluster, UserRole, UserStatus } from '@prisma/
 import { ApiAuthService } from '@pubkey-link/api-auth-data-access'
 import { ApiCoreService, BaseContext, ellipsify, getRequestDetails, slugifyId } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
-import { ApiSolanaIdentityService } from './api-solana-identity.service'
+import { ApiIdentitySolanaService } from './api-identity-solana.service'
 import { RequestIdentityChallengeInput } from './dto/request-identity-challenge.input'
 import { VerifyIdentityChallengeInput } from './dto/verify-identity-challenge-input'
 import { sha256 } from './helpers/sha256'
 
 @Injectable()
-export class ApiAnonIdentityService {
-  private readonly logger = new Logger(ApiAnonIdentityService.name)
+export class ApiIdentityDataAnonService {
+  private readonly logger = new Logger(ApiIdentityDataAnonService.name)
   constructor(
     private readonly auth: ApiAuthService,
     private readonly core: ApiCoreService,
     private readonly network: ApiNetworkService,
-    private readonly solana: ApiSolanaIdentityService,
+    private readonly solana: ApiIdentitySolanaService,
   ) {}
 
   findUserByIdentity(provider: IdentityProvider, providerId: string) {
