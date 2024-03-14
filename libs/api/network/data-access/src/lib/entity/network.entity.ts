@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql'
+import { PagingResponse } from '@pubkey-link/api-core-data-access'
 import { NetworkCluster } from './network-cluster.enum'
 import { NetworkType } from './network-type.enum'
 
@@ -21,3 +22,6 @@ export class Network {
   @Field({ nullable: true })
   enableSync?: boolean
 }
+
+@ObjectType()
+export class NetworkPaging extends PagingResponse<Network>(Network) {}

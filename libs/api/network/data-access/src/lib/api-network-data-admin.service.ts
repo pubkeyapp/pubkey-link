@@ -3,7 +3,7 @@ import { ApiNetworkDataService } from './api-network-data.service'
 import { AdminCreateNetworkInput } from './dto/admin-create-network.input'
 import { AdminFindManyNetworkInput } from './dto/admin-find-many-network.input'
 import { AdminUpdateNetworkInput } from './dto/admin-update-network.input'
-import { NetworkPaging } from './entity/network-paging.entity'
+import { NetworkPaging } from './entity/network.entity'
 import { getNetworkWhereAdminInput } from './helpers/get-network-where-admin.input'
 
 @Injectable()

@@ -5,7 +5,7 @@ import { ApiCommunityDataService } from './api-community-data.service'
 import { UserCreateCommunityInput } from './dto/user-create-community.input'
 import { UserFindManyCommunityInput } from './dto/user-find-many-community.input'
 import { UserUpdateCommunityInput } from './dto/user-update-community.input'
-import { CommunityPaging } from './entity/community-paging.entity'
+import { CommunityPaging } from './entity/community.entity'
 import { getCommunityWhereUserInput } from './helpers/get-community-where-user.input'
 
 @Injectable()

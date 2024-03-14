@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common'
+import { Prisma } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { UserCreateRoleConditionInput } from './dto/user-create-role-condition.input'
-import { UserUpdateRoleConditionInput } from './dto/user-update-role-condition-input'
 
 @Injectable()
 export class ApiRoleConditionDataService {
   constructor(private readonly core: ApiCoreService) {}
 
-  async create(input: UserCreateRoleConditionInput) {
+  async create(input: Omit<Prisma.RoleConditionUncheckedCreateInput, 'type'>) {
     const token = await this.findOne(input.tokenId)
     return this.core.data.roleCondition.create({
       data: {
@@ -31,14 +30,14 @@ export class ApiRoleConditionDataService {
     return !!deleted
   }
 
-  async updateRoleCondition(roleConditionId: string, input: UserUpdateRoleConditionInput) {
+  async updateRoleCondition(roleConditionId: string, input: Prisma.RoleConditionUpdateInput) {
     // Amount is at least 1
-    let amount = parseFloat(input.amount ?? '1')
+    let amount = input.amount && typeof input.amount === 'string' ? parseFloat(input.amount) : 1
     if (amount < 1) {
       amount = 1
     }
     // Amount Max must be higher than amount
-    const amountMax = input.amountMax ? parseFloat(input.amountMax) : undefined
+    const amountMax = input.amountMax && typeof input.amountMax === 'string' ? parseFloat(input.amountMax) : undefined
     if (amountMax && amountMax < amount) {
       throw new Error('Amount max must be higher than amount')
     }
