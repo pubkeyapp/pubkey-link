@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
 import { UserFindManyNetworkTokenInput } from '../dto/user-find-many-network-token.input'
 
-export function getUserNetworkTokenWhereInput(
+export function getNetworkTokenWhereUserInput(
   filters: string[] = [],
   input: UserFindManyNetworkTokenInput,
 ): Prisma.NetworkTokenWhereInput {
