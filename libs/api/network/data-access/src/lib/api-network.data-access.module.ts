@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common'
 import { ApiCoreDataAccessModule } from '@pubkey-link/api-core-data-access'
-import { ApiAdminNetworkService } from './api-admin-network.service'
 import { ApiNetworkClusterService } from './api-network-cluster.service'
+import { ApiNetworkDataAdminService } from './api-network-data-admin.service'
+import { ApiNetworkDataService } from './api-network-data.service'
 import { ApiNetworkService } from './api-network.service'
 import { ApiNetworkProvisionService } from './provision/api-network-provision.service'
 import { ApiNetworkResolverAnybodiesService } from './resolver/api-network-resolver-anybodies.service'
@@ -12,14 +13,15 @@ import { ApiNetworkResolverService } from './resolver/api-network-resolver.servi
 @Module({
   imports: [ApiCoreDataAccessModule],
   providers: [
-    ApiAdminNetworkService,
     ApiNetworkClusterService,
+    ApiNetworkDataAdminService,
+    ApiNetworkDataService,
     ApiNetworkProvisionService,
-    ApiNetworkService,
-    ApiNetworkResolverService,
     ApiNetworkResolverAnybodiesService,
+    ApiNetworkResolverService,
     ApiNetworkResolverSolanaFungibleService,
     ApiNetworkResolverSolanaNonFungibleService,
+    ApiNetworkService,
   ],
   exports: [ApiNetworkService],
 })
