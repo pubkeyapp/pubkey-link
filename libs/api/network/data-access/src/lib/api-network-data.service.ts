@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { ApiCoreService, PagingInputFields } from '@pubkey-link/api-core-data-access'
 import { getNetworkType } from '@pubkey-link/api-network-util'
-import { NetworkPaging } from './entity/network-paging.entity'
+import { NetworkPaging } from './entity/network.entity'
 
 @Injectable()
 export class ApiNetworkDataService {

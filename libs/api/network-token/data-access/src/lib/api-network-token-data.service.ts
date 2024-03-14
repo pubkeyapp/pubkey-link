@@ -4,7 +4,6 @@ import { NetworkTokenType, Prisma } from '@prisma/client'
 import { ApiCoreService, EVENT_APP_STARTED, PagingInputFields } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
 import { getNetworkTokenType } from '@pubkey-link/api-network-util'
-import { AdminCreateNetworkTokenInput } from './dto/admin-create-network-token.input'
 import { AdminUpdateNetworkTokenInput } from './dto/admin-update-network-token.input'
 import { NetworkTokenPaging } from './entity/network-token.entity'
 
@@ -18,7 +17,7 @@ export class ApiNetworkTokenDataService {
     await Promise.all(tokens.map((token) => this.updateNetworkTokenMetadata(token.id)))
   }
 
-  async create(input: AdminCreateNetworkTokenInput) {
+  async create(input: Omit<Prisma.NetworkTokenUncheckedCreateInput, 'type' | 'name' | 'program'>) {
     const info = await this.network.getAccountInfo(input)
 
     if (!info) {

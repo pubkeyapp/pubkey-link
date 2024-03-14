@@ -5,11 +5,11 @@ import { GraphQLJSON } from 'graphql-scalars'
 @InputType()
 export class UserUpdateRoleConditionInput {
   @Field({ nullable: true })
-  amount?: string | null
+  amount?: string
   @Field({ nullable: true })
-  amountMax?: string | null
+  amountMax?: string
   @Field(() => GraphQLJSON, { nullable: true })
-  config?: Prisma.InputJsonValue | null
+  config?: Prisma.InputJsonValue
   @Field(() => GraphQLJSON, { nullable: true })
-  filters?: Prisma.InputJsonValue | null
+  filters?: Prisma.InputJsonValue
 }

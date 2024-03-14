@@ -4,7 +4,7 @@ import { AdminCreateBotInput } from './dto/admin-create-bot.input'
 import { AdminFindManyBotInput } from './dto/admin-find-many-bot.input'
 import { AdminUpdateBotInput } from './dto/admin-update-bot.input'
 import { BotPaging } from './entity/bot.entity'
-import { getAdminBotWhereInput } from './helpers/get-admin-bot-where.input'
+import { getBotWhereAdminInput } from './helpers/get-bot-where-admin.input'
 
 @Injectable()
 export class ApiBotDataAdminService {
@@ -22,7 +22,7 @@ export class ApiBotDataAdminService {
   async findManyBot(input: AdminFindManyBotInput): Promise<BotPaging> {
     return this.data.findMany({
       orderBy: { createdAt: 'desc' },
-      where: getAdminBotWhereInput(input),
+      where: getBotWhereAdminInput(input),
       limit: input.limit,
       page: input.page,
     })

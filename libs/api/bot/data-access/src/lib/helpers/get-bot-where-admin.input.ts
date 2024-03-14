@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
 import { AdminFindManyBotInput } from '../dto/admin-find-many-bot.input'
 
-export function getAdminBotWhereInput(input: AdminFindManyBotInput): Prisma.BotWhereInput {
+export function getBotWhereAdminInput(input: AdminFindManyBotInput): Prisma.BotWhereInput {
   const where: Prisma.BotWhereInput = {
     communityId: input.communityId,
   }
