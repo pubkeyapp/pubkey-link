@@ -3,11 +3,11 @@ import { ApiAuthDataAccessModule } from '@pubkey-link/api-auth-data-access'
 import { ApiCoreDataAccessModule } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkAssetDataAccessModule } from '@pubkey-link/api-network-asset-data-access'
 import { ApiNetworkDataAccessModule } from '@pubkey-link/api-network-data-access'
-import { ApiAdminIdentityService } from './api-admin-identity.service'
-import { ApiAnonIdentityService } from './api-anon-identity.service'
+import { ApiIdentityDataAdminService } from './api-identity-data-admin.service'
+import { ApiIdentityDataAnonService } from './api-identity-data-anon.service'
+import { ApiIdentityDataUserService } from './api-identity-data-user.service'
+import { ApiIdentitySolanaService } from './api-identity-solana.service'
 import { ApiIdentityService } from './api-identity.service'
-import { ApiSolanaIdentityService } from './api-solana-identity.service'
-import { ApiUserIdentityService } from './api-user-identity.service'
 
 @Module({
   imports: [
@@ -17,11 +17,11 @@ import { ApiUserIdentityService } from './api-user-identity.service'
     ApiNetworkAssetDataAccessModule,
   ],
   providers: [
-    ApiAdminIdentityService,
-    ApiAnonIdentityService,
+    ApiIdentityDataAdminService,
+    ApiIdentityDataAnonService,
     ApiIdentityService,
-    ApiSolanaIdentityService,
-    ApiUserIdentityService,
+    ApiIdentitySolanaService,
+    ApiIdentityDataUserService,
   ],
   exports: [ApiIdentityService],
 })

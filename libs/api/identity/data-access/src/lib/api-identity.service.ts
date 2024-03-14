@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common'
 
-import { ApiAdminIdentityService } from './api-admin-identity.service'
-import { ApiUserIdentityService } from './api-user-identity.service'
-import { ApiAnonIdentityService } from './api-anon-identity.service'
+import { ApiIdentityDataAdminService } from './api-identity-data-admin.service'
+import { ApiIdentityDataAnonService } from './api-identity-data-anon.service'
+import { ApiIdentityDataUserService } from './api-identity-data-user.service'
 
 @Injectable()
 export class ApiIdentityService {
   constructor(
-    readonly admin: ApiAdminIdentityService,
-    readonly anon: ApiAnonIdentityService,
-    readonly user: ApiUserIdentityService,
+    readonly admin: ApiIdentityDataAdminService,
+    readonly anon: ApiIdentityDataAnonService,
+    readonly user: ApiIdentityDataUserService,
   ) {}
 }
