@@ -8,13 +8,6 @@
       "dependsOn": ["^build"],
       "cache": true
     },
-    "lint": {
-      "inputs": ["default", "{workspaceRoot}/.eslintrc.json", "{workspaceRoot}/.eslintignore"],
-      "cache": true
-    },
-    "e2e": {
-      "cache": true
-    },
     "@nx/jest:jest": {
       "cache": true,
       "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
@@ -27,6 +20,10 @@
           "codeCoverage": true
         }
       }
+    },
+    "@nx/eslint:lint": {
+      "inputs": ["default", "{workspaceRoot}/.eslintrc.json", "{workspaceRoot}/.eslintignore"],
+      "cache": true
     }
   },
   "generators": {
@@ -39,5 +36,6 @@
       }
     }
   },
+  "useInferencePlugins": false,
   "nxCloudAccessToken": "NWI4MDc3OTctOTgyZi00ZjhhLWI2NmMtMDM0N2NmNTc5OGZlfHJlYWQtd3JpdGU="
 }

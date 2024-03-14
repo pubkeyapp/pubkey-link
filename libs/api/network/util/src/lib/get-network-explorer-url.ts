@@ -1,6 +1,6 @@
 import { NetworkCluster } from '@prisma/client'
 
-export function getNetworkExplorerUrl(cluster: NetworkCluster, endpoint: string = 'http://localost:8899') {
+export function getNetworkExplorerUrl(cluster: NetworkCluster, endpoint = 'http://localost:8899') {
   const base = 'https://solana.fm/{path}'
   switch (cluster) {
     case NetworkCluster.SolanaDevnet:

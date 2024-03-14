@@ -12,7 +12,6 @@ export function UserBotDetailFeature({ community }: { community: Community }) {
 
   async function submit(input: UserCreateBotInput) {
     return createBot(input)
-      .then((res) => {})
       .then(() => true)
       .catch((err) => {
         toastError(err.message)
