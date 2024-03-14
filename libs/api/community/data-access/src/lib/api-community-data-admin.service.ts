@@ -3,7 +3,7 @@ import { ApiCommunityDataService } from './api-community-data.service'
 import { AdminCreateCommunityInput } from './dto/admin-create-community.input'
 import { AdminFindManyCommunityInput } from './dto/admin-find-many-community.input'
 import { AdminUpdateCommunityInput } from './dto/admin-update-community.input'
-import { CommunityPaging } from './entity/community-paging.entity'
+import { CommunityPaging } from './entity/community.entity'
 import { getCommunityWhereAdminInput } from './helpers/get-community-where-admin.input'
 
 @Injectable()

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { ApiCoreService, PagingInputFields } from '@pubkey-link/api-core-data-access'
-import { CommunityPaging } from './entity/community-paging.entity'
+import { CommunityPaging } from './entity/community.entity'
 
 @Injectable()
 export class ApiCommunityDataService {
