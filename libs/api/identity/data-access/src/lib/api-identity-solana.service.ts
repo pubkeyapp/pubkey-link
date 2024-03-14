@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { IdentityProvider } from '@prisma/client'
 import { ApiCoreService, BaseContext, getRequestDetails } from '@pubkey-link/api-core-data-access'
 import { verifyMessageSignature } from '@pubkey-link/verify-wallet'
@@ -6,8 +6,7 @@ import { verifyMessageSignature } from '@pubkey-link/verify-wallet'
 import { PublicKey } from '@solana/web3.js'
 
 @Injectable()
-export class ApiSolanaIdentityService {
-  private readonly logger = new Logger(ApiSolanaIdentityService.name)
+export class ApiIdentitySolanaService {
   constructor(private readonly core: ApiCoreService) {}
 
   ensureAllowedProvider(provider: IdentityProvider) {
