@@ -1,10 +1,52 @@
 import { Injectable } from '@nestjs/common'
-import { ApiCoreService, slugifyId } from '@pubkey-link/api-core-data-access'
+import { Prisma } from '@prisma/client'
+import { ApiCoreService, PagingInputFields, slugifyId } from '@pubkey-link/api-core-data-access'
 import { ApiRoleService } from '@pubkey-link/api-role-data-access'
+import { SnapshotPaging } from './entity/snapshot.entity'
 
 @Injectable()
-export class ApiSnapshotRoleService {
+export class ApiSnapshotDataService {
   constructor(private readonly core: ApiCoreService, private readonly role: ApiRoleService) {}
+
+  async create(input: Prisma.SnapshotUncheckedCreateInput) {
+    return this.core.data.snapshot.create({ data: input })
+  }
+
+  async delete(snapshotId: string) {
+    const deleted = await this.core.data.snapshot.delete({ where: { id: snapshotId } })
+    return !!deleted
+  }
+
+  async findMany({
+    limit = 10,
+    page = 1,
+    ...input
+  }: Prisma.SnapshotFindManyArgs & PagingInputFields): Promise<SnapshotPaging> {
+    return this.core.data.snapshot
+      .paginate(input)
+      .withPages({ limit, page })
+      .then(([data, meta]) => ({ data, meta }))
+  }
+
+  async findOne(snapshotId: string) {
+    const found = await this.core.data.snapshot.findUnique({ where: { id: snapshotId } })
+    if (!found) {
+      throw new Error('Snapshot not found')
+    }
+    return found
+  }
+
+  async update(snapshotId: string, input: Prisma.SnapshotUpdateInput) {
+    return this.core.data.snapshot.update({ where: { id: snapshotId }, data: input })
+  }
+
+  async ensureRoleAdmin({ roleId, userId }: { userId: string; roleId: string }) {
+    const role = await this.core.data.role.findUnique({ where: { id: roleId } })
+    if (!role) {
+      throw new Error('Role not found')
+    }
+    await this.core.ensureCommunityAdmin({ communityId: role.communityId, userId })
+  }
 
   async createSnapshot(roleId: string) {
     const role = await this.core.data.role.findUnique({
