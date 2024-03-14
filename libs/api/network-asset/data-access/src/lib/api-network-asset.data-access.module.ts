@@ -4,10 +4,11 @@ import { BullModule } from '@nestjs/bullmq'
 import { Module } from '@nestjs/common'
 import { ApiCoreDataAccessModule } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkDataAccessModule } from '@pubkey-link/api-network-data-access'
-import { ApiAdminNetworkAssetService } from './api-admin-network-asset.service'
+import { ApiNetworkAssetDataAdminService } from './api-network-asset-data-admin.service'
+import { ApiNetworkAssetDataUserService } from './api-network-asset-data-user.service'
+import { ApiNetworkAssetDataService } from './api-network-asset-data.service'
 import { ApiNetworkAssetSyncService } from './api-network-asset-sync.service'
 import { ApiNetworkAssetService } from './api-network-asset.service'
-import { ApiUserNetworkAssetService } from './api-user-network-asset.service'
 import {
   API_NETWORK_ASSET_SYNC,
   API_NETWORK_ASSET_UPSERT_FLOW,
@@ -31,8 +32,9 @@ const processors = [ApiNetworkAssetSyncQueue, ApiNetworkAssetUpsertQueue]
   providers: [
     ApiNetworkAssetService,
     ApiNetworkAssetSyncService,
-    ApiUserNetworkAssetService,
-    ApiAdminNetworkAssetService,
+    ApiNetworkAssetDataUserService,
+    ApiNetworkAssetDataService,
+    ApiNetworkAssetDataAdminService,
     ...processors,
   ],
   exports: [ApiNetworkAssetService],

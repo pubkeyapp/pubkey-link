@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
 import { UserFindManyNetworkAssetInput } from '../dto/user-find-many-network-asset.input'
 
-export function getUserNetworkAssetWhereInput(
+export function getNetworkAssetWhereUserInput(
   identities: string[] = [],
   input: UserFindManyNetworkAssetInput,
 ): Prisma.NetworkAssetWhereInput {
