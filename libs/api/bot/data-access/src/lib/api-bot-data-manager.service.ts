@@ -15,8 +15,8 @@ import { BotStatus } from './entity/bot-status.enum'
 import { DiscordChannel, DiscordRole, DiscordServer } from './entity/discord-server.entity'
 
 @Injectable()
-export class ApiBotManagerService {
-  private readonly logger = new Logger(ApiBotManagerService.name)
+export class ApiBotDataManagerService {
+  private readonly logger = new Logger(ApiBotDataManagerService.name)
   private readonly bots = new Map<string, DiscordBot>()
 
   constructor(private readonly core: ApiCoreService, private readonly botMember: ApiBotMemberService) {}

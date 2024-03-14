@@ -1,46 +1,36 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { User as DiscordUser } from 'discord.js'
-import { ApiBotManagerService } from './api-bot-manager.service'
-import { ApiBotMemberService } from './api-bot-member.service'
+import { ApiBotDataManagerService } from './api-bot-data-manager.service'
+import { ApiBotDataService } from './api-bot-data.service'
 import { UserCreateBotInput } from './dto/user-create-bot.input'
 import { UserUpdateBotServerInput } from './dto/user-update-bot-server.input'
 import { UserUpdateBotInput } from './dto/user-update-bot.input'
 import { DiscordRole, DiscordServer } from './entity/discord-server.entity'
 
 @Injectable()
-export class ApiUserBotService {
-  private readonly logger = new Logger(ApiUserBotService.name)
+export class ApiBotDataUserService {
+  private readonly logger = new Logger(ApiBotDataUserService.name)
   constructor(
     private readonly core: ApiCoreService,
-    private readonly manager: ApiBotManagerService,
-    private readonly botMember: ApiBotMemberService,
+    private readonly data: ApiBotDataService,
+    private readonly manager: ApiBotDataManagerService,
   ) {}
 
   async createBot(userId: string, input: UserCreateBotInput) {
     await this.core.ensureCommunityAdmin({ communityId: input.communityId, userId })
-    const bot: DiscordUser = await this.manager.getBotUser(input.token)
-    this.logger.verbose(`Creating bot ${bot.username}`)
-    const avatarUrl = `https://cdn.discordapp.com/avatars/${bot.id}/${bot.avatar}.png?size=1024`
-    return this.core.data.bot.create({
-      data: {
-        id: bot.id,
-        avatarUrl,
-        name: bot.username,
-        ...input,
-      },
-    })
+
+    return this.data.create(input)
   }
 
   async deleteBot(userId: string, botId: string) {
     await this.ensureBotAdmin({ botId, userId })
-    const deleted = await this.core.data.bot.delete({ where: { id: botId } })
-    return !!deleted
+
+    return this.data.delete(botId)
   }
 
   async findOneBot(userId: string, communityId: string) {
     await this.core.ensureCommunityAccess({ communityId, userId })
-    const bot = await this.core.data.bot.findUnique({ where: { communityId } })
+    const bot = await this.data.findByCommunityId(communityId)
     if (!bot) {
       return null
     }
@@ -67,7 +57,7 @@ export class ApiUserBotService {
 
   async updateBot(userId: string, botId: string, input: UserUpdateBotInput) {
     await this.ensureBotAdmin({ botId, userId })
-    return this.core.data.bot.update({ where: { id: botId }, data: input })
+    return this.data.update(botId, input)
   }
 
   async updateBotServer(userId: string, botId: string, serverId: string, input: UserUpdateBotServerInput) {
@@ -127,7 +117,7 @@ export class ApiUserBotService {
   }
 
   private async ensureBotAdmin({ botId, userId }: { botId: string; userId: string }) {
-    const bot = await this.core.data.bot.findUnique({ where: { id: botId }, include: { community: true } })
+    const bot = await this.data.findOne(botId)
     if (!bot) {
       throw new Error(`Bot with id ${botId} not found`)
     }
