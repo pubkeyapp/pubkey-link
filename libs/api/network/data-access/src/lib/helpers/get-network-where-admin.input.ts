@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
 import { AdminFindManyNetworkInput } from '../dto/admin-find-many-network.input'
 
-export function getAdminNetworkWhereInput(input: AdminFindManyNetworkInput): Prisma.NetworkWhereInput {
+export function getNetworkWhereAdminInput(input: AdminFindManyNetworkInput): Prisma.NetworkWhereInput {
   const where: Prisma.NetworkWhereInput = {}
 
   if (input.search) {
