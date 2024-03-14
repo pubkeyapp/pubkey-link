@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
 import { AdminFindManySnapshotInput } from '../dto/admin-find-many-snapshot.input'
 
-export function getAdminSnapshotWhereInput(input: AdminFindManySnapshotInput): Prisma.SnapshotWhereInput {
+export function getSnapshotWhereAdminInput(input: AdminFindManySnapshotInput): Prisma.SnapshotWhereInput {
   const where: Prisma.SnapshotWhereInput = {
     roleId: input.roleId ?? undefined,
   }
