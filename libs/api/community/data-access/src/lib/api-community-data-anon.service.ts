@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 
 @Injectable()
-export class ApiAnonCommunityService {
+export class ApiCommunityDataAnonService {
   constructor(private readonly core: ApiCoreService) {}
 
   async getCommunities() {
