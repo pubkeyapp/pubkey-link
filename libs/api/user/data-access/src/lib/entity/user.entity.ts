@@ -1,4 +1,5 @@
 import { Field, HideField, ObjectType } from '@nestjs/graphql'
+import { PagingResponse } from '@pubkey-link/api-core-data-access'
 import { UserRole } from './user-role.enum'
 import { UserStatus } from './user-status.enum'
 
@@ -27,3 +28,6 @@ export class User {
   @HideField()
   identities?: unknown[] | null
 }
+
+@ObjectType()
+export class UserPaging extends PagingResponse<User>(User) {}

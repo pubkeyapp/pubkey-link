@@ -1,7 +1,7 @@
 import { Prisma, UserStatus } from '@prisma/client'
 import { UserFindManyUserInput } from '../dto/user-find-many-user.input'
 
-export function getUserUserWhereInput(input: UserFindManyUserInput): Prisma.UserWhereInput {
+export function getUserWhereUserInput(input: UserFindManyUserInput): Prisma.UserWhereInput {
   const where: Prisma.UserWhereInput = {
     status: {
       in: [UserStatus.Active],

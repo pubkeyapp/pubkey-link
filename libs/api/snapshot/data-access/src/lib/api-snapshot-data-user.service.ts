@@ -4,7 +4,7 @@ import { ApiSnapshotDataService } from './api-snapshot-data.service'
 import { UserCreateSnapshotInput } from './dto/user-create-snapshot.input'
 import { UserFindManySnapshotInput } from './dto/user-find-many-snapshot.input'
 import { SnapshotPaging } from './entity/snapshot.entity'
-import { getUserSnapshotWhereInput } from './helpers/get-user-snapshot-where.input'
+import { getSnapshotWhereUserInput } from './helpers/get-snapshot-where-user.input'
 
 @Injectable()
 export class ApiSnapshotDataUserService {
@@ -24,7 +24,7 @@ export class ApiSnapshotDataUserService {
     await this.core.ensureCommunityAdmin({ userId, communityId: input.communityId })
     return this.data.findMany({
       orderBy: { createdAt: 'desc' },
-      where: getUserSnapshotWhereInput(input),
+      where: getSnapshotWhereUserInput(input),
       limit: input.limit,
       page: input.page,
     })
