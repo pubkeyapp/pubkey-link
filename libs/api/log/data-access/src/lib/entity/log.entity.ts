@@ -1,6 +1,6 @@
 import { Field, HideField, ObjectType } from '@nestjs/graphql'
 import { Bot, Identity, NetworkAsset, Prisma, Role, User } from '@prisma/client'
-import { IdentityProvider } from '@pubkey-link/api-core-data-access'
+import { IdentityProvider, PagingResponse } from '@pubkey-link/api-core-data-access'
 import { GraphQLJSON } from 'graphql-scalars'
 import { LogLevel } from './log-level.enum'
 import { LogRelatedType } from './log-related-type.enum'
@@ -48,3 +48,6 @@ export class Log {
   @HideField()
   role?: Role | null
 }
+
+@ObjectType()
+export class LogPaging extends PagingResponse<Log>(Log) {}
