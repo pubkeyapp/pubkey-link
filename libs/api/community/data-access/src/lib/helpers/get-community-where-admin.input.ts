@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
 import { AdminFindManyCommunityInput } from '../dto/admin-find-many-community.input'
 
-export function getAdminCommunityWhereInput(input: AdminFindManyCommunityInput): Prisma.CommunityWhereInput {
+export function getCommunityWhereAdminInput(input: AdminFindManyCommunityInput): Prisma.CommunityWhereInput {
   const where: Prisma.CommunityWhereInput = {}
 
   if (input.search) {

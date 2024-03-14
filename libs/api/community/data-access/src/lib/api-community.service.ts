@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common'
 import { CommunityRole } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { ApiAdminCommunityService } from './api-admin-community.service'
-import { ApiAnonCommunityService } from './api-anon-community.service'
-import { ApiUserCommunityService } from './api-user-community.service'
+import { ApiCommunityDataAdminService } from './api-community-data-admin.service'
+import { ApiCommunityDataAnonService } from './api-community-data-anon.service'
+import { ApiCommunityDataUserService } from './api-community-data-user.service'
 
 @Injectable()
 export class ApiCommunityService {
   constructor(
-    readonly anon: ApiAnonCommunityService,
+    readonly anon: ApiCommunityDataAnonService,
     readonly core: ApiCoreService,
-    readonly admin: ApiAdminCommunityService,
-    readonly user: ApiUserCommunityService,
+    readonly admin: ApiCommunityDataAdminService,
+    readonly user: ApiCommunityDataUserService,
   ) {}
 
   async ensureCommunityAdmin(userId: string, communityId: string) {

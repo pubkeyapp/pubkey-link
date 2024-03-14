@@ -1,20 +1,22 @@
 import { Module } from '@nestjs/common'
 import { ApiCommunityMemberDataAccessModule } from '@pubkey-link/api-community-member-data-access'
 import { ApiCoreDataAccessModule } from '@pubkey-link/api-core-data-access'
-import { ApiAdminCommunityService } from './api-admin-community.service'
-import { ApiAnonCommunityService } from './api-anon-community.service'
+import { ApiCommunityDataAdminService } from './api-community-data-admin.service'
+import { ApiCommunityDataAnonService } from './api-community-data-anon.service'
+import { ApiCommunityDataUserService } from './api-community-data-user.service'
+import { ApiCommunityDataService } from './api-community-data.service'
 import { ApiCommunityService } from './api-community.service'
-import { ApiUserCommunityService } from './api-user-community.service'
 import { ApiCommunityProvisionService } from './provision/api-community-provision.service'
 
 @Module({
   imports: [ApiCoreDataAccessModule, ApiCommunityMemberDataAccessModule],
   providers: [
-    ApiAdminCommunityService,
-    ApiCommunityService,
-    ApiAnonCommunityService,
+    ApiCommunityDataAdminService,
+    ApiCommunityDataAnonService,
+    ApiCommunityDataService,
+    ApiCommunityDataUserService,
     ApiCommunityProvisionService,
-    ApiUserCommunityService,
+    ApiCommunityService,
   ],
   exports: [ApiCommunityService],
 })
