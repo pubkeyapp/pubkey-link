@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql'
 import { Prisma } from '@prisma/client'
+import { PagingResponse } from '@pubkey-link/api-core-data-access'
 import { NetworkCluster } from '@pubkey-link/api-network-data-access'
 import { GraphQLJSON } from 'graphql-scalars'
 import { NetworkTokenType } from './network-token-type.enum'
@@ -35,3 +36,6 @@ export class NetworkToken {
   @Field(() => GraphQLJSON, { nullable: true })
   raw?: Prisma.JsonValue | null
 }
+
+@ObjectType()
+export class NetworkTokenPaging extends PagingResponse<NetworkToken>(NetworkToken) {}

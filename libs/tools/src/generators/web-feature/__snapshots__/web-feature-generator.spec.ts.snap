@@ -257,7 +257,7 @@ export function AdminTestCreateFeature() {
 exports[`web-feature generator should run successfully with crud 11`] = `
 "import { useAdminFindOneTest } from '@proj/web-test-data-access';
 import { TestUiInfo } from '@proj/web-test-ui';
-import { UiCard, UiDebug, UiError, UiLoader } from '@pubkey-ui/core';
+import { UiCard, UiError, UiLoader } from '@pubkey-ui/core';
 
 export function AdminTestDetailInfoTab({ testId }: { testId: string }) {
   const { item, query } = useAdminFindOneTest({ testId });
@@ -313,6 +313,7 @@ import {
   UiTabRoutes,
 } from '@pubkey-ui/core';
 import { useAdminFindOneTest } from '@proj/web-test-data-access';
+import { TestUiItem } from '@proj/web-test-ui';
 import { useParams } from 'react-router-dom';
 import { AdminTestDetailInfoTab } from './admin-test-detail-info.tab';
 import { AdminTestDetailSettingsTab } from './admin-test-detail-settings.tab';
@@ -330,7 +331,7 @@ export function AdminTestDetailFeature() {
 
   return (
     <UiPage
-      title={<Group>{item.name}</Group>}
+      title={<TestUiItem test={item} />}
       leftAction={<UiBack />}
       rightAction={
         <Group>
@@ -481,7 +482,7 @@ export function UserTestCreateFeature() {
 exports[`web-feature generator should run successfully with crud 17`] = `
 "import { useUserFindOneTest } from '@proj/web-test-data-access';
 import { TestUiInfo } from '@proj/web-test-ui';
-import { UiCard, UiDebug, UiError, UiLoader } from '@pubkey-ui/core';
+import { UiCard, UiError, UiLoader } from '@pubkey-ui/core';
 
 export function UserTestDetailInfoTab({ testId }: { testId: string }) {
   const { item, query } = useUserFindOneTest({ testId });
@@ -537,6 +538,7 @@ import {
   UiTabRoutes,
 } from '@pubkey-ui/core';
 import { useUserFindOneTest } from '@proj/web-test-data-access';
+import { TestUiItem } from '@proj/web-test-ui';
 import { useParams } from 'react-router-dom';
 import { UserTestDetailInfoTab } from './user-test-detail-info.tab';
 import { UserTestDetailSettingsTab } from './user-test-detail-settings.tab';
@@ -554,7 +556,7 @@ export function UserTestDetailFeature() {
 
   return (
     <UiPage
-      title={<Group>{item.name}</Group>}
+      title={<TestUiItem test={item} />}
       leftAction={<UiBack />}
       rightAction={
         <Group>

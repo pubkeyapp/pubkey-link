@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { ApiAdminSnapshotService } from './api-admin-snapshot.service'
-import { ApiUserSnapshotService } from './api-user-snapshot.service'
+import { ApiSnapshotDataAdminService } from './api-snapshot-data-admin.service'
+import { ApiSnapshotDataUserService } from './api-snapshot-data-user.service'
 
 @Injectable()
 export class ApiSnapshotService {
-  constructor(readonly user: ApiUserSnapshotService, readonly admin: ApiAdminSnapshotService) {}
+  constructor(readonly user: ApiSnapshotDataUserService, readonly admin: ApiSnapshotDataAdminService) {}
 }

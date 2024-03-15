@@ -24,6 +24,11 @@ export type Scalars = {
   JSON: { input: any; output: any }
 }
 
+export type AdminAddCommunityMemberInput = {
+  role: CommunityRole
+  userId: Scalars['String']['input']
+}
+
 export type AdminCreateBotInput = {
   clientId: Scalars['String']['input']
   clientSecret: Scalars['String']['input']
@@ -41,11 +46,6 @@ export type AdminCreateCommunityInput = {
   telegramUrl?: InputMaybe<Scalars['String']['input']>
   twitterUrl?: InputMaybe<Scalars['String']['input']>
   websiteUrl?: InputMaybe<Scalars['String']['input']>
-}
-
-export type AdminCreateCommunityMemberInput = {
-  role: CommunityRole
-  userId: Scalars['String']['input']
 }
 
 export type AdminCreateIdentityInput = {
@@ -151,6 +151,13 @@ export type AdminFindManySnapshotInput = {
   search?: InputMaybe<Scalars['String']['input']>
 }
 
+export type AdminFindManyTeamInput = {
+  communityId: Scalars['String']['input']
+  limit?: InputMaybe<Scalars['Int']['input']>
+  page?: InputMaybe<Scalars['Int']['input']>
+  search?: InputMaybe<Scalars['String']['input']>
+}
+
 export type AdminFindManyUserInput = {
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
@@ -197,6 +204,11 @@ export type AdminUpdateNetworkTokenInput = {
 }
 
 export type AdminUpdateRoleInput = {
+  name?: InputMaybe<Scalars['String']['input']>
+}
+
+export type AdminUpdateTeamInput = {
+  avatarUrl?: InputMaybe<Scalars['String']['input']>
   name?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -355,7 +367,7 @@ export type Identity = {
   createdAt?: Maybe<Scalars['DateTime']['output']>
   expired?: Maybe<Scalars['Boolean']['output']>
   id: Scalars['String']['output']
-  name?: Maybe<Scalars['String']['output']>
+  name: Scalars['String']['output']
   owner?: Maybe<User>
   ownerId?: Maybe<Scalars['String']['output']>
   profile?: Maybe<Scalars['JSON']['output']>
@@ -440,10 +452,10 @@ export enum LogRelatedType {
 
 export type Mutation = {
   __typename?: 'Mutation'
+  adminAddCommunityMember?: Maybe<CommunityMember>
   adminCreateBackup: Scalars['Boolean']['output']
   adminCreateBot?: Maybe<Bot>
   adminCreateCommunity?: Maybe<Community>
-  adminCreateCommunityMember?: Maybe<CommunityMember>
   adminCreateIdentity?: Maybe<Identity>
   adminCreateNetwork?: Maybe<Network>
   adminCreateNetworkToken?: Maybe<NetworkToken>
@@ -452,7 +464,6 @@ export type Mutation = {
   adminDeleteBackup: Scalars['Boolean']['output']
   adminDeleteBot?: Maybe<Scalars['Boolean']['output']>
   adminDeleteCommunity?: Maybe<Scalars['Boolean']['output']>
-  adminDeleteCommunityMember?: Maybe<Scalars['Boolean']['output']>
   adminDeleteIdentity?: Maybe<Scalars['Boolean']['output']>
   adminDeleteLog?: Maybe<Scalars['Boolean']['output']>
   adminDeleteNetwork?: Maybe<Scalars['Boolean']['output']>
@@ -460,8 +471,10 @@ export type Mutation = {
   adminDeleteNetworkToken?: Maybe<Scalars['Boolean']['output']>
   adminDeleteRole?: Maybe<Scalars['Boolean']['output']>
   adminDeleteSnapshot?: Maybe<Scalars['Boolean']['output']>
+  adminDeleteTeam?: Maybe<Scalars['Boolean']['output']>
   adminDeleteUser?: Maybe<Scalars['Boolean']['output']>
   adminFetchBackup: Scalars['Boolean']['output']
+  adminRemoveCommunityMember?: Maybe<Scalars['Boolean']['output']>
   adminRestoreBackup: Scalars['Boolean']['output']
   adminSyncNetworkAssets?: Maybe<Scalars['Boolean']['output']>
   adminUpdateBot?: Maybe<Bot>
@@ -471,27 +484,32 @@ export type Mutation = {
   adminUpdateNetworkToken?: Maybe<NetworkToken>
   adminUpdateNetworkTokenMetadata?: Maybe<NetworkToken>
   adminUpdateRole?: Maybe<Role>
+  adminUpdateTeam?: Maybe<Team>
   adminUpdateUser?: Maybe<User>
   anonVerifyIdentityChallenge?: Maybe<IdentityChallenge>
   logout?: Maybe<Scalars['Boolean']['output']>
+  userAddCommunityMember?: Maybe<CommunityMember>
+  userAddTeamMember?: Maybe<Scalars['Boolean']['output']>
   userCreateBot?: Maybe<Bot>
   userCreateCommunity?: Maybe<Community>
-  userCreateCommunityMember?: Maybe<CommunityMember>
   userCreateRole?: Maybe<Role>
   userCreateRoleCondition?: Maybe<RoleCondition>
   userCreateRolePermission?: Maybe<RolePermission>
   userCreateSnapshot?: Maybe<Snapshot>
+  userCreateTeam?: Maybe<Team>
   userDeleteBot?: Maybe<Scalars['Boolean']['output']>
   userDeleteCommunity?: Maybe<Scalars['Boolean']['output']>
-  userDeleteCommunityMember?: Maybe<Scalars['Boolean']['output']>
   userDeleteIdentity?: Maybe<Scalars['Boolean']['output']>
   userDeleteRole?: Maybe<Scalars['Boolean']['output']>
   userDeleteRoleCondition?: Maybe<Scalars['Boolean']['output']>
   userDeleteRolePermission?: Maybe<Scalars['Boolean']['output']>
   userDeleteSnapshot?: Maybe<Scalars['Boolean']['output']>
+  userDeleteTeam?: Maybe<Scalars['Boolean']['output']>
   userLeaveBotServer?: Maybe<Scalars['Boolean']['output']>
   userLinkIdentity?: Maybe<Identity>
   userRefreshIdentity?: Maybe<Scalars['Boolean']['output']>
+  userRemoveCommunityMember?: Maybe<Scalars['Boolean']['output']>
+  userRemoveTeamMember?: Maybe<Scalars['Boolean']['output']>
   userStartBot?: Maybe<Scalars['Boolean']['output']>
   userStopBot?: Maybe<Scalars['Boolean']['output']>
   userSyncBotServer?: Maybe<Scalars['Boolean']['output']>
@@ -503,8 +521,14 @@ export type Mutation = {
   userUpdateCommunityMember?: Maybe<CommunityMember>
   userUpdateRole?: Maybe<Role>
   userUpdateRoleCondition?: Maybe<RoleCondition>
+  userUpdateTeam?: Maybe<Team>
   userUpdateUser?: Maybe<User>
   userVerifyIdentityChallenge?: Maybe<IdentityChallenge>
+}
+
+export type MutationAdminAddCommunityMemberArgs = {
+  communityId: Scalars['String']['input']
+  input: AdminAddCommunityMemberInput
 }
 
 export type MutationAdminCreateBotArgs = {
@@ -513,11 +537,6 @@ export type MutationAdminCreateBotArgs = {
 
 export type MutationAdminCreateCommunityArgs = {
   input: AdminCreateCommunityInput
-}
-
-export type MutationAdminCreateCommunityMemberArgs = {
-  communityId: Scalars['String']['input']
-  input: AdminCreateCommunityMemberInput
 }
 
 export type MutationAdminCreateIdentityArgs = {
@@ -552,10 +571,6 @@ export type MutationAdminDeleteCommunityArgs = {
   communityId: Scalars['String']['input']
 }
 
-export type MutationAdminDeleteCommunityMemberArgs = {
-  communityMemberId: Scalars['String']['input']
-}
-
 export type MutationAdminDeleteIdentityArgs = {
   identityId: Scalars['String']['input']
 }
@@ -584,12 +599,20 @@ export type MutationAdminDeleteSnapshotArgs = {
   snapshotId: Scalars['String']['input']
 }
 
+export type MutationAdminDeleteTeamArgs = {
+  teamId: Scalars['String']['input']
+}
+
 export type MutationAdminDeleteUserArgs = {
   userId: Scalars['String']['input']
 }
 
 export type MutationAdminFetchBackupArgs = {
   url: Scalars['String']['input']
+}
+
+export type MutationAdminRemoveCommunityMemberArgs = {
+  communityMemberId: Scalars['String']['input']
 }
 
 export type MutationAdminRestoreBackupArgs = {
@@ -634,6 +657,11 @@ export type MutationAdminUpdateRoleArgs = {
   roleId: Scalars['String']['input']
 }
 
+export type MutationAdminUpdateTeamArgs = {
+  input: AdminUpdateTeamInput
+  teamId: Scalars['String']['input']
+}
+
 export type MutationAdminUpdateUserArgs = {
   input: AdminUpdateUserInput
   userId: Scalars['String']['input']
@@ -643,17 +671,22 @@ export type MutationAnonVerifyIdentityChallengeArgs = {
   input: VerifyIdentityChallengeInput
 }
 
+export type MutationUserAddCommunityMemberArgs = {
+  communityId: Scalars['String']['input']
+  input: UserAddCommunityMemberInput
+}
+
+export type MutationUserAddTeamMemberArgs = {
+  teamId: Scalars['String']['input']
+  userId: Scalars['String']['input']
+}
+
 export type MutationUserCreateBotArgs = {
   input: UserCreateBotInput
 }
 
 export type MutationUserCreateCommunityArgs = {
   input: UserCreateCommunityInput
-}
-
-export type MutationUserCreateCommunityMemberArgs = {
-  communityId: Scalars['String']['input']
-  input: UserCreateCommunityMemberInput
 }
 
 export type MutationUserCreateRoleArgs = {
@@ -672,16 +705,16 @@ export type MutationUserCreateSnapshotArgs = {
   input: UserCreateSnapshotInput
 }
 
+export type MutationUserCreateTeamArgs = {
+  input: UserCreateTeamInput
+}
+
 export type MutationUserDeleteBotArgs = {
   botId: Scalars['String']['input']
 }
 
 export type MutationUserDeleteCommunityArgs = {
   communityId: Scalars['String']['input']
-}
-
-export type MutationUserDeleteCommunityMemberArgs = {
-  communityMemberId: Scalars['String']['input']
 }
 
 export type MutationUserDeleteIdentityArgs = {
@@ -704,6 +737,10 @@ export type MutationUserDeleteSnapshotArgs = {
   snapshotId: Scalars['String']['input']
 }
 
+export type MutationUserDeleteTeamArgs = {
+  teamId: Scalars['String']['input']
+}
+
 export type MutationUserLeaveBotServerArgs = {
   botId: Scalars['String']['input']
   serverId: Scalars['String']['input']
@@ -715,6 +752,15 @@ export type MutationUserLinkIdentityArgs = {
 
 export type MutationUserRefreshIdentityArgs = {
   identityId: Scalars['String']['input']
+}
+
+export type MutationUserRemoveCommunityMemberArgs = {
+  communityMemberId: Scalars['String']['input']
+}
+
+export type MutationUserRemoveTeamMemberArgs = {
+  teamId: Scalars['String']['input']
+  userId: Scalars['String']['input']
 }
 
 export type MutationUserStartBotArgs = {
@@ -768,6 +814,11 @@ export type MutationUserUpdateRoleArgs = {
 export type MutationUserUpdateRoleConditionArgs = {
   input: UserUpdateRoleConditionInput
   roleConditionId: Scalars['String']['input']
+}
+
+export type MutationUserUpdateTeamArgs = {
+  input: UserUpdateTeamInput
+  teamId: Scalars['String']['input']
 }
 
 export type MutationUserUpdateUserArgs = {
@@ -896,6 +947,7 @@ export type Query = {
   adminFindManyNetworkToken: NetworkTokenPaging
   adminFindManyRole: RolePaging
   adminFindManySnapshot: SnapshotPaging
+  adminFindManyTeam: TeamPaging
   adminFindManyUser: UserPaging
   adminFindOneBot?: Maybe<Bot>
   adminFindOneCommunity?: Maybe<Community>
@@ -906,6 +958,7 @@ export type Query = {
   adminFindOneNetworkToken?: Maybe<NetworkToken>
   adminFindOneRole?: Maybe<Role>
   adminFindOneSnapshot?: Maybe<Snapshot>
+  adminFindOneTeam?: Maybe<Team>
   adminFindOneUser?: Maybe<User>
   adminGetBackup?: Maybe<Scalars['JSON']['output']>
   adminGetBackups: Array<Scalars['String']['output']>
@@ -924,6 +977,7 @@ export type Query = {
   userFindManyNetworkToken: NetworkTokenPaging
   userFindManyRole: RolePaging
   userFindManySnapshot: SnapshotPaging
+  userFindManyTeam: TeamPaging
   userFindManyUser: UserPaging
   userFindOneBot?: Maybe<Bot>
   userFindOneBotServer?: Maybe<BotServer>
@@ -934,6 +988,7 @@ export type Query = {
   userFindOneNetworkAsset?: Maybe<NetworkAsset>
   userFindOneRole?: Maybe<Role>
   userFindOneSnapshot?: Maybe<Snapshot>
+  userFindOneTeam?: Maybe<Team>
   userFindOneUser?: Maybe<User>
   userFindOneUserById?: Maybe<User>
   userGetBotChannels?: Maybe<Array<DiscordChannel>>
@@ -987,6 +1042,10 @@ export type QueryAdminFindManySnapshotArgs = {
   input: AdminFindManySnapshotInput
 }
 
+export type QueryAdminFindManyTeamArgs = {
+  input: AdminFindManyTeamInput
+}
+
 export type QueryAdminFindManyUserArgs = {
   input: AdminFindManyUserInput
 }
@@ -1025,6 +1084,10 @@ export type QueryAdminFindOneRoleArgs = {
 
 export type QueryAdminFindOneSnapshotArgs = {
   snapshotId: Scalars['String']['input']
+}
+
+export type QueryAdminFindOneTeamArgs = {
+  teamId: Scalars['String']['input']
 }
 
 export type QueryAdminFindOneUserArgs = {
@@ -1081,6 +1144,10 @@ export type QueryUserFindManySnapshotArgs = {
   input: UserFindManySnapshotInput
 }
 
+export type QueryUserFindManyTeamArgs = {
+  input: UserFindManyTeamInput
+}
+
 export type QueryUserFindManyUserArgs = {
   input: UserFindManyUserInput
 }
@@ -1122,6 +1189,10 @@ export type QueryUserFindOneRoleArgs = {
 
 export type QueryUserFindOneSnapshotArgs = {
   snapshotId: Scalars['String']['input']
+}
+
+export type QueryUserFindOneTeamArgs = {
+  teamId: Scalars['String']['input']
 }
 
 export type QueryUserFindOneUserArgs = {
@@ -1271,6 +1342,26 @@ export type SolanaNetworkAsset = {
   owner: Scalars['String']['output']
 }
 
+export type Team = {
+  __typename?: 'Team'
+  avatarUrl?: Maybe<Scalars['String']['output']>
+  community?: Maybe<Community>
+  communityId: Scalars['String']['output']
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  id: Scalars['String']['output']
+  identity?: Maybe<Identity>
+  identityId: Scalars['String']['output']
+  members?: Maybe<Array<CommunityMember>>
+  name: Scalars['String']['output']
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type TeamPaging = {
+  __typename?: 'TeamPaging'
+  data: Array<Team>
+  meta: PagingMeta
+}
+
 export type User = {
   __typename?: 'User'
   avatarUrl?: Maybe<Scalars['String']['output']>
@@ -1285,6 +1376,11 @@ export type User = {
   status?: Maybe<UserStatus>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   username?: Maybe<Scalars['String']['output']>
+}
+
+export type UserAddCommunityMemberInput = {
+  role: CommunityRole
+  userId: Scalars['String']['input']
 }
 
 export type UserCreateBotInput = {
@@ -1306,11 +1402,6 @@ export type UserCreateCommunityInput = {
   websiteUrl?: InputMaybe<Scalars['String']['input']>
 }
 
-export type UserCreateCommunityMemberInput = {
-  role: CommunityRole
-  userId: Scalars['String']['input']
-}
-
 export type UserCreateRoleConditionInput = {
   roleId: Scalars['String']['input']
   tokenId: Scalars['String']['input']
@@ -1330,6 +1421,12 @@ export type UserCreateRolePermissionInput = {
 
 export type UserCreateSnapshotInput = {
   roleId: Scalars['String']['input']
+}
+
+export type UserCreateTeamInput = {
+  communityId: Scalars['String']['input']
+  identityId: Scalars['String']['input']
+  name: Scalars['String']['input']
 }
 
 export type UserFindManyCommunityInput = {
@@ -1401,6 +1498,13 @@ export type UserFindManySnapshotInput = {
   search?: InputMaybe<Scalars['String']['input']>
 }
 
+export type UserFindManyTeamInput = {
+  communityId: Scalars['String']['input']
+  limit?: InputMaybe<Scalars['Int']['input']>
+  page?: InputMaybe<Scalars['Int']['input']>
+  search?: InputMaybe<Scalars['String']['input']>
+}
+
 export type UserFindManyUserInput = {
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
@@ -1469,6 +1573,11 @@ export type UserUpdateRoleInput = {
   name?: InputMaybe<Scalars['String']['input']>
 }
 
+export type UserUpdateTeamInput = {
+  avatarUrl?: InputMaybe<Scalars['String']['input']>
+  name?: InputMaybe<Scalars['String']['input']>
+}
+
 export type UserUpdateUserInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>
   developer?: InputMaybe<Scalars['Boolean']['input']>
@@ -1508,7 +1617,7 @@ export type MeQuery = {
       __typename?: 'Identity'
       avatarUrl?: string | null
       id: string
-      name?: string | null
+      name: string
       provider: IdentityProvider
       providerId: string
       verified?: boolean | null
@@ -2421,12 +2530,12 @@ export type AdminFindOneCommunityMemberQuery = {
   } | null
 }
 
-export type AdminCreateCommunityMemberMutationVariables = Exact<{
+export type AdminAddCommunityMemberMutationVariables = Exact<{
   communityId: Scalars['String']['input']
-  input: AdminCreateCommunityMemberInput
+  input: AdminAddCommunityMemberInput
 }>
 
-export type AdminCreateCommunityMemberMutation = {
+export type AdminAddCommunityMemberMutation = {
   __typename?: 'Mutation'
   created?: {
     __typename?: 'CommunityMember'
@@ -2631,11 +2740,11 @@ export type AdminUpdateCommunityMemberMutation = {
   } | null
 }
 
-export type AdminDeleteCommunityMemberMutationVariables = Exact<{
+export type AdminRemoveCommunityMemberMutationVariables = Exact<{
   communityMemberId: Scalars['String']['input']
 }>
 
-export type AdminDeleteCommunityMemberMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+export type AdminRemoveCommunityMemberMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
 export type UserGetCommunityRoleQueryVariables = Exact<{
   communityId: Scalars['String']['input']
@@ -2864,12 +2973,12 @@ export type UserFindOneCommunityMemberQuery = {
   } | null
 }
 
-export type UserCreateCommunityMemberMutationVariables = Exact<{
+export type UserAddCommunityMemberMutationVariables = Exact<{
   communityId: Scalars['String']['input']
-  input: UserCreateCommunityMemberInput
+  input: UserAddCommunityMemberInput
 }>
 
-export type UserCreateCommunityMemberMutation = {
+export type UserAddCommunityMemberMutation = {
   __typename?: 'Mutation'
   created?: {
     __typename?: 'CommunityMember'
@@ -3074,11 +3183,11 @@ export type UserUpdateCommunityMemberMutation = {
   } | null
 }
 
-export type UserDeleteCommunityMemberMutationVariables = Exact<{
+export type UserRemoveCommunityMemberMutationVariables = Exact<{
   communityMemberId: Scalars['String']['input']
 }>
 
-export type UserDeleteCommunityMemberMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+export type UserRemoveCommunityMemberMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
 export type CommunityDetailsFragment = {
   __typename?: 'Community'
@@ -3495,7 +3604,7 @@ export type IdentitySummaryFragment = {
   __typename?: 'Identity'
   avatarUrl?: string | null
   id: string
-  name?: string | null
+  name: string
   provider: IdentityProvider
   providerId: string
   verified?: boolean | null
@@ -3509,7 +3618,7 @@ export type IdentityDetailsFragment = {
   syncEnded?: Date | null
   expired?: boolean | null
   id: string
-  name?: string | null
+  name: string
   ownerId?: string | null
   profile?: any | null
   provider: IdentityProvider
@@ -3547,7 +3656,7 @@ export type AdminFindManyIdentityQuery = {
     syncEnded?: Date | null
     expired?: boolean | null
     id: string
-    name?: string | null
+    name: string
     ownerId?: string | null
     profile?: any | null
     provider: IdentityProvider
@@ -3599,7 +3708,7 @@ export type AdminCreateIdentityMutation = {
     syncEnded?: Date | null
     expired?: boolean | null
     id: string
-    name?: string | null
+    name: string
     ownerId?: string | null
     profile?: any | null
     provider: IdentityProvider
@@ -3630,7 +3739,7 @@ export type UserFindManyIdentityQuery = {
     syncEnded?: Date | null
     expired?: boolean | null
     id: string
-    name?: string | null
+    name: string
     ownerId?: string | null
     profile?: any | null
     provider: IdentityProvider
@@ -3656,7 +3765,7 @@ export type UserFindOneIdentityQuery = {
     syncEnded?: Date | null
     expired?: boolean | null
     id: string
-    name?: string | null
+    name: string
     ownerId?: string | null
     profile?: any | null
     provider: IdentityProvider
@@ -3749,7 +3858,7 @@ export type UserLinkIdentityMutation = {
     syncEnded?: Date | null
     expired?: boolean | null
     id: string
-    name?: string | null
+    name: string
     ownerId?: string | null
     profile?: any | null
     provider: IdentityProvider
@@ -3801,7 +3910,7 @@ export type AnonFindUserByIdentityQuery = {
       __typename?: 'Identity'
       avatarUrl?: string | null
       id: string
-      name?: string | null
+      name: string
       provider: IdentityProvider
       providerId: string
       verified?: boolean | null
@@ -3872,7 +3981,7 @@ export type LogDetailsFragment = {
     syncEnded?: Date | null
     expired?: boolean | null
     id: string
-    name?: string | null
+    name: string
     ownerId?: string | null
     profile?: any | null
     provider: IdentityProvider
@@ -4041,7 +4150,7 @@ export type UserFindManyLogQuery = {
         syncEnded?: Date | null
         expired?: boolean | null
         id: string
-        name?: string | null
+        name: string
         ownerId?: string | null
         profile?: any | null
         provider: IdentityProvider
@@ -4220,7 +4329,7 @@ export type UserFindOneLogQuery = {
       syncEnded?: Date | null
       expired?: boolean | null
       id: string
-      name?: string | null
+      name: string
       ownerId?: string | null
       profile?: any | null
       provider: IdentityProvider
@@ -4390,7 +4499,7 @@ export type AdminFindManyLogQuery = {
         syncEnded?: Date | null
         expired?: boolean | null
         id: string
-        name?: string | null
+        name: string
         ownerId?: string | null
         profile?: any | null
         provider: IdentityProvider
@@ -4569,7 +4678,7 @@ export type AdminFindOneLogQuery = {
       syncEnded?: Date | null
       expired?: boolean | null
       id: string
-      name?: string | null
+      name: string
       ownerId?: string | null
       profile?: any | null
       provider: IdentityProvider
@@ -6871,6 +6980,1213 @@ export type AdminDeleteSnapshotMutationVariables = Exact<{
 
 export type AdminDeleteSnapshotMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
+export type TeamDetailsFragment = {
+  __typename?: 'Team'
+  createdAt?: Date | null
+  id: string
+  name: string
+  communityId: string
+  avatarUrl?: string | null
+  identityId: string
+  updatedAt?: Date | null
+  members?: Array<{
+    __typename?: 'CommunityMember'
+    communityId: string
+    createdAt?: Date | null
+    id: string
+    role: CommunityRole
+    updatedAt?: Date | null
+    userId: string
+    user?: {
+      __typename?: 'User'
+      avatarUrl?: string | null
+      createdAt?: Date | null
+      developer?: boolean | null
+      lastLogin?: Date | null
+      id: string
+      name?: string | null
+      profileUrl: string
+      role?: UserRole | null
+      status?: UserStatus | null
+      updatedAt?: Date | null
+      username?: string | null
+    } | null
+    roles?: Array<{
+      __typename?: 'Role'
+      createdAt?: Date | null
+      id: string
+      communityId: string
+      name: string
+      updatedAt?: Date | null
+      viewUrl?: string | null
+      conditions?: Array<{
+        __typename?: 'RoleCondition'
+        createdAt?: Date | null
+        id: string
+        type: NetworkTokenType
+        amount?: string | null
+        amountMax?: string | null
+        filters?: any | null
+        config?: any | null
+        tokenId?: string | null
+        roleId?: string | null
+        updatedAt?: Date | null
+        valid?: boolean | null
+        token?: {
+          __typename?: 'NetworkToken'
+          id: string
+          createdAt?: Date | null
+          updatedAt?: Date | null
+          cluster: NetworkCluster
+          type: NetworkTokenType
+          account: string
+          program: string
+          name: string
+          vault?: string | null
+          symbol?: string | null
+          description?: string | null
+          imageUrl?: string | null
+          metadataUrl?: string | null
+          raw?: any | null
+        } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      }> | null
+      permissions?: Array<{
+        __typename?: 'RolePermission'
+        createdAt?: Date | null
+        id: string
+        updatedAt?: Date | null
+        botId?: string | null
+        roleId?: string | null
+        botRole?: {
+          __typename?: 'BotRole'
+          botId?: string | null
+          createdAt?: Date | null
+          id: string
+          serverId?: string | null
+          updatedAt?: Date | null
+          serverRoleId?: string | null
+          serverRole?: {
+            __typename?: 'DiscordRole'
+            id: string
+            name: string
+            managed: boolean
+            color: number
+            position: number
+          } | null
+          server?: {
+            __typename?: 'DiscordServer'
+            id: string
+            name: string
+            icon?: string | null
+            permissions?: Array<string> | null
+          } | null
+        } | null
+      }> | null
+    }> | null
+  }> | null
+  identity?: {
+    __typename?: 'Identity'
+    avatarUrl?: string | null
+    createdAt?: Date | null
+    syncStarted?: Date | null
+    syncEnded?: Date | null
+    expired?: boolean | null
+    id: string
+    name: string
+    ownerId?: string | null
+    profile?: any | null
+    provider: IdentityProvider
+    providerId: string
+    updatedAt?: Date | null
+    url?: string | null
+    verified?: boolean | null
+    owner?: {
+      __typename?: 'User'
+      avatarUrl?: string | null
+      createdAt?: Date | null
+      developer?: boolean | null
+      lastLogin?: Date | null
+      id: string
+      name?: string | null
+      profileUrl: string
+      role?: UserRole | null
+      status?: UserStatus | null
+      updatedAt?: Date | null
+      username?: string | null
+    } | null
+  } | null
+}
+
+export type AdminFindManyTeamQueryVariables = Exact<{
+  input: AdminFindManyTeamInput
+}>
+
+export type AdminFindManyTeamQuery = {
+  __typename?: 'Query'
+  paging: {
+    __typename?: 'TeamPaging'
+    data: Array<{
+      __typename?: 'Team'
+      createdAt?: Date | null
+      id: string
+      name: string
+      communityId: string
+      avatarUrl?: string | null
+      identityId: string
+      updatedAt?: Date | null
+      members?: Array<{
+        __typename?: 'CommunityMember'
+        communityId: string
+        createdAt?: Date | null
+        id: string
+        role: CommunityRole
+        updatedAt?: Date | null
+        userId: string
+        user?: {
+          __typename?: 'User'
+          avatarUrl?: string | null
+          createdAt?: Date | null
+          developer?: boolean | null
+          lastLogin?: Date | null
+          id: string
+          name?: string | null
+          profileUrl: string
+          role?: UserRole | null
+          status?: UserStatus | null
+          updatedAt?: Date | null
+          username?: string | null
+        } | null
+        roles?: Array<{
+          __typename?: 'Role'
+          createdAt?: Date | null
+          id: string
+          communityId: string
+          name: string
+          updatedAt?: Date | null
+          viewUrl?: string | null
+          conditions?: Array<{
+            __typename?: 'RoleCondition'
+            createdAt?: Date | null
+            id: string
+            type: NetworkTokenType
+            amount?: string | null
+            amountMax?: string | null
+            filters?: any | null
+            config?: any | null
+            tokenId?: string | null
+            roleId?: string | null
+            updatedAt?: Date | null
+            valid?: boolean | null
+            token?: {
+              __typename?: 'NetworkToken'
+              id: string
+              createdAt?: Date | null
+              updatedAt?: Date | null
+              cluster: NetworkCluster
+              type: NetworkTokenType
+              account: string
+              program: string
+              name: string
+              vault?: string | null
+              symbol?: string | null
+              description?: string | null
+              imageUrl?: string | null
+              metadataUrl?: string | null
+              raw?: any | null
+            } | null
+            asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+          }> | null
+          permissions?: Array<{
+            __typename?: 'RolePermission'
+            createdAt?: Date | null
+            id: string
+            updatedAt?: Date | null
+            botId?: string | null
+            roleId?: string | null
+            botRole?: {
+              __typename?: 'BotRole'
+              botId?: string | null
+              createdAt?: Date | null
+              id: string
+              serverId?: string | null
+              updatedAt?: Date | null
+              serverRoleId?: string | null
+              serverRole?: {
+                __typename?: 'DiscordRole'
+                id: string
+                name: string
+                managed: boolean
+                color: number
+                position: number
+              } | null
+              server?: {
+                __typename?: 'DiscordServer'
+                id: string
+                name: string
+                icon?: string | null
+                permissions?: Array<string> | null
+              } | null
+            } | null
+          }> | null
+        }> | null
+      }> | null
+      identity?: {
+        __typename?: 'Identity'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        syncStarted?: Date | null
+        syncEnded?: Date | null
+        expired?: boolean | null
+        id: string
+        name: string
+        ownerId?: string | null
+        profile?: any | null
+        provider: IdentityProvider
+        providerId: string
+        updatedAt?: Date | null
+        url?: string | null
+        verified?: boolean | null
+        owner?: {
+          __typename?: 'User'
+          avatarUrl?: string | null
+          createdAt?: Date | null
+          developer?: boolean | null
+          lastLogin?: Date | null
+          id: string
+          name?: string | null
+          profileUrl: string
+          role?: UserRole | null
+          status?: UserStatus | null
+          updatedAt?: Date | null
+          username?: string | null
+        } | null
+      } | null
+    }>
+    meta: {
+      __typename?: 'PagingMeta'
+      currentPage: number
+      isFirstPage: boolean
+      isLastPage: boolean
+      nextPage?: number | null
+      pageCount?: number | null
+      previousPage?: number | null
+      totalCount?: number | null
+    }
+  }
+}
+
+export type AdminFindOneTeamQueryVariables = Exact<{
+  teamId: Scalars['String']['input']
+}>
+
+export type AdminFindOneTeamQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'Team'
+    createdAt?: Date | null
+    id: string
+    name: string
+    communityId: string
+    avatarUrl?: string | null
+    identityId: string
+    updatedAt?: Date | null
+    members?: Array<{
+      __typename?: 'CommunityMember'
+      communityId: string
+      createdAt?: Date | null
+      id: string
+      role: CommunityRole
+      updatedAt?: Date | null
+      userId: string
+      user?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
+      roles?: Array<{
+        __typename?: 'Role'
+        createdAt?: Date | null
+        id: string
+        communityId: string
+        name: string
+        updatedAt?: Date | null
+        viewUrl?: string | null
+        conditions?: Array<{
+          __typename?: 'RoleCondition'
+          createdAt?: Date | null
+          id: string
+          type: NetworkTokenType
+          amount?: string | null
+          amountMax?: string | null
+          filters?: any | null
+          config?: any | null
+          tokenId?: string | null
+          roleId?: string | null
+          updatedAt?: Date | null
+          valid?: boolean | null
+          token?: {
+            __typename?: 'NetworkToken'
+            id: string
+            createdAt?: Date | null
+            updatedAt?: Date | null
+            cluster: NetworkCluster
+            type: NetworkTokenType
+            account: string
+            program: string
+            name: string
+            vault?: string | null
+            symbol?: string | null
+            description?: string | null
+            imageUrl?: string | null
+            metadataUrl?: string | null
+            raw?: any | null
+          } | null
+          asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+        }> | null
+        permissions?: Array<{
+          __typename?: 'RolePermission'
+          createdAt?: Date | null
+          id: string
+          updatedAt?: Date | null
+          botId?: string | null
+          roleId?: string | null
+          botRole?: {
+            __typename?: 'BotRole'
+            botId?: string | null
+            createdAt?: Date | null
+            id: string
+            serverId?: string | null
+            updatedAt?: Date | null
+            serverRoleId?: string | null
+            serverRole?: {
+              __typename?: 'DiscordRole'
+              id: string
+              name: string
+              managed: boolean
+              color: number
+              position: number
+            } | null
+            server?: {
+              __typename?: 'DiscordServer'
+              id: string
+              name: string
+              icon?: string | null
+              permissions?: Array<string> | null
+            } | null
+          } | null
+        }> | null
+      }> | null
+    }> | null
+    identity?: {
+      __typename?: 'Identity'
+      avatarUrl?: string | null
+      createdAt?: Date | null
+      syncStarted?: Date | null
+      syncEnded?: Date | null
+      expired?: boolean | null
+      id: string
+      name: string
+      ownerId?: string | null
+      profile?: any | null
+      provider: IdentityProvider
+      providerId: string
+      updatedAt?: Date | null
+      url?: string | null
+      verified?: boolean | null
+      owner?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
+    } | null
+  } | null
+}
+
+export type AdminUpdateTeamMutationVariables = Exact<{
+  teamId: Scalars['String']['input']
+  input: AdminUpdateTeamInput
+}>
+
+export type AdminUpdateTeamMutation = {
+  __typename?: 'Mutation'
+  updated?: {
+    __typename?: 'Team'
+    createdAt?: Date | null
+    id: string
+    name: string
+    communityId: string
+    avatarUrl?: string | null
+    identityId: string
+    updatedAt?: Date | null
+    members?: Array<{
+      __typename?: 'CommunityMember'
+      communityId: string
+      createdAt?: Date | null
+      id: string
+      role: CommunityRole
+      updatedAt?: Date | null
+      userId: string
+      user?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
+      roles?: Array<{
+        __typename?: 'Role'
+        createdAt?: Date | null
+        id: string
+        communityId: string
+        name: string
+        updatedAt?: Date | null
+        viewUrl?: string | null
+        conditions?: Array<{
+          __typename?: 'RoleCondition'
+          createdAt?: Date | null
+          id: string
+          type: NetworkTokenType
+          amount?: string | null
+          amountMax?: string | null
+          filters?: any | null
+          config?: any | null
+          tokenId?: string | null
+          roleId?: string | null
+          updatedAt?: Date | null
+          valid?: boolean | null
+          token?: {
+            __typename?: 'NetworkToken'
+            id: string
+            createdAt?: Date | null
+            updatedAt?: Date | null
+            cluster: NetworkCluster
+            type: NetworkTokenType
+            account: string
+            program: string
+            name: string
+            vault?: string | null
+            symbol?: string | null
+            description?: string | null
+            imageUrl?: string | null
+            metadataUrl?: string | null
+            raw?: any | null
+          } | null
+          asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+        }> | null
+        permissions?: Array<{
+          __typename?: 'RolePermission'
+          createdAt?: Date | null
+          id: string
+          updatedAt?: Date | null
+          botId?: string | null
+          roleId?: string | null
+          botRole?: {
+            __typename?: 'BotRole'
+            botId?: string | null
+            createdAt?: Date | null
+            id: string
+            serverId?: string | null
+            updatedAt?: Date | null
+            serverRoleId?: string | null
+            serverRole?: {
+              __typename?: 'DiscordRole'
+              id: string
+              name: string
+              managed: boolean
+              color: number
+              position: number
+            } | null
+            server?: {
+              __typename?: 'DiscordServer'
+              id: string
+              name: string
+              icon?: string | null
+              permissions?: Array<string> | null
+            } | null
+          } | null
+        }> | null
+      }> | null
+    }> | null
+    identity?: {
+      __typename?: 'Identity'
+      avatarUrl?: string | null
+      createdAt?: Date | null
+      syncStarted?: Date | null
+      syncEnded?: Date | null
+      expired?: boolean | null
+      id: string
+      name: string
+      ownerId?: string | null
+      profile?: any | null
+      provider: IdentityProvider
+      providerId: string
+      updatedAt?: Date | null
+      url?: string | null
+      verified?: boolean | null
+      owner?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
+    } | null
+  } | null
+}
+
+export type AdminDeleteTeamMutationVariables = Exact<{
+  teamId: Scalars['String']['input']
+}>
+
+export type AdminDeleteTeamMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
+export type UserFindManyTeamQueryVariables = Exact<{
+  input: UserFindManyTeamInput
+}>
+
+export type UserFindManyTeamQuery = {
+  __typename?: 'Query'
+  paging: {
+    __typename?: 'TeamPaging'
+    data: Array<{
+      __typename?: 'Team'
+      createdAt?: Date | null
+      id: string
+      name: string
+      communityId: string
+      avatarUrl?: string | null
+      identityId: string
+      updatedAt?: Date | null
+      members?: Array<{
+        __typename?: 'CommunityMember'
+        communityId: string
+        createdAt?: Date | null
+        id: string
+        role: CommunityRole
+        updatedAt?: Date | null
+        userId: string
+        user?: {
+          __typename?: 'User'
+          avatarUrl?: string | null
+          createdAt?: Date | null
+          developer?: boolean | null
+          lastLogin?: Date | null
+          id: string
+          name?: string | null
+          profileUrl: string
+          role?: UserRole | null
+          status?: UserStatus | null
+          updatedAt?: Date | null
+          username?: string | null
+        } | null
+        roles?: Array<{
+          __typename?: 'Role'
+          createdAt?: Date | null
+          id: string
+          communityId: string
+          name: string
+          updatedAt?: Date | null
+          viewUrl?: string | null
+          conditions?: Array<{
+            __typename?: 'RoleCondition'
+            createdAt?: Date | null
+            id: string
+            type: NetworkTokenType
+            amount?: string | null
+            amountMax?: string | null
+            filters?: any | null
+            config?: any | null
+            tokenId?: string | null
+            roleId?: string | null
+            updatedAt?: Date | null
+            valid?: boolean | null
+            token?: {
+              __typename?: 'NetworkToken'
+              id: string
+              createdAt?: Date | null
+              updatedAt?: Date | null
+              cluster: NetworkCluster
+              type: NetworkTokenType
+              account: string
+              program: string
+              name: string
+              vault?: string | null
+              symbol?: string | null
+              description?: string | null
+              imageUrl?: string | null
+              metadataUrl?: string | null
+              raw?: any | null
+            } | null
+            asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+          }> | null
+          permissions?: Array<{
+            __typename?: 'RolePermission'
+            createdAt?: Date | null
+            id: string
+            updatedAt?: Date | null
+            botId?: string | null
+            roleId?: string | null
+            botRole?: {
+              __typename?: 'BotRole'
+              botId?: string | null
+              createdAt?: Date | null
+              id: string
+              serverId?: string | null
+              updatedAt?: Date | null
+              serverRoleId?: string | null
+              serverRole?: {
+                __typename?: 'DiscordRole'
+                id: string
+                name: string
+                managed: boolean
+                color: number
+                position: number
+              } | null
+              server?: {
+                __typename?: 'DiscordServer'
+                id: string
+                name: string
+                icon?: string | null
+                permissions?: Array<string> | null
+              } | null
+            } | null
+          }> | null
+        }> | null
+      }> | null
+      identity?: {
+        __typename?: 'Identity'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        syncStarted?: Date | null
+        syncEnded?: Date | null
+        expired?: boolean | null
+        id: string
+        name: string
+        ownerId?: string | null
+        profile?: any | null
+        provider: IdentityProvider
+        providerId: string
+        updatedAt?: Date | null
+        url?: string | null
+        verified?: boolean | null
+        owner?: {
+          __typename?: 'User'
+          avatarUrl?: string | null
+          createdAt?: Date | null
+          developer?: boolean | null
+          lastLogin?: Date | null
+          id: string
+          name?: string | null
+          profileUrl: string
+          role?: UserRole | null
+          status?: UserStatus | null
+          updatedAt?: Date | null
+          username?: string | null
+        } | null
+      } | null
+    }>
+    meta: {
+      __typename?: 'PagingMeta'
+      currentPage: number
+      isFirstPage: boolean
+      isLastPage: boolean
+      nextPage?: number | null
+      pageCount?: number | null
+      previousPage?: number | null
+      totalCount?: number | null
+    }
+  }
+}
+
+export type UserFindOneTeamQueryVariables = Exact<{
+  teamId: Scalars['String']['input']
+}>
+
+export type UserFindOneTeamQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'Team'
+    createdAt?: Date | null
+    id: string
+    name: string
+    communityId: string
+    avatarUrl?: string | null
+    identityId: string
+    updatedAt?: Date | null
+    members?: Array<{
+      __typename?: 'CommunityMember'
+      communityId: string
+      createdAt?: Date | null
+      id: string
+      role: CommunityRole
+      updatedAt?: Date | null
+      userId: string
+      user?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
+      roles?: Array<{
+        __typename?: 'Role'
+        createdAt?: Date | null
+        id: string
+        communityId: string
+        name: string
+        updatedAt?: Date | null
+        viewUrl?: string | null
+        conditions?: Array<{
+          __typename?: 'RoleCondition'
+          createdAt?: Date | null
+          id: string
+          type: NetworkTokenType
+          amount?: string | null
+          amountMax?: string | null
+          filters?: any | null
+          config?: any | null
+          tokenId?: string | null
+          roleId?: string | null
+          updatedAt?: Date | null
+          valid?: boolean | null
+          token?: {
+            __typename?: 'NetworkToken'
+            id: string
+            createdAt?: Date | null
+            updatedAt?: Date | null
+            cluster: NetworkCluster
+            type: NetworkTokenType
+            account: string
+            program: string
+            name: string
+            vault?: string | null
+            symbol?: string | null
+            description?: string | null
+            imageUrl?: string | null
+            metadataUrl?: string | null
+            raw?: any | null
+          } | null
+          asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+        }> | null
+        permissions?: Array<{
+          __typename?: 'RolePermission'
+          createdAt?: Date | null
+          id: string
+          updatedAt?: Date | null
+          botId?: string | null
+          roleId?: string | null
+          botRole?: {
+            __typename?: 'BotRole'
+            botId?: string | null
+            createdAt?: Date | null
+            id: string
+            serverId?: string | null
+            updatedAt?: Date | null
+            serverRoleId?: string | null
+            serverRole?: {
+              __typename?: 'DiscordRole'
+              id: string
+              name: string
+              managed: boolean
+              color: number
+              position: number
+            } | null
+            server?: {
+              __typename?: 'DiscordServer'
+              id: string
+              name: string
+              icon?: string | null
+              permissions?: Array<string> | null
+            } | null
+          } | null
+        }> | null
+      }> | null
+    }> | null
+    identity?: {
+      __typename?: 'Identity'
+      avatarUrl?: string | null
+      createdAt?: Date | null
+      syncStarted?: Date | null
+      syncEnded?: Date | null
+      expired?: boolean | null
+      id: string
+      name: string
+      ownerId?: string | null
+      profile?: any | null
+      provider: IdentityProvider
+      providerId: string
+      updatedAt?: Date | null
+      url?: string | null
+      verified?: boolean | null
+      owner?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
+    } | null
+  } | null
+}
+
+export type UserCreateTeamMutationVariables = Exact<{
+  input: UserCreateTeamInput
+}>
+
+export type UserCreateTeamMutation = {
+  __typename?: 'Mutation'
+  created?: {
+    __typename?: 'Team'
+    createdAt?: Date | null
+    id: string
+    name: string
+    communityId: string
+    avatarUrl?: string | null
+    identityId: string
+    updatedAt?: Date | null
+    members?: Array<{
+      __typename?: 'CommunityMember'
+      communityId: string
+      createdAt?: Date | null
+      id: string
+      role: CommunityRole
+      updatedAt?: Date | null
+      userId: string
+      user?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
+      roles?: Array<{
+        __typename?: 'Role'
+        createdAt?: Date | null
+        id: string
+        communityId: string
+        name: string
+        updatedAt?: Date | null
+        viewUrl?: string | null
+        conditions?: Array<{
+          __typename?: 'RoleCondition'
+          createdAt?: Date | null
+          id: string
+          type: NetworkTokenType
+          amount?: string | null
+          amountMax?: string | null
+          filters?: any | null
+          config?: any | null
+          tokenId?: string | null
+          roleId?: string | null
+          updatedAt?: Date | null
+          valid?: boolean | null
+          token?: {
+            __typename?: 'NetworkToken'
+            id: string
+            createdAt?: Date | null
+            updatedAt?: Date | null
+            cluster: NetworkCluster
+            type: NetworkTokenType
+            account: string
+            program: string
+            name: string
+            vault?: string | null
+            symbol?: string | null
+            description?: string | null
+            imageUrl?: string | null
+            metadataUrl?: string | null
+            raw?: any | null
+          } | null
+          asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+        }> | null
+        permissions?: Array<{
+          __typename?: 'RolePermission'
+          createdAt?: Date | null
+          id: string
+          updatedAt?: Date | null
+          botId?: string | null
+          roleId?: string | null
+          botRole?: {
+            __typename?: 'BotRole'
+            botId?: string | null
+            createdAt?: Date | null
+            id: string
+            serverId?: string | null
+            updatedAt?: Date | null
+            serverRoleId?: string | null
+            serverRole?: {
+              __typename?: 'DiscordRole'
+              id: string
+              name: string
+              managed: boolean
+              color: number
+              position: number
+            } | null
+            server?: {
+              __typename?: 'DiscordServer'
+              id: string
+              name: string
+              icon?: string | null
+              permissions?: Array<string> | null
+            } | null
+          } | null
+        }> | null
+      }> | null
+    }> | null
+    identity?: {
+      __typename?: 'Identity'
+      avatarUrl?: string | null
+      createdAt?: Date | null
+      syncStarted?: Date | null
+      syncEnded?: Date | null
+      expired?: boolean | null
+      id: string
+      name: string
+      ownerId?: string | null
+      profile?: any | null
+      provider: IdentityProvider
+      providerId: string
+      updatedAt?: Date | null
+      url?: string | null
+      verified?: boolean | null
+      owner?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
+    } | null
+  } | null
+}
+
+export type UserUpdateTeamMutationVariables = Exact<{
+  teamId: Scalars['String']['input']
+  input: UserUpdateTeamInput
+}>
+
+export type UserUpdateTeamMutation = {
+  __typename?: 'Mutation'
+  updated?: {
+    __typename?: 'Team'
+    createdAt?: Date | null
+    id: string
+    name: string
+    communityId: string
+    avatarUrl?: string | null
+    identityId: string
+    updatedAt?: Date | null
+    members?: Array<{
+      __typename?: 'CommunityMember'
+      communityId: string
+      createdAt?: Date | null
+      id: string
+      role: CommunityRole
+      updatedAt?: Date | null
+      userId: string
+      user?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
+      roles?: Array<{
+        __typename?: 'Role'
+        createdAt?: Date | null
+        id: string
+        communityId: string
+        name: string
+        updatedAt?: Date | null
+        viewUrl?: string | null
+        conditions?: Array<{
+          __typename?: 'RoleCondition'
+          createdAt?: Date | null
+          id: string
+          type: NetworkTokenType
+          amount?: string | null
+          amountMax?: string | null
+          filters?: any | null
+          config?: any | null
+          tokenId?: string | null
+          roleId?: string | null
+          updatedAt?: Date | null
+          valid?: boolean | null
+          token?: {
+            __typename?: 'NetworkToken'
+            id: string
+            createdAt?: Date | null
+            updatedAt?: Date | null
+            cluster: NetworkCluster
+            type: NetworkTokenType
+            account: string
+            program: string
+            name: string
+            vault?: string | null
+            symbol?: string | null
+            description?: string | null
+            imageUrl?: string | null
+            metadataUrl?: string | null
+            raw?: any | null
+          } | null
+          asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+        }> | null
+        permissions?: Array<{
+          __typename?: 'RolePermission'
+          createdAt?: Date | null
+          id: string
+          updatedAt?: Date | null
+          botId?: string | null
+          roleId?: string | null
+          botRole?: {
+            __typename?: 'BotRole'
+            botId?: string | null
+            createdAt?: Date | null
+            id: string
+            serverId?: string | null
+            updatedAt?: Date | null
+            serverRoleId?: string | null
+            serverRole?: {
+              __typename?: 'DiscordRole'
+              id: string
+              name: string
+              managed: boolean
+              color: number
+              position: number
+            } | null
+            server?: {
+              __typename?: 'DiscordServer'
+              id: string
+              name: string
+              icon?: string | null
+              permissions?: Array<string> | null
+            } | null
+          } | null
+        }> | null
+      }> | null
+    }> | null
+    identity?: {
+      __typename?: 'Identity'
+      avatarUrl?: string | null
+      createdAt?: Date | null
+      syncStarted?: Date | null
+      syncEnded?: Date | null
+      expired?: boolean | null
+      id: string
+      name: string
+      ownerId?: string | null
+      profile?: any | null
+      provider: IdentityProvider
+      providerId: string
+      updatedAt?: Date | null
+      url?: string | null
+      verified?: boolean | null
+      owner?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
+    } | null
+  } | null
+}
+
+export type UserDeleteTeamMutationVariables = Exact<{
+  teamId: Scalars['String']['input']
+}>
+
+export type UserDeleteTeamMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
+export type UserAddTeamMemberMutationVariables = Exact<{
+  teamId: Scalars['String']['input']
+  userId: Scalars['String']['input']
+}>
+
+export type UserAddTeamMemberMutation = { __typename?: 'Mutation'; added?: boolean | null }
+
+export type UserRemoveTeamMemberMutationVariables = Exact<{
+  teamId: Scalars['String']['input']
+  userId: Scalars['String']['input']
+}>
+
+export type UserRemoveTeamMemberMutation = { __typename?: 'Mutation'; removed?: boolean | null }
+
 export type UserSummaryFragment = {
   __typename?: 'User'
   avatarUrl?: string | null
@@ -6932,7 +8248,7 @@ export type AdminFindManyUserQuery = {
         syncEnded?: Date | null
         expired?: boolean | null
         id: string
-        name?: string | null
+        name: string
         ownerId?: string | null
         profile?: any | null
         provider: IdentityProvider
@@ -7125,147 +8441,6 @@ export const DiscordChannelDetailsFragmentDoc = gql`
     type
   }
 `
-export const UserDetailsFragmentDoc = gql`
-  fragment UserDetails on User {
-    avatarUrl
-    createdAt
-    developer
-    lastLogin
-    id
-    name
-    profileUrl
-    role
-    status
-    updatedAt
-    username
-  }
-`
-export const NetworkTokenDetailsFragmentDoc = gql`
-  fragment NetworkTokenDetails on NetworkToken {
-    id
-    createdAt
-    updatedAt
-    cluster
-    type
-    account
-    program
-    name
-    vault
-    symbol
-    description
-    imageUrl
-    metadataUrl
-    raw
-  }
-`
-export const RoleConditionDetailsFragmentDoc = gql`
-  fragment RoleConditionDetails on RoleCondition {
-    createdAt
-    id
-    type
-    amount
-    amountMax
-    filters
-    config
-    token {
-      ...NetworkTokenDetails
-    }
-    tokenId
-    roleId
-    asset {
-      owner
-      amount
-      accounts
-    }
-    updatedAt
-    valid
-  }
-  ${NetworkTokenDetailsFragmentDoc}
-`
-export const DiscordRoleDetailsFragmentDoc = gql`
-  fragment DiscordRoleDetails on DiscordRole {
-    id
-    name
-    managed
-    color
-    position
-  }
-`
-export const DiscordServerDetailsFragmentDoc = gql`
-  fragment DiscordServerDetails on DiscordServer {
-    id
-    name
-    icon
-    permissions
-  }
-`
-export const BotRoleDetailsFragmentDoc = gql`
-  fragment BotRoleDetails on BotRole {
-    botId
-    createdAt
-    id
-    serverId
-    updatedAt
-    serverRoleId
-    serverRole {
-      ...DiscordRoleDetails
-    }
-    server {
-      ...DiscordServerDetails
-    }
-  }
-  ${DiscordRoleDetailsFragmentDoc}
-  ${DiscordServerDetailsFragmentDoc}
-`
-export const RolePermissionDetailsFragmentDoc = gql`
-  fragment RolePermissionDetails on RolePermission {
-    createdAt
-    id
-    updatedAt
-    botId
-    roleId
-    botRole {
-      ...BotRoleDetails
-    }
-  }
-  ${BotRoleDetailsFragmentDoc}
-`
-export const RoleDetailsFragmentDoc = gql`
-  fragment RoleDetails on Role {
-    createdAt
-    id
-    communityId
-    name
-    conditions {
-      ...RoleConditionDetails
-    }
-    permissions {
-      ...RolePermissionDetails
-    }
-    updatedAt
-    viewUrl
-  }
-  ${RoleConditionDetailsFragmentDoc}
-  ${RolePermissionDetailsFragmentDoc}
-`
-export const CommunityMemberDetailsFragmentDoc = gql`
-  fragment CommunityMemberDetails on CommunityMember {
-    communityId
-    createdAt
-    id
-    role
-    updatedAt
-    user {
-      ...UserDetails
-    }
-    roles {
-      ...RoleDetails
-    }
-    userId
-  }
-  ${UserDetailsFragmentDoc}
-  ${RoleDetailsFragmentDoc}
-`
 export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
     createdAt
@@ -7383,6 +8558,129 @@ export const NetworkAssetDetailsFragmentDoc = gql`
     attributes
   }
 `
+export const NetworkTokenDetailsFragmentDoc = gql`
+  fragment NetworkTokenDetails on NetworkToken {
+    id
+    createdAt
+    updatedAt
+    cluster
+    type
+    account
+    program
+    name
+    vault
+    symbol
+    description
+    imageUrl
+    metadataUrl
+    raw
+  }
+`
+export const RoleConditionDetailsFragmentDoc = gql`
+  fragment RoleConditionDetails on RoleCondition {
+    createdAt
+    id
+    type
+    amount
+    amountMax
+    filters
+    config
+    token {
+      ...NetworkTokenDetails
+    }
+    tokenId
+    roleId
+    asset {
+      owner
+      amount
+      accounts
+    }
+    updatedAt
+    valid
+  }
+  ${NetworkTokenDetailsFragmentDoc}
+`
+export const DiscordRoleDetailsFragmentDoc = gql`
+  fragment DiscordRoleDetails on DiscordRole {
+    id
+    name
+    managed
+    color
+    position
+  }
+`
+export const DiscordServerDetailsFragmentDoc = gql`
+  fragment DiscordServerDetails on DiscordServer {
+    id
+    name
+    icon
+    permissions
+  }
+`
+export const BotRoleDetailsFragmentDoc = gql`
+  fragment BotRoleDetails on BotRole {
+    botId
+    createdAt
+    id
+    serverId
+    updatedAt
+    serverRoleId
+    serverRole {
+      ...DiscordRoleDetails
+    }
+    server {
+      ...DiscordServerDetails
+    }
+  }
+  ${DiscordRoleDetailsFragmentDoc}
+  ${DiscordServerDetailsFragmentDoc}
+`
+export const RolePermissionDetailsFragmentDoc = gql`
+  fragment RolePermissionDetails on RolePermission {
+    createdAt
+    id
+    updatedAt
+    botId
+    roleId
+    botRole {
+      ...BotRoleDetails
+    }
+  }
+  ${BotRoleDetailsFragmentDoc}
+`
+export const RoleDetailsFragmentDoc = gql`
+  fragment RoleDetails on Role {
+    createdAt
+    id
+    communityId
+    name
+    conditions {
+      ...RoleConditionDetails
+    }
+    permissions {
+      ...RolePermissionDetails
+    }
+    updatedAt
+    viewUrl
+  }
+  ${RoleConditionDetailsFragmentDoc}
+  ${RolePermissionDetailsFragmentDoc}
+`
+export const UserDetailsFragmentDoc = gql`
+  fragment UserDetails on User {
+    avatarUrl
+    createdAt
+    developer
+    lastLogin
+    id
+    name
+    profileUrl
+    role
+    status
+    updatedAt
+    username
+  }
+`
 export const LogDetailsFragmentDoc = gql`
   fragment LogDetails on Log {
     createdAt
@@ -7465,6 +8763,47 @@ export const SnapshotItemDetailsFragmentDoc = gql`
       balance
     }
   }
+`
+export const CommunityMemberDetailsFragmentDoc = gql`
+  fragment CommunityMemberDetails on CommunityMember {
+    communityId
+    createdAt
+    id
+    role
+    updatedAt
+    user {
+      ...UserDetails
+    }
+    roles {
+      ...RoleDetails
+    }
+    userId
+  }
+  ${UserDetailsFragmentDoc}
+  ${RoleDetailsFragmentDoc}
+`
+export const TeamDetailsFragmentDoc = gql`
+  fragment TeamDetails on Team {
+    createdAt
+    id
+    name
+    communityId
+    avatarUrl
+    members {
+      ...CommunityMemberDetails
+    }
+    identityId
+    identity {
+      ...IdentityDetails
+      owner {
+        ...UserDetails
+      }
+    }
+    updatedAt
+  }
+  ${CommunityMemberDetailsFragmentDoc}
+  ${IdentityDetailsFragmentDoc}
+  ${UserDetailsFragmentDoc}
 `
 export const UserSummaryFragmentDoc = gql`
   fragment UserSummary on User {
@@ -7706,9 +9045,9 @@ export const AdminFindOneCommunityMemberDocument = gql`
   }
   ${CommunityMemberDetailsFragmentDoc}
 `
-export const AdminCreateCommunityMemberDocument = gql`
-  mutation adminCreateCommunityMember($communityId: String!, $input: AdminCreateCommunityMemberInput!) {
-    created: adminCreateCommunityMember(communityId: $communityId, input: $input) {
+export const AdminAddCommunityMemberDocument = gql`
+  mutation adminAddCommunityMember($communityId: String!, $input: AdminAddCommunityMemberInput!) {
+    created: adminAddCommunityMember(communityId: $communityId, input: $input) {
       ...CommunityMemberDetails
     }
   }
@@ -7722,9 +9061,9 @@ export const AdminUpdateCommunityMemberDocument = gql`
   }
   ${CommunityMemberDetailsFragmentDoc}
 `
-export const AdminDeleteCommunityMemberDocument = gql`
-  mutation adminDeleteCommunityMember($communityMemberId: String!) {
-    deleted: adminDeleteCommunityMember(communityMemberId: $communityMemberId)
+export const AdminRemoveCommunityMemberDocument = gql`
+  mutation adminRemoveCommunityMember($communityMemberId: String!) {
+    deleted: adminRemoveCommunityMember(communityMemberId: $communityMemberId)
   }
 `
 export const UserGetCommunityRoleDocument = gql`
@@ -7754,9 +9093,9 @@ export const UserFindOneCommunityMemberDocument = gql`
   }
   ${CommunityMemberDetailsFragmentDoc}
 `
-export const UserCreateCommunityMemberDocument = gql`
-  mutation userCreateCommunityMember($communityId: String!, $input: UserCreateCommunityMemberInput!) {
-    created: userCreateCommunityMember(communityId: $communityId, input: $input) {
+export const UserAddCommunityMemberDocument = gql`
+  mutation userAddCommunityMember($communityId: String!, $input: UserAddCommunityMemberInput!) {
+    created: userAddCommunityMember(communityId: $communityId, input: $input) {
       ...CommunityMemberDetails
     }
   }
@@ -7770,9 +9109,9 @@ export const UserUpdateCommunityMemberDocument = gql`
   }
   ${CommunityMemberDetailsFragmentDoc}
 `
-export const UserDeleteCommunityMemberDocument = gql`
-  mutation userDeleteCommunityMember($communityMemberId: String!) {
-    deleted: userDeleteCommunityMember(communityMemberId: $communityMemberId)
+export const UserRemoveCommunityMemberDocument = gql`
+  mutation userRemoveCommunityMember($communityMemberId: String!) {
+    deleted: userRemoveCommunityMember(communityMemberId: $communityMemberId)
   }
 `
 export const AdminFindManyCommunityDocument = gql`
@@ -8433,6 +9772,94 @@ export const AdminDeleteSnapshotDocument = gql`
     deleted: adminDeleteSnapshot(snapshotId: $snapshotId)
   }
 `
+export const AdminFindManyTeamDocument = gql`
+  query adminFindManyTeam($input: AdminFindManyTeamInput!) {
+    paging: adminFindManyTeam(input: $input) {
+      data {
+        ...TeamDetails
+      }
+      meta {
+        ...PagingMetaDetails
+      }
+    }
+  }
+  ${TeamDetailsFragmentDoc}
+  ${PagingMetaDetailsFragmentDoc}
+`
+export const AdminFindOneTeamDocument = gql`
+  query adminFindOneTeam($teamId: String!) {
+    item: adminFindOneTeam(teamId: $teamId) {
+      ...TeamDetails
+    }
+  }
+  ${TeamDetailsFragmentDoc}
+`
+export const AdminUpdateTeamDocument = gql`
+  mutation adminUpdateTeam($teamId: String!, $input: AdminUpdateTeamInput!) {
+    updated: adminUpdateTeam(teamId: $teamId, input: $input) {
+      ...TeamDetails
+    }
+  }
+  ${TeamDetailsFragmentDoc}
+`
+export const AdminDeleteTeamDocument = gql`
+  mutation adminDeleteTeam($teamId: String!) {
+    deleted: adminDeleteTeam(teamId: $teamId)
+  }
+`
+export const UserFindManyTeamDocument = gql`
+  query userFindManyTeam($input: UserFindManyTeamInput!) {
+    paging: userFindManyTeam(input: $input) {
+      data {
+        ...TeamDetails
+      }
+      meta {
+        ...PagingMetaDetails
+      }
+    }
+  }
+  ${TeamDetailsFragmentDoc}
+  ${PagingMetaDetailsFragmentDoc}
+`
+export const UserFindOneTeamDocument = gql`
+  query userFindOneTeam($teamId: String!) {
+    item: userFindOneTeam(teamId: $teamId) {
+      ...TeamDetails
+    }
+  }
+  ${TeamDetailsFragmentDoc}
+`
+export const UserCreateTeamDocument = gql`
+  mutation userCreateTeam($input: UserCreateTeamInput!) {
+    created: userCreateTeam(input: $input) {
+      ...TeamDetails
+    }
+  }
+  ${TeamDetailsFragmentDoc}
+`
+export const UserUpdateTeamDocument = gql`
+  mutation userUpdateTeam($teamId: String!, $input: UserUpdateTeamInput!) {
+    updated: userUpdateTeam(teamId: $teamId, input: $input) {
+      ...TeamDetails
+    }
+  }
+  ${TeamDetailsFragmentDoc}
+`
+export const UserDeleteTeamDocument = gql`
+  mutation userDeleteTeam($teamId: String!) {
+    deleted: userDeleteTeam(teamId: $teamId)
+  }
+`
+export const UserAddTeamMemberDocument = gql`
+  mutation userAddTeamMember($teamId: String!, $userId: String!) {
+    added: userAddTeamMember(teamId: $teamId, userId: $userId)
+  }
+`
+export const UserRemoveTeamMemberDocument = gql`
+  mutation userRemoveTeamMember($teamId: String!, $userId: String!) {
+    removed: userRemoveTeamMember(teamId: $teamId, userId: $userId)
+  }
+`
 export const AdminDeleteUserDocument = gql`
   mutation adminDeleteUser($userId: String!) {
     deleted: adminDeleteUser(userId: $userId)
@@ -8550,15 +9977,15 @@ const UserGetBotServersDocumentString = print(UserGetBotServersDocument)
 const UserGetBotServerDocumentString = print(UserGetBotServerDocument)
 const AdminFindManyCommunityMemberDocumentString = print(AdminFindManyCommunityMemberDocument)
 const AdminFindOneCommunityMemberDocumentString = print(AdminFindOneCommunityMemberDocument)
-const AdminCreateCommunityMemberDocumentString = print(AdminCreateCommunityMemberDocument)
+const AdminAddCommunityMemberDocumentString = print(AdminAddCommunityMemberDocument)
 const AdminUpdateCommunityMemberDocumentString = print(AdminUpdateCommunityMemberDocument)
-const AdminDeleteCommunityMemberDocumentString = print(AdminDeleteCommunityMemberDocument)
+const AdminRemoveCommunityMemberDocumentString = print(AdminRemoveCommunityMemberDocument)
 const UserGetCommunityRoleDocumentString = print(UserGetCommunityRoleDocument)
 const UserFindManyCommunityMemberDocumentString = print(UserFindManyCommunityMemberDocument)
 const UserFindOneCommunityMemberDocumentString = print(UserFindOneCommunityMemberDocument)
-const UserCreateCommunityMemberDocumentString = print(UserCreateCommunityMemberDocument)
+const UserAddCommunityMemberDocumentString = print(UserAddCommunityMemberDocument)
 const UserUpdateCommunityMemberDocumentString = print(UserUpdateCommunityMemberDocument)
-const UserDeleteCommunityMemberDocumentString = print(UserDeleteCommunityMemberDocument)
+const UserRemoveCommunityMemberDocumentString = print(UserRemoveCommunityMemberDocument)
 const AdminFindManyCommunityDocumentString = print(AdminFindManyCommunityDocument)
 const AdminFindOneCommunityDocumentString = print(AdminFindOneCommunityDocument)
 const AdminCreateCommunityDocumentString = print(AdminCreateCommunityDocument)
@@ -8635,6 +10062,17 @@ const AdminFindManySnapshotDocumentString = print(AdminFindManySnapshotDocument)
 const AdminFindOneSnapshotDocumentString = print(AdminFindOneSnapshotDocument)
 const AdminCreateSnapshotDocumentString = print(AdminCreateSnapshotDocument)
 const AdminDeleteSnapshotDocumentString = print(AdminDeleteSnapshotDocument)
+const AdminFindManyTeamDocumentString = print(AdminFindManyTeamDocument)
+const AdminFindOneTeamDocumentString = print(AdminFindOneTeamDocument)
+const AdminUpdateTeamDocumentString = print(AdminUpdateTeamDocument)
+const AdminDeleteTeamDocumentString = print(AdminDeleteTeamDocument)
+const UserFindManyTeamDocumentString = print(UserFindManyTeamDocument)
+const UserFindOneTeamDocumentString = print(UserFindOneTeamDocument)
+const UserCreateTeamDocumentString = print(UserCreateTeamDocument)
+const UserUpdateTeamDocumentString = print(UserUpdateTeamDocument)
+const UserDeleteTeamDocumentString = print(UserDeleteTeamDocument)
+const UserAddTeamMemberDocumentString = print(UserAddTeamMemberDocument)
+const UserRemoveTeamMemberDocumentString = print(UserRemoveTeamMemberDocument)
 const AdminDeleteUserDocumentString = print(AdminDeleteUserDocument)
 const AdminFindManyUserDocumentString = print(AdminFindManyUserDocument)
 const AdminFindOneUserDocumentString = print(AdminFindOneUserDocument)
@@ -9281,11 +10719,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
-    adminCreateCommunityMember(
-      variables: AdminCreateCommunityMemberMutationVariables,
+    adminAddCommunityMember(
+      variables: AdminAddCommunityMemberMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: AdminCreateCommunityMemberMutation
+      data: AdminAddCommunityMemberMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9293,11 +10731,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<AdminCreateCommunityMemberMutation>(AdminCreateCommunityMemberDocumentString, variables, {
+          client.rawRequest<AdminAddCommunityMemberMutation>(AdminAddCommunityMemberDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'adminCreateCommunityMember',
+        'adminAddCommunityMember',
         'mutation',
         variables,
       )
@@ -9323,11 +10761,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
-    adminDeleteCommunityMember(
-      variables: AdminDeleteCommunityMemberMutationVariables,
+    adminRemoveCommunityMember(
+      variables: AdminRemoveCommunityMemberMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: AdminDeleteCommunityMemberMutation
+      data: AdminRemoveCommunityMemberMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9335,11 +10773,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<AdminDeleteCommunityMemberMutation>(AdminDeleteCommunityMemberDocumentString, variables, {
+          client.rawRequest<AdminRemoveCommunityMemberMutation>(AdminRemoveCommunityMemberDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'adminDeleteCommunityMember',
+        'adminRemoveCommunityMember',
         'mutation',
         variables,
       )
@@ -9407,11 +10845,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
-    userCreateCommunityMember(
-      variables: UserCreateCommunityMemberMutationVariables,
+    userAddCommunityMember(
+      variables: UserAddCommunityMemberMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserCreateCommunityMemberMutation
+      data: UserAddCommunityMemberMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9419,11 +10857,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserCreateCommunityMemberMutation>(UserCreateCommunityMemberDocumentString, variables, {
+          client.rawRequest<UserAddCommunityMemberMutation>(UserAddCommunityMemberDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userCreateCommunityMember',
+        'userAddCommunityMember',
         'mutation',
         variables,
       )
@@ -9449,11 +10887,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
-    userDeleteCommunityMember(
-      variables: UserDeleteCommunityMemberMutationVariables,
+    userRemoveCommunityMember(
+      variables: UserRemoveCommunityMemberMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserDeleteCommunityMemberMutation
+      data: UserRemoveCommunityMemberMutation
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9461,11 +10899,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserDeleteCommunityMemberMutation>(UserDeleteCommunityMemberDocumentString, variables, {
+          client.rawRequest<UserRemoveCommunityMemberMutation>(UserRemoveCommunityMemberDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userDeleteCommunityMember',
+        'userRemoveCommunityMember',
         'mutation',
         variables,
       )
@@ -11055,6 +12493,237 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
+    adminFindManyTeam(
+      variables: AdminFindManyTeamQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindManyTeamQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindManyTeamQuery>(AdminFindManyTeamDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindManyTeam',
+        'query',
+        variables,
+      )
+    },
+    adminFindOneTeam(
+      variables: AdminFindOneTeamQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindOneTeamQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindOneTeamQuery>(AdminFindOneTeamDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindOneTeam',
+        'query',
+        variables,
+      )
+    },
+    adminUpdateTeam(
+      variables: AdminUpdateTeamMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminUpdateTeamMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminUpdateTeamMutation>(AdminUpdateTeamDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminUpdateTeam',
+        'mutation',
+        variables,
+      )
+    },
+    adminDeleteTeam(
+      variables: AdminDeleteTeamMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminDeleteTeamMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminDeleteTeamMutation>(AdminDeleteTeamDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminDeleteTeam',
+        'mutation',
+        variables,
+      )
+    },
+    userFindManyTeam(
+      variables: UserFindManyTeamQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserFindManyTeamQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserFindManyTeamQuery>(UserFindManyTeamDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userFindManyTeam',
+        'query',
+        variables,
+      )
+    },
+    userFindOneTeam(
+      variables: UserFindOneTeamQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserFindOneTeamQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserFindOneTeamQuery>(UserFindOneTeamDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userFindOneTeam',
+        'query',
+        variables,
+      )
+    },
+    userCreateTeam(
+      variables: UserCreateTeamMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserCreateTeamMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserCreateTeamMutation>(UserCreateTeamDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userCreateTeam',
+        'mutation',
+        variables,
+      )
+    },
+    userUpdateTeam(
+      variables: UserUpdateTeamMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserUpdateTeamMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserUpdateTeamMutation>(UserUpdateTeamDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userUpdateTeam',
+        'mutation',
+        variables,
+      )
+    },
+    userDeleteTeam(
+      variables: UserDeleteTeamMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserDeleteTeamMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserDeleteTeamMutation>(UserDeleteTeamDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userDeleteTeam',
+        'mutation',
+        variables,
+      )
+    },
+    userAddTeamMember(
+      variables: UserAddTeamMemberMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserAddTeamMemberMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserAddTeamMemberMutation>(UserAddTeamMemberDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userAddTeamMember',
+        'mutation',
+        variables,
+      )
+    },
+    userRemoveTeamMember(
+      variables: UserRemoveTeamMemberMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserRemoveTeamMemberMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserRemoveTeamMemberMutation>(UserRemoveTeamMemberDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userRemoveTeamMember',
+        'mutation',
+        variables,
+      )
+    },
     adminDeleteUser(
       variables: AdminDeleteUserMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -11259,6 +12928,13 @@ export const UserRoleSchema = z.nativeEnum(UserRole)
 
 export const UserStatusSchema = z.nativeEnum(UserStatus)
 
+export function AdminAddCommunityMemberInputSchema(): z.ZodObject<Properties<AdminAddCommunityMemberInput>> {
+  return z.object({
+    role: CommunityRoleSchema,
+    userId: z.string(),
+  })
+}
+
 export function AdminCreateBotInputSchema(): z.ZodObject<Properties<AdminCreateBotInput>> {
   return z.object({
     clientId: z.string(),
@@ -11279,13 +12955,6 @@ export function AdminCreateCommunityInputSchema(): z.ZodObject<Properties<AdminC
     telegramUrl: z.string().nullish(),
     twitterUrl: z.string().nullish(),
     websiteUrl: z.string().nullish(),
-  })
-}
-
-export function AdminCreateCommunityMemberInputSchema(): z.ZodObject<Properties<AdminCreateCommunityMemberInput>> {
-  return z.object({
-    role: CommunityRoleSchema,
-    userId: z.string(),
   })
 }
 
@@ -11422,6 +13091,15 @@ export function AdminFindManySnapshotInputSchema(): z.ZodObject<Properties<Admin
   })
 }
 
+export function AdminFindManyTeamInputSchema(): z.ZodObject<Properties<AdminFindManyTeamInput>> {
+  return z.object({
+    communityId: z.string(),
+    limit: z.number().nullish(),
+    page: z.number().nullish(),
+    search: z.string().nullish(),
+  })
+}
+
 export function AdminFindManyUserInputSchema(): z.ZodObject<Properties<AdminFindManyUserInput>> {
   return z.object({
     limit: z.number().nullish(),
@@ -11485,6 +13163,13 @@ export function AdminUpdateRoleInputSchema(): z.ZodObject<Properties<AdminUpdate
   })
 }
 
+export function AdminUpdateTeamInputSchema(): z.ZodObject<Properties<AdminUpdateTeamInput>> {
+  return z.object({
+    avatarUrl: z.string().nullish(),
+    name: z.string().nullish(),
+  })
+}
+
 export function AdminUpdateUserInputSchema(): z.ZodObject<Properties<AdminUpdateUserInput>> {
   return z.object({
     avatarUrl: z.string().nullish(),
@@ -11510,6 +13195,13 @@ export function RequestIdentityChallengeInputSchema(): z.ZodObject<Properties<Re
   })
 }
 
+export function UserAddCommunityMemberInputSchema(): z.ZodObject<Properties<UserAddCommunityMemberInput>> {
+  return z.object({
+    role: CommunityRoleSchema,
+    userId: z.string(),
+  })
+}
+
 export function UserCreateBotInputSchema(): z.ZodObject<Properties<UserCreateBotInput>> {
   return z.object({
     clientId: z.string(),
@@ -11530,13 +13222,6 @@ export function UserCreateCommunityInputSchema(): z.ZodObject<Properties<UserCre
     telegramUrl: z.string().nullish(),
     twitterUrl: z.string().nullish(),
     websiteUrl: z.string().nullish(),
-  })
-}
-
-export function UserCreateCommunityMemberInputSchema(): z.ZodObject<Properties<UserCreateCommunityMemberInput>> {
-  return z.object({
-    role: CommunityRoleSchema,
-    userId: z.string(),
   })
 }
 
@@ -11566,6 +13251,14 @@ export function UserCreateRolePermissionInputSchema(): z.ZodObject<Properties<Us
 export function UserCreateSnapshotInputSchema(): z.ZodObject<Properties<UserCreateSnapshotInput>> {
   return z.object({
     roleId: z.string(),
+  })
+}
+
+export function UserCreateTeamInputSchema(): z.ZodObject<Properties<UserCreateTeamInput>> {
+  return z.object({
+    communityId: z.string(),
+    identityId: z.string(),
+    name: z.string(),
   })
 }
 
@@ -11654,6 +13347,15 @@ export function UserFindManySnapshotInputSchema(): z.ZodObject<Properties<UserFi
   })
 }
 
+export function UserFindManyTeamInputSchema(): z.ZodObject<Properties<UserFindManyTeamInput>> {
+  return z.object({
+    communityId: z.string(),
+    limit: z.number().nullish(),
+    page: z.number().nullish(),
+    search: z.string().nullish(),
+  })
+}
+
 export function UserFindManyUserInputSchema(): z.ZodObject<Properties<UserFindManyUserInput>> {
   return z.object({
     limit: z.number().nullish(),
@@ -11715,6 +13417,13 @@ export function UserUpdateRoleConditionInputSchema(): z.ZodObject<Properties<Use
 
 export function UserUpdateRoleInputSchema(): z.ZodObject<Properties<UserUpdateRoleInput>> {
   return z.object({
+    name: z.string().nullish(),
+  })
+}
+
+export function UserUpdateTeamInputSchema(): z.ZodObject<Properties<UserUpdateTeamInput>> {
+  return z.object({
+    avatarUrl: z.string().nullish(),
     name: z.string().nullish(),
   })
 }

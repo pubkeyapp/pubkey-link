@@ -6,7 +6,7 @@ import {
   CommunityMember,
   CommunityMemberPaging,
   CommunityRole,
-  UserCreateCommunityMemberInput,
+  UserAddCommunityMemberInput,
   UserFindManyCommunityMemberInput,
   UserUpdateCommunityMemberInput,
 } from '@pubkey-link/api-community-member-data-access'
@@ -17,17 +17,17 @@ export class ApiUserCommunityMemberResolver {
   constructor(private readonly service: ApiCommunityMemberService) {}
 
   @Mutation(() => CommunityMember, { nullable: true })
-  userCreateCommunityMember(
+  userAddCommunityMember(
     @CtxUserId() userId: string,
     @Args('communityId') communityId: string,
-    @Args('input') input: UserCreateCommunityMemberInput,
+    @Args('input') input: UserAddCommunityMemberInput,
   ) {
-    return this.service.user.createCommunityMember(userId, communityId, input)
+    return this.service.user.addCommunityMember(userId, communityId, input)
   }
 
   @Mutation(() => Boolean, { nullable: true })
-  userDeleteCommunityMember(@CtxUserId() userId: string, @Args('communityMemberId') communityMemberId: string) {
-    return this.service.user.deleteCommunityMember(userId, communityMemberId)
+  userRemoveCommunityMember(@CtxUserId() userId: string, @Args('communityMemberId') communityMemberId: string) {
+    return this.service.user.removeCommunityMember(userId, communityMemberId)
   }
 
   @Query(() => CommunityRole, { nullable: true })

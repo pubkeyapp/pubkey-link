@@ -1,12 +1,12 @@
 import { Group } from '@mantine/core'
 import { useAdminFindManyCommunityMember } from '@pubkey-link/web-community-member-data-access'
-import { AdminCommunityMemberUiTable, AdminCreateCommunityMemberModal } from '@pubkey-link/web-community-member-ui'
+import { AdminAddCommunityMemberModal, AdminCommunityMemberUiTable } from '@pubkey-link/web-community-member-ui'
 import { CommunityUiSelectRole } from '@pubkey-link/web-community-ui'
 import { UiPageLimit, UiSearchField } from '@pubkey-link/web-core-ui'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function AdminCommunityMemberListFeature({ communityId }: { communityId: string }) {
-  const { createCommunityMember, deleteCommunityMember, items, pagination, query, role, setRole, setSearch } =
+  const { addCommunityMember, removeCommunityMember, items, pagination, query, role, setRole, setSearch } =
     useAdminFindManyCommunityMember({
       communityId,
     })
@@ -16,7 +16,7 @@ export function AdminCommunityMemberListFeature({ communityId }: { communityId: 
       <Group>
         <UiSearchField placeholder="Search member" setSearch={setSearch} />
         <UiDebugModal data={items} />
-        <AdminCreateCommunityMemberModal create={createCommunityMember} />
+        <AdminAddCommunityMemberModal create={addCommunityMember} />
         <CommunityUiSelectRole placeholder="Filter by Role" value={role} setValue={setRole} />
         <UiPageLimit limit={pagination.limit} setLimit={pagination.setLimit} setPage={pagination.setPage} />
       </Group>
@@ -27,7 +27,7 @@ export function AdminCommunityMemberListFeature({ communityId }: { communityId: 
         <AdminCommunityMemberUiTable
           deleteCommunityMember={(communityMember) => {
             if (!window.confirm('Are you sure?')) return
-            return deleteCommunityMember(communityMember.id)
+            return removeCommunityMember(communityMember.id)
           }}
           refresh={query.refetch}
           communityMembers={items}

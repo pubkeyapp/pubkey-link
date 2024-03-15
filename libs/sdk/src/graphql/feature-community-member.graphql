@@ -30,8 +30,8 @@ query adminFindOneCommunityMember($communityMemberId: String!) {
   }
 }
 
-mutation adminCreateCommunityMember($communityId: String!, $input: AdminCreateCommunityMemberInput!) {
-  created: adminCreateCommunityMember(communityId: $communityId, input: $input) {
+mutation adminAddCommunityMember($communityId: String!, $input: AdminAddCommunityMemberInput!) {
+  created: adminAddCommunityMember(communityId: $communityId, input: $input) {
     ...CommunityMemberDetails
   }
 }
@@ -41,8 +41,8 @@ mutation adminUpdateCommunityMember($communityMemberId: String!, $input: AdminUp
   }
 }
 
-mutation adminDeleteCommunityMember($communityMemberId: String!) {
-  deleted: adminDeleteCommunityMember(communityMemberId: $communityMemberId)
+mutation adminRemoveCommunityMember($communityMemberId: String!) {
+  deleted: adminRemoveCommunityMember(communityMemberId: $communityMemberId)
 }
 
 query userGetCommunityRole($communityId: String!) {
@@ -66,8 +66,8 @@ query userFindOneCommunityMember($communityMemberId: String!) {
   }
 }
 
-mutation userCreateCommunityMember($communityId: String!, $input: UserCreateCommunityMemberInput!) {
-  created: userCreateCommunityMember(communityId: $communityId, input: $input) {
+mutation userAddCommunityMember($communityId: String!, $input: UserAddCommunityMemberInput!) {
+  created: userAddCommunityMember(communityId: $communityId, input: $input) {
     ...CommunityMemberDetails
   }
 }
@@ -78,6 +78,6 @@ mutation userUpdateCommunityMember($communityMemberId: String!, $input: UserUpda
   }
 }
 
-mutation userDeleteCommunityMember($communityMemberId: String!) {
-  deleted: userDeleteCommunityMember(communityMemberId: $communityMemberId)
+mutation userRemoveCommunityMember($communityMemberId: String!) {
+  deleted: userRemoveCommunityMember(communityMemberId: $communityMemberId)
 }

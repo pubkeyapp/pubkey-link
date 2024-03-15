@@ -1,9 +1,9 @@
 import { Button } from '@mantine/core'
 import { AdminCreateNetworkTokenInput, NetworkCluster } from '@pubkey-link/sdk'
+import { UiAddressInput } from '@pubkey-link/web-core-ui'
 import { useUserGetTokenMetadata } from '@pubkey-link/web-network-data-access'
 import { useAdminFindManyNetworkToken } from '@pubkey-link/web-network-token-data-access'
 import { NetworkTokenUiItem } from '@pubkey-link/web-network-token-ui'
-import { UiAddressInput } from '@pubkey-link/web-core-ui'
 import { toastError, UiBack, UiCard, UiError, UiGroup, UiLoader, UiPage, UiStack } from '@pubkey-ui/core'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -55,7 +55,6 @@ function AdminNetworkTokenUiTokenMetadata({
   cluster: NetworkCluster
   onClick: () => void
 }) {
-  console.log({ account, cluster })
   const query = useUserGetTokenMetadata({ account, cluster })
 
   return query.isLoading ? (

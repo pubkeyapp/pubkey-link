@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql'
+import { PagingResponse } from '@pubkey-link/api-core-data-access'
 import { RoleCondition } from './role-condition.entity'
 import { RolePermission } from './role-permission.entity'
 
@@ -19,3 +20,6 @@ export class Role {
   @Field(() => [RolePermission], { nullable: true })
   permissions?: RolePermission[] | null
 }
+
+@ObjectType()
+export class RolePaging extends PagingResponse<Role>(Role) {}

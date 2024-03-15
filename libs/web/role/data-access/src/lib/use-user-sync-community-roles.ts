@@ -13,7 +13,6 @@ export function useUserSyncCommunityRoles({ communityId }: { communityId: string
         .then((res) => res.data?.result)
         .then(async (res) => {
           if (res) {
-            console.log(res)
             toastSuccess('Roles validated')
             return res
           }

@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common'
 import { NetworkCluster, NetworkTokenType } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { ApiAdminNetworkAssetService } from './api-admin-network-asset.service'
+import { ApiNetworkAssetDataAdminService } from './api-network-asset-data-admin.service'
+import { ApiNetworkAssetDataUserService } from './api-network-asset-data-user.service'
 import { ApiNetworkAssetSyncService } from './api-network-asset-sync.service'
-import { ApiUserNetworkAssetService } from './api-user-network-asset.service'
 
 @Injectable()
 export class ApiNetworkAssetService {
   constructor(
-    readonly admin: ApiAdminNetworkAssetService,
+    readonly admin: ApiNetworkAssetDataAdminService,
     readonly core: ApiCoreService,
-    readonly user: ApiUserNetworkAssetService,
+    readonly user: ApiNetworkAssetDataUserService,
     readonly sync: ApiNetworkAssetSyncService,
   ) {}
 

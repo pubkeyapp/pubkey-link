@@ -16,7 +16,6 @@ export function IdentityUiListItem({
   deleteIdentity?: (id: string) => void
   item: Identity
 }) {
-  const name = item.name ?? item.profile?.username ?? item.providerId
   return (
     <UiCard>
       <Group justify="space-between">
@@ -25,7 +24,7 @@ export function IdentityUiListItem({
           <UiStack gap={0} align="start">
             <UiGroup gap="xs" align="center">
               <Text size="lg" display="flex">
-                {name}
+                {item.name}
               </Text>
               {item.verified ? (
                 <IdentityUiVerified item={item} />

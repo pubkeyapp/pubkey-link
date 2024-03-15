@@ -1,4 +1,5 @@
 import { Field, HideField, ObjectType } from '@nestjs/graphql'
+import { PagingResponse } from '@pubkey-link/api-core-data-access'
 import { User } from '@pubkey-link/api-user-data-access'
 import { CommunityMemberRole } from './community-member-role.entity'
 import { CommunityRole } from './community-role.enum'
@@ -22,3 +23,6 @@ export class CommunityMember {
   @Field()
   communityId!: string
 }
+
+@ObjectType()
+export class CommunityMemberPaging extends PagingResponse<CommunityMember>(CommunityMember) {}

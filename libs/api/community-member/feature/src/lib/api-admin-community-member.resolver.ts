@@ -2,7 +2,7 @@ import { UseGuards } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { ApiAuthGraphQLAdminGuard } from '@pubkey-link/api-auth-data-access'
 import {
-  AdminCreateCommunityMemberInput,
+  AdminAddCommunityMemberInput,
   AdminFindManyCommunityMemberInput,
   AdminUpdateCommunityMemberInput,
   ApiCommunityMemberService,
@@ -16,16 +16,16 @@ export class ApiAdminCommunityMemberResolver {
   constructor(private readonly service: ApiCommunityMemberService) {}
 
   @Mutation(() => CommunityMember, { nullable: true })
-  adminCreateCommunityMember(
+  adminAddCommunityMember(
     @Args('communityId') communityId: string,
-    @Args('input') input: AdminCreateCommunityMemberInput,
+    @Args('input') input: AdminAddCommunityMemberInput,
   ) {
-    return this.service.admin.createCommunityMember(communityId, input)
+    return this.service.admin.addCommunityMember(communityId, input)
   }
 
   @Mutation(() => Boolean, { nullable: true })
-  adminDeleteCommunityMember(@Args('communityMemberId') communityMemberId: string) {
-    return this.service.admin.deleteCommunityMember(communityMemberId)
+  adminRemoveCommunityMember(@Args('communityMemberId') communityMemberId: string) {
+    return this.service.admin.removeCommunityMember(communityMemberId)
   }
 
   @Query(() => CommunityMemberPaging)

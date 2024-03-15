@@ -11,3 +11,8 @@ export function PagingInput() {
 
   return PagingInputClass
 }
+
+export interface PagingInputFields {
+  page?: number
+  limit?: number
+}

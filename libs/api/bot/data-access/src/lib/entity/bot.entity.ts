@@ -1,5 +1,6 @@
 import { Field, HideField, ObjectType } from '@nestjs/graphql'
 import { BotApplication } from '@pubkey-link/api-bot-util'
+import { PagingResponse } from '@pubkey-link/api-core-data-access'
 import { GraphQLJSON } from 'graphql-scalars'
 import { BotRole } from './bot-role.entity'
 import { BotStatus } from './bot-status.enum'
@@ -31,3 +32,6 @@ export class Bot {
   @Field(() => [BotRole], { nullable: true })
   permissions?: BotRole[] | null
 }
+
+@ObjectType()
+export class BotPaging extends PagingResponse<Bot>(Bot) {}

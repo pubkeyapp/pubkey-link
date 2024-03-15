@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql'
+import { PagingResponse } from '@pubkey-link/api-core-data-access'
 import { NetworkCluster } from '@pubkey-link/api-network-data-access'
 import { Role } from '@pubkey-link/api-role-data-access'
 
@@ -35,3 +36,6 @@ export class Community {
   @Field(() => [Role], { nullable: true })
   roles?: Role[]
 }
+
+@ObjectType()
+export class CommunityPaging extends PagingResponse<Community>(Community) {}

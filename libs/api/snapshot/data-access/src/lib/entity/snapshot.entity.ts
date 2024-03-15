@@ -1,5 +1,6 @@
 import { Field, HideField, ObjectType } from '@nestjs/graphql'
 import { Prisma, Role } from '@prisma/client'
+import { PagingResponse } from '@pubkey-link/api-core-data-access'
 import { SnapshotItem } from './snapshot-item'
 
 @ObjectType()
@@ -19,3 +20,5 @@ export class Snapshot {
   @HideField()
   role?: Role
 }
+@ObjectType()
+export class SnapshotPaging extends PagingResponse<Snapshot>(Snapshot) {}

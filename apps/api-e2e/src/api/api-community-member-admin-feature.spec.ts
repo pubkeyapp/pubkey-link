@@ -69,8 +69,8 @@ xdescribe('api-community-member-feature', () => {
         expect(res.data.item.id).toBe(communityMemberId)
       })
 
-      it('should delete a community-member', async () => {
-        const res = await sdk.adminDeleteCommunityMember({ communityMemberId }, { cookie: alice })
+      it('should remove a community-member', async () => {
+        const res = await sdk.adminRemoveCommunityMember({ communityMemberId }, { cookie: alice })
 
         expect(res.data.deleted).toBe(true)
 
@@ -126,10 +126,10 @@ xdescribe('api-community-member-feature', () => {
         }
       })
 
-      it('should not delete a community-member', async () => {
+      it('should not remove a community-member', async () => {
         expect.assertions(1)
         try {
-          await sdk.adminDeleteCommunityMember({ communityMemberId }, { cookie: bob })
+          await sdk.adminRemoveCommunityMember({ communityMemberId }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }

@@ -16,7 +16,7 @@ export class ApiIdentityResolver {
     return !(identity.accessToken && identity.refreshToken)
   }
 
-  @ResolveField(() => String, { nullable: true })
+  @ResolveField(() => String)
   name(@Parent() identity: Identity) {
     return identity.name ?? (identity.profile as { username?: string })?.username ?? identity?.providerId
   }

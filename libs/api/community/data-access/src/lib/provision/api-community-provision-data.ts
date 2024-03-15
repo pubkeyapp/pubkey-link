@@ -149,7 +149,10 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     twitterUrl: 'https://twitter.com/PubKeyApp',
     websiteUrl: 'https://app.pubkey.link',
     members: {
-      create: [{ user: { connect: { id: 'alice' } }, role: CommunityRole.Admin }],
+      create: [
+        { user: { connect: { id: 'alice' } }, role: CommunityRole.Admin },
+        { user: { connect: { id: 'dave' } }, role: CommunityRole.Admin },
+      ],
     },
     bot: { create: PK_BOT.clientId ? PK_BOT : undefined },
     roles: {

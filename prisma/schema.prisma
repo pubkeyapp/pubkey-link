@@ -74,6 +74,7 @@ model Community {
   cluster     NetworkCluster
   bot         Bot?
   logs        Log[]
+  teams       Team[]
 
   // TODO: Add relation to NetworkToken
   @@unique([name])
@@ -89,6 +90,7 @@ model CommunityMember {
   user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   roles       CommunityMemberRole[]
+  teams       Team[]
 
   @@unique([communityId, userId])
 }
@@ -120,6 +122,7 @@ model Identity {
   ownerId      String
   challenges   IdentityChallenge[]
   logs         Log[]
+  teams        Team[]
 
   @@unique([provider, providerId])
 }
@@ -273,6 +276,22 @@ model Snapshot {
   roleId    String
   name      String
   data      Json
+}
+
+model Team {
+  id          String            @id @default(cuid())
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  community   Community         @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  communityId String
+  identity    Identity          @relation(fields: [identityId], references: [id], onDelete: Cascade)
+  identityId  String
+  name        String
+  avatarUrl   String?
+  members     CommunityMember[]
+
+  @@unique([communityId, identityId])
+  @@unique([communityId, name])
 }
 
 model User {

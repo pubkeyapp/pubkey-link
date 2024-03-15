@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { ApiAdminNetworkTokenService } from './api-admin-network-token.service'
-import { ApiUserNetworkTokenService } from './api-user-network-token.service'
+import { ApiNetworkTokenDataAdminService } from './api-network-token-data-admin.service'
+import { ApiNetworkTokenDataUserService } from './api-network-token-data-user.service'
 
 @Injectable()
 export class ApiNetworkTokenService {
-  constructor(readonly admin: ApiAdminNetworkTokenService, readonly user: ApiUserNetworkTokenService) {}
+  constructor(readonly admin: ApiNetworkTokenDataAdminService, readonly user: ApiNetworkTokenDataUserService) {}
 }
