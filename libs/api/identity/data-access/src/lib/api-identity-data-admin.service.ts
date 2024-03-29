@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Identity as PrismaIdentity, IdentityProvider } from '@prisma/client'
+import { Identity as PrismaIdentity, IdentityProvider, UserStatus } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { AdminCreateIdentityInput } from './dto/admin-create-identity.input'
 import { AdminFindManyIdentityInput } from './dto/admin-find-many-identity.input'
@@ -57,5 +57,31 @@ export class ApiIdentityDataAdminService {
       },
     })
     return items ?? []
+  }
+  findUserByIdentity(provider: IdentityProvider, providerId: string) {
+    return this.core.data.user.findFirst({
+      where: {
+        identities: {
+          some: {
+            provider,
+            providerId,
+          },
+        },
+        status: UserStatus.Active,
+      },
+      select: {
+        avatarUrl: true,
+        developer: true,
+        id: true,
+        name: true,
+        role: true,
+        username: true,
+        status: true,
+        identities: {
+          orderBy: [{ provider: 'asc' }, { providerId: 'asc' }],
+          select: { id: true, name: true, profile: true, provider: true, providerId: true },
+        },
+      },
+    })
   }
 }

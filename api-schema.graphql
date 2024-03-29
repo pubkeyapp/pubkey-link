@@ -629,9 +629,9 @@ type Query {
   adminFindOneSnapshot(snapshotId: String!): Snapshot
   adminFindOneTeam(teamId: String!): Team
   adminFindOneUser(userId: String!): User
+  adminFindUserByIdentity(provider: IdentityProvider!, providerId: String!): User
   adminGetBackup(name: String!): JSON
   adminGetBackups: [String!]!
-  anonFindUserByIdentity(provider: IdentityProvider!, providerId: String!): User
   anonGetCommunities: [Community!]!
   anonRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
   appConfig: AppConfig!

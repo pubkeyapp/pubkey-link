@@ -1,19 +1,12 @@
-import { IdentityProvider } from '@pubkey-link/sdk'
-import { useAnonFindUserByIdentity } from '@pubkey-link/web-verify-data-access'
-import { UiCard, UiDebugModal, UiLoader, UiStack, UiWarning } from '@pubkey-ui/core'
 import { Group } from '@mantine/core'
-import { UserUiItem } from '@pubkey-link/web-user-ui'
+import { IdentityProvider } from '@pubkey-link/sdk'
 import { IdentityUiItem } from '@pubkey-link/web-identity-ui'
+import { UserUiItem } from '@pubkey-link/web-user-ui'
+import { useAdminFindUserByIdentity } from '@pubkey-link/web-verify-data-access'
+import { UiCard, UiDebugModal, UiLoader, UiStack, UiWarning } from '@pubkey-ui/core'
 
-export function VerifyIdentity({
-  //
-  provider,
-  providerId,
-}: {
-  provider: IdentityProvider
-  providerId: string
-}) {
-  const query = useAnonFindUserByIdentity({
+export function VerifyIdentity({ provider, providerId }: { provider: IdentityProvider; providerId: string }) {
+  const query = useAdminFindUserByIdentity({
     provider,
     providerId,
   })

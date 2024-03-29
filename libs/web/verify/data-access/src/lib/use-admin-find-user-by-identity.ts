@@ -3,7 +3,7 @@ import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
 
-export function useAnonFindUserByIdentity({
+export function useAdminFindUserByIdentity({
   provider,
   providerId,
 }: {
@@ -13,10 +13,10 @@ export function useAnonFindUserByIdentity({
   const sdk = useSdk()
 
   return useQuery({
-    queryKey: ['anon', 'find-user-by-identity', { provider, providerId }],
+    queryKey: ['admin', 'find-user-by-identity', { provider, providerId }],
     queryFn: () =>
       sdk
-        .anonFindUserByIdentity({ provider, providerId })
+        .adminFindUserByIdentity({ provider, providerId })
         .then((res) => res.data)
         .catch((err) => {
           toastError(err.message)

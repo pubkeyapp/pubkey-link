@@ -1,7 +1,6 @@
 import { AuthLoginFeature } from '@pubkey-link/web-auth-feature'
 import { HomeFeature } from '@pubkey-link/web-home-feature'
 import { OnboardingFeature } from '@pubkey-link/web-onboarding-feature'
-import { AnonVerifyFeature } from '@pubkey-link/web-verify-feature'
 import { UiNotFound } from '@pubkey-ui/core'
 import { lazy } from 'react'
 import { Navigate } from 'react-router-dom'
@@ -29,7 +28,6 @@ export function WebCoreRoutes() {
       { path: '/onboarding/*', element: <OnboardingFeature /> },
     ],
     public: [
-      { path: '/verify/*', element: <AnonVerifyFeature /> },
       // Routes for the auth feature
       { path: '/login', element: <AuthLoginFeature /> },
       // Homepage

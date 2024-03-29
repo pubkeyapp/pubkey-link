@@ -18,33 +18,6 @@ export class ApiIdentityDataAnonService {
     private readonly solana: ApiIdentitySolanaService,
   ) {}
 
-  findUserByIdentity(provider: IdentityProvider, providerId: string) {
-    return this.core.data.user.findFirst({
-      where: {
-        identities: {
-          some: {
-            provider,
-            providerId,
-          },
-        },
-        status: UserStatus.Active,
-      },
-      select: {
-        avatarUrl: true,
-        developer: true,
-        id: true,
-        name: true,
-        role: true,
-        username: true,
-        status: true,
-        identities: {
-          orderBy: [{ provider: 'asc' }, { providerId: 'asc' }],
-          select: { id: true, name: true, profile: true, provider: true, providerId: true },
-        },
-      },
-    })
-  }
-
   async requestIdentityChallenge(ctx: BaseContext, { provider, providerId }: RequestIdentityChallengeInput) {
     // Make sure the provider is allowed
     this.solana.ensureAllowedProvider(provider)

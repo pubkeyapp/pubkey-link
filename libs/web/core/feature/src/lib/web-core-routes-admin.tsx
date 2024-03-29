@@ -3,8 +3,9 @@ import { DevAdminRoutes } from '@pubkey-link/web-dev-feature'
 import { AdminLogFeature } from '@pubkey-link/web-log-feature'
 import { AdminNetworkFeature } from '@pubkey-link/web-network-feature'
 import { AdminUserFeature } from '@pubkey-link/web-user-feature'
+import { AdminVerifyFeature } from '@pubkey-link/web-verify-feature'
 import { UiContainer, UiDashboardGrid, UiDashboardItem, UiNotFound } from '@pubkey-ui/core'
-import { IconFileText, IconNetwork, IconSettings, IconUsers, IconUsersGroup } from '@tabler/icons-react'
+import { IconCheckupList, IconFileText, IconNetwork, IconUsers, IconUsersGroup } from '@tabler/icons-react'
 import { Navigate, RouteObject, useRoutes } from 'react-router-dom'
 
 const links: UiDashboardItem[] = [
@@ -13,7 +14,7 @@ const links: UiDashboardItem[] = [
   { label: 'Logs', icon: IconFileText, to: '/admin/logs' },
   { label: 'Networks', icon: IconNetwork, to: '/admin/networks' },
   { label: 'Users', icon: IconUsers, to: '/admin/users' },
-  { label: 'Snapshots', icon: IconSettings, to: '/admin/snapshots' },
+  { label: 'Verify', icon: IconCheckupList, to: '/admin/verify' },
 ]
 
 const routes: RouteObject[] = [
@@ -23,6 +24,7 @@ const routes: RouteObject[] = [
   { path: 'logs/*', element: <AdminLogFeature /> },
   { path: 'networks/*', element: <AdminNetworkFeature /> },
   { path: 'users/*', element: <AdminUserFeature /> },
+  { path: 'verify/*', element: <AdminVerifyFeature /> },
 ]
 
 export default function WebCoreRoutesAdmin() {
