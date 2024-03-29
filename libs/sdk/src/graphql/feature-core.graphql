@@ -1,6 +1,7 @@
 fragment AppConfigDetails on AppConfig {
   authLinkProviders
   authLoginProviders
+  features
 }
 
 fragment PagingMetaDetails on PagingMeta {

@@ -21,6 +21,7 @@ export const validationSchema = Joi.object({
   COOKIE_SECURE: Joi.boolean().default(true),
   DATABASE_PROVISION: Joi.boolean().default(false),
   DATABASE_URL: Joi.string(),
+  FEATURE_COMMUNITY_CREATE: Joi.boolean().default(true),
   GRAPHQL_PLAYGROUND: Joi.boolean().default(false),
   JWT_SECRET: Joi.string().required(),
   HOST: Joi.string().default('0.0.0.0'),

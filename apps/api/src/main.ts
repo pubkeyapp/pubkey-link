@@ -27,6 +27,7 @@ async function bootstrap() {
   Logger.log(`🔋 API_URL: ${core.config.apiUrl}`)
   Logger.log(`🔋 WEB_URL: ${core.config.webUrl}`)
   Logger.log(`🔋 COOKIE_DOMAINS: ${core.config.cookieDomains.join(', ')}`)
+  Logger.log(`🔋 FEATURES: ${core.config.appConfig.features.join(', ')}`)
   if (core.config.isDevelopment) {
     Logger.warn(`🐞 Application is running in development mode.`)
     exec('prettier --write ./api-schema.graphql ./api-swagger.json', { cwd: process.cwd() })

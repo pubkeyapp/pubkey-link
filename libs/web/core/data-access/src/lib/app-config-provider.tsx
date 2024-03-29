@@ -1,4 +1,4 @@
-import { AppConfig, IdentityProvider } from '@pubkey-link/sdk'
+import { AppConfig, AppFeature, IdentityProvider } from '@pubkey-link/sdk'
 import { useQuery } from '@tanstack/react-query'
 import { createContext, ReactNode, useContext, useMemo } from 'react'
 import { useSdk } from './sdk-provider'
@@ -8,6 +8,8 @@ export interface AppConfigContext {
   appConfigLoading: boolean
   authEnabled: boolean
   enabledProviders: IdentityProvider[]
+  hasFeature: (feature: AppFeature) => boolean
+  features: AppFeature[]
 }
 
 const Context = createContext<AppConfigContext>({} as AppConfigContext)
@@ -18,26 +20,28 @@ export function AppConfigProvider({ children }: { children: ReactNode }) {
     queryKey: ['app-config'],
     queryFn: () => sdk.appConfig().then((res) => res.data),
   })
+  const appConfig = useMemo(() => configQuery.data?.config, [configQuery.data?.config])
 
   const authEnabled = useMemo(() => {
-    if (!configQuery.data?.config) return false
-    const { authLoginProviders } = configQuery.data.config
+    if (!appConfig) return false
+    const { authLoginProviders } = appConfig
     return !!authLoginProviders?.length
-  }, [configQuery.data?.config])
+  }, [appConfig])
 
   const enabledProviders: IdentityProvider[] = useMemo(
-    () =>
-      configQuery.data?.config
-        ? ((configQuery.data?.config.authLoginProviders ?? []).filter(Boolean) as IdentityProvider[])
-        : [],
-    [configQuery.data?.config],
+    () => (appConfig ? ((appConfig.authLoginProviders ?? []).filter(Boolean) as IdentityProvider[]) : []),
+    [appConfig],
   )
 
+  const features = useMemo(() => appConfig?.features ?? ([] as AppFeature[]), [appConfig])
+
   const value = {
-    appConfig: configQuery.data?.config,
+    appConfig: appConfig,
     appConfigLoading: configQuery.isLoading,
     authEnabled,
     enabledProviders,
+    hasFeature: (feature: AppFeature) => features.includes(feature),
+    features,
   }
   return <Context.Provider value={value}>{children}</Context.Provider>
 }
