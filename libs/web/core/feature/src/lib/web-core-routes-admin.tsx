@@ -2,7 +2,6 @@ import { AdminCommunityFeature } from '@pubkey-link/web-community-feature'
 import { DevAdminRoutes } from '@pubkey-link/web-dev-feature'
 import { AdminLogFeature } from '@pubkey-link/web-log-feature'
 import { AdminNetworkFeature } from '@pubkey-link/web-network-feature'
-import { AdminSnapshotFeature } from '@pubkey-link/web-snapshot-feature'
 import { AdminUserFeature } from '@pubkey-link/web-user-feature'
 import { UiContainer, UiDashboardGrid, UiDashboardItem, UiNotFound } from '@pubkey-ui/core'
 import { IconFileText, IconNetwork, IconSettings, IconUsers, IconUsersGroup } from '@tabler/icons-react'
@@ -24,7 +23,6 @@ const routes: RouteObject[] = [
   { path: 'logs/*', element: <AdminLogFeature /> },
   { path: 'networks/*', element: <AdminNetworkFeature /> },
   { path: 'users/*', element: <AdminUserFeature /> },
-  { path: 'snapshots/*', element: <AdminSnapshotFeature /> },
 ]
 
 export default function WebCoreRoutesAdmin() {

@@ -45,6 +45,7 @@ export interface ApiCoreConfig {
   environment: Env
   // Feature Flags
   featureCommunityCreate: boolean
+  featureCommunitySnapshots: boolean
   featureCommunityTeams: boolean
   // Host
   host: string
@@ -89,6 +90,7 @@ export function configuration(): ApiCoreConfig {
     databaseProvision: process.env['DATABASE_PROVISION'] === 'true',
     environment: (process.env['NODE_ENV'] as Env) || 'development',
     featureCommunityCreate: process.env['FEATURE_COMMUNITY_CREATE'] === 'true',
+    featureCommunitySnapshots: process.env['FEATURE_COMMUNITY_SNAPSHOTS'] === 'true',
     featureCommunityTeams: process.env['FEATURE_COMMUNITY_TEAMS'] === 'true',
     host: process.env['HOST'] as string,
     jwtSecret: process.env['JWT_SECRET'] as string,

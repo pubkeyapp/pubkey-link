@@ -13,6 +13,7 @@ export class AppConfig {
 
 export enum AppFeature {
   CommunityCreate = 'CommunityCreate',
+  CommunitySnapshots = 'CommunitySnapshots',
   CommunityTeams = 'CommunityTeams',
 }
 

@@ -34,6 +34,7 @@ export function UserCommunityDetailFeature() {
   const { communityId } = useParams<{ communityId: string }>() as { communityId: string }
   const { item, isLoading, communityAdmin, role } = useUserFindOneCommunity({ communityId })
 
+  const hasSnapshots = hasFeature(AppFeature.CommunitySnapshots)
   const hasTeams = hasFeature(AppFeature.CommunityTeams)
 
   if (isLoading) {
@@ -77,12 +78,13 @@ export function UserCommunityDetailFeature() {
       element: <UserCommunityMemberFeature community={item} />,
       leftSection: <UiIcon type="users" size={20} />,
     },
-    communityAdmin && {
-      label: 'Snapshots',
-      path: 'snapshots',
-      element: <UserSnapshotFeature communityId={item.id} />,
-      leftSection: <UiIcon type="snapshot" size={20} />,
-    },
+    communityAdmin &&
+      hasSnapshots && {
+        label: 'Snapshots',
+        path: 'snapshots',
+        element: <UserSnapshotFeature communityId={item.id} />,
+        leftSection: <UiIcon type="snapshot" size={20} />,
+      },
     communityAdmin && {
       label: 'Logs',
       path: 'logs',
