@@ -101,9 +101,9 @@ export class CommandService {
     console.log(JSON.stringify(data ?? [], null, 2))
   }
 
-  async snapshotList() {
+  async snapshotList(communityId: string) {
     const { cookie, sdk } = await this.getConfig()
-    const res = await sdk.adminFindManySnapshot({ input: {} }, { cookie })
+    const res = await sdk.adminFindManySnapshot({ input: { communityId } }, { cookie })
     if (!res.data?.paging.meta?.totalCount) {
       console.log('No snapshots found')
       return

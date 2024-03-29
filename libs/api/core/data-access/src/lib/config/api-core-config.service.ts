@@ -38,10 +38,30 @@ export class ApiCoreConfigService {
     }
 
     return {
+      appLogoUrlDark: this.appLogoUrlDark,
+      appLogoUrlLight: this.appLogoUrlLight,
+      appThemeBackground: this.appThemeBackground,
+      appThemeColor: this.appThemeColor,
       authLinkProviders: link,
       authLoginProviders: login,
       features,
     }
+  }
+
+  get appLogoUrlDark() {
+    return this.service.get<string>('appLogoUrlDark') as string
+  }
+
+  get appLogoUrlLight() {
+    return this.service.get<string>('appLogoUrlLight') as string
+  }
+
+  get appThemeBackground() {
+    return this.service.get<string>('appThemeBackground') as string
+  }
+
+  get appThemeColor() {
+    return this.service.get<string>('appThemeColor') as string
   }
 
   get authDiscordAdminIds() {

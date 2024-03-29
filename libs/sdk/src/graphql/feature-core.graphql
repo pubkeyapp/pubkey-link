@@ -1,4 +1,8 @@
 fragment AppConfigDetails on AppConfig {
+  appLogoUrlDark
+  appLogoUrlLight
+  appThemeBackground
+  appThemeColor
   authLinkProviders
   authLoginProviders
   features

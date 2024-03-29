@@ -223,6 +223,10 @@ export type AdminUpdateUserInput = {
 
 export type AppConfig = {
   __typename?: 'AppConfig'
+  appLogoUrlDark?: Maybe<Scalars['String']['output']>
+  appLogoUrlLight?: Maybe<Scalars['String']['output']>
+  appThemeBackground?: Maybe<Scalars['String']['output']>
+  appThemeColor?: Maybe<Scalars['String']['output']>
   authLinkProviders?: Maybe<Array<IdentityProvider>>
   authLoginProviders?: Maybe<Array<IdentityProvider>>
   features: Array<AppFeature>
@@ -3589,6 +3593,10 @@ export type UserDeleteCommunityMutation = { __typename?: 'Mutation'; deleted?: b
 
 export type AppConfigDetailsFragment = {
   __typename?: 'AppConfig'
+  appLogoUrlDark?: string | null
+  appLogoUrlLight?: string | null
+  appThemeBackground?: string | null
+  appThemeColor?: string | null
   authLinkProviders?: Array<IdentityProvider> | null
   authLoginProviders?: Array<IdentityProvider> | null
   features: Array<AppFeature>
@@ -3615,6 +3623,10 @@ export type AppConfigQuery = {
   __typename?: 'Query'
   config: {
     __typename?: 'AppConfig'
+    appLogoUrlDark?: string | null
+    appLogoUrlLight?: string | null
+    appThemeBackground?: string | null
+    appThemeColor?: string | null
     authLinkProviders?: Array<IdentityProvider> | null
     authLoginProviders?: Array<IdentityProvider> | null
     features: Array<AppFeature>
@@ -8508,6 +8520,10 @@ export const CommunityDetailsFragmentDoc = gql`
 `
 export const AppConfigDetailsFragmentDoc = gql`
   fragment AppConfigDetails on AppConfig {
+    appLogoUrlDark
+    appLogoUrlLight
+    appThemeBackground
+    appThemeColor
     authLinkProviders
     authLoginProviders
     features
