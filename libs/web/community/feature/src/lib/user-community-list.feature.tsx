@@ -1,12 +1,15 @@
 import { Button, Group, Stack, Text } from '@mantine/core'
+import { AppFeature } from '@pubkey-link/sdk'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { useUserFindManyCommunity } from '@pubkey-link/web-community-data-access'
 import { CommunityUiFeatured, CommunityUiGrid } from '@pubkey-link/web-community-ui'
+import { useAppConfig } from '@pubkey-link/web-core-data-access'
 import { UiSearchField } from '@pubkey-link/web-core-ui'
 import { UiContainer, UiDebugModal, UiGroup, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 import { Link } from 'react-router-dom'
 
 export function UserCommunityListFeature() {
+  const { hasFeature } = useAppConfig()
   const { isAdmin } = useAuth()
   const { items, pagination, query, setSearch } = useUserFindManyCommunity({
     limit: 12,
@@ -17,7 +20,7 @@ export function UserCommunityListFeature() {
       <UiStack>
         <Group>
           <UiSearchField placeholder="Search community" setSearch={setSearch} />
-          {isAdmin ? (
+          {isAdmin && hasFeature(AppFeature.CommunityCreate) ? (
             <Group>
               <UiDebugModal data={items} />
               <Button component={Link} to="create">

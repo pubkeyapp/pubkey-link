@@ -43,6 +43,8 @@ export interface ApiCoreConfig {
   databaseProvision: boolean
   // Environment
   environment: Env
+  // Feature Flags
+  featureCommunityCreate: boolean
   host: string
   jwtSecret: string
   port: number
@@ -79,6 +81,7 @@ export function configuration(): ApiCoreConfig {
     corsOrigins,
     databaseProvision: process.env['DATABASE_PROVISION'] === 'true',
     environment: (process.env['NODE_ENV'] as Env) || 'development',
+    featureCommunityCreate: process.env['FEATURE_COMMUNITY_CREATE'] === 'true',
     host: process.env['HOST'] as string,
     jwtSecret: process.env['JWT_SECRET'] as string,
     port: parseInt(process.env['PORT'] as string, 10) || 3000,

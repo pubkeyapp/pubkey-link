@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { ApiCoreService, PagingInputFields } from '@pubkey-link/api-core-data-access'
+import { AppFeature } from '@pubkey-link/sdk'
 import { CommunityPaging } from './entity/community.entity'
 
 @Injectable()
@@ -8,6 +9,9 @@ export class ApiCommunityDataService {
   constructor(private readonly core: ApiCoreService) {}
 
   async create(userId: string, input: Prisma.CommunityCreateInput) {
+    if (!this.core.config.hasFeature(AppFeature.CommunityCreate)) {
+      throw new Error('Feature not enabled')
+    }
     return this.core.createCommunity({ userId, input })
   }
 

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config'
 import { IdentityProvider } from '@prisma/client'
 import { RedisOptions } from 'bullmq'
 import { CookieOptions } from 'express-serve-static-core'
-import { AppConfig } from '../entity/app-config.entity'
+import { AppConfig, AppFeature } from '../entity/app-config.entity'
 import { ApiCoreConfig } from './configuration'
 
 @Injectable()
@@ -12,9 +12,13 @@ export class ApiCoreConfigService {
   constructor(private readonly service: ConfigService<ApiCoreConfig>) {}
 
   get appConfig(): AppConfig {
+    const features: AppFeature[] = []
+    if (this.featureCommunityCreate) {
+      features.push(AppFeature.CommunityCreate)
+    }
+
     const link: IdentityProvider[] = []
     const login: IdentityProvider[] = []
-
     if (this.authDiscordLinkEnabled) {
       link.push(IdentityProvider.Discord)
     }
@@ -31,6 +35,7 @@ export class ApiCoreConfigService {
     return {
       authLinkProviders: link,
       authLoginProviders: login,
+      features,
     }
   }
 
@@ -132,6 +137,14 @@ export class ApiCoreConfigService {
 
   get environment() {
     return this.service.get('environment')
+  }
+
+  get featureCommunityCreate() {
+    return this.service.get<boolean>('featureCommunityCreate')
+  }
+
+  hasFeature(feature: AppFeature) {
+    return this.appConfig.features.includes(feature)
   }
 
   get host() {

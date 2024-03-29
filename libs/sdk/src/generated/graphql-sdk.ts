@@ -1,7 +1,6 @@
 // @ts-nocheck
 import { z } from 'zod'
-import { GraphQLClient } from 'graphql-request'
-import { GraphQLClientRequestHeaders } from 'graphql-request/build/cjs/types'
+import { GraphQLClient, RequestOptions } from 'graphql-request'
 import { GraphQLError, print } from 'graphql'
 import gql from 'graphql-tag'
 export type Maybe<T> = T | null
@@ -11,6 +10,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> }
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never }
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never }
+type GraphQLClientRequestHeaders = RequestOptions['requestHeaders']
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string }
@@ -225,6 +225,11 @@ export type AppConfig = {
   __typename?: 'AppConfig'
   authLinkProviders?: Maybe<Array<IdentityProvider>>
   authLoginProviders?: Maybe<Array<IdentityProvider>>
+  features: Array<AppFeature>
+}
+
+export enum AppFeature {
+  CommunityCreate = 'CommunityCreate',
 }
 
 export type Bot = {
@@ -3572,6 +3577,7 @@ export type AppConfigDetailsFragment = {
   __typename?: 'AppConfig'
   authLinkProviders?: Array<IdentityProvider> | null
   authLoginProviders?: Array<IdentityProvider> | null
+  features: Array<AppFeature>
 }
 
 export type PagingMetaDetailsFragment = {
@@ -3597,6 +3603,7 @@ export type AppConfigQuery = {
     __typename?: 'AppConfig'
     authLinkProviders?: Array<IdentityProvider> | null
     authLoginProviders?: Array<IdentityProvider> | null
+    features: Array<AppFeature>
   }
 }
 
@@ -8463,6 +8470,7 @@ export const AppConfigDetailsFragmentDoc = gql`
   fragment AppConfigDetails on AppConfig {
     authLinkProviders
     authLoginProviders
+    features
   }
 `
 export const PagingMetaDetailsFragmentDoc = gql`
@@ -9945,7 +9953,7 @@ export type SdkFunctionWrapper = <T>(
   variables?: any,
 ) => Promise<T>
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, variables) => action()
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, _variables) => action()
 const LogoutDocumentString = print(LogoutDocument)
 const MeDocumentString = print(MeDocument)
 const AdminCreateBackupDocumentString = print(AdminCreateBackupDocument)
@@ -12905,6 +12913,8 @@ type definedNonNullAny = {}
 export const isDefinedNonNullAny = (v: any): v is definedNonNullAny => v !== undefined && v !== null
 
 export const definedNonNullAnySchema = z.any().refine((v) => isDefinedNonNullAny(v))
+
+export const AppFeatureSchema = z.nativeEnum(AppFeature)
 
 export const BotStatusSchema = z.nativeEnum(BotStatus)
 
