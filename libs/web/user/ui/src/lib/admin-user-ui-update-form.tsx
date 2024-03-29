@@ -12,6 +12,7 @@ export function AdminUiUpdateUserForm({
   const model = {
     avatarUrl: user.avatarUrl ?? user.avatarUrl ?? '',
     developer: user.developer ?? false,
+    private: user.private ?? false,
     name: user.name ?? '',
     role: user.role ?? UserRole.User,
     status: user.status ?? UserStatus.Created,
@@ -25,6 +26,7 @@ export function AdminUiUpdateUserForm({
     formFieldText('name', { label: 'Name' }),
     formFieldText('avatarUrl', { label: 'Avatar URL' }),
     formFieldCheckbox('developer', { label: 'Developer' }),
+    formFieldCheckbox('private', { label: 'Private' }),
   ]
   return (
     <UiForm model={model} fields={fields} submit={(res) => submit(res as AdminUpdateUserInput)}>

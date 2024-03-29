@@ -12,6 +12,7 @@ import {
   UiContainer,
   UiDebugModal,
   UiGroup,
+  UiInfo,
   UiLoader,
   UiStack,
   UiTabRoutes,
@@ -89,22 +90,26 @@ export function UserUserDetailFeature() {
           </UiStack>
         }
       >
-        <UiStack>
-          <UiTabRoutes
-            tabs={[
-              {
-                path: 'communities',
-                label: 'Communities',
-                element: <UserUserDetailCommunityFeature username={username} />,
-              },
-              {
-                path: 'assets',
-                label: 'Assets',
-                element: <UserNetworkTokenFeature username={username} cluster={NetworkCluster.SolanaMainnet} />,
-              },
-            ]}
-          />
-        </UiStack>
+        {user.private && !isSelf ? (
+          <UiInfo message='This user has set their profile to "private".' title="Private Profile" />
+        ) : (
+          <UiStack>
+            <UiTabRoutes
+              tabs={[
+                {
+                  path: 'communities',
+                  label: 'Communities',
+                  element: <UserUserDetailCommunityFeature username={username} />,
+                },
+                {
+                  path: 'assets',
+                  label: 'Assets',
+                  element: <UserNetworkTokenFeature username={username} cluster={NetworkCluster.SolanaMainnet} />,
+                },
+              ]}
+            />
+          </UiStack>
+        )}
       </UiGrid>
     </UiContainer>
   )

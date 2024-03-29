@@ -7,5 +7,7 @@ export class UserUpdateUserInput {
   @Field({ nullable: true })
   developer?: boolean
   @Field({ nullable: true })
+  private!: boolean
+  @Field({ nullable: true })
   name?: string
 }

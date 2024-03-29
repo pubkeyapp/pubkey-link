@@ -1,6 +1,7 @@
 import { UseGuards } from '@nestjs/common'
 import { Args, Query, Resolver } from '@nestjs/graphql'
-import { ApiAuthGraphQLUserGuard } from '@pubkey-link/api-auth-data-access'
+import { User } from '@prisma/client'
+import { ApiAuthGraphQLUserGuard, CtxUser } from '@pubkey-link/api-auth-data-access'
 import {
   ApiNetworkAssetService,
   NetworkAsset,
@@ -15,8 +16,8 @@ export class ApiUserNetworkAssetResolver {
   constructor(private readonly service: ApiNetworkAssetService) {}
 
   @Query(() => NetworkAssetPaging)
-  userFindManyNetworkAsset(@Args('input') input: UserFindManyNetworkAssetInput) {
-    return this.service.user.findManyNetworkAsset(input)
+  userFindManyNetworkAsset(@CtxUser() actor: User, @Args('input') input: UserFindManyNetworkAssetInput) {
+    return this.service.user.findManyNetworkAsset(actor, input)
   }
 
   @Query(() => NetworkAsset, { nullable: true })

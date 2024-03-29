@@ -13,8 +13,8 @@ export function useUserProfile() {
   return {
     user: query.data?.item,
     query,
-    updateUser: async (input: UserUpdateUserInput) => {
-      return sdk
+    updateUser: async (input: UserUpdateUserInput) =>
+      sdk
         .userUpdateUser({
           input,
         })
@@ -25,7 +25,6 @@ export function useUserProfile() {
         .catch((err) => {
           toastError(err.message)
           return false
-        })
-    },
+        }),
   }
 }

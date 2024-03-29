@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { CommunityRole, IdentityProvider, LogLevel, LogRelatedType, Prisma, UserRole } from '@prisma/client'
+import { CommunityRole, IdentityProvider, LogLevel, LogRelatedType, Prisma, User, UserRole } from '@prisma/client'
 import { ApiCorePrismaClient, prismaClient } from './api-core-prisma-client'
 import { ApiCoreConfigService } from './config/api-core-config.service'
 import { slugifyId, slugifyUsername } from './helpers/slugify-id'
@@ -153,6 +153,17 @@ export class ApiCoreService {
 
   uptime() {
     return process.uptime()
+  }
+
+  async isPrivateUser(actor: User, username: string) {
+    if (actor.role !== UserRole.Admin && actor.username !== username) {
+      const user = await this.data.user.findUnique({ where: { username: username } })
+      if (!user) {
+        throw new Error(`User ${username} not found`)
+      }
+      return user.private
+    }
+    return false
   }
 }
 

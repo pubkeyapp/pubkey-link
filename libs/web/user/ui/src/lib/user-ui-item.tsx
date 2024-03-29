@@ -3,6 +3,7 @@ import { User } from '@pubkey-link/sdk'
 import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core'
 import { ReactNode } from 'react'
 import { UserUiAvatar } from './user-ui-avatar'
+import { UserUiUsername } from './user-ui-username'
 
 export function UserUiItem({
   anchorProps,
@@ -26,9 +27,7 @@ export function UserUiItem({
       <Group gap="sm" {...groupProps}>
         <UserUiAvatar user={user} {...avatarProps} />
         <Stack gap={1}>
-          <Text size="lg" fw="bold">
-            {user?.username}
-          </Text>
+          <UserUiUsername user={user} to={to} />
           {children ? (
             children
           ) : user.name ? (

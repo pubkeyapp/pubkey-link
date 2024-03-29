@@ -194,6 +194,7 @@ input AdminUpdateUserInput {
   avatarUrl: String
   developer: Boolean
   name: String
+  private: Boolean
   role: UserRole
   status: UserStatus
   username: String
@@ -791,6 +792,7 @@ type User {
   identities: [Identity!]
   lastLogin: DateTime
   name: String
+  private: Boolean
   profileUrl: String!
   role: UserRole
   status: UserStatus
@@ -1005,6 +1007,7 @@ input UserUpdateUserInput {
   avatarUrl: String
   developer: Boolean
   name: String
+  private: Boolean
 }
 
 input VerifyIdentityChallengeInput {

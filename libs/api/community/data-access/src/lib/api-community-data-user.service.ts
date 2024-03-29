@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { UserRole } from '@prisma/client'
+import { User, UserRole } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { ApiCommunityDataService } from './api-community-data.service'
 import { UserCreateCommunityInput } from './dto/user-create-community.input'
@@ -47,7 +47,10 @@ export class ApiCommunityDataUserService {
     return this.data.update(communityId, input)
   }
 
-  async getCommunities(username: string) {
+  async getCommunities(actor: User, username: string) {
+    if (await this.core.isPrivateUser(actor, username)) {
+      return []
+    }
     return this.data.getCommunities(username)
   }
 }

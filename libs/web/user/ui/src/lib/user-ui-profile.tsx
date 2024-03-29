@@ -5,6 +5,7 @@ import { UiGroup, useUiColorScheme } from '@pubkey-ui/core'
 import { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { UserUiAvatar } from './user-ui-avatar'
+import { UserUiUsername } from './user-ui-username'
 
 export function UserUiProfile({
   action,
@@ -34,9 +35,7 @@ export function UserUiProfile({
             <Text component={Link} to={user.profileUrl} fz="lg" fw={500}>
               {user.name}
             </Text>
-            <Text c="dimmed" fz="sm">
-              {user.username}
-            </Text>
+            <UserUiUsername user={user} to={user.profileUrl} />
             {action ? <Group mt="sm">{action}</Group> : null}
           </Stack>
         </Group>

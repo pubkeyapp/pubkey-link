@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Identity as PrismaIdentity, IdentityProvider, NetworkCluster } from '@prisma/client'
+import { Identity as PrismaIdentity, IdentityProvider, NetworkCluster, UserRole } from '@prisma/client'
 import { ApiCoreService, BaseContext, getRequestDetails } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-access'
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
+import { User } from '@pubkey-link/api-user-data-access'
 import { verifyMessageSignature } from '@pubkey-link/verify-wallet'
 
 import { ApiIdentitySolanaService } from './api-identity-solana.service'
@@ -57,7 +58,17 @@ export class ApiIdentityDataUserService {
     return this.networkAsset.sync.sync({ cluster: NetworkCluster.SolanaMainnet, identity })
   }
 
-  async findManyIdentity(input: UserFindManyIdentityInput): Promise<PrismaIdentity[]> {
+  async findManyIdentity(actor: User, input: UserFindManyIdentityInput): Promise<PrismaIdentity[]> {
+    if (actor.role !== UserRole.Admin && actor.username !== input.username) {
+      const user = await this.core.data.user.findUnique({ where: { username: input.username } })
+      if (!user) {
+        throw new Error(`User ${input.username} not found`)
+      }
+      if (user.private) {
+        return []
+      }
+    }
+
     const items = await this.core.data.identity.findMany({
       where: { owner: { username: input.username }, provider: input.provider ?? undefined },
       orderBy: [{ provider: 'asc' }, { name: 'asc' }],

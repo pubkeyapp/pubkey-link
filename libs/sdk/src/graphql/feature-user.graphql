@@ -1,6 +1,7 @@
 fragment UserSummary on User {
   avatarUrl
   developer
+  private
   id
   name
   profileUrl
@@ -12,6 +13,7 @@ fragment UserDetails on User {
   avatarUrl
   createdAt
   developer
+  private
   lastLogin
   id
   name
