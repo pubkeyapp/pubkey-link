@@ -5,6 +5,7 @@ import { createContext, ReactNode, useContext } from 'react'
 import { useCreateSignature } from './use-create-signature'
 
 export interface LinkSignOptions {
+  name?: string
   useLedger: boolean
   publicKey: string
 }
@@ -18,9 +19,9 @@ const Context = createContext<IdentityProviderSolanaContext>({} as IdentityProvi
 export function IdentityProviderSolanaLink({ children, refresh }: { children: ReactNode; refresh: () => void }) {
   const sdk = useSdk()
   const createSignature = useCreateSignature()
-  async function linkIdentity({ publicKey }: { publicKey: string }) {
+  async function linkIdentity({ name, publicKey }: { name?: string; publicKey: string }) {
     return sdk
-      .userLinkIdentity({ input: { provider: IdentityProvider.Solana, providerId: publicKey } })
+      .userLinkIdentity({ input: { provider: IdentityProvider.Solana, providerId: publicKey, name } })
       .then((res) => {
         toastSuccess('Identity linked')
         refresh()
@@ -90,11 +91,11 @@ export function IdentityProviderSolanaLink({ children, refresh }: { children: Re
     return signChallenge({ challenge: request.challenge, blockhash: request.blockhash, publicKey, useLedger })
   }
 
-  async function linkAndSign({ useLedger, publicKey }: LinkSignOptions) {
+  async function linkAndSign({ name, useLedger, publicKey }: LinkSignOptions) {
     // Link identity
-    await linkIdentity({ publicKey })
+    await linkIdentity({ name, publicKey })
     // Verify and sign
-    return verifyAndSign({ useLedger, publicKey })
+    return verifyAndSign({ name, useLedger, publicKey })
   }
 
   return <Context.Provider value={{ linkAndSign, verifyAndSign }}>{children}</Context.Provider>

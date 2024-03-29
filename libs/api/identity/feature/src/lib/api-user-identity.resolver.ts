@@ -9,6 +9,7 @@ import {
   LinkIdentityInput,
   RequestIdentityChallengeInput,
   UserFindManyIdentityInput,
+  UserUpdateIdentityInput,
   VerifyIdentityChallengeInput,
 } from '@pubkey-link/api-identity-data-access'
 
@@ -38,6 +39,15 @@ export class ApiUserIdentityResolver {
   @Mutation(() => Identity, { nullable: true })
   userLinkIdentity(@CtxUserId() userId: string, @Args('input') input: LinkIdentityInput) {
     return this.service.user.linkIdentity(userId, input)
+  }
+
+  @Mutation(() => Identity, { nullable: true })
+  userUpdateIdentity(
+    @CtxUserId() userId: string,
+    @Args('identityId') identityId: string,
+    @Args('input') input: UserUpdateIdentityInput,
+  ) {
+    return this.service.user.updateIdentity(userId, identityId, input)
   }
 
   @Mutation(() => IdentityChallenge, { nullable: true })

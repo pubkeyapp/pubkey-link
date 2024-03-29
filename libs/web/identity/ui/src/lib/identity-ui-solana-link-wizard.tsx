@@ -10,7 +10,7 @@ export function IdentityUiSolanaLinkWizard({
   identities,
   ...props
 }: Omit<IdentityUiSolanaWizardProps, 'sign'> & { refresh: () => void; identities: Identity[] }) {
-  const { connected, publicKey } = useWallet()
+  const { connected, publicKey, wallet } = useWallet()
   const { linkAndSign } = useIdentitySolana()
   const [active, setActive] = useState(0)
   const exists = identities?.some((item) => item.providerId === publicKey?.toBase58())
@@ -22,7 +22,7 @@ export function IdentityUiSolanaLinkWizard({
   }, [active, connected])
 
   async function request(useLedger: boolean) {
-    return linkAndSign({ publicKey: publicKey!.toString(), useLedger })
+    return linkAndSign({ publicKey: publicKey!.toString(), useLedger, name: wallet?.adapter.name })
       .catch((err) => {
         console.log('Error linking identity', err)
         toastError('Error linking identity')

@@ -77,6 +77,12 @@ mutation userDeleteIdentity($identityId: String!) {
   deleted: userDeleteIdentity(identityId: $identityId)
 }
 
+mutation userUpdateIdentity($identityId: String!, $input: UserUpdateIdentityInput!) {
+  update: userUpdateIdentity(identityId: $identityId, input: $input) {
+    ...IdentityDetails
+  }
+}
+
 mutation userRefreshIdentity($identityId: String!) {
   deleted: userRefreshIdentity(identityId: $identityId)
 }

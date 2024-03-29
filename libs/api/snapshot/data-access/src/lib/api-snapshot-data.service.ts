@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
-import { ApiCoreService, PagingInputFields, slugifyId } from '@pubkey-link/api-core-data-access'
+import { ApiCoreService, AppFeature, PagingInputFields, slugifyId } from '@pubkey-link/api-core-data-access'
 import { ApiRoleService } from '@pubkey-link/api-role-data-access'
-import { AppFeature } from '@pubkey-link/sdk'
 import { SnapshotPaging } from './entity/snapshot.entity'
 
 @Injectable()

@@ -1,21 +1,37 @@
-import { ActionIcon, Badge, Group, Menu, Text } from '@mantine/core'
-import { Identity, IdentityProvider } from '@pubkey-link/sdk'
+import { ActionIcon, Badge, Group, Text, Tooltip } from '@mantine/core'
+import { modals } from '@mantine/modals'
+import { Identity, IdentityProvider, UserUpdateIdentityInput } from '@pubkey-link/sdk'
 import { IdentityUiAvatar } from '@pubkey-link/web-core-ui'
 import { UiCard, UiCopy, UiDebugModal, UiGroup, UiStack } from '@pubkey-ui/core'
-import { IconDotsVertical, IconTrash } from '@tabler/icons-react'
+import { IconPencil, IconTrash } from '@tabler/icons-react'
 import { IdentityUiLink } from './identity-ui-link'
 import { IdentityUiSolanaVerifyButton } from './identity-ui-solana-verify-button'
+import { IdentityUiUpdateForm } from './identity-ui-update-form'
 import { IdentityUiVerified } from './identity-ui-verified'
 
 export function IdentityUiListItem({
   deleteIdentity,
+  updateIdentity,
   refresh,
   item,
 }: {
   refresh?: () => void
-  deleteIdentity?: (id: string) => void
+  deleteIdentity: (id: string) => Promise<void>
+  updateIdentity: (id: string, input: UserUpdateIdentityInput) => Promise<void>
   item: Identity
 }) {
+  function renameIdentity() {
+    modals.open({
+      title: 'Rename identity',
+      children: (
+        <IdentityUiUpdateForm
+          item={item}
+          onSubmit={(res) => updateIdentity(item.id, res).then(() => modals.closeAll())}
+        />
+      ),
+    })
+  }
+
   return (
     <UiCard>
       <Group justify="space-between">
@@ -46,28 +62,22 @@ export function IdentityUiListItem({
           </UiStack>
         </Group>
         <Group gap="xs">
+          {item.verified && item.provider !== IdentityProvider.Discord && (
+            <Tooltip label="Delete identity">
+              <ActionIcon size="sm" color="red" variant="light" onClick={() => deleteIdentity(item.id)}>
+                <IconTrash size={16} />
+              </ActionIcon>
+            </Tooltip>
+          )}
+          {item.verified && item.provider !== IdentityProvider.Discord && (
+            <Tooltip label="Rename identity">
+              <ActionIcon size="sm" color="brand" variant="light" onClick={() => renameIdentity()}>
+                <IconPencil size={16} />
+              </ActionIcon>
+            </Tooltip>
+          )}
           <UiDebugModal data={item} />
           <IdentityUiLink item={item} />
-          {deleteIdentity && (
-            <Menu shadow="md" width={200}>
-              <Menu.Target>
-                <ActionIcon variant="light" size="sm">
-                  <IconDotsVertical size={16} />
-                </ActionIcon>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Label>Danger zone</Menu.Label>
-                <Menu.Item
-                  disabled={item.provider === IdentityProvider.Discord}
-                  color="red"
-                  leftSection={<IconTrash size={14} />}
-                  onClick={() => deleteIdentity(item.id)}
-                >
-                  Remove this identity
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-          )}
         </Group>
       </Group>
     </UiCard>

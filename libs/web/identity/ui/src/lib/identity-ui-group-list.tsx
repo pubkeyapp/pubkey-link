@@ -1,15 +1,17 @@
 import { Group, Text } from '@mantine/core'
-import { Identity, IdentityProvider } from '@pubkey-link/sdk'
+import { Identity, IdentityProvider, UserUpdateIdentityInput } from '@pubkey-link/sdk'
 import { UiStack } from '@pubkey-ui/core'
 import { IdentityUiIcon } from './identity-ui-icon'
 import { IdentityUiList } from './identity-ui-list'
 
 export function IdentityUiGroupList({
+  updateIdentity,
   deleteIdentity,
   refresh,
   grouped,
 }: {
-  deleteIdentity?: (id: string) => void
+  deleteIdentity: (id: string) => Promise<void>
+  updateIdentity: (id: string, input: UserUpdateIdentityInput) => Promise<void>
   refresh?: () => void
   grouped: { provider: IdentityProvider; items: Identity[] }[]
 }) {
@@ -24,7 +26,12 @@ export function IdentityUiGroupList({
             </Group>
           </Group>
           {group.items?.length ? (
-            <IdentityUiList items={group.items} refresh={refresh} deleteIdentity={deleteIdentity} />
+            <IdentityUiList
+              items={group.items}
+              refresh={refresh}
+              deleteIdentity={deleteIdentity}
+              updateIdentity={updateIdentity}
+            />
           ) : null}
         </UiStack>
       ))}

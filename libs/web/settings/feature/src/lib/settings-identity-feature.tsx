@@ -6,7 +6,7 @@ import { UiLoader, UiStack, UiWarning } from '@pubkey-ui/core'
 
 export function SettingsIdentityFeature() {
   const { user } = useAuth()
-  const { deleteIdentity, grouped, query } = useUserFindManyIdentity({
+  const { deleteIdentity, updateIdentity, grouped, query } = useUserFindManyIdentity({
     username: user?.username as string,
     provider: IdentityProvider.Discord,
   })
@@ -16,7 +16,12 @@ export function SettingsIdentityFeature() {
       {query.isLoading ? (
         <UiLoader />
       ) : (
-        <IdentityUiGroupList grouped={grouped} deleteIdentity={deleteIdentity} refresh={() => query.refetch()} />
+        <IdentityUiGroupList
+          grouped={grouped}
+          deleteIdentity={deleteIdentity}
+          updateIdentity={updateIdentity}
+          refresh={() => query.refetch()}
+        />
       )}
     </UiStack>
   )
@@ -24,7 +29,7 @@ export function SettingsIdentityFeature() {
 
 export function SettingsIdentityDiscordFeature() {
   const { user } = useAuth()
-  const { deleteIdentity, items, query } = useUserFindManyIdentity({
+  const { deleteIdentity, updateIdentity, items, query } = useUserFindManyIdentity({
     username: user?.username as string,
     provider: IdentityProvider.Discord,
   })
@@ -35,7 +40,12 @@ export function SettingsIdentityDiscordFeature() {
       {query.isLoading ? (
         <UiLoader />
       ) : identity ? (
-        <IdentityUiList items={[identity]} deleteIdentity={deleteIdentity} refresh={() => query.refetch()} />
+        <IdentityUiList
+          items={[identity]}
+          deleteIdentity={deleteIdentity}
+          updateIdentity={updateIdentity}
+          refresh={() => query.refetch()}
+        />
       ) : (
         <UiWarning message="No Discord identity found" />
       )}

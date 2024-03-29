@@ -7,4 +7,6 @@ export class LinkIdentityInput {
   provider!: IdentityProvider
   @Field()
   providerId!: string
+  @Field({ nullable: true })
+  name?: string
 }
