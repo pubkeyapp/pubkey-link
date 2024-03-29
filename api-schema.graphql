@@ -200,6 +200,10 @@ input AdminUpdateUserInput {
 }
 
 type AppConfig {
+  appLogoUrlDark: String
+  appLogoUrlLight: String
+  appThemeBackground: String
+  appThemeColor: String
   authLinkProviders: [IdentityProvider!]
   authLoginProviders: [IdentityProvider!]
   features: [AppFeature!]!

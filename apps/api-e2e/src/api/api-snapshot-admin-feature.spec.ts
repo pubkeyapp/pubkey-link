@@ -2,6 +2,7 @@ import { AdminCreateSnapshotInput, AdminFindManySnapshotInput, Snapshot } from '
 import { getAliceCookie, getBobCookie, sdk } from '../support'
 
 const defaultRoleId = 'one-of-us-pubkey'
+const communityId = 'pubkey'
 
 describe('api-snapshot-feature', () => {
   describe('api-snapshot-admin-resolver', () => {
@@ -31,7 +32,7 @@ describe('api-snapshot-feature', () => {
       })
 
       it('should find a list of snapshots (find all)', async () => {
-        const input: AdminFindManySnapshotInput = {}
+        const input: AdminFindManySnapshotInput = { communityId }
 
         const res = await sdk.adminFindManySnapshot({ input }, { cookie: alice })
 
@@ -48,6 +49,7 @@ describe('api-snapshot-feature', () => {
 
         const input: AdminFindManySnapshotInput = {
           search: snapshotId,
+          communityId,
         }
 
         const res = await sdk.adminFindManySnapshot({ input }, { cookie: alice })
@@ -80,7 +82,10 @@ describe('api-snapshot-feature', () => {
 
         expect(res.data.deleted).toBe(true)
 
-        const findRes = await sdk.adminFindManySnapshot({ input: { search: snapshotId } }, { cookie: alice })
+        const findRes = await sdk.adminFindManySnapshot(
+          { input: { search: snapshotId, communityId } },
+          { cookie: alice },
+        )
         expect(findRes.data.paging.meta.totalCount).toBe(0)
         expect(findRes.data.paging.data.length).toBe(0)
       })
@@ -103,7 +108,7 @@ describe('api-snapshot-feature', () => {
       it('should not find a list of snapshots (find all)', async () => {
         expect.assertions(1)
         try {
-          await sdk.adminFindManySnapshot({ input: {} }, { cookie: bob })
+          await sdk.adminFindManySnapshot({ input: { communityId } }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }

@@ -9,7 +9,10 @@ export function commandSnapshot() {
     .argument('snapshotId', 'Name of the snapshot')
     .action(async (snapshotId, _, cmd) => new CommandService(cmd.optsWithGlobals()).snapshotGet(snapshotId))
 
-  command.command('list').action(async (_, cmd) => new CommandService(cmd.optsWithGlobals()).snapshotList())
+  command
+    .command('list')
+    .argument('communityId', 'Community ID')
+    .action(async (communityId, _, cmd) => new CommandService(cmd.optsWithGlobals()).snapshotList(communityId))
 
   command
     .command('create')

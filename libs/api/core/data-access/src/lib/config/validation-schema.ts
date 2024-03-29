@@ -1,6 +1,12 @@
 import * as Joi from 'joi'
 
 export const validationSchema = Joi.object({
+  // App
+  APP_LOGO_URL_DARK: Joi.string(),
+  APP_LOGO_URL_LIGHT: Joi.string(),
+  APP_THEME_BACKGROUND: Joi.string().default(''),
+  APP_THEME_COLOR: Joi.string().default('blue'),
+  // API
   API_URL: Joi.string().required().error(new Error(`API_URL is required.`)),
   // Discord Authentication
   AUTH_DISCORD_ADMIN_IDS: Joi.string(),

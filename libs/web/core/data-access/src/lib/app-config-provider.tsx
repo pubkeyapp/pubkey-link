@@ -1,9 +1,20 @@
 import { AppConfig, AppFeature, IdentityProvider } from '@pubkey-link/sdk'
+import {
+  BACKGROUND_COLORS,
+  backgroundColorIds,
+  BackgroundColors,
+  mantineColorIds,
+  themeWithBrand,
+  UiTheme,
+} from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
 import { createContext, ReactNode, useContext, useMemo } from 'react'
 import { useSdk } from './sdk-provider'
 
 export interface AppConfigContext {
+  appLogoUrlDark?: string | undefined
+  appLogoUrlLight?: string | undefined
+  appTheme: UiTheme['theme']
   appConfig?: AppConfig | undefined
   appConfigLoading: boolean
   authEnabled: boolean
@@ -35,9 +46,23 @@ export function AppConfigProvider({ children }: { children: ReactNode }) {
 
   const features = useMemo(() => appConfig?.features ?? ([] as AppFeature[]), [appConfig])
 
+  const appTheme = useMemo(() => {
+    const color =
+      appConfig?.appThemeColor && mantineColorIds.includes(appConfig.appThemeColor) ? appConfig.appThemeColor : 'blue'
+    const background: BackgroundColors = appConfig?.appThemeBackground as BackgroundColors
+    const override =
+      background?.length && backgroundColorIds.includes(background)
+        ? { colors: { dark: BACKGROUND_COLORS[background] } }
+        : {}
+    return themeWithBrand(color, override)
+  }, [appConfig])
+
   const value = {
     appConfig: appConfig,
     appConfigLoading: configQuery.isLoading,
+    appLogoUrlDark: appConfig?.appLogoUrlDark ?? undefined,
+    appLogoUrlLight: appConfig?.appLogoUrlLight ?? undefined,
+    appTheme,
     authEnabled,
     enabledProviders,
     hasFeature: (feature: AppFeature) => features.includes(feature),

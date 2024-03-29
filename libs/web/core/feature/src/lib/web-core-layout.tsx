@@ -1,8 +1,8 @@
 import { ActionIcon, Group } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
-import { UiHeaderProfile } from '@pubkey-link/web-core-ui'
-import { UiHeader, UiHeaderLink, UiLayout, UiLoader, UiLogoType } from '@pubkey-ui/core'
+import { AppLogo, UiHeaderProfile } from '@pubkey-link/web-core-ui'
+import { UiHeader, UiHeaderLink, UiLayout, UiLoader } from '@pubkey-ui/core'
 import { IconBug, IconSettings } from '@tabler/icons-react'
 import { ReactNode, Suspense, useMemo } from 'react'
 import { Link } from 'react-router-dom'
@@ -20,12 +20,13 @@ export function WebCoreLayout({ children }: { children: ReactNode }) {
       items.push({ link: '/admin', label: 'Admin' })
     }
     return items
-  }, [isAdmin, isDeveloper, user])
+  }, [isAdmin, user])
   return (
     <UiLayout
       header={
         <UiHeader
-          logoSmall={<UiLogoType height={28} />}
+          logoSmall={<AppLogo height={28} />}
+          logo={<AppLogo height={28} />}
           opened={opened}
           toggle={toggle}
           links={links}

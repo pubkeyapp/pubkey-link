@@ -1,3 +1,4 @@
+export * from './lib/app-logo'
 export * from './lib/identity-ui-avatar'
 export * from './lib/identity-ui-avatar-group'
 export * from './lib/ui-address-input'

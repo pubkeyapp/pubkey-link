@@ -19,6 +19,12 @@ const corsOrigins: string[] = getCorsOrigins()
 
 export type Env = 'development' | 'production' | 'test' | 'provision'
 export interface ApiCoreConfig {
+  // App
+  appLogoUrlDark: string
+  appLogoUrlLight: string
+  appThemeBackground: string
+  appThemeColor: string
+  // API
   apiUrl: string
   // Discord Authentication
   authDiscordAdminIds: string[]
@@ -72,6 +78,10 @@ export interface ApiCoreConfig {
 
 export function configuration(): ApiCoreConfig {
   return {
+    appLogoUrlDark: process.env['APP_LOGO_URL_DARK'] as string,
+    appLogoUrlLight: process.env['APP_LOGO_URL_LIGHT'] as string,
+    appThemeBackground: process.env['APP_THEME_BACKGROUND'] as string,
+    appThemeColor: process.env['APP_THEME_COLOR'] as string,
     apiUrl: process.env['API_URL'] as string,
     authDiscordAdminIds: getFromEnvironment('AUTH_DISCORD_ADMIN_IDS'),
     authDiscordClientId: process.env['AUTH_DISCORD_CLIENT_ID'] as string,
