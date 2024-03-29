@@ -1,4 +1,4 @@
-import { Identity, IdentityProvider, type UserFindManyIdentityInput } from '@pubkey-link/sdk'
+import { Identity, IdentityProvider, type UserFindManyIdentityInput, UserUpdateIdentityInput } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
@@ -41,7 +41,7 @@ export function useUserFindManyIdentity({ username, provider }: { username: stri
     grouped,
     items,
     query,
-    deleteIdentity(identityId: string) {
+    async deleteIdentity(identityId: string) {
       if (!window.confirm('Are you sure?')) {
         return
       }
@@ -55,7 +55,18 @@ export function useUserFindManyIdentity({ username, provider }: { username: stri
         })
         .finally(() => query.refetch())
     },
-    refreshIdentity(identityId: string) {
+    async updateIdentity(identityId: string, input: UserUpdateIdentityInput) {
+      sdk
+        .userUpdateIdentity({ identityId, input })
+        .then(() => {
+          toastSuccess('Identity updated')
+        })
+        .catch((res) => {
+          toastError({ title: 'Error updating identity', message: `${res}` })
+        })
+        .finally(() => query.refetch())
+    },
+    async refreshIdentity(identityId: string) {
       sdk
         .userRefreshIdentity({ identityId })
         .then(() => {

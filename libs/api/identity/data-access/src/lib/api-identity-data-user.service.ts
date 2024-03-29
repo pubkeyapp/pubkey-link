@@ -9,6 +9,7 @@ import { ApiIdentitySolanaService } from './api-identity-solana.service'
 import { LinkIdentityInput } from './dto/link-identity-input'
 import { RequestIdentityChallengeInput } from './dto/request-identity-challenge.input'
 import { UserFindManyIdentityInput } from './dto/user-find-many-identity-input'
+import { UserUpdateIdentityInput } from './dto/user-update-identity.input'
 import { VerifyIdentityChallengeInput } from './dto/verify-identity-challenge-input'
 import { sha256 } from './helpers/sha256'
 
@@ -160,7 +161,7 @@ export class ApiIdentityDataUserService {
     return updated
   }
 
-  async linkIdentity(userId: string, { provider, providerId }: LinkIdentityInput) {
+  async linkIdentity(userId: string, { name, provider, providerId }: LinkIdentityInput) {
     // Make sure the provider is allowed
     this.solana.ensureAllowedProvider(provider)
     // Make sure the provider is enabled
@@ -183,7 +184,7 @@ export class ApiIdentityDataUserService {
     // Create the identity
     return this.core.data.identity.create({
       data: {
-        name: providerId,
+        name: name ?? providerId,
         ownerId: userId,
         provider,
         providerId,
@@ -195,6 +196,19 @@ export class ApiIdentityDataUserService {
     return this.core.data.identity.findUnique({
       where: { provider_providerId: { provider, providerId } },
       include: { owner: true },
+    })
+  }
+
+  async updateIdentity(userId: string, identityId: string, input: UserUpdateIdentityInput) {
+    const found = await this.core.data.identity.findFirst({ where: { id: identityId, ownerId: userId } })
+
+    if (!found) {
+      throw new Error(`Identity ${identityId} not found`)
+    }
+
+    return this.core.data.identity.update({
+      where: { id: identityId },
+      data: { name: input.name?.length ? input.name : (found.profile as { name?: string })?.name ?? found.providerId },
     })
   }
 }

@@ -407,6 +407,7 @@ export enum IdentityProvider {
 }
 
 export type LinkIdentityInput = {
+  name?: InputMaybe<Scalars['String']['input']>
   provider: IdentityProvider
   providerId: Scalars['String']['input']
 }
@@ -526,6 +527,7 @@ export type Mutation = {
   userUpdateBotServer?: Maybe<BotServer>
   userUpdateCommunity?: Maybe<Community>
   userUpdateCommunityMember?: Maybe<CommunityMember>
+  userUpdateIdentity?: Maybe<Identity>
   userUpdateRole?: Maybe<Role>
   userUpdateRoleCondition?: Maybe<RoleCondition>
   userUpdateTeam?: Maybe<Team>
@@ -811,6 +813,11 @@ export type MutationUserUpdateCommunityArgs = {
 export type MutationUserUpdateCommunityMemberArgs = {
   communityMemberId: Scalars['String']['input']
   input: UserUpdateCommunityMemberInput
+}
+
+export type MutationUserUpdateIdentityArgs = {
+  identityId: Scalars['String']['input']
+  input: UserUpdateIdentityInput
 }
 
 export type MutationUserUpdateRoleArgs = {
@@ -1252,6 +1259,7 @@ export type QueryUserRequestIdentityChallengeArgs = {
 }
 
 export type RequestIdentityChallengeInput = {
+  name?: InputMaybe<Scalars['String']['input']>
   provider: IdentityProvider
   providerId: Scalars['String']['input']
 }
@@ -1567,6 +1575,10 @@ export type UserUpdateCommunityInput = {
 
 export type UserUpdateCommunityMemberInput = {
   role: CommunityRole
+}
+
+export type UserUpdateIdentityInput = {
+  name?: InputMaybe<Scalars['String']['input']>
 }
 
 export type UserUpdateRoleConditionInput = {
@@ -3804,6 +3816,32 @@ export type UserDeleteIdentityMutationVariables = Exact<{
 }>
 
 export type UserDeleteIdentityMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
+export type UserUpdateIdentityMutationVariables = Exact<{
+  identityId: Scalars['String']['input']
+  input: UserUpdateIdentityInput
+}>
+
+export type UserUpdateIdentityMutation = {
+  __typename?: 'Mutation'
+  update?: {
+    __typename?: 'Identity'
+    avatarUrl?: string | null
+    createdAt?: Date | null
+    syncStarted?: Date | null
+    syncEnded?: Date | null
+    expired?: boolean | null
+    id: string
+    name: string
+    ownerId?: string | null
+    profile?: any | null
+    provider: IdentityProvider
+    providerId: string
+    updatedAt?: Date | null
+    url?: string | null
+    verified?: boolean | null
+  } | null
+}
 
 export type UserRefreshIdentityMutationVariables = Exact<{
   identityId: Scalars['String']['input']
@@ -9297,6 +9335,14 @@ export const UserDeleteIdentityDocument = gql`
     deleted: userDeleteIdentity(identityId: $identityId)
   }
 `
+export const UserUpdateIdentityDocument = gql`
+  mutation userUpdateIdentity($identityId: String!, $input: UserUpdateIdentityInput!) {
+    update: userUpdateIdentity(identityId: $identityId, input: $input) {
+      ...IdentityDetails
+    }
+  }
+  ${IdentityDetailsFragmentDoc}
+`
 export const UserRefreshIdentityDocument = gql`
   mutation userRefreshIdentity($identityId: String!) {
     deleted: userRefreshIdentity(identityId: $identityId)
@@ -10016,6 +10062,7 @@ const AdminDeleteIdentityDocumentString = print(AdminDeleteIdentityDocument)
 const UserFindManyIdentityDocumentString = print(UserFindManyIdentityDocument)
 const UserFindOneIdentityDocumentString = print(UserFindOneIdentityDocument)
 const UserDeleteIdentityDocumentString = print(UserDeleteIdentityDocument)
+const UserUpdateIdentityDocumentString = print(UserUpdateIdentityDocument)
 const UserRefreshIdentityDocumentString = print(UserRefreshIdentityDocument)
 const UserRequestIdentityChallengeDocumentString = print(UserRequestIdentityChallengeDocument)
 const UserVerifyIdentityChallengeDocumentString = print(UserVerifyIdentityChallengeDocument)
@@ -11322,6 +11369,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'userDeleteIdentity',
+        'mutation',
+        variables,
+      )
+    },
+    userUpdateIdentity(
+      variables: UserUpdateIdentityMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserUpdateIdentityMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserUpdateIdentityMutation>(UserUpdateIdentityDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userUpdateIdentity',
         'mutation',
         variables,
       )
@@ -13195,6 +13263,7 @@ export function AdminUpdateUserInputSchema(): z.ZodObject<Properties<AdminUpdate
 
 export function LinkIdentityInputSchema(): z.ZodObject<Properties<LinkIdentityInput>> {
   return z.object({
+    name: z.string().nullish(),
     provider: IdentityProviderSchema,
     providerId: z.string(),
   })
@@ -13202,6 +13271,7 @@ export function LinkIdentityInputSchema(): z.ZodObject<Properties<LinkIdentityIn
 
 export function RequestIdentityChallengeInputSchema(): z.ZodObject<Properties<RequestIdentityChallengeInput>> {
   return z.object({
+    name: z.string().nullish(),
     provider: IdentityProviderSchema,
     providerId: z.string(),
   })
@@ -13415,6 +13485,12 @@ export function UserUpdateCommunityInputSchema(): z.ZodObject<Properties<UserUpd
 export function UserUpdateCommunityMemberInputSchema(): z.ZodObject<Properties<UserUpdateCommunityMemberInput>> {
   return z.object({
     role: CommunityRoleSchema,
+  })
+}
+
+export function UserUpdateIdentityInputSchema(): z.ZodObject<Properties<UserUpdateIdentityInput>> {
+  return z.object({
+    name: z.string().nullish(),
   })
 }
 
