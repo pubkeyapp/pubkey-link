@@ -207,6 +207,7 @@ type AppConfig {
 
 enum AppFeature {
   CommunityCreate
+  CommunityTeams
 }
 
 type Bot {

@@ -16,7 +16,9 @@ export class ApiCoreConfigService {
     if (this.featureCommunityCreate) {
       features.push(AppFeature.CommunityCreate)
     }
-
+    if (this.featureCommunityTeams) {
+      features.push(AppFeature.CommunityTeams)
+    }
     const link: IdentityProvider[] = []
     const login: IdentityProvider[] = []
     if (this.authDiscordLinkEnabled) {
@@ -135,6 +137,12 @@ export class ApiCoreConfigService {
     return this.service.get<boolean>('databaseProvision')
   }
 
+  ensureFeature(feature: AppFeature) {
+    if (!this.appConfig.features.includes(feature)) {
+      throw new Error('Feature not enabled')
+    }
+  }
+
   get environment() {
     return this.service.get('environment')
   }
@@ -143,8 +151,8 @@ export class ApiCoreConfigService {
     return this.service.get<boolean>('featureCommunityCreate')
   }
 
-  hasFeature(feature: AppFeature) {
-    return this.appConfig.features.includes(feature)
+  get featureCommunityTeams() {
+    return this.service.get<boolean>('featureCommunityTeams')
   }
 
   get host() {

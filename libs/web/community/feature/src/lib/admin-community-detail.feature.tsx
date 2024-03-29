@@ -1,18 +1,24 @@
 import { Group } from '@mantine/core'
+import { AppFeature } from '@pubkey-link/sdk'
 import { AdminBotFeature } from '@pubkey-link/web-bot-feature'
 import { useAdminFindOneCommunity } from '@pubkey-link/web-community-data-access'
 import { AdminCommunityMemberFeature } from '@pubkey-link/web-community-member-feature'
+import { useAppConfig } from '@pubkey-link/web-core-data-access'
 import { AdminLogFeature } from '@pubkey-link/web-log-feature'
 import { AdminRoleFeature } from '@pubkey-link/web-role-feature'
 import { AdminTeamFeature } from '@pubkey-link/web-team-feature'
-import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoutes } from '@pubkey-ui/core'
+import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoute, UiTabRoutes } from '@pubkey-ui/core'
 import { useParams } from 'react-router-dom'
 import { AdminCommunityDetailOverviewTab } from './admin-community-detail-overview.tab'
 import { AdminCommunityDetailSettingsTab } from './admin-community-detail-settings.tab'
 
 export function AdminCommunityDetailFeature() {
+  const { hasFeature } = useAppConfig()
   const { communityId } = useParams<{ communityId: string }>() as { communityId: string }
+
   const { item, query } = useAdminFindOneCommunity({ communityId })
+
+  const hasTeams = hasFeature(AppFeature.CommunityTeams)
 
   if (query.isLoading) {
     return <UiLoader />
@@ -20,6 +26,32 @@ export function AdminCommunityDetailFeature() {
   if (!item) {
     return <UiError message="Community not found." />
   }
+
+  const tabs: UiTabRoute[] = [
+    {
+      path: 'overview',
+      label: 'Overview',
+      element: <AdminCommunityDetailOverviewTab communityId={communityId} />,
+    },
+    hasTeams && { path: 'teams', label: 'Teams', element: <AdminTeamFeature communityId={communityId} /> },
+    {
+      path: 'roles',
+      label: 'Roles',
+      element: <AdminRoleFeature communityId={communityId} />,
+    },
+    { path: 'logs', label: 'Logs', element: <AdminLogFeature communityId={communityId} /> },
+    { path: 'bots', label: 'Bots', element: <AdminBotFeature communityId={communityId} /> },
+    {
+      path: 'members',
+      label: 'Members',
+      element: <AdminCommunityMemberFeature communityId={communityId} />,
+    },
+    {
+      path: 'settings',
+      label: 'Settings',
+      element: <AdminCommunityDetailSettingsTab communityId={communityId} />,
+    },
+  ].filter(Boolean) as UiTabRoute[]
 
   return (
     <UiPage
@@ -31,33 +63,7 @@ export function AdminCommunityDetailFeature() {
         </Group>
       }
     >
-      <UiTabRoutes
-        tabs={[
-          {
-            path: 'overview',
-            label: 'Overview',
-            element: <AdminCommunityDetailOverviewTab communityId={communityId} />,
-          },
-          { path: 'teams', label: 'Teams', element: <AdminTeamFeature communityId={communityId} /> },
-          {
-            path: 'roles',
-            label: 'Roles',
-            element: <AdminRoleFeature communityId={communityId} />,
-          },
-          { path: 'logs', label: 'Logs', element: <AdminLogFeature communityId={communityId} /> },
-          { path: 'bots', label: 'Bots', element: <AdminBotFeature communityId={communityId} /> },
-          {
-            path: 'members',
-            label: 'Members',
-            element: <AdminCommunityMemberFeature communityId={communityId} />,
-          },
-          {
-            path: 'settings',
-            label: 'Settings',
-            element: <AdminCommunityDetailSettingsTab communityId={communityId} />,
-          },
-        ]}
-      />
+      <UiTabRoutes tabs={tabs} />
     </UiPage>
   )
 }

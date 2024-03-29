@@ -13,6 +13,7 @@ export class AppConfig {
 
 export enum AppFeature {
   CommunityCreate = 'CommunityCreate',
+  CommunityTeams = 'CommunityTeams',
 }
 
 registerEnumType(AppFeature, { name: 'AppFeature' })
