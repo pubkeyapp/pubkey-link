@@ -1,6 +1,6 @@
 import { Button, Group } from '@mantine/core'
 import { User, UserUpdateUserInput } from '@pubkey-link/sdk'
-import { formFieldText, UiForm, UiFormField } from '@pubkey-ui/core'
+import { formFieldCheckbox, formFieldText, UiForm, UiFormField } from '@pubkey-ui/core'
 
 export function UserUiUpdateForm({
   submit,
@@ -14,6 +14,7 @@ export function UserUiUpdateForm({
     avatarUrl: user.avatarUrl ?? user.avatarUrl ?? '',
     developer: user.developer ?? false,
     name: user.name ?? '',
+    private: user.private ?? false,
   }
 
   const fields: UiFormField<UserUpdateUserInput & { username: string }>[] = [
@@ -24,12 +25,15 @@ export function UserUiUpdateForm({
     }),
     formFieldText('name', { label: 'Name' }),
     formFieldText('avatarUrl', { label: 'Avatar URL' }),
+    formFieldCheckbox('private', { label: 'Private' }),
   ]
   return (
     <UiForm
       model={model}
       fields={fields}
-      submit={({ name, avatarUrl }) => submit({ name, avatarUrl } as UserUpdateUserInput)}
+      submit={({ name, avatarUrl, private: isPrivate }) =>
+        submit({ name, avatarUrl, private: isPrivate } as UserUpdateUserInput)
+      }
     >
       <Group justify="right">
         <Button type="submit">Save</Button>

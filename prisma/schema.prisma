@@ -301,6 +301,7 @@ model User {
   lastLogin   DateTime?
   avatarUrl   String?
   developer   Boolean           @default(false)
+  private     Boolean           @default(false)
   name        String?
   role        UserRole          @default(User)
   status      UserStatus        @default(Created)

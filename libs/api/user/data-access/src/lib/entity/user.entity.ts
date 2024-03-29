@@ -22,6 +22,8 @@ export class User {
   @Field({ nullable: true })
   developer!: boolean
   @Field({ nullable: true })
+  private!: boolean
+  @Field({ nullable: true })
   name?: string | null
   @Field({ nullable: true })
   username!: string

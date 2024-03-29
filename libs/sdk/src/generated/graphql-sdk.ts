@@ -216,6 +216,7 @@ export type AdminUpdateUserInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>
   developer?: InputMaybe<Scalars['Boolean']['input']>
   name?: InputMaybe<Scalars['String']['input']>
+  private?: InputMaybe<Scalars['Boolean']['input']>
   role?: InputMaybe<UserRole>
   status?: InputMaybe<UserStatus>
   username?: InputMaybe<Scalars['String']['input']>
@@ -1391,6 +1392,7 @@ export type User = {
   identities?: Maybe<Array<Identity>>
   lastLogin?: Maybe<Scalars['DateTime']['output']>
   name?: Maybe<Scalars['String']['output']>
+  private?: Maybe<Scalars['Boolean']['output']>
   profileUrl: Scalars['String']['output']
   role?: Maybe<UserRole>
   status?: Maybe<UserStatus>
@@ -1606,6 +1608,7 @@ export type UserUpdateUserInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>
   developer?: InputMaybe<Scalars['Boolean']['input']>
   name?: InputMaybe<Scalars['String']['input']>
+  private?: InputMaybe<Scalars['Boolean']['input']>
 }
 
 export type VerifyIdentityChallengeInput = {
@@ -1629,6 +1632,7 @@ export type MeQuery = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    private?: boolean | null
     lastLogin?: Date | null
     id: string
     name?: string | null
@@ -2249,6 +2253,7 @@ export type CommunityMemberDetailsFragment = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    private?: boolean | null
     lastLogin?: Date | null
     id: string
     name?: string | null
@@ -2354,6 +2359,7 @@ export type AdminFindManyCommunityMemberQuery = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        private?: boolean | null
         lastLogin?: Date | null
         id: string
         name?: string | null
@@ -2469,6 +2475,7 @@ export type AdminFindOneCommunityMemberQuery = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      private?: boolean | null
       lastLogin?: Date | null
       id: string
       name?: string | null
@@ -2574,6 +2581,7 @@ export type AdminAddCommunityMemberMutation = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      private?: boolean | null
       lastLogin?: Date | null
       id: string
       name?: string | null
@@ -2679,6 +2687,7 @@ export type AdminUpdateCommunityMemberMutation = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      private?: boolean | null
       lastLogin?: Date | null
       id: string
       name?: string | null
@@ -2797,6 +2806,7 @@ export type UserFindManyCommunityMemberQuery = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        private?: boolean | null
         lastLogin?: Date | null
         id: string
         name?: string | null
@@ -2912,6 +2922,7 @@ export type UserFindOneCommunityMemberQuery = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      private?: boolean | null
       lastLogin?: Date | null
       id: string
       name?: string | null
@@ -3017,6 +3028,7 @@ export type UserAddCommunityMemberMutation = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      private?: boolean | null
       lastLogin?: Date | null
       id: string
       name?: string | null
@@ -3122,6 +3134,7 @@ export type UserUpdateCommunityMemberMutation = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      private?: boolean | null
       lastLogin?: Date | null
       id: string
       name?: string | null
@@ -3716,6 +3729,7 @@ export type AdminFindManyIdentityQuery = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      private?: boolean | null
       lastLogin?: Date | null
       id: string
       name?: string | null
@@ -3739,6 +3753,7 @@ export type AdminFindUserByIdentityQuery = {
     __typename?: 'User'
     avatarUrl?: string | null
     developer?: boolean | null
+    private?: boolean | null
     id: string
     name?: string | null
     profileUrl: string
@@ -3840,6 +3855,7 @@ export type UserFindOneIdentityQuery = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      private?: boolean | null
       lastLogin?: Date | null
       id: string
       name?: string | null
@@ -4149,6 +4165,7 @@ export type LogDetailsFragment = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    private?: boolean | null
     lastLogin?: Date | null
     id: string
     name?: string | null
@@ -4318,6 +4335,7 @@ export type UserFindManyLogQuery = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        private?: boolean | null
         lastLogin?: Date | null
         id: string
         name?: string | null
@@ -4497,6 +4515,7 @@ export type UserFindOneLogQuery = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      private?: boolean | null
       lastLogin?: Date | null
       id: string
       name?: string | null
@@ -4667,6 +4686,7 @@ export type AdminFindManyLogQuery = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        private?: boolean | null
         lastLogin?: Date | null
         id: string
         name?: string | null
@@ -4846,6 +4866,7 @@ export type AdminFindOneLogQuery = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      private?: boolean | null
       lastLogin?: Date | null
       id: string
       name?: string | null
@@ -7062,6 +7083,7 @@ export type TeamDetailsFragment = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      private?: boolean | null
       lastLogin?: Date | null
       id: string
       name?: string | null
@@ -7166,6 +7188,7 @@ export type TeamDetailsFragment = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      private?: boolean | null
       lastLogin?: Date | null
       id: string
       name?: string | null
@@ -7208,6 +7231,7 @@ export type AdminFindManyTeamQuery = {
           avatarUrl?: string | null
           createdAt?: Date | null
           developer?: boolean | null
+          private?: boolean | null
           lastLogin?: Date | null
           id: string
           name?: string | null
@@ -7312,6 +7336,7 @@ export type AdminFindManyTeamQuery = {
           avatarUrl?: string | null
           createdAt?: Date | null
           developer?: boolean | null
+          private?: boolean | null
           lastLogin?: Date | null
           id: string
           name?: string | null
@@ -7364,6 +7389,7 @@ export type AdminFindOneTeamQuery = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        private?: boolean | null
         lastLogin?: Date | null
         id: string
         name?: string | null
@@ -7468,6 +7494,7 @@ export type AdminFindOneTeamQuery = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        private?: boolean | null
         lastLogin?: Date | null
         id: string
         name?: string | null
@@ -7510,6 +7537,7 @@ export type AdminUpdateTeamMutation = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        private?: boolean | null
         lastLogin?: Date | null
         id: string
         name?: string | null
@@ -7614,6 +7642,7 @@ export type AdminUpdateTeamMutation = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        private?: boolean | null
         lastLogin?: Date | null
         id: string
         name?: string | null
@@ -7663,6 +7692,7 @@ export type UserFindManyTeamQuery = {
           avatarUrl?: string | null
           createdAt?: Date | null
           developer?: boolean | null
+          private?: boolean | null
           lastLogin?: Date | null
           id: string
           name?: string | null
@@ -7767,6 +7797,7 @@ export type UserFindManyTeamQuery = {
           avatarUrl?: string | null
           createdAt?: Date | null
           developer?: boolean | null
+          private?: boolean | null
           lastLogin?: Date | null
           id: string
           name?: string | null
@@ -7819,6 +7850,7 @@ export type UserFindOneTeamQuery = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        private?: boolean | null
         lastLogin?: Date | null
         id: string
         name?: string | null
@@ -7923,6 +7955,7 @@ export type UserFindOneTeamQuery = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        private?: boolean | null
         lastLogin?: Date | null
         id: string
         name?: string | null
@@ -7964,6 +7997,7 @@ export type UserCreateTeamMutation = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        private?: boolean | null
         lastLogin?: Date | null
         id: string
         name?: string | null
@@ -8068,6 +8102,7 @@ export type UserCreateTeamMutation = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        private?: boolean | null
         lastLogin?: Date | null
         id: string
         name?: string | null
@@ -8110,6 +8145,7 @@ export type UserUpdateTeamMutation = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        private?: boolean | null
         lastLogin?: Date | null
         id: string
         name?: string | null
@@ -8214,6 +8250,7 @@ export type UserUpdateTeamMutation = {
         avatarUrl?: string | null
         createdAt?: Date | null
         developer?: boolean | null
+        private?: boolean | null
         lastLogin?: Date | null
         id: string
         name?: string | null
@@ -8251,6 +8288,7 @@ export type UserSummaryFragment = {
   __typename?: 'User'
   avatarUrl?: string | null
   developer?: boolean | null
+  private?: boolean | null
   id: string
   name?: string | null
   profileUrl: string
@@ -8263,6 +8301,7 @@ export type UserDetailsFragment = {
   avatarUrl?: string | null
   createdAt?: Date | null
   developer?: boolean | null
+  private?: boolean | null
   lastLogin?: Date | null
   id: string
   name?: string | null
@@ -8292,6 +8331,7 @@ export type AdminFindManyUserQuery = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      private?: boolean | null
       lastLogin?: Date | null
       id: string
       name?: string | null
@@ -8342,6 +8382,7 @@ export type AdminFindOneUserQuery = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    private?: boolean | null
     lastLogin?: Date | null
     id: string
     name?: string | null
@@ -8365,6 +8406,7 @@ export type AdminUpdateUserMutation = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    private?: boolean | null
     lastLogin?: Date | null
     id: string
     name?: string | null
@@ -8389,6 +8431,7 @@ export type UserFindManyUserQuery = {
       avatarUrl?: string | null
       createdAt?: Date | null
       developer?: boolean | null
+      private?: boolean | null
       lastLogin?: Date | null
       id: string
       name?: string | null
@@ -8422,6 +8465,7 @@ export type UserFindOneUserQuery = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    private?: boolean | null
     lastLogin?: Date | null
     id: string
     name?: string | null
@@ -8444,6 +8488,7 @@ export type UserFindOneUserByIdQuery = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    private?: boolean | null
     lastLogin?: Date | null
     id: string
     name?: string | null
@@ -8466,6 +8511,7 @@ export type UserUpdateUserMutation = {
     avatarUrl?: string | null
     createdAt?: Date | null
     developer?: boolean | null
+    private?: boolean | null
     lastLogin?: Date | null
     id: string
     name?: string | null
@@ -8736,6 +8782,7 @@ export const UserDetailsFragmentDoc = gql`
     avatarUrl
     createdAt
     developer
+    private
     lastLogin
     id
     name
@@ -8874,6 +8921,7 @@ export const UserSummaryFragmentDoc = gql`
   fragment UserSummary on User {
     avatarUrl
     developer
+    private
     id
     name
     profileUrl
@@ -13272,6 +13320,7 @@ export function AdminUpdateUserInputSchema(): z.ZodObject<Properties<AdminUpdate
     avatarUrl: z.string().nullish(),
     developer: z.boolean().nullish(),
     name: z.string().nullish(),
+    private: z.boolean().nullish(),
     role: UserRoleSchema.nullish(),
     status: UserStatusSchema.nullish(),
     username: z.string().nullish(),
@@ -13538,6 +13587,7 @@ export function UserUpdateUserInputSchema(): z.ZodObject<Properties<UserUpdateUs
     avatarUrl: z.string().nullish(),
     developer: z.boolean().nullish(),
     name: z.string().nullish(),
+    private: z.boolean().nullish(),
   })
 }
 

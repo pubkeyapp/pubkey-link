@@ -1,6 +1,6 @@
 import { UseGuards } from '@nestjs/common'
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql'
-import { ApiAuthGraphQLUserGuard, CtxUserId } from '@pubkey-link/api-auth-data-access'
+import { ApiAuthGraphQLUserGuard, CtxUser, CtxUserId } from '@pubkey-link/api-auth-data-access'
 import { BaseContext, IdentityProvider } from '@pubkey-link/api-core-data-access'
 import {
   ApiIdentityService,
@@ -12,6 +12,7 @@ import {
   UserUpdateIdentityInput,
   VerifyIdentityChallengeInput,
 } from '@pubkey-link/api-identity-data-access'
+import { User } from '@pubkey-link/api-user-data-access'
 
 @Resolver()
 @UseGuards(ApiAuthGraphQLUserGuard)
@@ -60,8 +61,8 @@ export class ApiUserIdentityResolver {
   }
 
   @Query(() => [Identity], { nullable: true })
-  userFindManyIdentity(@Args('input') input: UserFindManyIdentityInput) {
-    return this.service.user.findManyIdentity(input)
+  userFindManyIdentity(@CtxUser() actor: User, @Args('input') input: UserFindManyIdentityInput) {
+    return this.service.user.findManyIdentity(actor, input)
   }
 
   @Query(() => Identity, { nullable: true })

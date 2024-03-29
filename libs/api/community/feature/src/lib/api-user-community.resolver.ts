@@ -1,6 +1,7 @@
 import { UseGuards } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
-import { ApiAuthGraphQLUserGuard, CtxUserId } from '@pubkey-link/api-auth-data-access'
+import { User } from '@prisma/client'
+import { ApiAuthGraphQLUserGuard, CtxUser, CtxUserId } from '@pubkey-link/api-auth-data-access'
 import {
   ApiCommunityService,
   Community,
@@ -16,35 +17,35 @@ export class ApiUserCommunityResolver {
   constructor(private readonly service: ApiCommunityService) {}
 
   @Mutation(() => Community, { nullable: true })
-  userCreateCommunity(@CtxUserId() userId: string, @Args('input') input: UserCreateCommunityInput) {
-    return this.service.user.createCommunity(userId, input)
+  userCreateCommunity(@CtxUserId() actorId: string, @Args('input') input: UserCreateCommunityInput) {
+    return this.service.user.createCommunity(actorId, input)
   }
 
   @Mutation(() => Boolean, { nullable: true })
-  userDeleteCommunity(@CtxUserId() userId: string, @Args('communityId') communityId: string) {
-    return this.service.user.deleteCommunity(userId, communityId)
+  userDeleteCommunity(@CtxUserId() actorId: string, @Args('communityId') communityId: string) {
+    return this.service.user.deleteCommunity(actorId, communityId)
   }
   @Query(() => [Community])
-  userGetCommunities(@Args('username') username: string) {
-    return this.service.user.getCommunities(username)
+  userGetCommunities(@CtxUser() actor: User, @Args('username') username: string) {
+    return this.service.user.getCommunities(actor, username)
   }
 
   @Query(() => CommunityPaging)
-  userFindManyCommunity(@CtxUserId() userId: string, @Args('input') input: UserFindManyCommunityInput) {
-    return this.service.user.findManyCommunity(userId, input)
+  userFindManyCommunity(@CtxUserId() actorId: string, @Args('input') input: UserFindManyCommunityInput) {
+    return this.service.user.findManyCommunity(actorId, input)
   }
 
   @Query(() => Community, { nullable: true })
-  userFindOneCommunity(@CtxUserId() userId: string, @Args('communityId') communityId: string) {
-    return this.service.user.findOneCommunity(userId, communityId)
+  userFindOneCommunity(@CtxUserId() actorId: string, @Args('communityId') communityId: string) {
+    return this.service.user.findOneCommunity(actorId, communityId)
   }
 
   @Mutation(() => Community, { nullable: true })
   userUpdateCommunity(
-    @CtxUserId() userId: string,
+    @CtxUserId() actorId: string,
     @Args('communityId') communityId: string,
     @Args('input') input: UserUpdateCommunityInput,
   ) {
-    return this.service.user.updateCommunity(userId, communityId, input)
+    return this.service.user.updateCommunity(actorId, communityId, input)
   }
 }
