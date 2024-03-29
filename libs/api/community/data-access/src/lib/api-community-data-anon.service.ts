@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common'
-import { ApiCoreService } from '@pubkey-link/api-core-data-access'
+import { ApiCoreService, AppFeature } from '@pubkey-link/api-core-data-access'
 
 @Injectable()
 export class ApiCommunityDataAnonService {
   constructor(private readonly core: ApiCoreService) {}
 
   async getCommunities() {
+    this.core.config.ensureFeature(AppFeature.AnonCommunities)
     return this.core.data.community.findMany({
       where: { featured: true, bot: { isNot: null } },
       orderBy: { name: 'asc' },

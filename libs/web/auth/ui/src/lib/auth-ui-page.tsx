@@ -1,6 +1,8 @@
 import { Anchor, Flex, Group, Paper, rem, Stack, useMantineTheme } from '@mantine/core'
 import { useMediaQuery } from '@mantine/hooks'
+import { AppFeature } from '@pubkey-link/sdk'
 import { CommunityUiFeatured } from '@pubkey-link/web-community-ui'
+import { useAppConfig } from '@pubkey-link/web-core-data-access'
 import { AppLogo, UiBackgroundImage, UiSocialDiscord, UiSocialGithub, UiSocialX } from '@pubkey-link/web-core-ui'
 import { UiStack, useUiColorScheme } from '@pubkey-ui/core'
 import { ReactNode } from 'react'
@@ -8,6 +10,7 @@ import { AuthUiEnabled } from './auth-ui-enabled'
 
 export function AuthUiPage({ authEnabled, children }: { authEnabled: boolean; children: ReactNode }) {
   const { breakpoints } = useMantineTheme()
+  const { hasFeature } = useAppConfig()
   const isSmall = useMediaQuery(`(max-width: ${breakpoints.sm}`)
   const { colorScheme } = useUiColorScheme()
   const border = `${rem(1)} solid var(mantine-color-${colorScheme === 'dark' ? 'dark-7' : 'gray-3'})`
@@ -26,7 +29,9 @@ export function AuthUiPage({ authEnabled, children }: { authEnabled: boolean; ch
             <Group justify="center" mt="xl">
               <AppLogo height={64} />
             </Group>
-            <CommunityUiFeatured label="Communities hosted on this instance" />
+            {hasFeature(AppFeature.AnonCommunities) && (
+              <CommunityUiFeatured label="Communities hosted on this instance" />
+            )}
             <AuthUiEnabled authEnabled={authEnabled}>{children}</AuthUiEnabled>
           </UiStack>
           <Stack align="center" mt="xl">
