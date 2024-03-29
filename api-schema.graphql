@@ -210,6 +210,7 @@ type AppConfig {
 }
 
 enum AppFeature {
+  AnonCommunities
   CommunityCreate
   CommunitySnapshots
   CommunityTeams

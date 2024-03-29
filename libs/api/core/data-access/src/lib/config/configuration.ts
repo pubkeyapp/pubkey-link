@@ -50,6 +50,7 @@ export interface ApiCoreConfig {
   // Environment
   environment: Env
   // Feature Flags
+  featureAnonCommunities: boolean
   featureCommunityCreate: boolean
   featureCommunitySnapshots: boolean
   featureCommunityTeams: boolean
@@ -99,6 +100,7 @@ export function configuration(): ApiCoreConfig {
     corsOrigins,
     databaseProvision: process.env['DATABASE_PROVISION'] === 'true',
     environment: (process.env['NODE_ENV'] as Env) || 'development',
+    featureAnonCommunities: process.env['FEATURE_ANON_COMMUNITIES'] === 'true',
     featureCommunityCreate: process.env['FEATURE_COMMUNITY_CREATE'] === 'true',
     featureCommunitySnapshots: process.env['FEATURE_COMMUNITY_SNAPSHOTS'] === 'true',
     featureCommunityTeams: process.env['FEATURE_COMMUNITY_TEAMS'] === 'true',

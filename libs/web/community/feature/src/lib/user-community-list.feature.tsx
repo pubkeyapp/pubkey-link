@@ -55,9 +55,11 @@ export function UserCommunityListFeature() {
                 </Stack>
               }
             />
-            <UiGroup mx="auto">
-              <CommunityUiFeatured label="Join one of these communities to get verified" />
-            </UiGroup>
+            {hasFeature(AppFeature.AnonCommunities) && (
+              <UiGroup mx="auto">
+                <CommunityUiFeatured label="Join one of these communities to get verified" />
+              </UiGroup>
+            )}
           </UiStack>
         )}
       </UiStack>

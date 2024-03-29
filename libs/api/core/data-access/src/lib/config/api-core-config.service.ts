@@ -13,6 +13,9 @@ export class ApiCoreConfigService {
 
   get appConfig(): AppConfig {
     const features: AppFeature[] = []
+    if (this.featureAnonCommunities) {
+      features.push(AppFeature.AnonCommunities)
+    }
     if (this.featureCommunityCreate) {
       features.push(AppFeature.CommunityCreate)
     }
@@ -168,6 +171,10 @@ export class ApiCoreConfigService {
 
   get environment() {
     return this.service.get('environment')
+  }
+
+  get featureAnonCommunities() {
+    return this.service.get<boolean>('featureAnonCommunities')
   }
 
   get featureCommunityCreate() {

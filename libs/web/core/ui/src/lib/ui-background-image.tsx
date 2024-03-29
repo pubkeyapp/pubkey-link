@@ -4,7 +4,6 @@ import { ReactNode, useMemo } from 'react'
 const defaultImages = [
   'https://images.pexels.com/photos/1888883/pexels-photo-1888883.jpeg',
   'https://images.pexels.com/photos/7194619/pexels-photo-7194619.jpeg',
-  'https://images.pexels.com/photos/8954107/pexels-photo-8954107.jpeg',
   'https://images.pexels.com/photos/3612932/pexels-photo-3612932.jpeg',
   'https://images.unsplash.com/photo-1597733336794-12d05021d510',
   'https://images.unsplash.com/photo-1620121692029-d088224ddc74',
