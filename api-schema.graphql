@@ -122,7 +122,7 @@ input AdminFindManyRoleInput {
 }
 
 input AdminFindManySnapshotInput {
-  communityId: String
+  communityId: String!
   limit: Int = 10
   page: Int = 1
   roleId: String
@@ -207,6 +207,7 @@ type AppConfig {
 
 enum AppFeature {
   CommunityCreate
+  CommunitySnapshots
   CommunityTeams
 }
 

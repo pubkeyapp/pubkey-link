@@ -3,7 +3,10 @@ import { AdminFindManySnapshotInput } from '../dto/admin-find-many-snapshot.inpu
 
 export function getSnapshotWhereAdminInput(input: AdminFindManySnapshotInput): Prisma.SnapshotWhereInput {
   const where: Prisma.SnapshotWhereInput = {
-    roleId: input.roleId ?? undefined,
+    role: {
+      id: input.roleId ?? undefined,
+      communityId: input.communityId,
+    },
   }
 
   if (input.communityId) {

@@ -4,13 +4,13 @@ import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
-export function useAdminFindManySnapshot(props?: Partial<AdminFindManySnapshotInput>) {
+export function useAdminFindManySnapshot(props: Partial<AdminFindManySnapshotInput> & { communityId: string }) {
   const sdk = useSdk()
   const [limit, setLimit] = useState(props?.limit ?? 10)
   const [page, setPage] = useState(props?.page ?? 1)
   const [search, setSearch] = useState<string>(props?.search ?? '')
 
-  const input: AdminFindManySnapshotInput = { page, limit, search }
+  const input: AdminFindManySnapshotInput = { page, limit, search, communityId: props.communityId }
   const query = useQuery({
     queryKey: ['admin', 'find-many-snapshot', input],
     queryFn: () => sdk.adminFindManySnapshot({ input }).then((res) => res.data),

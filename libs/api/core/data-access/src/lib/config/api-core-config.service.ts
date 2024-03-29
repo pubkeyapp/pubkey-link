@@ -16,6 +16,9 @@ export class ApiCoreConfigService {
     if (this.featureCommunityCreate) {
       features.push(AppFeature.CommunityCreate)
     }
+    if (this.featureCommunitySnapshots) {
+      features.push(AppFeature.CommunitySnapshots)
+    }
     if (this.featureCommunityTeams) {
       features.push(AppFeature.CommunityTeams)
     }
@@ -149,6 +152,10 @@ export class ApiCoreConfigService {
 
   get featureCommunityCreate() {
     return this.service.get<boolean>('featureCommunityCreate')
+  }
+
+  get featureCommunitySnapshots() {
+    return this.service.get<boolean>('featureCommunitySnapshots')
   }
 
   get featureCommunityTeams() {

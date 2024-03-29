@@ -18,6 +18,7 @@ export function AdminCommunityDetailFeature() {
 
   const { item, query } = useAdminFindOneCommunity({ communityId })
 
+  const hasSnapshots = hasFeature(AppFeature.CommunitySnapshots)
   const hasTeams = hasFeature(AppFeature.CommunityTeams)
 
   if (query.isLoading) {
@@ -45,6 +46,11 @@ export function AdminCommunityDetailFeature() {
       path: 'members',
       label: 'Members',
       element: <AdminCommunityMemberFeature communityId={communityId} />,
+    },
+    hasSnapshots && {
+      path: 'snapshots',
+      label: 'Snapshots',
+      element: <AdminCommunityDetailOverviewTab communityId={communityId} />,
     },
     {
       path: 'settings',

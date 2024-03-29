@@ -144,7 +144,7 @@ export type AdminFindManyRoleInput = {
 }
 
 export type AdminFindManySnapshotInput = {
-  communityId?: InputMaybe<Scalars['String']['input']>
+  communityId: Scalars['String']['input']
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
   roleId?: InputMaybe<Scalars['String']['input']>
@@ -230,6 +230,7 @@ export type AppConfig = {
 
 export enum AppFeature {
   CommunityCreate = 'CommunityCreate',
+  CommunitySnapshots = 'CommunitySnapshots',
   CommunityTeams = 'CommunityTeams',
 }
 
@@ -13094,7 +13095,7 @@ export function AdminFindManyRoleInputSchema(): z.ZodObject<Properties<AdminFind
 
 export function AdminFindManySnapshotInputSchema(): z.ZodObject<Properties<AdminFindManySnapshotInput>> {
   return z.object({
-    communityId: z.string().nullish(),
+    communityId: z.string(),
     limit: z.number().nullish(),
     page: z.number().nullish(),
     roleId: z.string().nullish(),

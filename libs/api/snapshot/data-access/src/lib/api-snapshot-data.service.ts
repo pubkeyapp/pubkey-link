@@ -2,17 +2,15 @@ import { Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { ApiCoreService, PagingInputFields, slugifyId } from '@pubkey-link/api-core-data-access'
 import { ApiRoleService } from '@pubkey-link/api-role-data-access'
+import { AppFeature } from '@pubkey-link/sdk'
 import { SnapshotPaging } from './entity/snapshot.entity'
 
 @Injectable()
 export class ApiSnapshotDataService {
   constructor(private readonly core: ApiCoreService, private readonly role: ApiRoleService) {}
 
-  async create(input: Prisma.SnapshotUncheckedCreateInput) {
-    return this.core.data.snapshot.create({ data: input })
-  }
-
   async delete(snapshotId: string) {
+    this.ensureFeatureEnabled()
     const deleted = await this.core.data.snapshot.delete({ where: { id: snapshotId } })
     return !!deleted
   }
@@ -22,6 +20,7 @@ export class ApiSnapshotDataService {
     page = 1,
     ...input
   }: Prisma.SnapshotFindManyArgs & PagingInputFields): Promise<SnapshotPaging> {
+    this.ensureFeatureEnabled()
     return this.core.data.snapshot
       .paginate(input)
       .withPages({ limit, page })
@@ -29,15 +28,12 @@ export class ApiSnapshotDataService {
   }
 
   async findOne(snapshotId: string) {
+    this.ensureFeatureEnabled()
     const found = await this.core.data.snapshot.findUnique({ where: { id: snapshotId } })
     if (!found) {
       throw new Error('Snapshot not found')
     }
     return found
-  }
-
-  async update(snapshotId: string, input: Prisma.SnapshotUpdateInput) {
-    return this.core.data.snapshot.update({ where: { id: snapshotId }, data: input })
   }
 
   async ensureRoleAdmin({ roleId, userId }: { userId: string; roleId: string }) {
@@ -49,6 +45,7 @@ export class ApiSnapshotDataService {
   }
 
   async createSnapshot(roleId: string) {
+    this.ensureFeatureEnabled()
     const role = await this.core.data.role.findUnique({
       where: { id: roleId },
       select: { name: true, community: { select: { id: true } } },
@@ -84,5 +81,9 @@ export class ApiSnapshotDataService {
       },
       include: { role: true },
     })
+  }
+
+  protected ensureFeatureEnabled() {
+    return this.core.config.ensureFeature(AppFeature.CommunitySnapshots)
   }
 }

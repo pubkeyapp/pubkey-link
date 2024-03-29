@@ -5,9 +5,10 @@ import { AdminSnapshotUiTable } from '@pubkey-link/web-snapshot-ui'
 import { UiBack, UiDebugModal, UiInfo, UiLoader, UiPage } from '@pubkey-ui/core'
 import { Link } from 'react-router-dom'
 
-export function AdminSnapshotListFeature() {
+export function AdminSnapshotListFeature({ communityId }: { communityId: string }) {
   const { deleteSnapshot, items, pagination, query, setSearch } = useAdminFindManySnapshot({
     limit: 10,
+    communityId,
   })
 
   return (
