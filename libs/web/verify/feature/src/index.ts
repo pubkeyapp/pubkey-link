@@ -1,3 +1,3 @@
 import { lazy } from 'react'
 
-export const AnonVerifyFeature = lazy(() => import('./lib/anon-verify.routes'))
+export const AdminVerifyFeature = lazy(() => import('./lib/admin-verify-routes'))

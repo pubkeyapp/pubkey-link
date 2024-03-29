@@ -1,10 +1,10 @@
-import { useState } from 'react'
-import { getEnumOptions, IdentityProvider } from '@pubkey-link/sdk'
-import { UiCard, UiInfo, UiStack } from '@pubkey-ui/core'
 import { Select, TextInput } from '@mantine/core'
+import { getEnumOptions, IdentityProvider } from '@pubkey-link/sdk'
 import { VerifyIdentity } from '@pubkey-link/web-verify-ui'
+import { UiCard, UiInfo, UiStack } from '@pubkey-ui/core'
+import { useState } from 'react'
 
-export function AnonVerifyIndexFeature() {
+export function AdminVerifyIndexFeature() {
   const [provider, setProvider] = useState<IdentityProvider>(IdentityProvider.Discord)
   const [providerId, setProviderId] = useState<string>('')
   const providers = getEnumOptions(IdentityProvider)

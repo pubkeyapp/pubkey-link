@@ -1,1 +1,1 @@
-export * from './lib/use-anon-find-user-by-identity'
+export * from './lib/use-admin-find-user-by-identity'

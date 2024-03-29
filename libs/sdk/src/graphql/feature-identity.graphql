@@ -49,6 +49,15 @@ query adminFindManyIdentity($input: AdminFindManyIdentityInput!) {
   }
 }
 
+query adminFindUserByIdentity($provider: IdentityProvider!, $providerId: String!) {
+  item: adminFindUserByIdentity(provider: $provider, providerId: $providerId) {
+    ...UserSummary
+    identities {
+      ...IdentitySummary
+    }
+  }
+}
+
 mutation adminCreateIdentity($input: AdminCreateIdentityInput!) {
   created: adminCreateIdentity(input: $input) {
     ...IdentityDetails
@@ -108,15 +117,6 @@ mutation userLinkIdentity($input: LinkIdentityInput!) {
 query anonRequestIdentityChallenge($input: RequestIdentityChallengeInput!) {
   challenge: anonRequestIdentityChallenge(input: $input) {
     ...IdentityChallengeDetails
-  }
-}
-
-query anonFindUserByIdentity($provider: IdentityProvider!, $providerId: String!) {
-  item: anonFindUserByIdentity(provider: $provider, providerId: $providerId) {
-    ...UserSummary
-    identities {
-      ...IdentitySummary
-    }
   }
 }
 
