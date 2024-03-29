@@ -2,7 +2,7 @@ import { Button, Group } from '@mantine/core'
 import { UiPageLimit, UiSearchField } from '@pubkey-link/web-core-ui'
 import { useAdminFindManyRole } from '@pubkey-link/web-role-data-access'
 import { AdminRoleUiTable } from '@pubkey-link/web-role-ui'
-import { UiBack, UiDebugModal, UiInfo, UiLoader, UiPage } from '@pubkey-ui/core'
+import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 import { Link } from 'react-router-dom'
 
 export function AdminRoleListFeature({ communityId }: { communityId: string }) {
@@ -11,21 +11,14 @@ export function AdminRoleListFeature({ communityId }: { communityId: string }) {
   })
 
   return (
-    <UiPage
-      title="Roles"
-      leftAction={<UiBack />}
-      rightAction={
-        <Group>
-          <UiDebugModal data={items} />
-          <Button component={Link} to="create">
-            Create
-          </Button>
-        </Group>
-      }
-    >
+    <UiStack>
       <Group>
         <UiSearchField placeholder="Search role" setSearch={setSearch} />
         <UiPageLimit limit={pagination.limit} setLimit={pagination.setLimit} setPage={pagination.setPage} />
+        <UiDebugModal data={items} />
+        <Button component={Link} to="create">
+          Create
+        </Button>
       </Group>
 
       {query.isLoading ? (
@@ -45,6 +38,6 @@ export function AdminRoleListFeature({ communityId }: { communityId: string }) {
       ) : (
         <UiInfo message="No roles found." />
       )}
-    </UiPage>
+    </UiStack>
   )
 }
