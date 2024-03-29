@@ -9,9 +9,7 @@ export class ApiCommunityDataService {
   constructor(private readonly core: ApiCoreService) {}
 
   async create(userId: string, input: Prisma.CommunityCreateInput) {
-    if (!this.core.config.hasFeature(AppFeature.CommunityCreate)) {
-      throw new Error('Feature not enabled')
-    }
+    this.core.config.ensureFeature(AppFeature.CommunityCreate)
     return this.core.createCommunity({ userId, input })
   }
 

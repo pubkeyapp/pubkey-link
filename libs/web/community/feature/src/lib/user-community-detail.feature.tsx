@@ -1,8 +1,10 @@
 import { Badge, Group } from '@mantine/core'
+import { AppFeature } from '@pubkey-link/sdk'
 import { UserBotFeature } from '@pubkey-link/web-bot-feature'
 import { useUserFindOneCommunity } from '@pubkey-link/web-community-data-access'
 import { UserCommunityMemberFeature } from '@pubkey-link/web-community-member-feature'
 import { CommunityUiItem } from '@pubkey-link/web-community-ui'
+import { useAppConfig } from '@pubkey-link/web-core-data-access'
 import { UiIcon } from '@pubkey-link/web-core-ui'
 import { UserLogFeature } from '@pubkey-link/web-log-feature'
 import { NetworkUiClusterBadge } from '@pubkey-link/web-network-ui'
@@ -28,8 +30,11 @@ const RouteDashboard = lazy(() => import('./user-community-detail-dashboard.tab'
 const RouteSettings = lazy(() => import('./user-community-detail-settings.tab'))
 
 export function UserCommunityDetailFeature() {
+  const { hasFeature } = useAppConfig()
   const { communityId } = useParams<{ communityId: string }>() as { communityId: string }
   const { item, isLoading, communityAdmin, role } = useUserFindOneCommunity({ communityId })
+
+  const hasTeams = hasFeature(AppFeature.CommunityTeams)
 
   if (isLoading) {
     return <UiLoader />
@@ -48,7 +53,7 @@ export function UserCommunityDetailFeature() {
       element: <RouteDashboard community={item} role={role} />,
       leftSection: <UiIcon type="dashboard" size={20} />,
     },
-    {
+    hasTeams && {
       path: 'teams',
       label: 'Teams',
       element: <UserTeamFeature communityId={communityId} />,

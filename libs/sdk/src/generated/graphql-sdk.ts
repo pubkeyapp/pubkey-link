@@ -230,6 +230,7 @@ export type AppConfig = {
 
 export enum AppFeature {
   CommunityCreate = 'CommunityCreate',
+  CommunityTeams = 'CommunityTeams',
 }
 
 export type Bot = {
