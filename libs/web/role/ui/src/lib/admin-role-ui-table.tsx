@@ -1,8 +1,9 @@
-import { ActionIcon, Anchor, Group, ScrollArea } from '@mantine/core'
+import { ActionIcon, Group, ScrollArea } from '@mantine/core'
 import { Role } from '@pubkey-link/sdk'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'
+import { RoleUiItem } from './role-ui-item'
 
 export function AdminRoleUiTable({
   deleteRole,
@@ -32,11 +33,7 @@ export function AdminRoleUiTable({
         columns={[
           {
             accessor: 'name',
-            render: (item) => (
-              <Anchor component={Link} to={`/admin/roles/${item.id}`} size="sm" fw={500}>
-                {item.name}
-              </Anchor>
-            ),
+            render: (item) => <RoleUiItem role={item} to={`./${item.id}`} />,
           },
           {
             accessor: 'actions',
@@ -44,13 +41,7 @@ export function AdminRoleUiTable({
             textAlign: 'right',
             render: (item) => (
               <Group gap="xs" justify="right">
-                <ActionIcon
-                  color="brand"
-                  variant="light"
-                  size="sm"
-                  component={Link}
-                  to={`/admin/roles/${item.id}/settings`}
-                >
+                <ActionIcon color="brand" variant="light" size="sm" component={Link} to={`./${item.id}/settings`}>
                   <IconPencil size={16} />
                 </ActionIcon>
                 <ActionIcon color="red" variant="light" size="sm" onClick={() => deleteRole(item)}>

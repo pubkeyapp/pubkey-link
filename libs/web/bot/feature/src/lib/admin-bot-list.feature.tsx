@@ -2,7 +2,7 @@ import { Button, Group } from '@mantine/core'
 import { useAdminFindManyBot } from '@pubkey-link/web-bot-data-access'
 import { AdminBotUiTable } from '@pubkey-link/web-bot-ui'
 import { UiPageLimit, UiSearchField } from '@pubkey-link/web-core-ui'
-import { UiBack, UiDebugModal, UiInfo, UiLoader, UiPage } from '@pubkey-ui/core'
+import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 import { Link } from 'react-router-dom'
 
 export function AdminBotListFeature({ communityId }: { communityId: string }) {
@@ -11,21 +11,14 @@ export function AdminBotListFeature({ communityId }: { communityId: string }) {
   })
 
   return (
-    <UiPage
-      title="Bots"
-      leftAction={<UiBack />}
-      rightAction={
-        <Group>
-          <UiDebugModal data={items} />
-          <Button component={Link} to="create">
-            Create
-          </Button>
-        </Group>
-      }
-    >
+    <UiStack>
       <Group>
         <UiSearchField placeholder="Search bot" setSearch={setSearch} />
         <UiPageLimit limit={pagination.limit} setLimit={pagination.setLimit} setPage={pagination.setPage} />
+        <UiDebugModal data={items} />
+        <Button component={Link} to="create">
+          Create
+        </Button>
       </Group>
 
       {query.isLoading ? (
@@ -45,6 +38,6 @@ export function AdminBotListFeature({ communityId }: { communityId: string }) {
       ) : (
         <UiInfo message="No bots found." />
       )}
-    </UiPage>
+    </UiStack>
   )
 }
