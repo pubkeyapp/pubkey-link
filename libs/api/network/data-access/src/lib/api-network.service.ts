@@ -1,8 +1,9 @@
+import { DasApiAsset } from '@metaplex-foundation/digital-asset-standard-api'
 import { publicKey } from '@metaplex-foundation/umi'
 import { Injectable, Logger } from '@nestjs/common'
 import { NetworkCluster, Prisma } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { getNetworkTokenType } from '@pubkey-link/api-network-util'
+import { getMetadataProgram, getNetworkTokenType, WNS_PROGRAM_ID } from '@pubkey-link/api-network-util'
 import { getTokenMetadata, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { TokenMetadata } from '@solana/spl-token-metadata'
 import { AccountInfo, BlockhashWithExpiryBlockHeight, ParsedAccountData, PublicKey } from '@solana/web3.js'
@@ -39,8 +40,7 @@ export class ApiNetworkService {
     return res.blockhash
   }
 
-  async getAccountInfo({ cluster, account }: { cluster: NetworkCluster; account: string }) {
-    console.log('getAccountInfo', cluster, account)
+  async getAccountInfo({ cluster, account }: { cluster: NetworkCluster; account: PublicKey | string }) {
     return this.cluster
       .getConnection(cluster)
       .then((conn) =>
@@ -57,6 +57,16 @@ export class ApiNetworkService {
 
   async getAllTokenMetadata({ cluster, account }: { cluster: NetworkCluster; account: string }) {
     const asset = await this.getAsset({ cluster: cluster, account: account })
+
+    // If we have the group pointer, we can fetch the members of the group to create a list of mints
+    const extensions = asset?.mint_extensions ?? {}
+    const groupPointer = extensions['group_pointer']
+    const mintList: string[] = []
+    if (groupPointer?.['group_address']) {
+      const mints = await this.getGroupMintList({ cluster, account: new PublicKey(groupPointer['group_address']) })
+      mintList.push(...mints.map((mint) => mint.toBase58()))
+      this.logger.verbose(`Mint ${account}'s group ${groupPointer['group_address']} has ${mintList.length} mints`)
+    }
 
     let metadata: TokenMetadata | null = null
     try {
@@ -90,6 +100,7 @@ export class ApiNetworkService {
 
     return {
       type: getNetworkTokenType(asset?.interface),
+      mintList,
       name: metadata?.name ?? asset?.content?.metadata?.name ?? tokenList?.name,
       imageUrl: imageUrl ?? tokenList?.logoURI,
       metadataUrl: metadata?.uri ?? asset.content.json_uri,
@@ -127,7 +138,29 @@ export class ApiNetworkService {
     )
   }
 
-  async getAsset({ cluster, account }: { cluster: NetworkCluster; account: string }) {
+  async getAsset({
+    cluster,
+    account,
+  }: {
+    cluster: NetworkCluster
+    account: string
+  }): Promise<DasApiAsset & { mint_extensions?: Record<string, Record<string, string>> }> {
     return this.cluster.getUmi(cluster).then((res) => res.rpc.getAsset(publicKey(account)))
+  }
+
+  async getGroupMembers({ cluster, account }: { cluster: NetworkCluster; account: PublicKey }) {
+    return this.cluster.getConnection(cluster).then(async (conn) => {
+      const provider = await this.cluster.getAnchorProvider(conn)
+      // TODO: Remove dependency on WNS once the Group Extension is on mainnet and available
+      const metadataProgram = getMetadataProgram(provider, WNS_PROGRAM_ID)
+
+      return metadataProgram.account.tokenGroupMember
+        .all([{ memcmp: { offset: 32 + 8, bytes: account.toBase58() } }])
+        .then((res) => res.sort((a, b) => a.account.memberNumber - b.account.memberNumber))
+    })
+  }
+
+  async getGroupMintList({ cluster, account }: { cluster: NetworkCluster; account: PublicKey }) {
+    return this.getGroupMembers({ cluster, account }).then((members) => members.map((holder) => holder.account.mint))
   }
 }

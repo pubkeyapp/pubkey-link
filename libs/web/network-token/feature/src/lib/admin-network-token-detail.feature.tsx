@@ -1,9 +1,8 @@
 import { Button, Group } from '@mantine/core'
 import { useAdminFindOneNetworkToken } from '@pubkey-link/web-network-token-data-access'
 import { NetworkTokenUiItem } from '@pubkey-link/web-network-token-ui'
-import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoutes } from '@pubkey-ui/core'
+import { UiBack, UiDebugModal, UiError, UiLoader, UiPage } from '@pubkey-ui/core'
 import { useParams } from 'react-router-dom'
-import { AdminNetworkTokenDetailOverviewTab } from './admin-network-token-detail-overview.tab'
 import { AdminNetworkTokenDetailSettingsTab } from './admin-network-token-detail-settings.tab'
 
 export function AdminNetworkTokenDetailFeature() {
@@ -30,20 +29,7 @@ export function AdminNetworkTokenDetailFeature() {
         </Group>
       }
     >
-      <UiTabRoutes
-        tabs={[
-          {
-            path: 'overview',
-            label: 'Overview',
-            element: <AdminNetworkTokenDetailOverviewTab networkTokenId={networkTokenId} />,
-          },
-          {
-            path: 'settings',
-            label: 'Settings',
-            element: <AdminNetworkTokenDetailSettingsTab networkTokenId={networkTokenId} />,
-          },
-        ]}
-      />
+      <AdminNetworkTokenDetailSettingsTab networkTokenId={networkTokenId} />
     </UiPage>
   )
 }

@@ -31,16 +31,26 @@ export class ApiNetworkAssetService {
   }
 
   async getNonFungibleAssetsForOwners({
-    owners,
     cluster,
     groups,
+    mints = [],
+    owners,
   }: {
+    mints: string[]
     groups: string[]
     cluster: NetworkCluster
     owners: string[]
   }) {
     return this.core.data.networkAsset.findMany({
-      where: { owner: { in: owners }, group: { in: groups }, cluster, type: NetworkTokenType.NonFungible },
+      where: {
+        owner: { in: owners },
+        cluster,
+        type: NetworkTokenType.NonFungible,
+        OR: [
+          { account: mints.length ? { in: mints } : undefined },
+          { group: groups.length ? { in: groups } : undefined },
+        ],
+      },
     })
   }
 }

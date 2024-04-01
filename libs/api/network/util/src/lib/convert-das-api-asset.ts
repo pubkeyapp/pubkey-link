@@ -1,7 +1,6 @@
 import { DasApiAsset } from '@metaplex-foundation/digital-asset-standard-api'
 import { NetworkAsset, NetworkCluster, NetworkResolver, NetworkTokenType, Prisma } from '@prisma/client'
 import { deepEqual } from 'fast-equals'
-import { findAssetGroupValue } from './find-asset-group-value'
 import { getDasApiAssetAttributes } from './get-das-api-asset-attributes'
 
 export type NetworkAssetInput = Prisma.NetworkAssetCreateInput
@@ -9,9 +8,11 @@ export type NetworkAssetInput = Prisma.NetworkAssetCreateInput
 export function convertDasApiAsset({
   asset,
   cluster,
+  group,
 }: {
   asset: DasApiAsset
   cluster: NetworkCluster
+  group?: string
 }): NetworkAssetInput {
   return {
     network: { connect: { cluster } },
@@ -21,7 +22,7 @@ export function convertDasApiAsset({
     name: asset.content.metadata.name,
     symbol: asset.content.metadata.symbol,
     owner: asset.ownership.owner,
-    group: findAssetGroupValue(asset),
+    group,
     decimals: 0,
     balance: '1',
     mint: asset.id,

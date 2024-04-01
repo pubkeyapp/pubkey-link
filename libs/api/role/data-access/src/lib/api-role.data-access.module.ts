@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { ApiCoreDataAccessModule } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkAssetDataAccessModule } from '@pubkey-link/api-network-asset-data-access'
 import { ApiNetworkDataAccessModule } from '@pubkey-link/api-network-data-access'
+import { ApiNetworkTokenDataAccessModule } from '@pubkey-link/api-network-token-data-access'
 import { ApiRoleConditionDataService } from './api-role-condition-data.service'
 import { ApiRoleDataAdminService } from './api-role-data-admin.service'
 import { ApiRoleDataUserService } from './api-role-data-user.service'
@@ -11,7 +12,12 @@ import { ApiRoleResolverService } from './api-role-resolver.service'
 import { ApiRoleService } from './api-role.service'
 
 @Module({
-  imports: [ApiCoreDataAccessModule, ApiNetworkDataAccessModule, ApiNetworkAssetDataAccessModule],
+  imports: [
+    ApiCoreDataAccessModule,
+    ApiNetworkDataAccessModule,
+    ApiNetworkTokenDataAccessModule,
+    ApiNetworkAssetDataAccessModule,
+  ],
   providers: [
     ApiRoleService,
     ApiRoleConditionDataService,

@@ -1,4 +1,4 @@
-import { Identity } from '@pubkey-link/sdk'
+import { ellipsify, Identity } from '@pubkey-link/sdk'
 import { useIdentitySolana } from '@pubkey-link/web-identity-data-access'
 import { toastError } from '@pubkey-ui/core'
 import { useWallet } from '@solana/wallet-adapter-react'
@@ -22,7 +22,9 @@ export function IdentityUiSolanaLinkWizard({
   }, [active, connected])
 
   async function request(useLedger: boolean) {
-    return linkAndSign({ publicKey: publicKey!.toString(), useLedger, name: wallet?.adapter.name })
+    const walletName = wallet?.adapter.name
+    const name = `${ellipsify(publicKey?.toBase58(), 6)} (${walletName})`
+    return linkAndSign({ publicKey: publicKey!.toString(), useLedger, name })
       .catch((err) => {
         console.log('Error linking identity', err)
         toastError('Error linking identity')
