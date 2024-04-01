@@ -54,10 +54,6 @@ export class ApiRoleResolverService {
     if (!community) {
       throw new Error(`Community not found`)
     }
-    if (!community.enableSync) {
-      this.logger.debug(`Role sync is disabled for community ${communityId}`)
-      return
-    }
     await this.syncCommunityMembers(communityId)
     const startedAt = Date.now()
 
@@ -266,11 +262,14 @@ export class ApiRoleResolverService {
   }
 
   private getRoleConditionAssets(condition: RoleCondition, assets: NetworkAsset[]) {
-    const found: NetworkAsset[] = assets.filter((asset) => asset.group === condition.token?.account) ?? []
-    if (!found?.length) {
+    const foundGroups: NetworkAsset[] = assets.filter((asset) => asset.group === condition.token?.account) ?? []
+    const foundMints: NetworkAsset[] =
+      assets.filter((asset) => condition?.token?.mintList?.includes(asset.account)) ?? []
+
+    if (!foundGroups?.length && !foundMints?.length) {
       return []
     }
-    return found
+    return [...new Set([...foundGroups, ...foundMints])]
   }
 
   private getAssetAmount(condition: RoleCondition, assets: NetworkAsset[]) {
@@ -352,11 +351,13 @@ export class ApiRoleResolverService {
       if (tokens.length) {
         const cluster = tokens[0].cluster
         const accounts = tokens.map((t) => t.account)
+        const mints = tokens.flatMap((t) => t.mintList).filter(Boolean)
         // We want to look up the tokens with the solanaIds
         await this.networkAsset
           .getNonFungibleAssetsForOwners({
             cluster: cluster,
             groups: accounts,
+            mints,
             owners: solanaIds ?? [],
           })
           .then((assets) => {
@@ -395,7 +396,7 @@ export class ApiRoleResolverService {
           type: true,
           role: true,
           token: {
-            select: { id: true, account: true, cluster: true, type: true, name: true, program: true },
+            select: { id: true, account: true, cluster: true, type: true, mintList: true, name: true, program: true },
           },
         },
       })

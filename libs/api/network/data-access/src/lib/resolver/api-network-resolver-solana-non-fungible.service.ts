@@ -3,7 +3,13 @@ import { publicKey } from '@metaplex-foundation/umi'
 import { Injectable, Logger } from '@nestjs/common'
 import { NetworkCluster, NetworkToken } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { convertDasApiAsset, findNetworkAssetsByGroup, NetworkAssetInput } from '@pubkey-link/api-network-util'
+import {
+  convertDasApiAsset,
+  findAssetGroupValue,
+  findNetworkAssetsByGroup,
+  findNetworkAssetsByMint,
+  NetworkAssetInput,
+} from '@pubkey-link/api-network-util'
 
 import { ApiNetworkClusterService } from '../api-network-cluster.service'
 
@@ -47,9 +53,21 @@ export class ApiNetworkResolverSolanaNonFungibleService {
         break
       }
     }
+    const tokensWithMintList = tokens.filter((t) => t.mintList.length)
+    const converted = items?.map((asset) => {
+      const mint = tokensWithMintList.find((t) => t.mintList.includes(asset.id))
+      const group = findAssetGroupValue(asset) ?? mint?.account
 
-    const converted = items?.map((asset) => convertDasApiAsset({ asset, cluster }))
+      return convertDasApiAsset({ asset, cluster, group: mint ? mint.account : group })
+    })
+    if (!converted.length) {
+      return []
+    }
 
-    return converted ? findNetworkAssetsByGroup(converted, groups) : []
+    const mints: string[] = tokens.flatMap((token) => token.mintList)
+    const convertedGroups = findNetworkAssetsByGroup(converted, groups)
+    const convertedMints = findNetworkAssetsByMint(converted, mints)
+
+    return [...new Set([...convertedGroups, ...convertedMints])]
   }
 }

@@ -1,10 +1,12 @@
+import { AnchorProvider } from '@coral-xyz/anchor'
 import { dasApi } from '@metaplex-foundation/digital-asset-standard-api'
 import { createUmi, Umi } from '@metaplex-foundation/umi'
 import { web3JsRpc } from '@metaplex-foundation/umi-rpc-web3js'
 import { Injectable, Logger } from '@nestjs/common'
 import { NetworkCluster } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { Connection } from '@solana/web3.js'
+import { AnchorKeypairWallet } from '@pubkey-program-library/sdk'
+import { Connection, Keypair } from '@solana/web3.js'
 import { ChainId, Client } from '@solflare-wallet/utl-sdk'
 
 @Injectable()
@@ -29,6 +31,10 @@ export class ApiNetworkClusterService {
       throw new Error(`getConnection: Error getting network for cluster: ${cluster}`)
     }
     return connection
+  }
+
+  async getAnchorProvider(connection: Connection, keypair = Keypair.generate()) {
+    return new AnchorProvider(connection, new AnchorKeypairWallet(keypair), AnchorProvider.defaultOptions())
   }
 
   async getTokenList(cluster: NetworkCluster) {

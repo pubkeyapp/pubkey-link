@@ -215,6 +215,7 @@ model NetworkToken {
   type        NetworkTokenType
   name        String
   account     String
+  mintList    String[]
   program     String
   vault       String?
   imageUrl    String?

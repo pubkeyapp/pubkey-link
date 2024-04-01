@@ -578,6 +578,7 @@ type NetworkToken {
   id: String!
   imageUrl: String
   metadataUrl: String
+  mintList: [String!]
   name: String!
   program: String!
   raw: JSON

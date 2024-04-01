@@ -23,6 +23,8 @@ export class NetworkToken {
   name!: string
   @Field()
   program!: string
+  @Field(() => [String], { nullable: true })
+  mintList?: string[]
   @Field({ nullable: true })
   vault?: string | null
   @Field({ nullable: true })

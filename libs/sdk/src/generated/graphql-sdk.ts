@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { z } from 'zod'
-import { GraphQLClient, RequestOptions } from 'graphql-request'
+import { GraphQLClient } from 'graphql-request'
+import { GraphQLClientRequestHeaders } from 'graphql-request/build/cjs/types'
 import { GraphQLError, print } from 'graphql'
 import gql from 'graphql-tag'
 export type Maybe<T> = T | null
@@ -10,7 +11,6 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> }
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never }
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never }
-type GraphQLClientRequestHeaders = RequestOptions['requestHeaders']
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string }
@@ -920,6 +920,7 @@ export type NetworkToken = {
   id: Scalars['String']['output']
   imageUrl?: Maybe<Scalars['String']['output']>
   metadataUrl?: Maybe<Scalars['String']['output']>
+  mintList?: Maybe<Array<Scalars['String']['output']>>
   name: Scalars['String']['output']
   program: Scalars['String']['output']
   raw?: Maybe<Scalars['JSON']['output']>
@@ -1960,6 +1961,7 @@ export type UserFindManyBotRolesQuery = {
           account: string
           program: string
           name: string
+          mintList?: Array<string> | null
           vault?: string | null
           symbol?: string | null
           description?: string | null
@@ -2294,6 +2296,7 @@ export type CommunityMemberDetailsFragment = {
         account: string
         program: string
         name: string
+        mintList?: Array<string> | null
         vault?: string | null
         symbol?: string | null
         description?: string | null
@@ -2400,6 +2403,7 @@ export type AdminFindManyCommunityMemberQuery = {
             account: string
             program: string
             name: string
+            mintList?: Array<string> | null
             vault?: string | null
             symbol?: string | null
             description?: string | null
@@ -2516,6 +2520,7 @@ export type AdminFindOneCommunityMemberQuery = {
           account: string
           program: string
           name: string
+          mintList?: Array<string> | null
           vault?: string | null
           symbol?: string | null
           description?: string | null
@@ -2622,6 +2627,7 @@ export type AdminAddCommunityMemberMutation = {
           account: string
           program: string
           name: string
+          mintList?: Array<string> | null
           vault?: string | null
           symbol?: string | null
           description?: string | null
@@ -2728,6 +2734,7 @@ export type AdminUpdateCommunityMemberMutation = {
           account: string
           program: string
           name: string
+          mintList?: Array<string> | null
           vault?: string | null
           symbol?: string | null
           description?: string | null
@@ -2847,6 +2854,7 @@ export type UserFindManyCommunityMemberQuery = {
             account: string
             program: string
             name: string
+            mintList?: Array<string> | null
             vault?: string | null
             symbol?: string | null
             description?: string | null
@@ -2963,6 +2971,7 @@ export type UserFindOneCommunityMemberQuery = {
           account: string
           program: string
           name: string
+          mintList?: Array<string> | null
           vault?: string | null
           symbol?: string | null
           description?: string | null
@@ -3069,6 +3078,7 @@ export type UserAddCommunityMemberMutation = {
           account: string
           program: string
           name: string
+          mintList?: Array<string> | null
           vault?: string | null
           symbol?: string | null
           description?: string | null
@@ -3175,6 +3185,7 @@ export type UserUpdateCommunityMemberMutation = {
           account: string
           program: string
           name: string
+          mintList?: Array<string> | null
           vault?: string | null
           symbol?: string | null
           description?: string | null
@@ -3440,6 +3451,7 @@ export type UserGetCommunitiesQuery = {
           account: string
           program: string
           name: string
+          mintList?: Array<string> | null
           vault?: string | null
           symbol?: string | null
           description?: string | null
@@ -4118,6 +4130,7 @@ export type LogDetailsFragment = {
         account: string
         program: string
         name: string
+        mintList?: Array<string> | null
         vault?: string | null
         symbol?: string | null
         description?: string | null
@@ -4288,6 +4301,7 @@ export type UserFindManyLogQuery = {
             account: string
             program: string
             name: string
+            mintList?: Array<string> | null
             vault?: string | null
             symbol?: string | null
             description?: string | null
@@ -4468,6 +4482,7 @@ export type UserFindOneLogQuery = {
           account: string
           program: string
           name: string
+          mintList?: Array<string> | null
           vault?: string | null
           symbol?: string | null
           description?: string | null
@@ -4639,6 +4654,7 @@ export type AdminFindManyLogQuery = {
             account: string
             program: string
             name: string
+            mintList?: Array<string> | null
             vault?: string | null
             symbol?: string | null
             description?: string | null
@@ -4819,6 +4835,7 @@ export type AdminFindOneLogQuery = {
           account: string
           program: string
           name: string
+          mintList?: Array<string> | null
           vault?: string | null
           symbol?: string | null
           description?: string | null
@@ -5072,6 +5089,7 @@ export type NetworkTokenDetailsFragment = {
   account: string
   program: string
   name: string
+  mintList?: Array<string> | null
   vault?: string | null
   symbol?: string | null
   description?: string | null
@@ -5098,6 +5116,7 @@ export type AdminFindManyNetworkTokenQuery = {
       account: string
       program: string
       name: string
+      mintList?: Array<string> | null
       vault?: string | null
       symbol?: string | null
       description?: string | null
@@ -5134,6 +5153,7 @@ export type AdminFindOneNetworkTokenQuery = {
     account: string
     program: string
     name: string
+    mintList?: Array<string> | null
     vault?: string | null
     symbol?: string | null
     description?: string | null
@@ -5159,6 +5179,7 @@ export type AdminCreateNetworkTokenMutation = {
     account: string
     program: string
     name: string
+    mintList?: Array<string> | null
     vault?: string | null
     symbol?: string | null
     description?: string | null
@@ -5185,6 +5206,7 @@ export type AdminUpdateNetworkTokenMutation = {
     account: string
     program: string
     name: string
+    mintList?: Array<string> | null
     vault?: string | null
     symbol?: string | null
     description?: string | null
@@ -5210,6 +5232,7 @@ export type AdminUpdateNetworkTokenMetadataMutation = {
     account: string
     program: string
     name: string
+    mintList?: Array<string> | null
     vault?: string | null
     symbol?: string | null
     description?: string | null
@@ -5243,6 +5266,7 @@ export type UserFindManyNetworkTokenQuery = {
       account: string
       program: string
       name: string
+      mintList?: Array<string> | null
       vault?: string | null
       symbol?: string | null
       description?: string | null
@@ -5431,6 +5455,7 @@ export type RoleDetailsFragment = {
       account: string
       program: string
       name: string
+      mintList?: Array<string> | null
       vault?: string | null
       symbol?: string | null
       description?: string | null
@@ -5497,6 +5522,7 @@ export type RoleConditionDetailsFragment = {
     account: string
     program: string
     name: string
+    mintList?: Array<string> | null
     vault?: string | null
     symbol?: string | null
     description?: string | null
@@ -5579,6 +5605,7 @@ export type AdminFindManyRoleQuery = {
           account: string
           program: string
           name: string
+          mintList?: Array<string> | null
           vault?: string | null
           symbol?: string | null
           description?: string | null
@@ -5671,6 +5698,7 @@ export type AdminFindOneRoleQuery = {
         account: string
         program: string
         name: string
+        mintList?: Array<string> | null
         vault?: string | null
         symbol?: string | null
         description?: string | null
@@ -5752,6 +5780,7 @@ export type AdminCreateRoleMutation = {
         account: string
         program: string
         name: string
+        mintList?: Array<string> | null
         vault?: string | null
         symbol?: string | null
         description?: string | null
@@ -5834,6 +5863,7 @@ export type AdminUpdateRoleMutation = {
         account: string
         program: string
         name: string
+        mintList?: Array<string> | null
         vault?: string | null
         symbol?: string | null
         description?: string | null
@@ -5923,6 +5953,7 @@ export type UserFindManyRoleQuery = {
           account: string
           program: string
           name: string
+          mintList?: Array<string> | null
           vault?: string | null
           symbol?: string | null
           description?: string | null
@@ -6047,6 +6078,7 @@ export type UserFindOneRoleQuery = {
         account: string
         program: string
         name: string
+        mintList?: Array<string> | null
         vault?: string | null
         symbol?: string | null
         description?: string | null
@@ -6096,6 +6128,7 @@ export type UserCreateRoleMutation = {
         account: string
         program: string
         name: string
+        mintList?: Array<string> | null
         vault?: string | null
         symbol?: string | null
         description?: string | null
@@ -6169,6 +6202,7 @@ export type UserCreateRoleConditionMutation = {
       account: string
       program: string
       name: string
+      mintList?: Array<string> | null
       vault?: string | null
       symbol?: string | null
       description?: string | null
@@ -6258,6 +6292,7 @@ export type UserUpdateRoleMutation = {
         account: string
         program: string
         name: string
+        mintList?: Array<string> | null
         vault?: string | null
         symbol?: string | null
         description?: string | null
@@ -6332,6 +6367,7 @@ export type UserUpdateRoleConditionMutation = {
       account: string
       program: string
       name: string
+      mintList?: Array<string> | null
       vault?: string | null
       symbol?: string | null
       description?: string | null
@@ -6405,6 +6441,7 @@ export type SnapshotDetailsFragment = {
         account: string
         program: string
         name: string
+        mintList?: Array<string> | null
         vault?: string | null
         symbol?: string | null
         description?: string | null
@@ -6509,6 +6546,7 @@ export type UserFindManySnapshotQuery = {
             account: string
             program: string
             name: string
+            mintList?: Array<string> | null
             vault?: string | null
             symbol?: string | null
             description?: string | null
@@ -6622,6 +6660,7 @@ export type UserFindOneSnapshotQuery = {
           account: string
           program: string
           name: string
+          mintList?: Array<string> | null
           vault?: string | null
           symbol?: string | null
           description?: string | null
@@ -6711,6 +6750,7 @@ export type UserCreateSnapshotMutation = {
           account: string
           program: string
           name: string
+          mintList?: Array<string> | null
           vault?: string | null
           symbol?: string | null
           description?: string | null
@@ -6808,6 +6848,7 @@ export type AdminFindManySnapshotQuery = {
             account: string
             program: string
             name: string
+            mintList?: Array<string> | null
             vault?: string | null
             symbol?: string | null
             description?: string | null
@@ -6921,6 +6962,7 @@ export type AdminFindOneSnapshotQuery = {
           account: string
           program: string
           name: string
+          mintList?: Array<string> | null
           vault?: string | null
           symbol?: string | null
           description?: string | null
@@ -7010,6 +7052,7 @@ export type AdminCreateSnapshotMutation = {
           account: string
           program: string
           name: string
+          mintList?: Array<string> | null
           vault?: string | null
           symbol?: string | null
           description?: string | null
@@ -7124,6 +7167,7 @@ export type TeamDetailsFragment = {
           account: string
           program: string
           name: string
+          mintList?: Array<string> | null
           vault?: string | null
           symbol?: string | null
           description?: string | null
@@ -7272,6 +7316,7 @@ export type AdminFindManyTeamQuery = {
               account: string
               program: string
               name: string
+              mintList?: Array<string> | null
               vault?: string | null
               symbol?: string | null
               description?: string | null
@@ -7430,6 +7475,7 @@ export type AdminFindOneTeamQuery = {
             account: string
             program: string
             name: string
+            mintList?: Array<string> | null
             vault?: string | null
             symbol?: string | null
             description?: string | null
@@ -7578,6 +7624,7 @@ export type AdminUpdateTeamMutation = {
             account: string
             program: string
             name: string
+            mintList?: Array<string> | null
             vault?: string | null
             symbol?: string | null
             description?: string | null
@@ -7733,6 +7780,7 @@ export type UserFindManyTeamQuery = {
               account: string
               program: string
               name: string
+              mintList?: Array<string> | null
               vault?: string | null
               symbol?: string | null
               description?: string | null
@@ -7891,6 +7939,7 @@ export type UserFindOneTeamQuery = {
             account: string
             program: string
             name: string
+            mintList?: Array<string> | null
             vault?: string | null
             symbol?: string | null
             description?: string | null
@@ -8038,6 +8087,7 @@ export type UserCreateTeamMutation = {
             account: string
             program: string
             name: string
+            mintList?: Array<string> | null
             vault?: string | null
             symbol?: string | null
             description?: string | null
@@ -8186,6 +8236,7 @@ export type UserUpdateTeamMutation = {
             account: string
             program: string
             name: string
+            mintList?: Array<string> | null
             vault?: string | null
             symbol?: string | null
             description?: string | null
@@ -8679,6 +8730,7 @@ export const NetworkTokenDetailsFragmentDoc = gql`
     account
     program
     name
+    mintList
     vault
     symbol
     description
@@ -10066,7 +10118,7 @@ export type SdkFunctionWrapper = <T>(
   variables?: any,
 ) => Promise<T>
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, _variables) => action()
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, variables) => action()
 const LogoutDocumentString = print(LogoutDocument)
 const MeDocumentString = print(MeDocument)
 const AdminCreateBackupDocumentString = print(AdminCreateBackupDocument)

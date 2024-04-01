@@ -1,18 +1,20 @@
 import { Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
+import { ApiNetworkTokenService } from '@pubkey-link/api-network-token-data-access'
 
 @Injectable()
 export class ApiRoleConditionDataService {
-  constructor(private readonly core: ApiCoreService) {}
+  constructor(private readonly core: ApiCoreService, private readonly networkToken: ApiNetworkTokenService) {}
 
   async create(input: Omit<Prisma.RoleConditionUncheckedCreateInput, 'type'>) {
-    const token = await this.findOne(input.tokenId)
+    const token = await this.networkToken.data.findOne(input.tokenId)
     return this.core.data.roleCondition.create({
       data: {
         role: { connect: { id: input.roleId } },
         token: { connect: { id: input.tokenId } },
         type: token.type,
+        amount: '1',
       },
     })
   }
