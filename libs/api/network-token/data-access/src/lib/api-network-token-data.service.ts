@@ -1,20 +1,56 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
-import { NetworkTokenType, Prisma } from '@prisma/client'
+import { NetworkCluster, NetworkTokenType, Prisma } from '@prisma/client'
 import { ApiCoreService, EVENT_APP_STARTED, PagingInputFields } from '@pubkey-link/api-core-data-access'
-import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
+import { ApiNetworkService, EVENT_NETWORKS_PROVISIONED } from '@pubkey-link/api-network-data-access'
 import { getNetworkTokenType } from '@pubkey-link/api-network-util'
+import { SystemProgram } from '@solana/web3.js'
 import { AdminUpdateNetworkTokenInput } from './dto/admin-update-network-token.input'
 import { NetworkTokenPaging } from './entity/network-token.entity'
 
 @Injectable()
 export class ApiNetworkTokenDataService {
+  private readonly logger = new Logger(ApiNetworkTokenDataService.name)
   constructor(private readonly core: ApiCoreService, private readonly network: ApiNetworkService) {}
 
   @OnEvent(EVENT_APP_STARTED)
   async onApplicationStarted() {
     const tokens = await this.core.data.networkToken.findMany({ where: { metadataUrl: null } })
     await Promise.all(tokens.map((token) => this.updateNetworkTokenMetadata(token.id)))
+  }
+
+  @OnEvent(EVENT_NETWORKS_PROVISIONED)
+  async onNetworkProvisioned() {
+    await this.ensureGenesisBlock()
+  }
+
+  private async ensureGenesisBlock() {
+    if (!this.core.config.featureResolverSolanaValidator) {
+      return
+    }
+    this.logger.verbose(`Feature resolverSolanaValidator enabled, ensuring genesis block`)
+
+    const existing = await this.core.data.networkToken.findMany({ where: { type: NetworkTokenType.Validator } })
+
+    const networks = await this.core.data.network.findMany({
+      where: { cluster: { notIn: existing.map(({ cluster }) => cluster) } },
+    })
+
+    for (const network of networks) {
+      const hash = await this.getClusterGenesisHash(network.cluster)
+      if (hash) {
+        const data: Prisma.NetworkTokenCreateInput = {
+          network: { connect: { cluster: network.cluster } },
+          type: NetworkTokenType.Validator,
+          account: hash,
+          name: `Solana Genesis Block`,
+          program: SystemProgram.programId.toBase58(),
+        }
+
+        await this.core.data.networkToken.create({ data })
+        this.logger.log(`Created Genesis Block for cluster ${network.cluster} with genesis hash ${hash}`)
+      }
+    }
   }
 
   async create(input: Omit<Prisma.NetworkTokenUncheckedCreateInput, 'type' | 'name' | 'program'>) {
@@ -75,8 +111,13 @@ export class ApiNetworkTokenDataService {
   async updateNetworkTokenMetadata(networkTokenId: string) {
     const token = await this.findOne(networkTokenId)
 
+    if (token.type === NetworkTokenType.Validator) {
+      this.logger.verbose(`Skipping metadata update for validator token ${token.id}`)
+      return token
+    }
+
     const data: Prisma.NetworkTokenUpdateInput = await this.network.getAllTokenMetadata(token)
-    // this.logger.verbose(`updateNetworkTokenMetadata`, JSON.stringify(data, null, 2))
+
     return this.core.data.networkToken.update({
       where: { id: networkTokenId },
       data,
@@ -97,5 +138,14 @@ export class ApiNetworkTokenDataService {
         })
       })
       .then((res) => res.filter((r) => r.group?.length).map((r) => r.group as string))
+  }
+
+  private async getClusterGenesisHash(cluster: NetworkCluster) {
+    try {
+      const connection = await this.network.cluster.getConnection(cluster)
+      return await connection.getGenesisHash()
+    } catch (_) {
+      return null
+    }
   }
 }

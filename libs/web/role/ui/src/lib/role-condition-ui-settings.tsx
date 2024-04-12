@@ -2,10 +2,10 @@ import { ActionIcon, Paper } from '@mantine/core'
 import { NetworkTokenType, RoleCondition, UserUpdateRoleConditionInput } from '@pubkey-link/sdk'
 import { NetworkTokenUiItem } from '@pubkey-link/web-network-token-ui'
 import { useUserFindOneRole } from '@pubkey-link/web-role-data-access'
-import { UiDebug, UiGroup, UiStack } from '@pubkey-ui/core'
+import { UiDebug, UiGroup, UiInfo, UiStack } from '@pubkey-ui/core'
+import { IconTrash } from '@tabler/icons-react'
 import { RoleConditionUiUpdateFormFungible } from './role-condition-ui-update-form-fungible'
 import { RoleConditionUiUpdateFormNonFungible } from './role-condition-ui-update-form-non-fungible'
-import { IconTrash } from '@tabler/icons-react'
 
 export function RoleConditionUiSettings({ condition }: { condition: RoleCondition }) {
   const { deleteRoleCondition, updateRoleCondition } = useUserFindOneRole({ roleId: condition.roleId! })
@@ -50,6 +50,17 @@ export function RoleConditionUiSettings({ condition }: { condition: RoleConditio
           <UiStack>
             <NetworkTokenUiItem networkToken={condition.token} />
             <RoleConditionUiUpdateFormFungible item={condition} submit={update} />
+          </UiStack>
+        </Paper>
+      ) : (
+        <UiDebug data={condition} />
+      )
+    case NetworkTokenType.Validator:
+      return condition.token ? (
+        <Paper withBorder p="md" radius="sm" shadow="md">
+          <UiStack>
+            <NetworkTokenUiItem networkToken={condition.token} />
+            <UiInfo variant="outline" message="This condition has no configuration options" />
           </UiStack>
         </Paper>
       ) : (

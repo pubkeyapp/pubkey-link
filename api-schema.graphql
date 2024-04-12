@@ -598,6 +598,7 @@ type NetworkTokenPaging {
 enum NetworkTokenType {
   Fungible
   NonFungible
+  Validator
 }
 
 enum NetworkType {

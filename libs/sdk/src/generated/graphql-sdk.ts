@@ -941,6 +941,7 @@ export type NetworkTokenPaging = {
 export enum NetworkTokenType {
   Fungible = 'Fungible',
   NonFungible = 'NonFungible',
+  Validator = 'Validator',
 }
 
 export enum NetworkType {

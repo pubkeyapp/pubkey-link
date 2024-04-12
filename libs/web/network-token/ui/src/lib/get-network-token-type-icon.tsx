@@ -1,8 +1,8 @@
 import { NetworkTokenType } from '@pubkey-link/sdk'
-import { IconMoneybag, IconPhotoCircle } from '@tabler/icons-react'
+import { IconListCheck, IconMoneybag, IconPhotoCircle } from '@tabler/icons-react'
 import { ComponentType } from 'react'
 
-export function getRoleConditionIconType(
+export function getNetworkTokenTypeIcon(
   type?: NetworkTokenType | null,
 ): ComponentType<{ color?: string; size: number }> | undefined {
   switch (type) {
@@ -10,6 +10,8 @@ export function getRoleConditionIconType(
       return IconPhotoCircle
     case NetworkTokenType.Fungible:
       return IconMoneybag
+    case NetworkTokenType.Validator:
+      return IconListCheck
     default:
       return undefined
   }

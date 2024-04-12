@@ -20,6 +20,9 @@ export function RoleConditionUiCreateWizard(props: { role: Role; community: Comm
     if (networkTokenType === NetworkTokenType.NonFungible) {
       return props.tokens.filter((token) => token.type === NetworkTokenType.NonFungible)
     }
+    if (networkTokenType === NetworkTokenType.Validator) {
+      return props.tokens.filter((token) => token.type === NetworkTokenType.Validator)
+    }
     return []
   }, [networkTokenType, props.tokens])
 
