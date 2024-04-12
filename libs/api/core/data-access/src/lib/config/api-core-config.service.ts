@@ -4,6 +4,7 @@ import { IdentityProvider } from '@prisma/client'
 import { RedisOptions } from 'bullmq'
 import { CookieOptions } from 'express-serve-static-core'
 import { AppConfig, AppFeature } from '../entity/app-config.entity'
+import { NetworkResolver } from '../entity/network-resolver.enum'
 import { ApiCoreConfig } from './configuration'
 
 @Injectable()
@@ -40,6 +41,19 @@ export class ApiCoreConfigService {
       login.push(IdentityProvider.Solana)
     }
 
+    const resolvers: NetworkResolver[] = []
+    if (this.featureResolverSolanaFungible) {
+      resolvers.push(NetworkResolver.SolanaFungible)
+    }
+    if (this.featureResolverSolanaNonFungible) {
+      resolvers.push(NetworkResolver.SolanaNonFungible)
+    }
+    if (this.featureResolverSolanaValidator) {
+      resolvers.push(NetworkResolver.SolanaValidator)
+    }
+
+    console.log(resolvers)
+
     return {
       appLogoUrlDark: this.appLogoUrlDark,
       appLogoUrlLight: this.appLogoUrlLight,
@@ -48,6 +62,7 @@ export class ApiCoreConfigService {
       authLinkProviders: link,
       authLoginProviders: login,
       features,
+      resolvers,
     }
   }
 
@@ -187,6 +202,18 @@ export class ApiCoreConfigService {
 
   get featureCommunityTeams() {
     return this.service.get<boolean>('featureCommunityTeams')
+  }
+
+  get featureResolverSolanaFungible() {
+    return this.service.get<boolean>('featureResolverSolanaFungible')
+  }
+
+  get featureResolverSolanaNonFungible() {
+    return this.service.get<boolean>('featureResolverSolanaNonFungible')
+  }
+
+  get featureResolverSolanaValidator() {
+    return this.service.get<boolean>('featureResolverSolanaValidator')
   }
 
   get host() {

@@ -1,7 +1,6 @@
 // @ts-nocheck
 import { z } from 'zod'
-import { GraphQLClient } from 'graphql-request'
-import { GraphQLClientRequestHeaders } from 'graphql-request/build/cjs/types'
+import { GraphQLClient, RequestOptions } from 'graphql-request'
 import { GraphQLError, print } from 'graphql'
 import gql from 'graphql-tag'
 export type Maybe<T> = T | null
@@ -11,6 +10,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> }
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never }
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never }
+type GraphQLClientRequestHeaders = RequestOptions['requestHeaders']
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string }
@@ -231,6 +231,7 @@ export type AppConfig = {
   authLinkProviders?: Maybe<Array<IdentityProvider>>
   authLoginProviders?: Maybe<Array<IdentityProvider>>
   features: Array<AppFeature>
+  resolvers: Array<NetworkResolver>
 }
 
 export enum AppFeature {
@@ -909,6 +910,7 @@ export enum NetworkResolver {
   Anybodies = 'Anybodies',
   SolanaFungible = 'SolanaFungible',
   SolanaNonFungible = 'SolanaNonFungible',
+  SolanaValidator = 'SolanaValidator',
 }
 
 export type NetworkToken = {
@@ -3626,6 +3628,7 @@ export type AppConfigDetailsFragment = {
   authLinkProviders?: Array<IdentityProvider> | null
   authLoginProviders?: Array<IdentityProvider> | null
   features: Array<AppFeature>
+  resolvers: Array<NetworkResolver>
 }
 
 export type PagingMetaDetailsFragment = {
@@ -3656,6 +3659,7 @@ export type AppConfigQuery = {
     authLinkProviders?: Array<IdentityProvider> | null
     authLoginProviders?: Array<IdentityProvider> | null
     features: Array<AppFeature>
+    resolvers: Array<NetworkResolver>
   }
 }
 
@@ -8625,6 +8629,7 @@ export const AppConfigDetailsFragmentDoc = gql`
     authLinkProviders
     authLoginProviders
     features
+    resolvers
   }
 `
 export const PagingMetaDetailsFragmentDoc = gql`
@@ -10118,7 +10123,7 @@ export type SdkFunctionWrapper = <T>(
   variables?: any,
 ) => Promise<T>
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, variables) => action()
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, _variables) => action()
 const LogoutDocumentString = print(LogoutDocument)
 const MeDocumentString = print(MeDocument)
 const AdminCreateBackupDocumentString = print(AdminCreateBackupDocument)
