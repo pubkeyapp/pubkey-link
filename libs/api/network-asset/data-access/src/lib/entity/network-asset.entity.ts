@@ -1,7 +1,7 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql'
 import { Prisma } from '@prisma/client'
-import { PagingResponse } from '@pubkey-link/api-core-data-access'
-import { NetworkCluster, NetworkResolver } from '@pubkey-link/api-network-data-access'
+import { NetworkResolver, PagingResponse } from '@pubkey-link/api-core-data-access'
+import { NetworkCluster } from '@pubkey-link/api-network-data-access'
 import { NetworkTokenType } from '@pubkey-link/api-network-token-data-access'
 import { GraphQLJSON } from 'graphql-scalars'
 

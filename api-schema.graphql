@@ -208,6 +208,7 @@ type AppConfig {
   authLinkProviders: [IdentityProvider!]
   authLoginProviders: [IdentityProvider!]
   features: [AppFeature!]!
+  resolvers: [NetworkResolver!]!
 }
 
 enum AppFeature {
@@ -568,6 +569,7 @@ enum NetworkResolver {
   Anybodies
   SolanaFungible
   SolanaNonFungible
+  SolanaValidator
 }
 
 type NetworkToken {

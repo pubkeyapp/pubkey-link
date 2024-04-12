@@ -354,6 +354,7 @@ enum NetworkResolver {
   Anybodies
   SolanaFungible
   SolanaNonFungible
+  SolanaValidator
 }
 
 enum NetworkTokenType {

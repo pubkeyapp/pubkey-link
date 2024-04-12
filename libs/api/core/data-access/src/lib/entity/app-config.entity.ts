@@ -1,5 +1,6 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql'
 import { IdentityProvider } from './identity-provider.enum'
+import { NetworkResolver } from './network-resolver.enum'
 
 @ObjectType()
 export class AppConfig {
@@ -17,6 +18,8 @@ export class AppConfig {
   authLinkProviders!: IdentityProvider[]
   @Field(() => [AppFeature])
   features!: AppFeature[]
+  @Field(() => [NetworkResolver])
+  resolvers!: NetworkResolver[]
 }
 
 export enum AppFeature {

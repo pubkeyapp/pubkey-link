@@ -54,6 +54,9 @@ export interface ApiCoreConfig {
   featureCommunityCreate: boolean
   featureCommunitySnapshots: boolean
   featureCommunityTeams: boolean
+  featureResolverSolanaFungible: boolean
+  featureResolverSolanaNonFungible: boolean
+  featureResolverSolanaValidator: boolean
   // Host
   host: string
   // JWT
@@ -104,6 +107,9 @@ export function configuration(): ApiCoreConfig {
     featureCommunityCreate: process.env['FEATURE_COMMUNITY_CREATE'] === 'true',
     featureCommunitySnapshots: process.env['FEATURE_COMMUNITY_SNAPSHOTS'] === 'true',
     featureCommunityTeams: process.env['FEATURE_COMMUNITY_TEAMS'] === 'true',
+    featureResolverSolanaFungible: process.env['FEATURE_RESOLVER_SOLANA_FUNGIBLE'] === 'true',
+    featureResolverSolanaNonFungible: process.env['FEATURE_RESOLVER_SOLANA_NON_FUNGIBLE'] === 'true',
+    featureResolverSolanaValidator: process.env['FEATURE_RESOLVER_SOLANA_VALIDATOR'] === 'true',
     host: process.env['HOST'] as string,
     jwtSecret: process.env['JWT_SECRET'] as string,
     port: parseInt(process.env['PORT'] as string, 10) || 3000,
