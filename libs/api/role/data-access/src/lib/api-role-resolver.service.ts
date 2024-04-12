@@ -157,7 +157,7 @@ export class ApiRoleResolverService {
       })
       .then((res) => res.map((r) => r.id))
 
-    const existing = await this.core.data.communityMember.findMany({ where: { communityId } })
+    const existing = await this.core.data.communityMember.findMany({ where: { communityId }, include: { teams: true } })
     const existingIds = existing.map((e) => e.userId)
 
     const newMembers: Prisma.CommunityMemberCreateManyInput[] = userIds
@@ -181,6 +181,8 @@ export class ApiRoleResolverService {
     const deleteMembers = existing
       .filter((e) => !userIds.includes(e.userId))
       .filter((e) => e.role !== CommunityRole.Admin)
+      .filter((e) => !e.teams?.length)
+
     if (deleteMembers.length) {
       for (const deleteMember of deleteMembers) {
         await this.core.data.communityMember.delete({ where: { id: deleteMember.id } })
@@ -436,16 +438,25 @@ export class ApiRoleResolverService {
             where: { provider: { in: [IdentityProvider.Discord, IdentityProvider.Solana] } },
             select: { provider: true, providerId: true },
           },
+          communities: {
+            where: { communityId },
+            include: { teams: { include: { identity: true } } },
+          },
         },
         orderBy: { username: 'asc' },
       })
       .then((users) =>
         users.map((user) => {
           const discordId = user.identities.find((i) => i.provider === IdentityProvider.Discord)?.providerId
-          const solanaIds = user.identities
+          const solanaIdentities = user.identities
             .filter((i) => i.provider === IdentityProvider.Solana)
             .map((i) => i.providerId)
 
+          const teams = user.communities[0].teams ?? []
+          const combinedSolanaIdentities = [...solanaIdentities, ...teams.map((t) => t.identity?.providerId)].filter(
+            Boolean,
+          )
+          const solanaIds = [...new Set(combinedSolanaIdentities)]
           return {
             userId: user.id,
             username: user.username,
