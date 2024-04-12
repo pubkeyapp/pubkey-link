@@ -74,15 +74,26 @@ export class ApiRoleResolverService {
     }
     this.logger.verbose(`Validating ${conditions.length} conditions for ${users.length} users`)
 
+    const hasValidatorCondition: RoleCondition | undefined = conditions.find(
+      (c) => c.type === NetworkTokenType.Validator,
+    )
+    const voteAccounts = hasValidatorCondition ? await this.network.cluster.getVoteAccounts() : []
+
     for (const user of users) {
       // We are now in the context of a user
       const resolved = await this.resolveNetworkAssetsForContext({ conditions, context: user })
 
       // Now we want to loop over each condition and check the assets
       for (const condition of conditions) {
-        const result = this.validateRoleCondition(condition, resolved.assetMap[condition.type] ?? [])
-        if (result) {
-          resolved.conditions.push(condition)
+        if (condition.token?.type === NetworkTokenType.Validator) {
+          if (voteAccounts.find((va) => resolved.solanaIds.includes(va))) {
+            resolved.conditions.push(condition)
+          }
+        } else {
+          const result = this.validateRoleCondition(condition, resolved.assetMap[condition.type] ?? [])
+          if (result) {
+            resolved.conditions.push(condition)
+          }
         }
       }
 

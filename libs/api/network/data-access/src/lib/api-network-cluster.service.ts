@@ -61,6 +61,12 @@ export class ApiNetworkClusterService {
     return connection
   }
 
+  async getVoteAccounts() {
+    return this.getConnection(NetworkCluster.SolanaDevnet)
+      .then((conn) => conn.getVoteAccounts('confirmed'))
+      .then((accounts) => accounts.current.map((account) => account.nodePubkey))
+  }
+
   async getUmi(cluster: NetworkCluster) {
     if (!this.umis.has(cluster)) {
       const network = await this.core.data.network.findUnique({ where: { cluster } })
