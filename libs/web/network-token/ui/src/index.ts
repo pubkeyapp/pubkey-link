@@ -1,6 +1,7 @@
 export * from './lib/admin-network-token-ui-create-form'
 export * from './lib/admin-network-token-ui-table'
 export * from './lib/admin-network-token-ui-update-form'
+export * from './lib/get-network-token-type-icon'
 export * from './lib/network-asset-ui-show-balance'
 export * from './lib/network-token-ui-avatar'
 export * from './lib/network-token-ui-explorer-icon'

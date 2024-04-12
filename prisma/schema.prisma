@@ -360,6 +360,7 @@ enum NetworkResolver {
 enum NetworkTokenType {
   Fungible
   NonFungible
+  Validator
 }
 
 enum NetworkType {

@@ -6,6 +6,8 @@ export function getNetworkTokenTypeColor(type?: NetworkTokenType | null): string
       return 'lime'
     case NetworkTokenType.Fungible:
       return 'indigo'
+    case NetworkTokenType.Validator:
+      return 'grape'
     default:
       return undefined
   }

@@ -1,7 +1,6 @@
 export * from './lib/admin-role-ui-create-form'
 export * from './lib/admin-role-ui-table'
 export * from './lib/admin-role-ui-update-form'
-export * from './lib/get-role-condition-icon-type'
 export * from './lib/role-condition-ui-add-button'
 export * from './lib/role-condition-ui-amount'
 export * from './lib/role-condition-ui-create-wizard'
