@@ -12,7 +12,7 @@ import { UserRoleDetailSettingsTab } from './user-role-detail-settings.tab'
 export function UserRoleDetailFeature({ community }: { community: Community }) {
   const { roleId } = useParams<{ roleId: string }>() as { roleId: string }
   const { item, query } = useUserFindOneRole({ roleId })
-  const { items: tokens } = useUserFindManyNetworkToken({ cluster: community.cluster })
+  const { items: tokens } = useUserFindManyNetworkToken({ cluster: community.cluster, limit: 100 })
 
   return query.isLoading ? (
     <UiLoader />
