@@ -472,6 +472,7 @@ type Mutation {
   adminUpdateRole(input: AdminUpdateRoleInput!, roleId: String!): Role
   adminUpdateTeam(input: AdminUpdateTeamInput!, teamId: String!): Team
   adminUpdateUser(input: AdminUpdateUserInput!, userId: String!): User
+  adminVerifyNetworkAssets(cluster: NetworkCluster): Boolean
   anonVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
   logout: Boolean
   userAddCommunityMember(communityId: String!, input: UserAddCommunityMemberInput!): CommunityMember

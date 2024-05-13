@@ -18,12 +18,6 @@ export class ApiAdminNetworkAssetResolver {
   adminDeleteNetworkAsset(@Args('networkAssetId') networkAssetId: string) {
     return this.service.admin.deleteNetworkAsset(networkAssetId)
   }
-  @Mutation(() => Boolean, { nullable: true })
-  adminSyncNetworkAssets(
-    @Args({ name: 'cluster', type: () => NetworkCluster, nullable: true }) cluster: NetworkCluster,
-  ) {
-    return this.service.sync.syncAllNetworkAssets(cluster, { force: true })
-  }
 
   @Query(() => NetworkAssetPaging)
   adminFindManyNetworkAsset(@Args('input') input: AdminFindManyNetworkAssetInput) {
@@ -33,5 +27,19 @@ export class ApiAdminNetworkAssetResolver {
   @Query(() => NetworkAsset, { nullable: true })
   adminFindOneNetworkAsset(@Args('networkAssetId') networkAssetId: string) {
     return this.service.admin.findOneNetworkAsset(networkAssetId)
+  }
+
+  @Mutation(() => Boolean, { nullable: true })
+  adminSyncNetworkAssets(
+    @Args({ name: 'cluster', type: () => NetworkCluster, nullable: true }) cluster: NetworkCluster,
+  ) {
+    return this.service.sync.syncAllNetworkAssets(cluster, { force: true })
+  }
+
+  @Mutation(() => Boolean, { nullable: true })
+  adminVerifyNetworkAssets(
+    @Args({ name: 'cluster', type: () => NetworkCluster, nullable: true }) cluster: NetworkCluster,
+  ) {
+    return this.service.sync.verifyAllNetworkAssets(cluster)
   }
 }

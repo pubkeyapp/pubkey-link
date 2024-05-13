@@ -4,7 +4,7 @@ import { AdminNetworkUiUpdateForm } from '@pubkey-link/web-network-ui'
 import { UiCard, UiError, UiLoader } from '@pubkey-ui/core'
 
 export function AdminNetworkDetailSettingsTab({ networkId }: { networkId: string }) {
-  const { item, query, syncNetworkAssets, updateNetwork } = useAdminFindOneNetwork({ networkId })
+  const { item, query, syncNetworkAssets, verifyNetworkAssets, updateNetwork } = useAdminFindOneNetwork({ networkId })
 
   if (query.isLoading) {
     return <UiLoader />
@@ -18,6 +18,9 @@ export function AdminNetworkDetailSettingsTab({ networkId }: { networkId: string
       <AdminNetworkUiUpdateForm network={item} submit={updateNetwork}>
         <Button onClick={() => syncNetworkAssets()} variant="light">
           Sync assets
+        </Button>
+        <Button onClick={() => verifyNetworkAssets()} variant="light">
+          Verify assets
         </Button>
       </AdminNetworkUiUpdateForm>
     </UiCard>

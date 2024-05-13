@@ -13,20 +13,24 @@ import {
   API_NETWORK_ASSET_SYNC,
   API_NETWORK_ASSET_UPSERT_FLOW,
   API_NETWORK_ASSET_UPSERT_QUEUE,
+  API_NETWORK_ASSET_VERIFY,
 } from './helpers/api-network-asset.constants'
 import { ApiNetworkAssetSyncQueue } from './processors/api-network-asset-sync-queue'
 import { ApiNetworkAssetUpsertQueue } from './processors/api-network-asset-upsert-queue'
+import { ApiNetworkAssetVerifyQueue } from './processors/api-network-asset-verify-queue'
 
-const processors = [ApiNetworkAssetSyncQueue, ApiNetworkAssetUpsertQueue]
+const processors = [ApiNetworkAssetSyncQueue, ApiNetworkAssetUpsertQueue, ApiNetworkAssetVerifyQueue]
 
 @Module({
   imports: [
     ApiCoreDataAccessModule,
     ApiNetworkDataAccessModule,
     BullModule.registerQueue({ name: API_NETWORK_ASSET_SYNC }),
+    BullModule.registerQueue({ name: API_NETWORK_ASSET_VERIFY }),
     BullModule.registerQueue({ name: API_NETWORK_ASSET_UPSERT_QUEUE }),
     BullModule.registerFlowProducer({ name: API_NETWORK_ASSET_UPSERT_FLOW }),
     BullBoardModule.forFeature({ name: API_NETWORK_ASSET_SYNC, adapter: BullMQAdapter }),
+    BullBoardModule.forFeature({ name: API_NETWORK_ASSET_VERIFY, adapter: BullMQAdapter }),
     BullBoardModule.forFeature({ name: API_NETWORK_ASSET_UPSERT_QUEUE, adapter: BullMQAdapter }),
   ],
   providers: [
