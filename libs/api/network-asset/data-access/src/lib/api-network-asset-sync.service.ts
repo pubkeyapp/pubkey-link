@@ -5,6 +5,7 @@ import {
   Identity,
   IdentityProvider,
   LogLevel,
+  NetworkAsset,
   NetworkCluster,
   NetworkToken,
   NetworkTokenType,
@@ -12,12 +13,18 @@ import {
 } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
-import { findNetworkAssetDiff, isNetworkAssetEqual, NetworkAssetInput } from '@pubkey-link/api-network-util'
+import {
+  convertDasApiAsset,
+  findNetworkAssetDiff,
+  isNetworkAssetEqual,
+  NetworkAssetInput,
+} from '@pubkey-link/api-network-util'
 import { FlowProducer, Queue } from 'bullmq'
 import {
   API_NETWORK_ASSET_SYNC,
   API_NETWORK_ASSET_UPSERT_FLOW,
   API_NETWORK_ASSET_UPSERT_QUEUE,
+  API_NETWORK_ASSET_VERIFY,
   ASSET_UPSERT_FLOW,
   ASSET_UPSERT_QUEUE,
 } from './helpers/api-network-asset.constants'
@@ -29,6 +36,7 @@ export class ApiNetworkAssetSyncService {
 
   constructor(
     @InjectQueue(API_NETWORK_ASSET_SYNC) private networkAssetSyncQueue: Queue,
+    @InjectQueue(API_NETWORK_ASSET_VERIFY) private networkAssetVerifyQueue: Queue,
     @InjectQueue(API_NETWORK_ASSET_UPSERT_QUEUE) private networkAssetUpsertQueue: Queue,
     @InjectFlowProducer(API_NETWORK_ASSET_UPSERT_FLOW) private networkAssetUpsertFlow: FlowProducer,
     private readonly core: ApiCoreService,
@@ -43,6 +51,12 @@ export class ApiNetworkAssetSyncService {
     }
 
     const job = await this.networkAssetSyncQueue.add('sync', { cluster, identity })
+
+    return !!job.id
+  }
+
+  async verify({ cluster, asset }: { cluster: NetworkCluster; asset: NetworkAsset }) {
+    const job = await this.networkAssetVerifyQueue.add('verify', { cluster, asset })
 
     return !!job.id
   }
@@ -79,6 +93,21 @@ export class ApiNetworkAssetSyncService {
     const jobs = identities.map((identity) => this.sync({ cluster, identity }))
     const results = await Promise.all(jobs)
     this.logger.log(`Queued ${results.length} identity syncs`)
+    return results.every((r) => r)
+  }
+
+  @Cron(CronExpression.EVERY_4_HOURS)
+  async verifyAllNetworkAssets(cluster: NetworkCluster = NetworkCluster.SolanaMainnet) {
+    const assets = await this.core.data.networkAsset.findMany({ where: { cluster } })
+    if (!assets.length) {
+      this.logger.log(`No assets to sync`)
+      return true
+    }
+    this.logger.log(`Queuing ${assets.length} assets to verify`)
+    const jobs = assets.map((asset) => this.verify({ cluster, asset }))
+    const results = await Promise.all(jobs)
+    this.logger.log(`Queued ${results.length} assets verified`)
+
     return results.every((r) => r)
   }
 
@@ -143,6 +172,40 @@ export class ApiNetworkAssetSyncService {
     }
 
     return assets
+  }
+
+  async verifyAsset({ cluster, asset: found }: { cluster: NetworkCluster; asset: NetworkAsset }): Promise<boolean> {
+    const account = found.account
+    const group = found.group ?? undefined
+    this.logger.verbose(`Verifying assets ${account} on ${cluster}`)
+
+    // Get the asset from the cluster
+    const [asset, accountInfo] = await Promise.all([
+      this.network.getAsset({ cluster, account }).then((res) => convertDasApiAsset({ asset: res, cluster, group })),
+      this.network.getAccountInfo({ cluster, account }),
+    ])
+
+    if (!asset || !accountInfo) {
+      this.logger.warn(`${cluster} => ${account}: Asset or account info not found`)
+      const deleted = await this.core.data.networkAsset.delete({ where: { account_cluster: { account, cluster } } })
+      this.logger.verbose(`${cluster} => ${account}: Deleted asset ${deleted.id}`)
+      return false
+    }
+    const isEqual = isNetworkAssetEqual({ found, asset })
+    this.logger.verbose(`${cluster} => ${account}: Asset found ${isEqual ? 'and' : 'but not'} equal`)
+
+    if (isEqual) {
+      this.logger.verbose(`${cluster} => ${account}: Asset found, no update needed`)
+      return true
+    }
+
+    const updated = await this.core.data.networkAsset.update({
+      where: { account_cluster: { account: asset.account, cluster } },
+      data: asset,
+    })
+
+    this.logger.verbose(`${cluster} => ${account}: Updated asset ${updated.id}`)
+    return true
   }
 
   async upsertAsset({ asset, cluster }: { cluster: NetworkCluster; asset: NetworkAssetInput }) {

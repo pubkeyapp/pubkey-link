@@ -20,6 +20,11 @@ export function useAdminFindOneNetwork({ networkId }: { networkId: string }) {
         toastSuccess('NetworkAssets synced')
         return query.refetch()
       }),
+    verifyNetworkAssets: () =>
+      sdk.adminVerifyNetworkAssets({ cluster: item?.cluster ?? NetworkCluster.SolanaMainnet }).then(() => {
+        toastSuccess('NetworkAssets verified')
+        return query.refetch()
+      }),
     updateNetwork: async (input: AdminUpdateNetworkInput) =>
       sdk
         .adminUpdateNetwork({ networkId, input })

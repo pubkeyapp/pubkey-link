@@ -10,7 +10,7 @@ export function convertDasApiAsset({
   cluster,
   group,
 }: {
-  asset: DasApiAsset
+  asset: DasApiAsset & { mint_extensions?: Record<string, Record<string, string>> }
   cluster: NetworkCluster
   group?: string
 }): NetworkAssetInput {
