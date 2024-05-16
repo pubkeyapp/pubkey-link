@@ -23,11 +23,11 @@ export function UserUiItem({
   if (!user) return null
 
   return (
-    <UiAnchor to={to ?? undefined} underline="never" {...anchorProps}>
+    <UiAnchor to={to ?? undefined} underline="never" {...anchorProps} display="inline-flex">
       <Group gap="sm" {...groupProps}>
         <UserUiAvatar user={user} {...avatarProps} />
         <Stack gap={1}>
-          <UserUiUsername user={user} to={to} />
+          <UserUiUsername user={user} />
           {children ? (
             children
           ) : user.name ? (

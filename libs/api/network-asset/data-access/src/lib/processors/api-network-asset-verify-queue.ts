@@ -11,7 +11,7 @@ export interface ApiNetworkAssetIdentityVerifyPayload {
   asset: NetworkAsset
 }
 
-@Processor(API_NETWORK_ASSET_VERIFY, { concurrency: parseInt(process.env['VERIFY_NETWORK_ASSETS_CONCURRENT'] || '2') })
+@Processor(API_NETWORK_ASSET_VERIFY, { concurrency: parseInt(process.env['VERIFY_NETWORK_ASSETS_CONCURRENT'] || '1') })
 export class ApiNetworkAssetVerifyQueue extends WorkerHost {
   private readonly logger = new Logger(ApiNetworkAssetVerifyQueue.name)
   constructor(private readonly core: ApiCoreService, private readonly sync: ApiNetworkAssetSyncService) {

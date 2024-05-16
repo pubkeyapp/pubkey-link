@@ -31,6 +31,8 @@ export class NetworkAsset {
   program!: string | null
   @Field(() => Int)
   decimals!: number
+  @Field({ nullable: true })
+  burnt?: boolean
   @Field()
   mint!: string
   @Field()

@@ -32,7 +32,7 @@ import {
 @Injectable()
 export class ApiNetworkAssetSyncService {
   private readonly logger = new Logger(ApiNetworkAssetSyncService.name)
-  private readonly assetTimeout = 1000 * 60 * 10
+  private readonly assetTimeout = this.core.config.isDevelopment ? 1000 : 1000 * 60 * 10
 
   constructor(
     @InjectQueue(API_NETWORK_ASSET_SYNC) private networkAssetSyncQueue: Queue,

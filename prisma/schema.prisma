@@ -199,6 +199,7 @@ model NetworkAsset {
   imageUrl   String?
   metadata   Json?
   attributes Json?
+  burnt      Boolean          @default(false)
   logs       Log[]
 
   @@unique([account, cluster])
