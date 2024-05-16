@@ -66,14 +66,14 @@ export class ApiNetworkResolverSolanaNonFungibleService {
     return [...new Set([...convertedGroups, ...convertedMints])]
   }
 
-  getAssets({ umi, owner, limit, page }: { umi: Umi; owner: string; limit: number; page: number }) {
+  async getAssets({ umi, owner, limit, page }: { umi: Umi; owner: string; limit: number; page: number }) {
     if (this.core.config.featureBetaDasSearch) {
       return this.searchAssets({ umi, owner, limit, page })
     }
     return this.getAssetsByOwner({ umi, owner, limit, page })
   }
 
-  getAssetsByOwner({ umi, owner, limit, page }: { umi: Umi; owner: string; limit: number; page: number }) {
+  async getAssetsByOwner({ umi, owner, limit, page }: { umi: Umi; owner: string; limit: number; page: number }) {
     return umi.rpc.getAssetsByOwner({
       owner: publicKey(owner),
       limit: limit,
@@ -82,12 +82,13 @@ export class ApiNetworkResolverSolanaNonFungibleService {
     })
   }
 
-  searchAssets({ umi, owner, limit, page }: { umi: Umi; owner: string; limit: number; page: number }) {
+  async searchAssets({ umi, owner, limit, page }: { umi: Umi; owner: string; limit: number; page: number }) {
     return umi.rpc.searchAssets({
       owner: publicKey(owner),
       limit: limit,
       page,
       sortBy: { sortBy: 'updated', sortDirection: 'desc' },
+      burnt: true,
     })
   }
 }

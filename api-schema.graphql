@@ -532,6 +532,7 @@ type NetworkAsset {
   account: String!
   attributes: JSON
   balance: String
+  burnt: Boolean
   cluster: NetworkCluster!
   createdAt: DateTime
   decimals: Int!

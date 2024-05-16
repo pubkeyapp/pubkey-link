@@ -25,6 +25,7 @@ export function convertDasApiAsset({
     group,
     decimals: 0,
     balance: '1',
+    burnt: asset.burnt,
     mint: asset.id,
     program: '',
     imageUrl: asset.content.files?.length ? asset.content.files[0].uri : '',

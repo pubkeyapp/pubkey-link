@@ -29,25 +29,21 @@ export class ApiNetworkAssetSyncQueue extends WorkerHost {
     const synced = await this.sync.syncIdentity({ cluster: job.data.cluster, owner: job.data.identity.providerId })
 
     if (synced.length > 0) {
-      await job.log(`Synced ${job.data.identity.provider} identity ${job.data.identity.providerId}`)
-      await this.core.logVerbose(
-        `Synced ${synced.length} assets for ${job.data.identity.provider} identity ${job.data.identity.providerId} `,
-        {
-          identityProvider: job.data.identity.provider,
-          identityProviderId: job.data.identity.providerId,
-          userId: job.data.identity.ownerId,
-        },
-      )
+      const message = `Synced ${synced.length} assets for ${job.data.identity.provider} identity ${job.data.identity.providerId} `
+      await job.log(message)
+      await this.core.logVerbose(message, {
+        identityProvider: job.data.identity.provider,
+        identityProviderId: job.data.identity.providerId,
+        userId: job.data.identity.ownerId,
+      })
     } else {
-      await job.log(`No identities found for ${job.data.identity.provider} identity ${job.data.identity.providerId}`)
-      await this.core.logWarning(
-        `No identities found for ${job.data.identity.provider} identity ${job.data.identity.providerId}`,
-        {
-          identityProvider: job.data.identity.provider,
-          identityProviderId: job.data.identity.providerId,
-          userId: job.data.identity.ownerId,
-        },
-      )
+      const message = `No assets found for ${job.data.identity.provider} identity ${job.data.identity.providerId}`
+      await job.log(message)
+      await this.core.logWarning(message, {
+        identityProvider: job.data.identity.provider,
+        identityProviderId: job.data.identity.providerId,
+        userId: job.data.identity.ownerId,
+      })
     }
 
     return synced

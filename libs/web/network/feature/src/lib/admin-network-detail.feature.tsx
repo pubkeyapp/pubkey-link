@@ -1,4 +1,4 @@
-import { Group } from '@mantine/core'
+import { Button, Group } from '@mantine/core'
 import { AdminNetworkAssetFeature } from '@pubkey-link/web-network-asset-feature'
 import { useAdminFindOneNetwork } from '@pubkey-link/web-network-data-access'
 import { AdminNetworkTokenFeature } from '@pubkey-link/web-network-token-feature'
@@ -9,7 +9,7 @@ import { AdminNetworkDetailSettingsTab } from './admin-network-detail-settings.t
 
 export function AdminNetworkDetailFeature() {
   const { networkId } = useParams<{ networkId: string }>() as { networkId: string }
-  const { item, query } = useAdminFindOneNetwork({ networkId })
+  const { item, query, syncNetworkAssets, verifyNetworkAssets } = useAdminFindOneNetwork({ networkId })
 
   if (query.isLoading) {
     return <UiLoader />
@@ -24,6 +24,12 @@ export function AdminNetworkDetailFeature() {
       leftAction={<UiBack />}
       rightAction={
         <Group>
+          <Button size="xs" onClick={() => syncNetworkAssets()} variant="light">
+            Sync Assets
+          </Button>
+          <Button size="xs" onClick={() => verifyNetworkAssets()} variant="light">
+            Verify Assets
+          </Button>
           <UiDebugModal data={item} />
         </Group>
       }
@@ -36,7 +42,11 @@ export function AdminNetworkDetailFeature() {
             label: 'Settings',
             element: <AdminNetworkDetailSettingsTab networkId={networkId} />,
           },
-          { path: 'assets', label: 'Assets', element: <AdminNetworkAssetFeature cluster={item.cluster} /> },
+          {
+            path: 'assets',
+            label: 'Assets',
+            element: <AdminNetworkAssetFeature cluster={item.cluster} />,
+          },
         ]}
       />
     </UiPage>

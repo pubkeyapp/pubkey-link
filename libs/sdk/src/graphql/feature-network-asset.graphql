@@ -12,6 +12,7 @@ fragment NetworkAssetDetails on NetworkAsset {
   program
   decimals
   mint
+  burnt
   owner
   group
   imageUrl

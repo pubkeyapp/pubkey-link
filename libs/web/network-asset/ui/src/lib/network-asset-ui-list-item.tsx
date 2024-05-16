@@ -1,6 +1,6 @@
-import { Group, Stack, Text } from '@mantine/core'
+import { Badge, Group, Stack, Text } from '@mantine/core'
 import { NetworkAsset } from '@pubkey-link/sdk'
-import { UiAnchor, UiAnchorProps, UiDebugModal } from '@pubkey-ui/core'
+import { UiAnchor, UiAnchorProps } from '@pubkey-ui/core'
 import { NetworkAssetUiAvatar } from './network-asset-ui-avatar'
 
 export function NetworkAssetUiListItem({
@@ -23,10 +23,7 @@ export function NetworkAssetUiListItem({
         <Text fw="bold">{networkAsset?.symbol}</Text>
         <Text fz="xs">{networkAsset?.name}</Text>
       </Stack>
-      <Group justify="between">
-        <div></div>
-        <UiDebugModal data={networkAsset} />
-      </Group>
+      <Group justify="between">{networkAsset.burnt ? <Badge>Burnt</Badge> : null}</Group>
     </Group>
   )
 }

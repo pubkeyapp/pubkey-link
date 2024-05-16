@@ -1,8 +1,11 @@
 import { ActionIcon, Group, ScrollArea } from '@mantine/core'
 import { NetworkAsset } from '@pubkey-link/sdk'
+import { UiCopy, UiDebugModal } from '@pubkey-ui/core'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'
+import { NetworkAssetUiAttributesIcon } from './network-asset-ui-attributes-icon'
+import { NetworkAssetUiExplorerIcon } from './network-asset-ui-explorer-icon'
 
 import { NetworkAssetUiListItem } from './network-asset-ui-list-item'
 
@@ -34,11 +37,7 @@ export function AdminNetworkAssetUiTable({
         columns={[
           {
             accessor: 'name',
-            render: (item) => (
-              <Group>
-                <NetworkAssetUiListItem networkAsset={item} to={`./${item.id}`} />
-              </Group>
-            ),
+            render: (item) => <NetworkAssetUiListItem networkAsset={item} to={`./${item.id}`} />,
           },
           { accessor: 'type' },
           {
@@ -47,6 +46,10 @@ export function AdminNetworkAssetUiTable({
             textAlign: 'right',
             render: (item) => (
               <Group gap="xs" justify="right">
+                <UiDebugModal data={item} />
+                <NetworkAssetUiAttributesIcon asset={item} />
+                <NetworkAssetUiExplorerIcon asset={item} />
+                <UiCopy text={item.account} tooltip="Copy account address" />
                 <ActionIcon color="brand" variant="light" size="sm" component={Link} to={`./${item.id}/settings`}>
                   <IconPencil size={16} />
                 </ActionIcon>

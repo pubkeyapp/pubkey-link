@@ -875,6 +875,7 @@ export type NetworkAsset = {
   account: Scalars['String']['output']
   attributes?: Maybe<Scalars['JSON']['output']>
   balance?: Maybe<Scalars['String']['output']>
+  burnt?: Maybe<Scalars['Boolean']['output']>
   cluster: NetworkCluster
   createdAt?: Maybe<Scalars['DateTime']['output']>
   decimals: Scalars['Int']['output']
@@ -4103,6 +4104,7 @@ export type LogDetailsFragment = {
     program?: string | null
     decimals: number
     mint: string
+    burnt?: boolean | null
     owner: string
     group?: string | null
     imageUrl?: string | null
@@ -4274,6 +4276,7 @@ export type UserFindManyLogQuery = {
         program?: string | null
         decimals: number
         mint: string
+        burnt?: boolean | null
         owner: string
         group?: string | null
         imageUrl?: string | null
@@ -4455,6 +4458,7 @@ export type UserFindOneLogQuery = {
       program?: string | null
       decimals: number
       mint: string
+      burnt?: boolean | null
       owner: string
       group?: string | null
       imageUrl?: string | null
@@ -4627,6 +4631,7 @@ export type AdminFindManyLogQuery = {
         program?: string | null
         decimals: number
         mint: string
+        burnt?: boolean | null
         owner: string
         group?: string | null
         imageUrl?: string | null
@@ -4808,6 +4813,7 @@ export type AdminFindOneLogQuery = {
       program?: string | null
       decimals: number
       mint: string
+      burnt?: boolean | null
       owner: string
       group?: string | null
       imageUrl?: string | null
@@ -4927,6 +4933,7 @@ export type NetworkAssetDetailsFragment = {
   program?: string | null
   decimals: number
   mint: string
+  burnt?: boolean | null
   owner: string
   group?: string | null
   imageUrl?: string | null
@@ -4957,6 +4964,7 @@ export type UserFindManyNetworkAssetQuery = {
       program?: string | null
       decimals: number
       mint: string
+      burnt?: boolean | null
       owner: string
       group?: string | null
       imageUrl?: string | null
@@ -4998,6 +5006,7 @@ export type UserFindOneNetworkAssetQuery = {
     program?: string | null
     decimals: number
     mint: string
+    burnt?: boolean | null
     owner: string
     group?: string | null
     imageUrl?: string | null
@@ -5029,6 +5038,7 @@ export type AdminFindManyNetworkAssetQuery = {
       program?: string | null
       decimals: number
       mint: string
+      burnt?: boolean | null
       owner: string
       group?: string | null
       imageUrl?: string | null
@@ -5069,6 +5079,7 @@ export type AdminFindOneNetworkAssetQuery = {
     program?: string | null
     decimals: number
     mint: string
+    burnt?: boolean | null
     owner: string
     group?: string | null
     imageUrl?: string | null
@@ -8730,6 +8741,7 @@ export const NetworkAssetDetailsFragmentDoc = gql`
     program
     decimals
     mint
+    burnt
     owner
     group
     imageUrl
