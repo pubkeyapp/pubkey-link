@@ -51,6 +51,7 @@ export interface ApiCoreConfig {
   environment: Env
   // Feature Flags
   featureAnonCommunities: boolean
+  featureBetaDasSearch: boolean
   featureCommunityCreate: boolean
   featureCommunitySnapshots: boolean
   featureCommunityTeams: boolean
@@ -104,6 +105,7 @@ export function configuration(): ApiCoreConfig {
     databaseProvision: process.env['DATABASE_PROVISION'] === 'true',
     environment: (process.env['NODE_ENV'] as Env) || 'development',
     featureAnonCommunities: process.env['FEATURE_ANON_COMMUNITIES'] === 'true',
+    featureBetaDasSearch: process.env['FEATURE_BETA_DAS_SEARCH'] === 'true',
     featureCommunityCreate: process.env['FEATURE_COMMUNITY_CREATE'] === 'true',
     featureCommunitySnapshots: process.env['FEATURE_COMMUNITY_SNAPSHOTS'] === 'true',
     featureCommunityTeams: process.env['FEATURE_COMMUNITY_TEAMS'] === 'true',
