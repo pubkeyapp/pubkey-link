@@ -190,6 +190,10 @@ export class ApiCoreConfigService {
     return this.service.get<boolean>('featureAnonCommunities')
   }
 
+  get featureBetaDasSearch() {
+    return this.service.get<boolean>('featureBetaDasSearch')
+  }
+
   get featureCommunityCreate() {
     return this.service.get<boolean>('featureCommunityCreate')
   }
