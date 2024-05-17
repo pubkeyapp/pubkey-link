@@ -462,7 +462,7 @@ export class ApiBotDataManagerService {
 
     return botServer
   }
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   private async syncAllBotServers() {
     if (!this.core.config.syncBotServers) {
       this.logger.verbose(`Bot server sync is disabled`)
