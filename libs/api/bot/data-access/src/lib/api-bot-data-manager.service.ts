@@ -240,12 +240,13 @@ export class ApiBotDataManagerService {
   }
 
   async syncBotServer(botId: string, serverId: string) {
-    const [communityMembers, communityRoles, botMembers, botServer, botInstance] = await Promise.all([
+    const [communityMembers, communityRoles, botMembers, botServer, botInstance, bot] = await Promise.all([
       this.getCommunityMemberMap({ botId }),
       this.getRolePermissions({ botId, serverId }),
       this.ensureBotInstance(botId).getDiscordServerMembers(serverId),
       this.ensureBotServer({ botId, serverId }),
       this.ensureBotInstance(botId),
+      this.core.data.bot.findUnique({ where: { id: botId } }),
     ])
     const guild = await botInstance.client?.guilds.fetch(serverId)
 
@@ -285,23 +286,26 @@ export class ApiBotDataManagerService {
 
     for (const cm of communityMembers) {
       const discordId = cm.discordId
+      // If we don't have a discordId, we can skip this member
       if (!discordId) {
         continue
       }
 
-      const found = botMembers.find((member) => member.memberId === discordId)
-      if (!found) {
+      // If this member is not in the community, we can skip it
+      const botMember = botMembers.find((member) => member.memberId === discordId)
+      if (!botMember) {
         continue
       }
+
+      // If we can't get this member, we can skip it
       const member = await this.getGuildMember(guild, discordId)
       if (!member) {
         this.logger.warn(`syncBotServerRoles: MEMBER ${discordId} NOT FOUND IN GUID`)
         notFound.push(discordId)
         continue
       }
-      const botMember = botMembers.find((member) => member.memberId === discordId)
-      const botMemberRoles = botMember?.roleIds ?? []
 
+      const botMemberRoles = botMember?.roleIds ?? []
       const communityMemberRoles = cm.roles.map((role) => communityRoles[role]).flat()
 
       const { toBeAdded, toBeRemoved } = getAddRemoved({ communityMemberRoles, botMemberRoles, roles })
@@ -318,7 +322,7 @@ export class ApiBotDataManagerService {
           mentionRoles,
           mentionUsers,
         })
-        await this.core.logVerbose(logMessage, { botId, communityId: cm.communityId, userId: cm.userId })
+        await this.core.logVerbose(logMessage, { botId, communityId: bot?.communityId, userId: cm.userId })
         await sendCommandChannel(botMessage)
       }
 
@@ -334,12 +338,52 @@ export class ApiBotDataManagerService {
           mentionRoles,
           mentionUsers,
         })
-        await this.core.logVerbose(logMessage, { botId, communityId: cm.communityId, userId: cm.userId })
+        await this.core.logVerbose(logMessage, { botId, communityId: bot?.communityId, userId: cm.userId })
         await sendCommandChannel(botMessage)
       }
     }
     if (notFound.length) {
       this.logger.warn(`Accounts not in Discord server: ${notFound.length}`)
+    }
+
+    // Remove members that have one of the roles in the community but are not in the community
+    const communityMemberIds = communityMembers.map((member) => member.userId)
+    const noCommunityMembers = botMembers
+      // Filter out members that are in the community
+      .filter((member) => !communityMemberIds.includes(member.memberId))
+      // Filter out members that have a role in the community
+      .map((member) => ({ ...member, roleIds: member.roleIds?.filter((roleId) => communityRoleIds.includes(roleId)) }))
+      // Filter out members that have a role that we don't care about
+      .filter((member) => member.roleIds?.length)
+
+    for (const { memberId: discordId, roleIds: botMemberRoles = [] } of noCommunityMembers) {
+      const member = await this.getGuildMember(guild, discordId)
+      if (!member) {
+        this.logger.warn(`syncBotServerRoles: MEMBER ${discordId} NOT FOUND IN GUID`)
+        notFound.push(discordId)
+        continue
+      }
+      this.logger.verbose(`syncBotServerRoles: FOUND MEMBER ${discordId} ${member.user.username}`)
+
+      const { toBeRemoved } = getAddRemoved({ communityMemberRoles: [], botMemberRoles, roles })
+      if (!toBeRemoved.length) {
+        this.logger.verbose(`syncBotServerRoles: NO REMOVES FOR ${discordId}`)
+        continue
+      }
+
+      if (!dryRun) {
+        await member.roles.remove(toBeRemoved)
+      }
+      const { botMessage, logMessage } = formatBotMessageRemove({
+        dryRun,
+        communityMember: { discordId, username: member.user.username },
+        roles: toBeRemoved,
+        roleMap,
+        mentionRoles,
+        mentionUsers,
+      })
+      await this.core.logVerbose(logMessage, { botId, communityId: bot?.communityId })
+      await sendCommandChannel(botMessage)
     }
 
     if (verbose) {
