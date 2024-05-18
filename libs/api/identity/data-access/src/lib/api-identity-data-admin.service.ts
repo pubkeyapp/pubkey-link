@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { Identity as PrismaIdentity, IdentityProvider, UserStatus } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
+import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-access'
 import { AdminCreateIdentityInput } from './dto/admin-create-identity.input'
 import { AdminFindManyIdentityInput } from './dto/admin-find-many-identity.input'
 
 @Injectable()
 export class ApiIdentityDataAdminService {
-  constructor(private readonly core: ApiCoreService) {}
+  constructor(private readonly core: ApiCoreService, private readonly networkAsset: ApiNetworkAssetService) {}
 
   async createIdentity(input: AdminCreateIdentityInput): Promise<PrismaIdentity> {
     const found = await this.core.data.identity.findUnique({
@@ -83,5 +84,23 @@ export class ApiIdentityDataAdminService {
         },
       },
     })
+  }
+
+  async syncIdentity(identityId: string) {
+    console.log('syncIdentity', identityId)
+    const identity = await this.core.data.identity.findUnique({ where: { id: identityId } })
+    if (!identity) {
+      throw new Error(`Identity ${identityId} not found`)
+    }
+    if (identity.provider !== IdentityProvider.Solana) {
+      throw new Error(`Identity ${identityId} not supported`)
+    }
+    return this.networkAsset.sync
+      .syncIdentity({ owner: identity.providerId })
+      .then((res) => !!res)
+      .catch((err) => {
+        console.log('Error syncing identity', err)
+        return false
+      })
   }
 }

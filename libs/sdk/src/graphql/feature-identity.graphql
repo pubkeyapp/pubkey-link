@@ -68,6 +68,10 @@ mutation adminDeleteIdentity($identityId: String!) {
   deleted: adminDeleteIdentity(identityId: $identityId)
 }
 
+mutation adminSyncIdentity($identityId: String!) {
+  deleted: adminSyncIdentity(identityId: $identityId)
+}
+
 query userFindManyIdentity($input: UserFindManyIdentityInput!) {
   items: userFindManyIdentity(input: $input) {
     ...IdentityDetails
