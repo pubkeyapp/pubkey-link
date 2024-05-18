@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { ApiCoreService, PagingInputFields } from '@pubkey-link/api-core-data-access'
 import { getNetworkType } from '@pubkey-link/api-network-util'
+import { EVENT_NETWORK_CREATED, EVENT_NETWORK_DELETED, EVENT_NETWORK_UPDATED } from './api-network.events'
 import { NetworkPaging } from './entity/network.entity'
 
 @Injectable()
@@ -11,11 +12,14 @@ export class ApiNetworkDataService {
   async create(input: Omit<Prisma.NetworkCreateInput, 'type'>) {
     const type = getNetworkType(input.cluster)
 
-    return this.core.data.network.create({ data: { ...input, type, id: input.cluster } })
+    const created = await this.core.data.network.create({ data: { ...input, type, id: input.cluster } })
+    this.core.eventEmitter.emit(EVENT_NETWORK_CREATED, { network: created })
+    return created
   }
 
   async delete(networkId: string) {
     const deleted = await this.core.data.network.delete({ where: { id: networkId } })
+    this.core.eventEmitter.emit(EVENT_NETWORK_DELETED, { network: deleted })
     return !!deleted
   }
 
@@ -34,6 +38,8 @@ export class ApiNetworkDataService {
   }
 
   async update(networkId: string, input: Prisma.NetworkUpdateInput) {
-    return this.core.data.network.update({ where: { id: networkId }, data: input })
+    const updated = await this.core.data.network.update({ where: { id: networkId }, data: input })
+    this.core.eventEmitter.emit(EVENT_NETWORK_UPDATED, { network: updated })
+    return updated
   }
 }

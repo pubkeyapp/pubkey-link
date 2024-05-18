@@ -3,11 +3,18 @@ import { dasApi } from '@metaplex-foundation/digital-asset-standard-api'
 import { createUmi, Umi } from '@metaplex-foundation/umi'
 import { web3JsRpc } from '@metaplex-foundation/umi-rpc-web3js'
 import { Injectable, Logger } from '@nestjs/common'
-import { NetworkCluster } from '@prisma/client'
+import { OnEvent } from '@nestjs/event-emitter'
+import { Network, NetworkCluster } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { AnchorKeypairWallet } from '@pubkey-program-library/sdk'
 import { Connection, Keypair } from '@solana/web3.js'
 import { ChainId, Client } from '@solflare-wallet/utl-sdk'
+import {
+  EVENT_NETWORK_CREATED,
+  EVENT_NETWORK_DELETED,
+  EVENT_NETWORK_UPDATED,
+  EVENT_NETWORKS_PROVISIONED,
+} from './api-network.events'
 
 @Injectable()
 export class ApiNetworkClusterService {
@@ -16,6 +23,53 @@ export class ApiNetworkClusterService {
   private readonly umis: Map<NetworkCluster, Umi> = new Map()
   private readonly tokenList: Map<NetworkCluster, Client> = new Map()
   constructor(readonly core: ApiCoreService) {}
+
+  @OnEvent(EVENT_NETWORK_CREATED)
+  async onNetworkCreated({ network: { cluster } }: { network: Network }) {
+    this.logger.verbose(`[${cluster}] network created,  initializing`)
+    await this.initializeCluster(cluster)
+    this.logger.verbose(`[${cluster}] network created, initialized`)
+  }
+
+  @OnEvent(EVENT_NETWORK_DELETED)
+  async onNetworkDeleted({ network: { cluster } }: { network: Network }) {
+    this.logger.verbose(`[${cluster}] network deleted, cleaning up`)
+    await this.cleanupCluster(cluster)
+    this.logger.verbose(`[${cluster}] network deleted, cleaned up`)
+  }
+
+  @OnEvent(EVENT_NETWORK_UPDATED)
+  async onNetworkUpdated({ network: { cluster } }: { network: Network }) {
+    this.logger.verbose(`[${cluster}] network updated, cleaning up and initializing`)
+    await this.cleanupCluster(cluster)
+    await this.initializeCluster(cluster)
+    this.logger.verbose(`[${cluster}] network updated, initialized`)
+  }
+
+  @OnEvent(EVENT_NETWORKS_PROVISIONED)
+  async onNetworksProvisioned() {
+    const networks = await this.core.data.network.findMany()
+    for (const network of networks) {
+      this.logger.verbose(`[${network.cluster}] network provisioned, initializing`)
+      await this.initializeCluster(network.cluster)
+      this.logger.verbose(`[${network.cluster}] network provisioned, initialized`)
+    }
+  }
+
+  async cleanupCluster(cluster: NetworkCluster) {
+    this.logger.verbose(`[${cluster}] cleaning up`)
+    this.connections.delete(cluster)
+    this.umis.delete(cluster)
+    this.tokenList.delete(cluster)
+  }
+
+  async initializeCluster(cluster: NetworkCluster) {
+    this.logger.verbose(`[${cluster}] initializing`)
+    await this.getConnection(cluster)
+    await this.getUmi(cluster)
+    await this.getTokenList(cluster)
+    this.logger.verbose(`[${cluster}] initialized`)
+  }
 
   async getConnection(cluster: NetworkCluster) {
     if (!this.connections.has(cluster)) {
