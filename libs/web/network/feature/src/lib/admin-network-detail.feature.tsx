@@ -2,7 +2,7 @@ import { Button, Group } from '@mantine/core'
 import { AdminNetworkAssetFeature } from '@pubkey-link/web-network-asset-feature'
 import { useAdminFindOneNetwork } from '@pubkey-link/web-network-data-access'
 import { AdminNetworkTokenFeature } from '@pubkey-link/web-network-token-feature'
-import { NetworkUiItem } from '@pubkey-link/web-network-ui'
+import { NetworkUiItem, NetworkUiSyncBadge } from '@pubkey-link/web-network-ui'
 import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoutes } from '@pubkey-ui/core'
 import { useParams } from 'react-router-dom'
 import { AdminNetworkDetailSettingsTab } from './admin-network-detail-settings.tab'
@@ -20,7 +20,7 @@ export function AdminNetworkDetailFeature() {
 
   return (
     <UiPage
-      title={<NetworkUiItem network={item} to={`./${item.id}`} />}
+      title={<NetworkUiItem network={item} to={`./${item.id}`} title={<NetworkUiSyncBadge network={item} />} />}
       leftAction={<UiBack />}
       rightAction={
         <Group>
