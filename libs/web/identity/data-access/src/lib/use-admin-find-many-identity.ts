@@ -42,7 +42,7 @@ export function useAdminFindManyIdentity({ ownerId, provider }: { ownerId?: stri
         return false
       }
     },
-    deleteIdentity: (identity: Identity) => {
+    deleteIdentity: async (identity: Identity) => {
       return sdk.adminDeleteIdentity({ identityId: identity.id }).then(async (res) => {
         if (res) {
           toastSuccess('Identity deleted')
@@ -50,6 +50,17 @@ export function useAdminFindManyIdentity({ ownerId, provider }: { ownerId?: stri
           return true
         }
         toastError('Error deleting identity')
+        return false
+      })
+    },
+    syncIdentity: async (identity: Identity) => {
+      return sdk.adminSyncIdentity({ identityId: identity.id }).then(async (res) => {
+        if (res) {
+          toastSuccess('Identity synced')
+          await query.refetch()
+          return true
+        }
+        toastError('Error syncing identity')
         return false
       })
     },

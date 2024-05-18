@@ -112,10 +112,10 @@ export class ApiNetworkAssetSyncService {
   }
 
   async syncIdentity({
-    cluster,
+    cluster = NetworkCluster.SolanaMainnet,
     owner,
   }: {
-    cluster: NetworkCluster
+    cluster?: NetworkCluster
     owner: string
   }): Promise<Prisma.NetworkAssetCreateInput[]> {
     // Get the tokens for the cluster

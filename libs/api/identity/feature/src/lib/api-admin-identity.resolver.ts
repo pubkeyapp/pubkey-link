@@ -19,10 +19,12 @@ export class ApiAdminIdentityResolver {
   adminCreateIdentity(@Args('input') input: AdminCreateIdentityInput) {
     return this.service.admin.createIdentity(input)
   }
+
   @Mutation(() => Boolean, { nullable: true })
   adminDeleteIdentity(@Args('identityId') identityId: string) {
     return this.service.admin.deleteIdentity(identityId)
   }
+
   @Query(() => [Identity], { nullable: true })
   adminFindManyIdentity(@Args('input') input: AdminFindManyIdentityInput) {
     return this.service.admin.findManyIdentity(input)
@@ -34,5 +36,10 @@ export class ApiAdminIdentityResolver {
     @Args('providerId') providerId: string,
   ) {
     return this.service.admin.findUserByIdentity(provider, providerId)
+  }
+
+  @Mutation(() => Boolean, { nullable: true })
+  adminSyncIdentity(@Args('identityId') identityId: string) {
+    return this.service.admin.syncIdentity(identityId)
   }
 }

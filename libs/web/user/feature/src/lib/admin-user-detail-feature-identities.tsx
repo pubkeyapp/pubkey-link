@@ -5,14 +5,14 @@ import { AdminIdentityUiTable, AuthUiIdentityCreateForm } from '@pubkey-link/web
 import { UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function AdminUserDetailFeatureIdentities({ userId }: { userId: string }) {
-  const { items, createIdentity, deleteIdentity, query } = useAdminFindManyIdentity({ ownerId: userId })
+  const { items, createIdentity, deleteIdentity, query, syncIdentity } = useAdminFindManyIdentity({ ownerId: userId })
 
   if (query.isLoading) return <UiLoader />
 
   return (
     <UiStack>
       {items?.length ? (
-        <AdminIdentityUiTable identities={items ?? []} deleteIdentity={deleteIdentity} />
+        <AdminIdentityUiTable identities={items ?? []} deleteIdentity={deleteIdentity} syncIdentity={syncIdentity} />
       ) : (
         <UiInfo message="No identities found." />
       )}
