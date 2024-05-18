@@ -18,6 +18,12 @@ export class ApiNetworkProvisionService {
 
   private async provisionNetworks() {
     const endpoints = this.getEndpointMap()
+    if (!endpoints.size) {
+      const networks = await this.core.data.network.count()
+      if (networks === 0) {
+        throw new Error('No network endpoints configured or provisioned. Configure at least one network endpoint')
+      }
+    }
     await Promise.all(getProvisionNetworks(endpoints).map((network) => this.provisionNetwork(network)))
     this.core.eventEmitter.emit(EVENT_NETWORKS_PROVISIONED)
   }
@@ -39,9 +45,6 @@ export class ApiNetworkProvisionService {
     const endpointTestnet = this.core.config.solanaTestnetEndpoint
     if (endpointTestnet) {
       map.set(NetworkCluster.SolanaTestnet, endpointTestnet)
-    }
-    if (!map.size) {
-      throw new Error('No network endpoints configured. Configure at least one network endpoint')
     }
     return map
   }
