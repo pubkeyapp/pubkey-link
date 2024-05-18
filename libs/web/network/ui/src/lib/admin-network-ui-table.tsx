@@ -4,6 +4,7 @@ import { IconPencil, IconTrash } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'
 import { NetworkUiItem } from './network-ui-item'
+import { NetworkUiSyncBadge } from './network-ui-sync-badge'
 
 export function AdminNetworkUiTable({
   deleteNetwork,
@@ -33,7 +34,9 @@ export function AdminNetworkUiTable({
         columns={[
           {
             accessor: 'name',
-            render: (item) => <NetworkUiItem network={item} to={`./${item.id}`} />,
+            render: (item) => (
+              <NetworkUiItem network={item} to={`./${item.id}`} title={<NetworkUiSyncBadge network={item} />} />
+            ),
           },
           {
             accessor: 'actions',
