@@ -8,7 +8,7 @@ export class <%= actor.className %>Create<%= model.className %>Input {
   <%= field.name %><% if(field.optional){ %>?<% } else { %>!<% } %>: <%= field.type %>
 <% } %>
 <% if(parent && parent.className !== 'User'){ %>
-  @Field(
+  @Field()
   <%= parentId %>!: string
 <% } %>
 }

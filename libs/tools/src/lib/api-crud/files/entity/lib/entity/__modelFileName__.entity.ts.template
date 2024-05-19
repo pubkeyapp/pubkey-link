@@ -15,7 +15,7 @@ export class <%= model.className %> {
     <%= field.name %><% if(field.optional){ %>?<% } else { %>!<% } %>: <%= field.type %>
   <% } %>
 <% if(parent){ %>
-  @Field(
+  @Field()
   <%= parentId %>!: string
   @Field(() => <%= parent.className %>, { nullable: true })
   <%= parentPropertyId %>?: <%= parent.className %>
