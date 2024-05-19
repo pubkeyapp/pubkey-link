@@ -4,7 +4,7 @@ import { PagingInput } from '@<%= npmScope %>/<%= app.fileName %>-core-data-acce
 @InputType()
 export class <%= actor.className %>FindMany<%= model.className %>Input extends PagingInput() {
 <% if(parent){ %>
-  @Field(
+  @Field()
   <%= parentId %>!: string
 <% } %>
   @Field({ nullable: true })

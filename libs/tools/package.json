@@ -2,18 +2,18 @@
   "name": "@pubkey-link/tools",
   "version": "0.0.1",
   "dependencies": {
-    "@nx/devkit": "18.1.0-beta.9",
+    "@nx/devkit": "19.0.4",
     "@clack/prompts": "^0.7.0",
     "@mrleebo/prisma-ast": "^0.8.0",
-    "@nx/nest": "18.1.0-beta.9",
-    "@nx/react": "18.1.0-beta.9",
+    "@nx/nest": "19.0.4",
+    "@nx/react": "19.0.4",
     "dotenv": "^16.3.1",
     "pg": "^8.11.2",
     "pluralize": "^8.0.0",
     "ts-morph": "^21.0.1",
     "tslib": "^2.3.0",
-    "@nx/eslint": "18.1.0-beta.9",
-    "@nx/js": "18.1.0-beta.9"
+    "@nx/eslint": "19.0.4",
+    "@nx/js": "19.0.4"
   },
   "type": "commonjs",
   "main": "./src/index.js",
