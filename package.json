@@ -69,7 +69,7 @@
     "@pubkey-program-library/sdk": "^1.0.1",
     "@pubkey-ui/core": "^1.7.0",
     "@pubkeyapp/wallet-adapter-mantine-ui": "^2.3.0",
-    "@solana-developers/helpers": "^1.5.1",
+    "@solana-developers/helpers": "^2.3.0",
     "@solana/spl-token": "^0.4.3",
     "@solana/spl-token-metadata": "^0.1.2",
     "@solana/wallet-adapter-base": "^0.9.23",

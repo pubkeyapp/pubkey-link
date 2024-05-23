@@ -117,8 +117,8 @@ dependencies:
     specifier: ^2.3.0
     version: 2.3.0(@mantine/core@7.9.1)(@solana/wallet-adapter-base@0.9.23)(@solana/wallet-adapter-react@0.15.35)(@tabler/icons-react@2.47.0)(react@18.3.1)
   '@solana-developers/helpers':
-    specifier: ^1.5.1
-    version: 1.5.1
+    specifier: ^2.3.0
+    version: 2.3.0
   '@solana/spl-token':
     specifier: ^0.4.3
     version: 0.4.6(@solana/web3.js@1.91.8)(fastestsmallesttextencoderdecoder@1.0.22)
@@ -8320,20 +8320,6 @@ packages:
       '@smithy/abort-controller': 3.0.0
       '@smithy/types': 3.0.0
       tslib: 2.6.2
-    dev: false
-
-  /@solana-developers/helpers@1.5.1:
-    resolution: {integrity: sha512-FysSkUc6fkmK7sQ3wFyIZovSvQqFQjIj9MMy0lVRfNhIJ+24G24qztGxx0IosGSbuxtO97sN6Ij09la/4Bvwlg==}
-    dependencies:
-      '@solana/web3.js': 1.91.8
-      bs58: 5.0.0
-      dotenv: 16.4.5
-      prettier: 3.2.5
-      typescript: 5.4.5
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - utf-8-validate
     dev: false
 
   /@solana-developers/helpers@2.3.0:
@@ -19043,12 +19029,6 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
-
-  /prettier@3.2.5:
-    resolution: {integrity: sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==}
-    engines: {node: '>=14'}
-    hasBin: true
-    dev: false
 
   /pretty-format@26.6.2:
     resolution: {integrity: sha512-7AeGuCYNGmycyQbCqd/3PWH4eOoX/OiCa0uphp57NVTeAGdJGaAliecxwBDHYQCIvrW7aDBZCYeNTP/WX69mkg==}
