@@ -2,16 +2,16 @@ import { Injectable, Logger } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { ApiCoreService, PagingInputFields } from '@pubkey-link/api-core-data-access'
 import { User } from 'discord.js'
-import { ApiBotDataManagerService } from './api-bot-data-manager.service'
+import { ApiBotInstancesService } from './api-bot-instances.service'
 import { BotPaging } from './entity/bot.entity'
 
 @Injectable()
 export class ApiBotDataService {
   private readonly logger = new Logger(ApiBotDataService.name)
-  constructor(private readonly core: ApiCoreService, private readonly manager: ApiBotDataManagerService) {}
+  constructor(private readonly core: ApiCoreService, private readonly instances: ApiBotInstancesService) {}
 
   async create(input: Omit<Prisma.BotUncheckedCreateInput, 'name'>) {
-    const user: User = await this.manager.getBotUser(input.token)
+    const user: User = await this.instances.getBotUser(input.token)
     this.logger.verbose(`Creating bot ${user.username}`)
     const avatarUrl = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=1024`
     return this.core.data.bot.create({

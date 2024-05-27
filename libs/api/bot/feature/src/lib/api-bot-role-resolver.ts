@@ -15,12 +15,12 @@ export class ApiBotRoleResolver {
   }
 
   @ResolveField(() => DiscordServer, { nullable: true })
-  server(@Parent() role: BotRole) {
-    return this.service.manager.getBotServer(role.botId, role.serverId)
+  server(@Parent() { botId, serverId }: BotRole) {
+    return this.service.instances.getBotServer({ botId, serverId })
   }
 
   @ResolveField(() => DiscordRole, { nullable: true })
-  serverRole(@Parent() role: BotRole) {
-    return this.service.manager.getBotRole(role.botId, role.serverId, role.serverRoleId)
+  serverRole(@Parent() { botId, serverId, serverRoleId }: BotRole) {
+    return this.service.instances.getBotRole({ botId, serverId, roleId: serverRoleId })
   }
 }

@@ -25,6 +25,12 @@ export class DiscordRole {
   position!: number
 }
 
+export type DiscordRoleMap = Record<string, string>
+export type DiscordServerMember = { discordId: string; username: string; roleIds: string[] }
+
+// Maps the roles in the community with an internal id to an array of discord role ids
+export type CommunityRoleMap = Record<string, string[]>
+
 @ObjectType()
 export class DiscordChannel {
   @Field()

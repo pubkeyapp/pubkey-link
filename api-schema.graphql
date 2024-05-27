@@ -650,7 +650,7 @@ type Query {
   appConfig: AppConfig!
   me: User
   uptime: Float!
-  userFindManyBotRoles(botId: String!, serverId: String): [BotRole!]
+  userFindManyBotRoles(botId: String!, serverId: String!): [BotRole!]
   userFindManyCommunity(input: UserFindManyCommunityInput!): CommunityPaging!
   userFindManyCommunityMember(input: UserFindManyCommunityMemberInput!): CommunityMemberPaging!
   userFindManyIdentity(input: UserFindManyIdentityInput!): [Identity!]

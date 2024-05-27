@@ -35,11 +35,7 @@ export class ApiUserBotResolver {
   }
 
   @Query(() => [BotRole], { nullable: true })
-  userFindManyBotRoles(
-    @CtxUserId() userId: string,
-    @Args('botId') botId: string,
-    @Args({ name: 'serverId', nullable: true }) serverId?: string,
-  ) {
+  userFindManyBotRoles(@CtxUserId() userId: string, @Args('botId') botId: string, @Args('serverId') serverId: string) {
     return this.service.user.userFindManyBotRoles(userId, botId, serverId)
   }
 

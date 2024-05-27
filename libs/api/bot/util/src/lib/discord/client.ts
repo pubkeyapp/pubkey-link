@@ -1,11 +1,12 @@
 import { REST } from '@discordjs/rest'
 import { Client, GatewayIntentBits } from 'discord.js'
 
-export function createDiscordClient(token: string): Promise<Client> {
+export function createDiscordClient(
+  token: string,
+  intents: GatewayIntentBits[] = [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
+): Promise<Client> {
   return new Promise((resolve, reject) => {
-    const client = new Client({
-      intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
-    })
+    const client = new Client({ intents })
     client.once('ready', () => resolve(client))
     client.login(token).catch((e) => {
       reject(e)

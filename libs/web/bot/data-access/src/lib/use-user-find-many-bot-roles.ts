@@ -1,7 +1,7 @@
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { useQuery } from '@tanstack/react-query'
 
-export function useUserFindManyBotRoles({ botId, serverId }: { botId: string; serverId?: string }) {
+export function useUserFindManyBotRoles({ botId, serverId }: { botId: string; serverId: string }) {
   const sdk = useSdk()
   const query = useQuery({
     queryKey: ['user', 'find-many-bot-roles', { botId }],
