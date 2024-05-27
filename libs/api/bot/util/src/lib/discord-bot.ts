@@ -1,7 +1,7 @@
 import { REST } from '@discordjs/rest'
 import { Logger } from '@nestjs/common'
 import { Client, Guild, GuildMember, MessageCreateOptions, NonThreadGuildBasedChannel } from 'discord.js'
-import { createDiscordClient } from './discord/client'
+import { createDiscordClient, createDiscordRestClient } from './discord/client'
 
 export interface RESTDiscordRoleConnection {
   type: number
@@ -33,7 +33,7 @@ export class DiscordBot {
   async start() {
     this.logger.verbose(`Starting bot...`)
     this.client = await createDiscordClient(this.config.token)
-    this.rest = new REST({ version: '10' }).setToken(this.config.token)
+    this.rest = createDiscordRestClient(this.config.token)
     this.logger.verbose(`Bot started`)
   }
 
@@ -63,14 +63,20 @@ export class DiscordBot {
     return (await this.rest?.get(`/applications/${this.config.botId}`)) as BotApplication
   }
 
-  async getDiscordServerMembers(guildId: string) {
+  async getDiscordServerMembers(
+    guildId: string,
+  ): Promise<{ discordId: string; username: string; roleIds: string[] }[]> {
     const guild = await this.getServer(guildId)
     if (!guild) {
       throw new Error(`Could not fetch guild with id ${guildId}`)
     }
 
     const members = await this.getEachMember(guild)
-    return members.map((member) => ({ memberId: member.id, roleIds: member.roles.cache.map((role) => role.id) }))
+    return members.map((member) => ({
+      discordId: member.id,
+      username: member.user?.username,
+      roleIds: member.roles.cache.map((role) => role.id),
+    }))
   }
 
   async getDiscordServerChannels(guildId: string) {
