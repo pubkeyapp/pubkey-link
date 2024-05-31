@@ -239,6 +239,7 @@ export enum AppFeature {
   CommunityCreate = 'CommunityCreate',
   CommunitySnapshots = 'CommunitySnapshots',
   CommunityTeams = 'CommunityTeams',
+  IdentityGrants = 'IdentityGrants',
 }
 
 export type Bot = {
@@ -380,6 +381,7 @@ export type Identity = {
   challenges?: Maybe<Array<IdentityChallenge>>
   createdAt?: Maybe<Scalars['DateTime']['output']>
   expired?: Maybe<Scalars['Boolean']['output']>
+  grants?: Maybe<Array<IdentityGrant>>
   id: Scalars['String']['output']
   name: Scalars['String']['output']
   owner?: Maybe<User>
@@ -406,6 +408,17 @@ export type IdentityChallenge = {
   updatedAt: Scalars['DateTime']['output']
   userAgent: Scalars['String']['output']
   verified: Scalars['Boolean']['output']
+}
+
+export type IdentityGrant = {
+  __typename?: 'IdentityGrant'
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  grantee?: Maybe<User>
+  granteeId: Scalars['String']['output']
+  id: Scalars['String']['output']
+  provider: IdentityProvider
+  providerId: Scalars['String']['output']
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
 export enum IdentityProvider {
@@ -506,6 +519,7 @@ export type Mutation = {
   anonVerifyIdentityChallenge?: Maybe<IdentityChallenge>
   logout?: Maybe<Scalars['Boolean']['output']>
   userAddCommunityMember?: Maybe<CommunityMember>
+  userAddIdentityGrant?: Maybe<Scalars['Boolean']['output']>
   userAddTeamMember?: Maybe<Scalars['Boolean']['output']>
   userCreateBot?: Maybe<Bot>
   userCreateCommunity?: Maybe<Community>
@@ -526,6 +540,7 @@ export type Mutation = {
   userLinkIdentity?: Maybe<Identity>
   userRefreshIdentity?: Maybe<Scalars['Boolean']['output']>
   userRemoveCommunityMember?: Maybe<Scalars['Boolean']['output']>
+  userRemoveIdentityGrant?: Maybe<Scalars['Boolean']['output']>
   userRemoveTeamMember?: Maybe<Scalars['Boolean']['output']>
   userStartBot?: Maybe<Scalars['Boolean']['output']>
   userStopBot?: Maybe<Scalars['Boolean']['output']>
@@ -702,6 +717,10 @@ export type MutationUserAddCommunityMemberArgs = {
   input: UserAddCommunityMemberInput
 }
 
+export type MutationUserAddIdentityGrantArgs = {
+  input: UserAddIdentityGrantInput
+}
+
 export type MutationUserAddTeamMemberArgs = {
   teamId: Scalars['String']['input']
   userId: Scalars['String']['input']
@@ -782,6 +801,10 @@ export type MutationUserRefreshIdentityArgs = {
 
 export type MutationUserRemoveCommunityMemberArgs = {
   communityMemberId: Scalars['String']['input']
+}
+
+export type MutationUserRemoveIdentityGrantArgs = {
+  input: UserRemoveIdentityGrantInput
 }
 
 export type MutationUserRemoveTeamMemberArgs = {
@@ -1144,7 +1167,7 @@ export type QueryAnonRequestIdentityChallengeArgs = {
 
 export type QueryUserFindManyBotRolesArgs = {
   botId: Scalars['String']['input']
-  serverId?: InputMaybe<Scalars['String']['input']>
+  serverId: Scalars['String']['input']
 }
 
 export type QueryUserFindManyCommunityArgs = {
@@ -1420,6 +1443,12 @@ export type UserAddCommunityMemberInput = {
   userId: Scalars['String']['input']
 }
 
+export type UserAddIdentityGrantInput = {
+  granteeId: Scalars['String']['input']
+  provider: IdentityProvider
+  providerId: Scalars['String']['input']
+}
+
 export type UserCreateBotInput = {
   clientId: Scalars['String']['input']
   clientSecret: Scalars['String']['input']
@@ -1552,6 +1581,12 @@ export type UserPaging = {
   __typename?: 'UserPaging'
   data: Array<User>
   meta: PagingMeta
+}
+
+export type UserRemoveIdentityGrantInput = {
+  granteeId: Scalars['String']['input']
+  provider: IdentityProvider
+  providerId: Scalars['String']['input']
 }
 
 export enum UserRole {
@@ -1931,7 +1966,7 @@ export type UserFindOneBotQuery = {
 
 export type UserFindManyBotRolesQueryVariables = Exact<{
   botId: Scalars['String']['input']
-  serverId?: InputMaybe<Scalars['String']['input']>
+  serverId: Scalars['String']['input']
 }>
 
 export type UserFindManyBotRolesQuery = {
@@ -3717,6 +3752,31 @@ export type IdentityChallengeDetailsFragment = {
   verified: boolean
 }
 
+export type IdentityGrantDetailsFragment = {
+  __typename?: 'IdentityGrant'
+  createdAt?: Date | null
+  id: string
+  granteeId: string
+  provider: IdentityProvider
+  providerId: string
+  updatedAt?: Date | null
+  grantee?: {
+    __typename?: 'User'
+    avatarUrl?: string | null
+    createdAt?: Date | null
+    developer?: boolean | null
+    private?: boolean | null
+    lastLogin?: Date | null
+    id: string
+    name?: string | null
+    profileUrl: string
+    role?: UserRole | null
+    status?: UserStatus | null
+    updatedAt?: Date | null
+    username?: string | null
+  } | null
+}
+
 export type AdminFindManyIdentityQueryVariables = Exact<{
   input: AdminFindManyIdentityInput
 }>
@@ -3751,6 +3811,30 @@ export type AdminFindManyIdentityQuery = {
       blockhash: string
       userAgent: string
       verified: boolean
+    }> | null
+    grants?: Array<{
+      __typename?: 'IdentityGrant'
+      createdAt?: Date | null
+      id: string
+      granteeId: string
+      provider: IdentityProvider
+      providerId: string
+      updatedAt?: Date | null
+      grantee?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        private?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
     }> | null
     owner?: {
       __typename?: 'User'
@@ -3858,6 +3942,30 @@ export type UserFindManyIdentityQuery = {
     updatedAt?: Date | null
     url?: string | null
     verified?: boolean | null
+    grants?: Array<{
+      __typename?: 'IdentityGrant'
+      createdAt?: Date | null
+      id: string
+      granteeId: string
+      provider: IdentityProvider
+      providerId: string
+      updatedAt?: Date | null
+      grantee?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        private?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
+    }> | null
   }> | null
 }
 
@@ -3884,6 +3992,30 @@ export type UserFindOneIdentityQuery = {
     updatedAt?: Date | null
     url?: string | null
     verified?: boolean | null
+    grants?: Array<{
+      __typename?: 'IdentityGrant'
+      createdAt?: Date | null
+      id: string
+      granteeId: string
+      provider: IdentityProvider
+      providerId: string
+      updatedAt?: Date | null
+      grantee?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        private?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
+    }> | null
     owner?: {
       __typename?: 'User'
       avatarUrl?: string | null
@@ -4048,6 +4180,18 @@ export type AnonVerifyIdentityChallengeMutation = {
     verified: boolean
   } | null
 }
+
+export type UserAddIdentityGrantMutationVariables = Exact<{
+  input: UserAddIdentityGrantInput
+}>
+
+export type UserAddIdentityGrantMutation = { __typename?: 'Mutation'; added?: boolean | null }
+
+export type UserRemoveIdentityGrantMutationVariables = Exact<{
+  input: UserRemoveIdentityGrantInput
+}>
+
+export type UserRemoveIdentityGrantMutation = { __typename?: 'Mutation'; removed?: boolean | null }
 
 export type LogDetailsFragment = {
   __typename?: 'Log'
@@ -8701,6 +8845,36 @@ export const IdentityChallengeDetailsFragmentDoc = gql`
     verified
   }
 `
+export const UserDetailsFragmentDoc = gql`
+  fragment UserDetails on User {
+    avatarUrl
+    createdAt
+    developer
+    private
+    lastLogin
+    id
+    name
+    profileUrl
+    role
+    status
+    updatedAt
+    username
+  }
+`
+export const IdentityGrantDetailsFragmentDoc = gql`
+  fragment IdentityGrantDetails on IdentityGrant {
+    createdAt
+    id
+    granteeId
+    grantee {
+      ...UserDetails
+    }
+    provider
+    providerId
+    updatedAt
+  }
+  ${UserDetailsFragmentDoc}
+`
 export const BotDetailsFragmentDoc = gql`
   fragment BotDetails on Bot {
     avatarUrl
@@ -8868,22 +9042,6 @@ export const RoleDetailsFragmentDoc = gql`
   }
   ${RoleConditionDetailsFragmentDoc}
   ${RolePermissionDetailsFragmentDoc}
-`
-export const UserDetailsFragmentDoc = gql`
-  fragment UserDetails on User {
-    avatarUrl
-    createdAt
-    developer
-    private
-    lastLogin
-    id
-    name
-    profileUrl
-    role
-    status
-    updatedAt
-    username
-  }
 `
 export const LogDetailsFragmentDoc = gql`
   fragment LogDetails on Log {
@@ -9120,7 +9278,7 @@ export const UserFindOneBotDocument = gql`
   ${BotDetailsFragmentDoc}
 `
 export const UserFindManyBotRolesDocument = gql`
-  query userFindManyBotRoles($botId: String!, $serverId: String) {
+  query userFindManyBotRoles($botId: String!, $serverId: String!) {
     items: userFindManyBotRoles(botId: $botId, serverId: $serverId) {
       ...BotRoleDetails
       permissions {
@@ -9445,6 +9603,9 @@ export const AdminFindManyIdentityDocument = gql`
       challenges {
         ...IdentityChallengeDetails
       }
+      grants {
+        ...IdentityGrantDetails
+      }
       owner {
         ...UserDetails
       }
@@ -9452,6 +9613,7 @@ export const AdminFindManyIdentityDocument = gql`
   }
   ${IdentityDetailsFragmentDoc}
   ${IdentityChallengeDetailsFragmentDoc}
+  ${IdentityGrantDetailsFragmentDoc}
   ${UserDetailsFragmentDoc}
 `
 export const AdminFindUserByIdentityDocument = gql`
@@ -9488,20 +9650,28 @@ export const UserFindManyIdentityDocument = gql`
   query userFindManyIdentity($input: UserFindManyIdentityInput!) {
     items: userFindManyIdentity(input: $input) {
       ...IdentityDetails
+      grants {
+        ...IdentityGrantDetails
+      }
     }
   }
   ${IdentityDetailsFragmentDoc}
+  ${IdentityGrantDetailsFragmentDoc}
 `
 export const UserFindOneIdentityDocument = gql`
   query userFindOneIdentity($provider: IdentityProvider!, $providerId: String!) {
     item: userFindOneIdentity(provider: $provider, providerId: $providerId) {
       ...IdentityDetails
+      grants {
+        ...IdentityGrantDetails
+      }
       owner {
         ...UserDetails
       }
     }
   }
   ${IdentityDetailsFragmentDoc}
+  ${IdentityGrantDetailsFragmentDoc}
   ${UserDetailsFragmentDoc}
 `
 export const UserDeleteIdentityDocument = gql`
@@ -9561,6 +9731,16 @@ export const AnonVerifyIdentityChallengeDocument = gql`
     }
   }
   ${IdentityChallengeDetailsFragmentDoc}
+`
+export const UserAddIdentityGrantDocument = gql`
+  mutation userAddIdentityGrant($input: UserAddIdentityGrantInput!) {
+    added: userAddIdentityGrant(input: $input)
+  }
+`
+export const UserRemoveIdentityGrantDocument = gql`
+  mutation userRemoveIdentityGrant($input: UserRemoveIdentityGrantInput!) {
+    removed: userRemoveIdentityGrant(input: $input)
+  }
 `
 export const UserFindManyLogDocument = gql`
   query userFindManyLog($input: UserFindManyLogInput!) {
@@ -10238,6 +10418,8 @@ const UserVerifyIdentityChallengeDocumentString = print(UserVerifyIdentityChalle
 const UserLinkIdentityDocumentString = print(UserLinkIdentityDocument)
 const AnonRequestIdentityChallengeDocumentString = print(AnonRequestIdentityChallengeDocument)
 const AnonVerifyIdentityChallengeDocumentString = print(AnonVerifyIdentityChallengeDocument)
+const UserAddIdentityGrantDocumentString = print(UserAddIdentityGrantDocument)
+const UserRemoveIdentityGrantDocumentString = print(UserRemoveIdentityGrantDocument)
 const UserFindManyLogDocumentString = print(UserFindManyLogDocument)
 const UserFindOneLogDocumentString = print(UserFindOneLogDocument)
 const AdminFindManyLogDocumentString = print(AdminFindManyLogDocument)
@@ -11727,6 +11909,48 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'anonVerifyIdentityChallenge',
+        'mutation',
+        variables,
+      )
+    },
+    userAddIdentityGrant(
+      variables: UserAddIdentityGrantMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserAddIdentityGrantMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserAddIdentityGrantMutation>(UserAddIdentityGrantDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userAddIdentityGrant',
+        'mutation',
+        variables,
+      )
+    },
+    userRemoveIdentityGrant(
+      variables: UserRemoveIdentityGrantMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserRemoveIdentityGrantMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserRemoveIdentityGrantMutation>(UserRemoveIdentityGrantDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userRemoveIdentityGrant',
         'mutation',
         variables,
       )
@@ -13496,6 +13720,14 @@ export function UserAddCommunityMemberInputSchema(): z.ZodObject<Properties<User
   })
 }
 
+export function UserAddIdentityGrantInputSchema(): z.ZodObject<Properties<UserAddIdentityGrantInput>> {
+  return z.object({
+    granteeId: z.string(),
+    provider: IdentityProviderSchema,
+    providerId: z.string(),
+  })
+}
+
 export function UserCreateBotInputSchema(): z.ZodObject<Properties<UserCreateBotInput>> {
   return z.object({
     clientId: z.string(),
@@ -13655,6 +13887,14 @@ export function UserFindManyUserInputSchema(): z.ZodObject<Properties<UserFindMa
     limit: z.number().nullish(),
     page: z.number().nullish(),
     search: z.string().nullish(),
+  })
+}
+
+export function UserRemoveIdentityGrantInputSchema(): z.ZodObject<Properties<UserRemoveIdentityGrantInput>> {
+  return z.object({
+    granteeId: z.string(),
+    provider: IdentityProviderSchema,
+    providerId: z.string(),
   })
 }
 

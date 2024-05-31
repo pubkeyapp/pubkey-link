@@ -8,10 +8,11 @@ import { UiGroup, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 export function SettingsWalletsFeature() {
   const { appConfig } = useAppConfig()
   const { user } = useAuth()
-  const { deleteIdentity, updateIdentity, items, query } = useUserFindManyIdentity({
-    provider: IdentityProvider.Solana,
-    username: user?.username as string,
-  })
+  const { deleteIdentity, updateIdentity, addIdentityGrant, removeIdentityGrant, items, query } =
+    useUserFindManyIdentity({
+      provider: IdentityProvider.Solana,
+      username: user?.username as string,
+    })
 
   return (
     <UiStack>
@@ -21,9 +22,11 @@ export function SettingsWalletsFeature() {
         <UiStack>
           {items.length ? (
             <IdentityUiList
-              items={items ?? []}
+              items={query.data?.items ?? []}
               deleteIdentity={deleteIdentity}
               updateIdentity={updateIdentity}
+              addIdentityGrant={addIdentityGrant}
+              removeIdentityGrant={removeIdentityGrant}
               refresh={() => query.refetch()}
             />
           ) : (

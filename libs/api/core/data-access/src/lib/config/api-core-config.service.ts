@@ -26,6 +26,9 @@ export class ApiCoreConfigService {
     if (this.featureCommunityTeams) {
       features.push(AppFeature.CommunityTeams)
     }
+    if (this.featureIdentityGrants) {
+      features.push(AppFeature.IdentityGrants)
+    }
     const link: IdentityProvider[] = []
     const login: IdentityProvider[] = []
     if (this.authDiscordLinkEnabled) {
@@ -204,6 +207,10 @@ export class ApiCoreConfigService {
 
   get featureCommunityTeams() {
     return this.service.get<boolean>('featureCommunityTeams')
+  }
+
+  get featureIdentityGrants() {
+    return this.service.get<boolean>('featureIdentityGrants')
   }
 
   get featureResolverSolanaFungible() {

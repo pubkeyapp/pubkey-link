@@ -106,7 +106,7 @@ query userFindOneBot($communityId: String!) {
   }
 }
 
-query userFindManyBotRoles($botId: String!, $serverId: String) {
+query userFindManyBotRoles($botId: String!, $serverId: String!) {
   items: userFindManyBotRoles(botId: $botId, serverId: $serverId) {
     ...BotRoleDetails
     permissions {
