@@ -20,7 +20,12 @@ export class ApiNetworkService {
     ttl: 1000 * 30, // 30 seconds
     fetchMethod: async (cluster: NetworkCluster) => {
       this.logger.verbose(`blockhashCache: Cache miss for ${cluster}`)
-      return this.cluster.getConnection(cluster).then((conn) => conn.getLatestBlockhash())
+      try {
+        return this.cluster.getConnection(cluster).then((conn) => conn.getLatestBlockhash())
+      } catch (e) {
+        this.logger.error(`blockhashCache: Error getting latest blockhash for ${cluster}`, e)
+        return undefined
+      }
     },
   })
 
@@ -32,8 +37,8 @@ export class ApiNetworkService {
     readonly resolver: ApiNetworkResolverService,
   ) {}
 
-  async ensureBlockhash(cluster: NetworkCluster) {
-    const res = await this.blockhashCache.fetch(cluster)
+  async ensureBlockhash() {
+    const res = await this.blockhashCache.fetch(this.cluster.getDefaultCluster())
     if (!res?.blockhash) {
       throw new Error(`Blockhash not found`)
     }

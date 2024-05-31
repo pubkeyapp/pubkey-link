@@ -257,7 +257,7 @@ export class ApiCoreConfigService {
     return {
       host: parsed.hostname,
       port: Number(parsed.port),
-      password: password,
+      password,
       username: parsed.username,
       tls: parsed.protocol?.startsWith('rediss')
         ? {

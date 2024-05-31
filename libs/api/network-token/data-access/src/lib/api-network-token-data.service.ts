@@ -15,7 +15,9 @@ export class ApiNetworkTokenDataService {
 
   @OnEvent(EVENT_APP_STARTED)
   async onApplicationStarted() {
-    const tokens = await this.core.data.networkToken.findMany({ where: { metadataUrl: null } })
+    const tokens = await this.core.data.networkToken.findMany({
+      where: { metadataUrl: null, network: { cluster: { notIn: [NetworkCluster.SolanaCustom] } } },
+    })
     await Promise.all(tokens.map((token) => this.updateNetworkTokenMetadata(token.id)))
   }
 

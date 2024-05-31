@@ -24,8 +24,10 @@ export class ApiNetworkProvisionService {
         throw new Error('No network endpoints configured or provisioned. Configure at least one network endpoint')
       }
     }
-    await Promise.all(getProvisionNetworks(endpoints).map((network) => this.provisionNetwork(network)))
-    this.core.eventEmitter.emit(EVENT_NETWORKS_PROVISIONED)
+    const provisioned = await Promise.all(
+      getProvisionNetworks(endpoints).map((network) => this.provisionNetwork(network)),
+    )
+    this.core.eventEmitter.emit(EVENT_NETWORKS_PROVISIONED, provisioned)
   }
 
   private getEndpointMap(): NetworkEndpointMap {
@@ -50,15 +52,16 @@ export class ApiNetworkProvisionService {
   }
 
   private async provisionNetwork(input: Prisma.NetworkCreateInput) {
-    const existing = await this.core.data.network.count({ where: { cluster: input.cluster } })
-    if (existing < 1) {
-      this.logger.verbose(
-        `Creating network cluster (${input.cluster}) name = ${input.name}, endpoint = ${input.endpoint}`,
-      )
-      await this.core.data.network.create({ data: { ...input } })
-      this.logger.verbose(`Provisioned (${input.cluster}) name = ${input.name}, endpoint = ${input.endpoint}`)
-      return
+    const existing = await this.core.data.network.findUnique({ where: { cluster: input.cluster } })
+    if (existing) {
+      this.logger.verbose(`Found network (${input.cluster}) name = ${input.name}, endpoint = ${input.endpoint}`)
+      return existing
     }
-    this.logger.verbose(`Found network (${input.cluster}) name = ${input.name}, endpoint = ${input.endpoint}`)
+    this.logger.verbose(
+      `Creating network cluster (${input.cluster}) name = ${input.name}, endpoint = ${input.endpoint}`,
+    )
+    const network = await this.core.data.network.create({ data: { ...input } })
+    this.logger.verbose(`Provisioned (${input.cluster}) name = ${input.name}, endpoint = ${input.endpoint}`)
+    return network
   }
 }

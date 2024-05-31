@@ -30,7 +30,7 @@ export const provisionUsers: Prisma.UserCreateInput[] = [
       ],
     },
   },
-  // Charlie is a user with no password, so they can only log in with an external provider
+  // Charlie is a user with no identities, so they not log in
   {
     username: 'charlie',
     role: UserRole.User,

@@ -104,7 +104,7 @@ export class ApiIdentityDataUserService {
     // Generate a random challenge
     const challenge = sha256(`${Math.random()}-${userAgent}-${userId}-${provider}-${providerId}-${Math.random()}`)
 
-    const blockhash = await this.network.ensureBlockhash(NetworkCluster.SolanaMainnet)
+    const blockhash = await this.network.ensureBlockhash()
 
     // Store the challenge
     return this.core.data.identityChallenge.create({
