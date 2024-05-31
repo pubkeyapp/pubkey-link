@@ -27,6 +27,7 @@ export enum AppFeature {
   CommunityCreate = 'CommunityCreate',
   CommunitySnapshots = 'CommunitySnapshots',
   CommunityTeams = 'CommunityTeams',
+  IdentityGrants = 'IdentityGrants',
 }
 
 registerEnumType(AppFeature, { name: 'AppFeature' })

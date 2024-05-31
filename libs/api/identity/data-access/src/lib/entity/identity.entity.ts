@@ -3,6 +3,7 @@ import { IdentityProvider } from '@pubkey-link/api-core-data-access'
 import { User } from '@pubkey-link/api-user-data-access'
 import { GraphQLJSON } from 'graphql-scalars'
 import { IdentityChallenge } from './identity-challenge.entity'
+import { IdentityGrant } from './identity-grant.entity'
 
 @ObjectType()
 export class Identity {
@@ -32,6 +33,8 @@ export class Identity {
   ownerId?: string
   @Field(() => [IdentityChallenge], { nullable: true })
   challenges?: IdentityChallenge[]
+  @Field(() => [IdentityGrant], { nullable: true })
+  grants?: IdentityGrant[]
   @HideField()
   accessToken?: string
   @HideField()

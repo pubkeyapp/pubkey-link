@@ -8,7 +8,9 @@ import {
   IdentityChallenge,
   LinkIdentityInput,
   RequestIdentityChallengeInput,
+  UserAddIdentityGrantInput,
   UserFindManyIdentityInput,
+  UserRemoveIdentityGrantInput,
   UserUpdateIdentityInput,
   VerifyIdentityChallengeInput,
 } from '@pubkey-link/api-identity-data-access'
@@ -71,5 +73,15 @@ export class ApiUserIdentityResolver {
     @Args('providerId') providerId: string,
   ) {
     return this.service.user.findOneIdentity(provider, providerId)
+  }
+
+  @Mutation(() => Boolean, { nullable: true })
+  userAddIdentityGrant(@CtxUserId() userId: string, @Args('input') input: UserAddIdentityGrantInput) {
+    return this.service.user.addIdentityGrant(userId, input)
+  }
+
+  @Mutation(() => Boolean, { nullable: true })
+  userRemoveIdentityGrant(@CtxUserId() userId: string, @Args('input') input: UserRemoveIdentityGrantInput) {
+    return this.service.user.removeIdentityGrant(userId, input)
   }
 }

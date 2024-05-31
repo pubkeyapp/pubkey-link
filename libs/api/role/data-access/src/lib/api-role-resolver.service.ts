@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import {
+  CommunityMember,
   CommunityRole,
   IdentityProvider,
   NetworkAsset,
@@ -59,7 +60,7 @@ export class ApiRoleResolverService {
 
     const [conditions, users] = await Promise.all([
       this.getRoleConditions({ communityId }),
-      this.getCommunityUsers({ communityId }),
+      this.getRoleValidationUsers({ communityId }),
     ])
 
     const result = {
@@ -152,12 +153,17 @@ export class ApiRoleResolverService {
     // We need to get the users ids for the owners of the identified tokens
     const userIds = await this.core.data.user
       .findMany({
-        where: { identities: { some: { provider: IdentityProvider.Solana, providerId: { in: owners } } } },
+        where: {
+          OR: [
+            { identities: { some: { provider: IdentityProvider.Solana, providerId: { in: owners } } } },
+            { identityGrants: { some: { provider: IdentityProvider.Solana, providerId: { in: owners } } } },
+          ],
+        },
         select: { id: true },
       })
       .then((res) => res.map((r) => r.id))
 
-    const existing = await this.core.data.communityMember.findMany({ where: { communityId }, include: { teams: true } })
+    const existing = await this.core.data.communityMember.findMany({ where: { communityId } })
     const existingIds = existing.map((e) => e.userId)
 
     const newMembers: Prisma.CommunityMemberCreateManyInput[] = userIds
@@ -181,7 +187,6 @@ export class ApiRoleResolverService {
     const deleteMembers = existing
       .filter((e) => !userIds.includes(e.userId))
       .filter((e) => e.role !== CommunityRole.Admin)
-      .filter((e) => !e.teams?.length)
 
     if (deleteMembers.length) {
       for (const deleteMember of deleteMembers) {
@@ -424,27 +429,8 @@ export class ApiRoleResolverService {
       )
   }
 
-  private async getCommunityUsers({ communityId }: { communityId: string }): Promise<RoleValidationUser[]> {
-    return this.core.data.user
-      .findMany({
-        where: {
-          status: UserStatus.Active,
-          communities: { some: { communityId } },
-        },
-        select: {
-          id: true,
-          username: true,
-          identities: {
-            where: { provider: { in: [IdentityProvider.Discord, IdentityProvider.Solana] } },
-            select: { provider: true, providerId: true },
-          },
-          communities: {
-            where: { communityId },
-            include: { teams: { include: { identity: true } } },
-          },
-        },
-        orderBy: { username: 'asc' },
-      })
+  private async getRoleValidationUsers({ communityId }: { communityId: string }): Promise<RoleValidationUser[]> {
+    return this.getCommunityUsers({ communityId })
       .then((users) =>
         users.map((user) => {
           const discordId = user.identities.find((i) => i.provider === IdentityProvider.Discord)?.providerId
@@ -452,10 +438,11 @@ export class ApiRoleResolverService {
             .filter((i) => i.provider === IdentityProvider.Solana)
             .map((i) => i.providerId)
 
-          const teams = user.communities[0].teams ?? []
-          const combinedSolanaIdentities = [...solanaIdentities, ...teams.map((t) => t.identity?.providerId)].filter(
-            Boolean,
-          )
+          const solanaIdentityGrants = user.identityGrants
+            .filter((i) => i.provider === IdentityProvider.Solana)
+            .map((i) => i.providerId)
+
+          const combinedSolanaIdentities = [...solanaIdentities, ...solanaIdentityGrants].filter(Boolean)
           const solanaIds = [...new Set(combinedSolanaIdentities)]
           return {
             userId: user.id,
@@ -472,39 +459,29 @@ export class ApiRoleResolverService {
       })
   }
 
-  private async getUserContext({ userId }: { userId: string }): Promise<RoleValidationUser> {
-    return this.core.data.user
-      .findUnique({
-        where: { id: userId, status: UserStatus.Active },
-        select: {
-          id: true,
-          username: true,
-          identities: {
-            where: { provider: { in: [IdentityProvider.Discord, IdentityProvider.Solana] } },
-            select: { provider: true, providerId: true },
-          },
+  private async getCommunityUsers({ communityId }: { communityId: string }): Promise<CommunityUser[]> {
+    return this.core.data.user.findMany({
+      where: {
+        status: UserStatus.Active,
+        communities: { some: { communityId } },
+      },
+      select: {
+        id: true,
+        username: true,
+        identities: {
+          where: { provider: { in: [IdentityProvider.Discord, IdentityProvider.Solana] } },
+          select: { provider: true, providerId: true },
         },
-      })
-      .then((user) => {
-        if (!user) {
-          throw new Error('User not found')
-        }
-        const discordId = user.identities.find((i) => i.provider === IdentityProvider.Discord)?.providerId
-        const solanaIds = user.identities.filter((i) => i.provider === IdentityProvider.Solana).map((i) => i.providerId)
-
-        if (!discordId || !solanaIds.length) {
-          throw new Error('User has no discordId or solanaIds')
-        }
-
-        return {
-          userId: user.id,
-          username: user.username,
-          discordId,
-          solanaIds,
-          assetMap: createContextAssetMap(),
-          conditions: [],
-        }
-      })
+        identityGrants: {
+          where: { provider: { in: [IdentityProvider.Solana] } },
+          select: { provider: true, providerId: true },
+        },
+        communities: {
+          where: { communityId },
+        },
+      },
+      orderBy: { username: 'asc' },
+    })
   }
 
   async getRoleSnapshot(roleId: string) {
@@ -517,7 +494,7 @@ export class ApiRoleResolverService {
       return []
     }
     const conditions = role.conditions
-    const users = await this.getCommunityUsers({ communityId: role.communityId })
+    const users = await this.getRoleValidationUsers({ communityId: role.communityId })
 
     const result: {
       items: number
@@ -560,6 +537,14 @@ function createContextAssetMap(): ContextAssetMap {
     acc[type] = []
     return acc
   }, {} as Record<NetworkTokenType, NetworkAsset[]>)
+}
+
+export interface CommunityUser {
+  id: string
+  username: string
+  identities: { provider: IdentityProvider; providerId: string }[]
+  identityGrants: { provider: IdentityProvider; providerId: string }[]
+  communities: CommunityMember[]
 }
 
 export interface RoleValidationUser {

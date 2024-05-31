@@ -1,6 +1,13 @@
-import { Identity, IdentityProvider, type UserFindManyIdentityInput, UserUpdateIdentityInput } from '@pubkey-link/sdk'
+import {
+  Identity,
+  IdentityProvider,
+  UserAddIdentityGrantInput,
+  type UserFindManyIdentityInput,
+  UserRemoveIdentityGrantInput,
+  UserUpdateIdentityInput,
+} from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
-import { toastError, toastSuccess } from '@pubkey-ui/core'
+import { toastError, toastSuccess, toastWarning } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 
@@ -74,6 +81,38 @@ export function useUserFindManyIdentity({ username, provider }: { username: stri
         })
         .catch((res) => {
           toastError({ title: 'Error initiating identity refresh', message: `${res}` })
+        })
+        .finally(() => query.refetch())
+    },
+    async addIdentityGrant(input: UserAddIdentityGrantInput) {
+      sdk
+        .userAddIdentityGrant({ input })
+        .then(async (res) => {
+          if (res.data.added) {
+            toastSuccess('Identity grant added')
+          } else {
+            toastWarning('Unable to add identity grant')
+          }
+          await query.refetch()
+        })
+        .catch((res) => {
+          toastError({ title: 'Error adding identity grant', message: `${res}` })
+        })
+        .finally(() => query.refetch())
+    },
+    async removeIdentityGrant(input: UserRemoveIdentityGrantInput) {
+      sdk
+        .userRemoveIdentityGrant({ input })
+        .then(async (res) => {
+          if (res.data.removed) {
+            toastSuccess('Identity grant removed')
+          } else {
+            toastWarning('Unable to remove identity grant')
+          }
+          await query.refetch()
+        })
+        .catch((res) => {
+          toastError({ title: 'Error removing identity grant', message: `${res}` })
         })
         .finally(() => query.refetch())
     },

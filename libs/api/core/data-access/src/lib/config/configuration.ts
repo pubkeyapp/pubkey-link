@@ -55,6 +55,7 @@ export interface ApiCoreConfig {
   featureCommunityCreate: boolean
   featureCommunitySnapshots: boolean
   featureCommunityTeams: boolean
+  featureIdentityGrants: boolean
   featureResolverSolanaFungible: boolean
   featureResolverSolanaNonFungible: boolean
   featureResolverSolanaValidator: boolean
@@ -109,6 +110,7 @@ export function configuration(): ApiCoreConfig {
     featureCommunityCreate: process.env['FEATURE_COMMUNITY_CREATE'] === 'true',
     featureCommunitySnapshots: process.env['FEATURE_COMMUNITY_SNAPSHOTS'] === 'true',
     featureCommunityTeams: process.env['FEATURE_COMMUNITY_TEAMS'] === 'true',
+    featureIdentityGrants: process.env['FEATURE_IDENTITY_GRANTS'] === 'true',
     featureResolverSolanaFungible: process.env['FEATURE_RESOLVER_SOLANA_FUNGIBLE'] === 'true',
     featureResolverSolanaNonFungible: process.env['FEATURE_RESOLVER_SOLANA_NON_FUNGIBLE'] === 'true',
     featureResolverSolanaValidator: process.env['FEATURE_RESOLVER_SOLANA_VALIDATOR'] === 'true',

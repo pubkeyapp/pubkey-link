@@ -37,11 +37,26 @@ fragment IdentityChallengeDetails on IdentityChallenge {
   verified
 }
 
+fragment IdentityGrantDetails on IdentityGrant {
+  createdAt
+  id
+  granteeId
+  grantee {
+    ...UserDetails
+  }
+  provider
+  providerId
+  updatedAt
+}
+
 query adminFindManyIdentity($input: AdminFindManyIdentityInput!) {
   items: adminFindManyIdentity(input: $input) {
     ...IdentityDetails
     challenges {
       ...IdentityChallengeDetails
+    }
+    grants {
+      ...IdentityGrantDetails
     }
     owner {
       ...UserDetails
@@ -75,11 +90,17 @@ mutation adminSyncIdentity($identityId: String!) {
 query userFindManyIdentity($input: UserFindManyIdentityInput!) {
   items: userFindManyIdentity(input: $input) {
     ...IdentityDetails
+    grants {
+      ...IdentityGrantDetails
+    }
   }
 }
 query userFindOneIdentity($provider: IdentityProvider!, $providerId: String!) {
   item: userFindOneIdentity(provider: $provider, providerId: $providerId) {
     ...IdentityDetails
+    grants {
+      ...IdentityGrantDetails
+    }
     owner {
       ...UserDetails
     }
@@ -128,4 +149,12 @@ mutation anonVerifyIdentityChallenge($input: VerifyIdentityChallengeInput!) {
   verified: anonVerifyIdentityChallenge(input: $input) {
     ...IdentityChallengeDetails
   }
+}
+
+mutation userAddIdentityGrant($input: UserAddIdentityGrantInput!) {
+  added: userAddIdentityGrant(input: $input)
+}
+
+mutation userRemoveIdentityGrant($input: UserRemoveIdentityGrantInput!) {
+  removed: userRemoveIdentityGrant(input: $input)
 }

@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Identity as PrismaIdentity, IdentityProvider, NetworkCluster, UserRole } from '@prisma/client'
-import { ApiCoreService, BaseContext, getRequestDetails } from '@pubkey-link/api-core-data-access'
+import { ApiCoreService, AppFeature, BaseContext, getRequestDetails } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-access'
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
 import { User } from '@pubkey-link/api-user-data-access'
@@ -9,7 +9,9 @@ import { verifyMessageSignature } from '@pubkey-link/verify-wallet'
 import { ApiIdentitySolanaService } from './api-identity-solana.service'
 import { LinkIdentityInput } from './dto/link-identity-input'
 import { RequestIdentityChallengeInput } from './dto/request-identity-challenge.input'
+import { UserAddIdentityGrantInput } from './dto/user-add-identity-grant-input'
 import { UserFindManyIdentityInput } from './dto/user-find-many-identity-input'
+import { UserRemoveIdentityGrantInput } from './dto/user-remove-identity-grant-input'
 import { UserUpdateIdentityInput } from './dto/user-update-identity.input'
 import { VerifyIdentityChallengeInput } from './dto/verify-identity-challenge-input'
 import { sha256 } from './helpers/sha256'
@@ -72,6 +74,7 @@ export class ApiIdentityDataUserService {
     const items = await this.core.data.identity.findMany({
       where: { owner: { username: input.username }, provider: input.provider ?? undefined },
       orderBy: [{ provider: 'asc' }, { name: 'asc' }],
+      include: { grants: { include: { grantee: true } } },
     })
 
     return items ?? []
@@ -221,5 +224,65 @@ export class ApiIdentityDataUserService {
       where: { id: identityId },
       data: { name: input.name?.length ? input.name : (found.profile as { name?: string })?.name ?? found.providerId },
     })
+  }
+
+  async addIdentityGrant(ownerId: string, { provider, providerId, granteeId }: UserAddIdentityGrantInput) {
+    this.core.config.ensureFeature(AppFeature.IdentityGrants)
+    if (ownerId === granteeId) {
+      throw new Error('Grantee cannot be the owner')
+    }
+    await this.core.ensureUserById(granteeId)
+    const identity = await this.ensureIdentityOwner({ ownerId, provider, providerId })
+    const found = identity.grants.find((m) => m.granteeId === granteeId)
+
+    if (found) {
+      throw new Error('User is already a grantee of this identity')
+    }
+
+    const added = await this.core.data.identityGrant.create({
+      data: {
+        provider,
+        providerId,
+        granteeId,
+      },
+    })
+
+    return !!added
+  }
+
+  async removeIdentityGrant(ownerId: string, { provider, providerId, granteeId }: UserRemoveIdentityGrantInput) {
+    this.core.config.ensureFeature(AppFeature.IdentityGrants)
+    if (ownerId === granteeId) {
+      throw new Error('Grantee cannot be the owner')
+    }
+    await this.core.ensureUserById(granteeId)
+    const identity = await this.ensureIdentityOwner({ ownerId, provider, providerId })
+    const found = identity.grants.find((m) => m.granteeId === granteeId)
+    if (!found) {
+      throw new Error('User is not a grantee of this identity')
+    }
+    const removed = await this.core.data.identityGrant.delete({
+      where: { provider_providerId_granteeId: { provider, providerId, granteeId } },
+    })
+    return !!removed
+  }
+
+  private async ensureIdentityOwner({
+    ownerId,
+    provider,
+    providerId,
+  }: {
+    ownerId: string
+    provider: IdentityProvider
+    providerId: string
+  }) {
+    const identity = await this.core.data.identity.findFirst({
+      where: { provider, providerId, ownerId },
+      include: { grants: true },
+    })
+    if (!identity) {
+      throw new Error(`Identity ${provider} ${providerId} not found`)
+    }
+    return identity
   }
 }

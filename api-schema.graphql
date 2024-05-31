@@ -216,6 +216,7 @@ enum AppFeature {
   CommunityCreate
   CommunitySnapshots
   CommunityTeams
+  IdentityGrants
 }
 
 type Bot {
@@ -350,6 +351,7 @@ type Identity {
   challenges: [IdentityChallenge!]
   createdAt: DateTime
   expired: Boolean
+  grants: [IdentityGrant!]
   id: String!
   name: String!
   owner: User
@@ -375,6 +377,16 @@ type IdentityChallenge {
   updatedAt: DateTime!
   userAgent: String!
   verified: Boolean!
+}
+
+type IdentityGrant {
+  createdAt: DateTime
+  grantee: User
+  granteeId: String!
+  id: String!
+  provider: IdentityProvider!
+  providerId: String!
+  updatedAt: DateTime
 }
 
 enum IdentityProvider {
@@ -477,6 +489,7 @@ type Mutation {
   anonVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
   logout: Boolean
   userAddCommunityMember(communityId: String!, input: UserAddCommunityMemberInput!): CommunityMember
+  userAddIdentityGrant(input: UserAddIdentityGrantInput!): Boolean
   userAddTeamMember(teamId: String!, userId: String!): Boolean
   userCreateBot(input: UserCreateBotInput!): Bot
   userCreateCommunity(input: UserCreateCommunityInput!): Community
@@ -497,6 +510,7 @@ type Mutation {
   userLinkIdentity(input: LinkIdentityInput!): Identity
   userRefreshIdentity(identityId: String!): Boolean
   userRemoveCommunityMember(communityMemberId: String!): Boolean
+  userRemoveIdentityGrant(input: UserRemoveIdentityGrantInput!): Boolean
   userRemoveTeamMember(teamId: String!, userId: String!): Boolean
   userStartBot(botId: String!): Boolean
   userStopBot(botId: String!): Boolean
@@ -812,6 +826,12 @@ input UserAddCommunityMemberInput {
   userId: String!
 }
 
+input UserAddIdentityGrantInput {
+  granteeId: String!
+  provider: IdentityProvider!
+  providerId: String!
+}
+
 input UserCreateBotInput {
   clientId: String!
   clientSecret: String!
@@ -943,6 +963,12 @@ input UserFindManyUserInput {
 type UserPaging {
   data: [User!]!
   meta: PagingMeta!
+}
+
+input UserRemoveIdentityGrantInput {
+  granteeId: String!
+  provider: IdentityProvider!
+  providerId: String!
 }
 
 enum UserRole {
