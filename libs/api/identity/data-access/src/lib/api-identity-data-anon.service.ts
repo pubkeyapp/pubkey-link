@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { IdentityProvider, NetworkCluster, UserRole, UserStatus } from '@prisma/client'
+import { IdentityProvider, UserRole, UserStatus } from '@prisma/client'
 import { ApiAuthService } from '@pubkey-link/api-auth-data-access'
 import { ApiCoreService, BaseContext, ellipsify, getRequestDetails, slugifyId } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
@@ -33,7 +33,7 @@ export class ApiIdentityDataAnonService {
     // Generate a random challenge
     const challenge = sha256(`${Math.random()}-${userAgent}-${provider}-${providerId}-${Math.random()}`)
 
-    const blockhash = await this.network.ensureBlockhash(NetworkCluster.SolanaMainnet)
+    const blockhash = await this.network.ensureBlockhash()
 
     // We found the identity so we are logging in
     if (found) {

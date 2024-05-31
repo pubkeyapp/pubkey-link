@@ -22,6 +22,8 @@ export class ApiNetworkClusterService {
   private readonly connections: Map<NetworkCluster, Connection> = new Map()
   private readonly umis: Map<NetworkCluster, Umi> = new Map()
   private readonly tokenList: Map<NetworkCluster, Client> = new Map()
+  private defaultCluster?: NetworkCluster
+
   constructor(readonly core: ApiCoreService) {}
 
   @OnEvent(EVENT_NETWORK_CREATED)
@@ -59,6 +61,7 @@ export class ApiNetworkClusterService {
   async cleanupCluster(cluster: NetworkCluster) {
     this.logger.verbose(`[${cluster}] cleaning up`)
     this.connections.delete(cluster)
+    this.defaultCluster = undefined
     this.umis.delete(cluster)
     this.tokenList.delete(cluster)
   }
@@ -69,6 +72,26 @@ export class ApiNetworkClusterService {
     await this.getUmi(cluster)
     await this.getTokenList(cluster)
     this.logger.verbose(`[${cluster}] initialized`)
+  }
+
+  getDefaultCluster(): NetworkCluster {
+    if (this.defaultCluster) {
+      return this.defaultCluster
+    }
+    for (const cluster of [
+      // This is the order we prefer to use
+      NetworkCluster.SolanaMainnet,
+      NetworkCluster.SolanaDevnet,
+      NetworkCluster.SolanaTestnet,
+      NetworkCluster.SolanaCustom,
+    ]) {
+      if (this.connections.has(cluster)) {
+        this.defaultCluster = cluster
+        this.logger.verbose(`Default cluster set to ${cluster}`)
+        return cluster
+      }
+    }
+    throw new Error(`No default cluster found`)
   }
 
   async getConnection(cluster: NetworkCluster) {
@@ -92,6 +115,9 @@ export class ApiNetworkClusterService {
   }
 
   async getTokenList(cluster: NetworkCluster) {
+    if (cluster === NetworkCluster.SolanaCustom) {
+      throw new Error(`getTokenList: Token disabled for cluster: ${cluster}`)
+    }
     if (!this.tokenList.has(cluster)) {
       const connection = await this.getConnection(cluster)
       const chainId = getChainId(cluster)
@@ -106,13 +132,13 @@ export class ApiNetworkClusterService {
           timeout: 2000,
         }),
       )
-      this.logger.verbose(`getConnection: Network created for cluster: ${cluster}`)
+      this.logger.verbose(`getTokenList: Token list created for cluster: ${cluster}`)
     }
-    const connection = this.tokenList.get(cluster)
-    if (!connection) {
-      throw new Error(`getConnection: Error getting network for cluster: ${cluster}`)
+    const list = this.tokenList.get(cluster)
+    if (!list) {
+      throw new Error(`getTokenList: Error getting token list for cluster: ${cluster}`)
     }
-    return connection
+    return list
   }
 
   async getVoteAccounts() {

@@ -18,6 +18,7 @@
     "dev:services-metrics": "docker compose -f ./docker-compose.metrics.yml up",
     "dev:services:stop": "docker compose down",
     "dev:services:stop-metrics": "docker compose -f ./docker-compose.metrics.yml down",
+    "dev:validator": "solana-test-validator -r --account-dir ./tools/solana-test-validator-accounts -l ./tmp/test-ledger",
     "dev:web": "nx serve web",
     "docker:build:api": "docker build . -t ghcr.io/pubkeyapp/pubkey-link",
     "docker:push:api": "docker push ghcr.io/pubkeyapp/pubkey-link",
@@ -214,4 +215,3 @@
   },
   "packageManager": "pnpm@8.15.8+sha256.691fe176eea9a8a80df20e4976f3dfb44a04841ceb885638fe2a26174f81e65e"
 }
-
