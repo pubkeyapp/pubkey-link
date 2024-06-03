@@ -58,10 +58,10 @@ mutation adminDeleteNetworkAsset($networkAssetId: String!) {
   deleted: adminDeleteNetworkAsset(networkAssetId: $networkAssetId)
 }
 
-mutation adminSyncNetworkAssets($cluster: NetworkCluster!) {
-  synced: adminSyncNetworkAssets(cluster: $cluster)
+mutation adminSyncNetworkAssets {
+  synced: adminSyncNetworkAssets
 }
 
-mutation adminVerifyNetworkAssets($cluster: NetworkCluster!) {
-  synced: adminVerifyNetworkAssets(cluster: $cluster)
+mutation adminVerifyNetworkAssets {
+  synced: adminVerifyNetworkAssets
 }

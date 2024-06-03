@@ -1,5 +1,5 @@
 import { Button, Group, Stack, Text } from '@mantine/core'
-import { ellipsify, NetworkCluster, UserRole } from '@pubkey-link/sdk'
+import { ellipsify, UserRole } from '@pubkey-link/sdk'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { UiGrid } from '@pubkey-link/web-core-ui'
 import { useUserFindManyIdentity } from '@pubkey-link/web-identity-data-access'
@@ -104,7 +104,7 @@ export function UserUserDetailFeature() {
                 {
                   path: 'assets',
                   label: 'Assets',
-                  element: <UserNetworkTokenFeature username={username} cluster={NetworkCluster.SolanaMainnet} />,
+                  element: <UserNetworkTokenFeature username={username} />,
                 },
               ]}
             />

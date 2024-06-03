@@ -475,7 +475,7 @@ type Mutation {
   adminRemoveCommunityMember(communityMemberId: String!): Boolean
   adminRestoreBackup(name: String!): Boolean!
   adminSyncIdentity(identityId: String!): Boolean
-  adminSyncNetworkAssets(cluster: NetworkCluster): Boolean
+  adminSyncNetworkAssets: Boolean
   adminUpdateBot(botId: String!, input: AdminUpdateBotInput!): Bot
   adminUpdateCommunity(communityId: String!, input: AdminUpdateCommunityInput!): Community
   adminUpdateCommunityMember(communityMemberId: String!, input: AdminUpdateCommunityMemberInput!): CommunityMember
@@ -485,7 +485,7 @@ type Mutation {
   adminUpdateRole(input: AdminUpdateRoleInput!, roleId: String!): Role
   adminUpdateTeam(input: AdminUpdateTeamInput!, teamId: String!): Team
   adminUpdateUser(input: AdminUpdateUserInput!, userId: String!): User
-  adminVerifyNetworkAssets(cluster: NetworkCluster): Boolean
+  adminVerifyNetworkAssets: Boolean
   anonVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
   logout: Boolean
   userAddCommunityMember(communityId: String!, input: UserAddCommunityMemberInput!): CommunityMember
@@ -914,7 +914,7 @@ input UserFindManyLogInput {
 }
 
 input UserFindManyNetworkAssetInput {
-  cluster: NetworkCluster!
+  cluster: NetworkCluster
   group: String
   limit: Int = 10
   page: Int = 1
@@ -924,7 +924,7 @@ input UserFindManyNetworkAssetInput {
 }
 
 input UserFindManyNetworkTokenInput {
-  cluster: NetworkCluster!
+  cluster: NetworkCluster
   limit: Int = 10
   page: Int = 1
   search: String

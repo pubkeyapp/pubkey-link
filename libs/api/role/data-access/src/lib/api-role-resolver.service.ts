@@ -455,7 +455,7 @@ export class ApiRoleResolverService {
         }),
       )
       .then((contexts) => {
-        return contexts.filter((c) => !!c.discordId && c.solanaIds?.length > 0) as RoleValidationUser[]
+        return contexts.filter((c) => c.solanaIds?.length > 0) as RoleValidationUser[]
       })
   }
 

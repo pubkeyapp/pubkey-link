@@ -1,11 +1,9 @@
-import { NetworkCluster, NetworkTokenType, UserFindManyNetworkTokenInput } from '@pubkey-link/sdk'
+import { NetworkTokenType, UserFindManyNetworkTokenInput } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
-export function useUserFindManyNetworkToken(
-  props: Partial<UserFindManyNetworkTokenInput> & { cluster: NetworkCluster },
-) {
+export function useUserFindManyNetworkToken(props: Partial<UserFindManyNetworkTokenInput>) {
   const sdk = useSdk()
   const [type, setType] = useState<NetworkTokenType | undefined>(props?.type ?? undefined)
   const [limit, setLimit] = useState(props?.limit ?? 10)

@@ -9,8 +9,8 @@ export class UserFindManyNetworkAssetInput extends PagingInput() {
   username!: string
   @Field(() => NetworkTokenType, { nullable: true })
   type?: NetworkTokenType
-  @Field(() => NetworkCluster)
-  cluster!: NetworkCluster
+  @Field(() => NetworkCluster, { nullable: true })
+  cluster?: NetworkCluster
   @Field({ nullable: true })
   search?: string
   @Field({ nullable: true })

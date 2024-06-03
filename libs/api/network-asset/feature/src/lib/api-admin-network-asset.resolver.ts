@@ -7,7 +7,6 @@ import {
   NetworkAsset,
   NetworkAssetPaging,
 } from '@pubkey-link/api-network-asset-data-access'
-import { NetworkCluster } from '@pubkey-link/api-network-data-access'
 
 @Resolver()
 @UseGuards(ApiAuthGraphQLAdminGuard)
@@ -30,16 +29,12 @@ export class ApiAdminNetworkAssetResolver {
   }
 
   @Mutation(() => Boolean, { nullable: true })
-  adminSyncNetworkAssets(
-    @Args({ name: 'cluster', type: () => NetworkCluster, nullable: true }) cluster: NetworkCluster,
-  ) {
-    return this.service.sync.syncAllNetworkAssets(cluster, { force: true })
+  adminSyncNetworkAssets() {
+    return this.service.sync.syncAllNetworkAssets({ force: true })
   }
 
   @Mutation(() => Boolean, { nullable: true })
-  adminVerifyNetworkAssets(
-    @Args({ name: 'cluster', type: () => NetworkCluster, nullable: true }) cluster: NetworkCluster,
-  ) {
-    return this.service.sync.verifyAllNetworkAssets(cluster)
+  adminVerifyNetworkAssets() {
+    return this.service.sync.verifyAllNetworkAssets()
   }
 }

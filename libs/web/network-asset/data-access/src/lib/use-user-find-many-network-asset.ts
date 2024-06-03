@@ -7,7 +7,7 @@ export function useUserFindManyNetworkAsset(
   props: Partial<UserFindManyNetworkAssetInput> & { username: string; type: NetworkTokenType },
 ) {
   const sdk = useSdk()
-  const [cluster, setCluster] = useState<NetworkCluster>(props?.cluster ?? NetworkCluster.SolanaMainnet)
+  const [cluster, setCluster] = useState<NetworkCluster | undefined>(props?.cluster ?? undefined)
   const [limit, setLimit] = useState(props?.limit ?? 10)
   const [page, setPage] = useState(props?.page ?? 1)
   const [search, setSearch] = useState<string>(props?.search ?? '')

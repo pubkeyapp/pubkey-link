@@ -656,10 +656,6 @@ export type MutationAdminSyncIdentityArgs = {
   identityId: Scalars['String']['input']
 }
 
-export type MutationAdminSyncNetworkAssetsArgs = {
-  cluster?: InputMaybe<NetworkCluster>
-}
-
 export type MutationAdminUpdateBotArgs = {
   botId: Scalars['String']['input']
   input: AdminUpdateBotInput
@@ -702,10 +698,6 @@ export type MutationAdminUpdateTeamArgs = {
 export type MutationAdminUpdateUserArgs = {
   input: AdminUpdateUserInput
   userId: Scalars['String']['input']
-}
-
-export type MutationAdminVerifyNetworkAssetsArgs = {
-  cluster?: InputMaybe<NetworkCluster>
 }
 
 export type MutationAnonVerifyIdentityChallengeArgs = {
@@ -1531,7 +1523,7 @@ export type UserFindManyLogInput = {
 }
 
 export type UserFindManyNetworkAssetInput = {
-  cluster: NetworkCluster
+  cluster?: InputMaybe<NetworkCluster>
   group?: InputMaybe<Scalars['String']['input']>
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
@@ -1541,7 +1533,7 @@ export type UserFindManyNetworkAssetInput = {
 }
 
 export type UserFindManyNetworkTokenInput = {
-  cluster: NetworkCluster
+  cluster?: InputMaybe<NetworkCluster>
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
   search?: InputMaybe<Scalars['String']['input']>
@@ -5249,15 +5241,11 @@ export type AdminDeleteNetworkAssetMutationVariables = Exact<{
 
 export type AdminDeleteNetworkAssetMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
-export type AdminSyncNetworkAssetsMutationVariables = Exact<{
-  cluster: NetworkCluster
-}>
+export type AdminSyncNetworkAssetsMutationVariables = Exact<{ [key: string]: never }>
 
 export type AdminSyncNetworkAssetsMutation = { __typename?: 'Mutation'; synced?: boolean | null }
 
-export type AdminVerifyNetworkAssetsMutationVariables = Exact<{
-  cluster: NetworkCluster
-}>
+export type AdminVerifyNetworkAssetsMutationVariables = Exact<{ [key: string]: never }>
 
 export type AdminVerifyNetworkAssetsMutation = { __typename?: 'Mutation'; synced?: boolean | null }
 
@@ -9841,13 +9829,13 @@ export const AdminDeleteNetworkAssetDocument = gql`
   }
 `
 export const AdminSyncNetworkAssetsDocument = gql`
-  mutation adminSyncNetworkAssets($cluster: NetworkCluster!) {
-    synced: adminSyncNetworkAssets(cluster: $cluster)
+  mutation adminSyncNetworkAssets {
+    synced: adminSyncNetworkAssets
   }
 `
 export const AdminVerifyNetworkAssetsDocument = gql`
-  mutation adminVerifyNetworkAssets($cluster: NetworkCluster!) {
-    synced: adminVerifyNetworkAssets(cluster: $cluster)
+  mutation adminVerifyNetworkAssets {
+    synced: adminVerifyNetworkAssets
   }
 `
 export const AdminFindManyNetworkTokenDocument = gql`
@@ -12166,7 +12154,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
       )
     },
     adminSyncNetworkAssets(
-      variables: AdminSyncNetworkAssetsMutationVariables,
+      variables?: AdminSyncNetworkAssetsMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
       data: AdminSyncNetworkAssetsMutation
@@ -12187,7 +12175,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
       )
     },
     adminVerifyNetworkAssets(
-      variables: AdminVerifyNetworkAssetsMutationVariables,
+      variables?: AdminVerifyNetworkAssetsMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
       data: AdminVerifyNetworkAssetsMutation
@@ -13833,7 +13821,7 @@ export function UserFindManyLogInputSchema(): z.ZodObject<Properties<UserFindMan
 
 export function UserFindManyNetworkAssetInputSchema(): z.ZodObject<Properties<UserFindManyNetworkAssetInput>> {
   return z.object({
-    cluster: NetworkClusterSchema,
+    cluster: NetworkClusterSchema.nullish(),
     group: z.string().nullish(),
     limit: z.number().nullish(),
     page: z.number().nullish(),
@@ -13845,7 +13833,7 @@ export function UserFindManyNetworkAssetInputSchema(): z.ZodObject<Properties<Us
 
 export function UserFindManyNetworkTokenInputSchema(): z.ZodObject<Properties<UserFindManyNetworkTokenInput>> {
   return z.object({
-    cluster: NetworkClusterSchema,
+    cluster: NetworkClusterSchema.nullish(),
     limit: z.number().nullish(),
     page: z.number().nullish(),
     search: z.string().nullish(),
