@@ -59,6 +59,21 @@ const DL_CONDITION_HOLDER_WHALE: Prisma.RoleConditionCreateWithoutRoleInput = {
   amountMax: '',
 }
 
+const LOCAL_TOKEN_FT = 'LoCaPtFUUtfdmZbw82gQoc2LDBipRVCCe3d6nPSpi1G'
+const LOCAL_TOKEN_NFT = 'NFTZLSyUZRUJh661TL749KK3z1W1NMDocWMggPAvQai'
+
+const LOCAL_CONDITION_FT: Prisma.RoleConditionCreateWithoutRoleInput = {
+  token: { connect: { account_cluster: { cluster: NetworkCluster.SolanaCustom, account: LOCAL_TOKEN_FT } } },
+  type: NetworkTokenType.Fungible,
+  amount: '42',
+}
+
+const LOCAL_CONDITION_NFT: Prisma.RoleConditionCreateWithoutRoleInput = {
+  token: { connect: { account_cluster: { cluster: NetworkCluster.SolanaCustom, account: LOCAL_TOKEN_NFT } } },
+  type: NetworkTokenType.NonFungible,
+  amount: '1',
+}
+
 const LOS_SERVER = '1190413756325429268'
 const LOS_LEGEND = 'LGNDeXXXaDDeRerwwHfUtPBNz5s6vrn1NMSt9hdaCwx'
 const LOS_THE_CHOICE = '8fmefJZapGpyVMDzj4MSYQfR7mTET1oV9hXyu1axCjLE'
@@ -136,6 +151,24 @@ const PK_BOT: Prisma.BotCreateWithoutCommunityInput = {
 }
 
 export const provisionCommunities: Prisma.CommunityCreateInput[] = [
+  {
+    cluster: NetworkCluster.SolanaCustom,
+    name: 'localhost',
+    featured: true,
+    enableSync: true,
+    members: {
+      create: [
+        { user: { connect: { id: 'alice' } }, role: CommunityRole.Admin },
+        { user: { connect: { id: 'dave' } }, role: CommunityRole.Admin },
+      ],
+    },
+    roles: {
+      create: [
+        { id: 'local-ft-holder', name: 'Local FT Holder', conditions: { create: [LOCAL_CONDITION_FT] } },
+        { id: 'local-nft-holder', name: 'Local NFT Holder', conditions: { create: [LOCAL_CONDITION_NFT] } },
+      ],
+    },
+  },
   {
     cluster,
     name: 'PubKey',
