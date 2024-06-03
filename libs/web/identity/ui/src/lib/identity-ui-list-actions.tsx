@@ -1,17 +1,14 @@
 import { ActionIcon, CSSProperties, Menu, rem } from '@mantine/core'
 import { modals } from '@mantine/modals'
 import {
-  AppFeature,
   Identity,
   IdentityProvider,
   UserAddIdentityGrantInput,
   UserRemoveIdentityGrantInput,
   UserUpdateIdentityInput,
 } from '@pubkey-link/sdk'
-import { useAppConfig } from '@pubkey-link/web-core-data-access'
 import { handleDebugModalClick } from '@pubkey-ui/core'
-import { IconBug, IconDotsVertical, IconExternalLink, IconPencil, IconShare3, IconTrash } from '@tabler/icons-react'
-import { IdentityGrantUiManager } from './identity-grant-ui-manager'
+import { IconBug, IconDotsVertical, IconExternalLink, IconPencil, IconTrash } from '@tabler/icons-react'
 import { IdentityUiUpdateForm } from './identity-ui-update-form'
 
 export function IdentityUiListActions({
@@ -27,8 +24,6 @@ export function IdentityUiListActions({
   addIdentityGrant?: (input: UserAddIdentityGrantInput) => Promise<void>
   removeIdentityGrant?: (input: UserRemoveIdentityGrantInput) => Promise<void>
 }) {
-  const { hasFeature } = useAppConfig()
-  const hasIdentityGrants = hasFeature(AppFeature.IdentityGrants)
   const style: CSSProperties = { width: rem(14), height: rem(14) }
 
   function renameIdentity() {
@@ -40,28 +35,6 @@ export function IdentityUiListActions({
           item={identity}
           onSubmit={(res) =>
             updateIdentity(identity.id, res).then(() => {
-              modals.closeAll()
-            })
-          }
-        />
-      ),
-    })
-  }
-
-  function manageIdentityGrants() {
-    if (!hasIdentityGrants || !addIdentityGrant || !removeIdentityGrant) {
-      return null
-    }
-
-    modals.open({
-      title: 'Manage Identity Grants',
-      centered: true,
-      children: (
-        <IdentityGrantUiManager
-          item={identity}
-          addGrant={async (input) => addIdentityGrant(input).then(() => modals.closeAll())}
-          removeGrant={async (input) =>
-            removeIdentityGrant(input).then(() => {
               modals.closeAll()
             })
           }
@@ -94,11 +67,6 @@ export function IdentityUiListActions({
           Show debug data
         </Menu.Item>
         <Menu.Label>Advanced</Menu.Label>
-        {hasIdentityGrants && identity.provider === IdentityProvider.Solana ? (
-          <Menu.Item leftSection={<IconShare3 style={style} />} onClick={manageIdentityGrants}>
-            Identity Grants
-          </Menu.Item>
-        ) : null}
         <Menu.Item
           disabled={identity.provider === IdentityProvider.Discord}
           leftSection={<IconPencil style={style} />}

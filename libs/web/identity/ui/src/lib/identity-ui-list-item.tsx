@@ -1,12 +1,16 @@
-import { Badge, Group, Text } from '@mantine/core'
+import { Badge, Button, Collapse, Group, Text } from '@mantine/core'
+import { useDisclosure } from '@mantine/hooks'
 import {
+  AppFeature,
   Identity,
   UserAddIdentityGrantInput,
   UserRemoveIdentityGrantInput,
   UserUpdateIdentityInput,
 } from '@pubkey-link/sdk'
+import { useAppConfig } from '@pubkey-link/web-core-data-access'
 import { IdentityUiAvatar } from '@pubkey-link/web-core-ui'
 import { UiCard, UiCopy, UiGroup, UiStack } from '@pubkey-ui/core'
+import { IdentityGrantUiManager } from './identity-grant-ui-manager'
 import { IdentityUiListActions } from './identity-ui-list-actions'
 import { IdentityUiSolanaVerifyButton } from './identity-ui-solana-verify-button'
 import { IdentityUiVerified } from './identity-ui-verified'
@@ -26,6 +30,10 @@ export function IdentityUiListItem({
   removeIdentityGrant?: (input: UserRemoveIdentityGrantInput) => Promise<void>
   item: Identity
 }) {
+  const { hasFeature } = useAppConfig()
+  const hasIdentityGrants = hasFeature(AppFeature.IdentityGrants) && addIdentityGrant && removeIdentityGrant
+  const [showIdentityGrants, { toggle }] = useDisclosure(false)
+
   return (
     <UiCard>
       <Group justify="space-between">
@@ -63,6 +71,18 @@ export function IdentityUiListItem({
           removeIdentityGrant={removeIdentityGrant}
         />
       </Group>
+      {hasIdentityGrants ? (
+        <UiStack>
+          <Group justify="flex-end">
+            <Button onClick={toggle} size="xs" variant="light">
+              Manage Identity Grants
+            </Button>
+          </Group>
+          <Collapse in={showIdentityGrants} transitionTimingFunction="linear">
+            <IdentityGrantUiManager item={item} addGrant={addIdentityGrant} removeGrant={removeIdentityGrant} />
+          </Collapse>
+        </UiStack>
+      ) : null}
     </UiCard>
   )
 }
