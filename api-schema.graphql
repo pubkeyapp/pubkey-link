@@ -129,13 +129,6 @@ input AdminFindManySnapshotInput {
   search: String
 }
 
-input AdminFindManyTeamInput {
-  communityId: String!
-  limit: Int = 10
-  page: Int = 1
-  search: String
-}
-
 input AdminFindManyUserInput {
   limit: Int = 10
   page: Int = 1
@@ -185,11 +178,6 @@ input AdminUpdateRoleInput {
   name: String
 }
 
-input AdminUpdateTeamInput {
-  avatarUrl: String
-  name: String
-}
-
 input AdminUpdateUserInput {
   avatarUrl: String
   developer: Boolean
@@ -215,7 +203,6 @@ enum AppFeature {
   AnonCommunities
   CommunityCreate
   CommunitySnapshots
-  CommunityTeams
   IdentityGrants
 }
 
@@ -469,7 +456,6 @@ type Mutation {
   adminDeleteNetworkToken(networkTokenId: String!): Boolean
   adminDeleteRole(roleId: String!): Boolean
   adminDeleteSnapshot(snapshotId: String!): Boolean
-  adminDeleteTeam(teamId: String!): Boolean
   adminDeleteUser(userId: String!): Boolean
   adminFetchBackup(url: String!): Boolean!
   adminRemoveCommunityMember(communityMemberId: String!): Boolean
@@ -483,21 +469,18 @@ type Mutation {
   adminUpdateNetworkToken(input: AdminUpdateNetworkTokenInput!, networkTokenId: String!): NetworkToken
   adminUpdateNetworkTokenMetadata(networkTokenId: String!): NetworkToken
   adminUpdateRole(input: AdminUpdateRoleInput!, roleId: String!): Role
-  adminUpdateTeam(input: AdminUpdateTeamInput!, teamId: String!): Team
   adminUpdateUser(input: AdminUpdateUserInput!, userId: String!): User
   adminVerifyNetworkAssets: Boolean
   anonVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
   logout: Boolean
   userAddCommunityMember(communityId: String!, input: UserAddCommunityMemberInput!): CommunityMember
   userAddIdentityGrant(input: UserAddIdentityGrantInput!): Boolean
-  userAddTeamMember(teamId: String!, userId: String!): Boolean
   userCreateBot(input: UserCreateBotInput!): Bot
   userCreateCommunity(input: UserCreateCommunityInput!): Community
   userCreateRole(input: UserCreateRoleInput!): Role
   userCreateRoleCondition(input: UserCreateRoleConditionInput!): RoleCondition
   userCreateRolePermission(input: UserCreateRolePermissionInput!): RolePermission
   userCreateSnapshot(input: UserCreateSnapshotInput!): Snapshot
-  userCreateTeam(input: UserCreateTeamInput!): Team
   userDeleteBot(botId: String!): Boolean
   userDeleteCommunity(communityId: String!): Boolean
   userDeleteIdentity(identityId: String!): Boolean
@@ -505,13 +488,11 @@ type Mutation {
   userDeleteRoleCondition(roleConditionId: String!): Boolean
   userDeleteRolePermission(rolePermissionId: String!): Boolean
   userDeleteSnapshot(snapshotId: String!): Boolean
-  userDeleteTeam(teamId: String!): Boolean
   userLeaveBotServer(botId: String!, serverId: String!): Boolean
   userLinkIdentity(input: LinkIdentityInput!): Identity
   userRefreshIdentity(identityId: String!): Boolean
   userRemoveCommunityMember(communityMemberId: String!): Boolean
   userRemoveIdentityGrant(input: UserRemoveIdentityGrantInput!): Boolean
-  userRemoveTeamMember(teamId: String!, userId: String!): Boolean
   userStartBot(botId: String!): Boolean
   userStopBot(botId: String!): Boolean
   userSyncBotServer(botId: String!, serverId: String!): Boolean
@@ -524,7 +505,6 @@ type Mutation {
   userUpdateIdentity(identityId: String!, input: UserUpdateIdentityInput!): Identity
   userUpdateRole(input: UserUpdateRoleInput!, roleId: String!): Role
   userUpdateRoleCondition(input: UserUpdateRoleConditionInput!, roleConditionId: String!): RoleCondition
-  userUpdateTeam(input: UserUpdateTeamInput!, teamId: String!): Team
   userUpdateUser(input: UserUpdateUserInput!): User
   userVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
 }
@@ -643,7 +623,6 @@ type Query {
   adminFindManyNetworkToken(input: AdminFindManyNetworkTokenInput!): NetworkTokenPaging!
   adminFindManyRole(input: AdminFindManyRoleInput!): RolePaging!
   adminFindManySnapshot(input: AdminFindManySnapshotInput!): SnapshotPaging!
-  adminFindManyTeam(input: AdminFindManyTeamInput!): TeamPaging!
   adminFindManyUser(input: AdminFindManyUserInput!): UserPaging!
   adminFindOneBot(botId: String!): Bot
   adminFindOneCommunity(communityId: String!): Community
@@ -654,7 +633,6 @@ type Query {
   adminFindOneNetworkToken(networkTokenId: String!): NetworkToken
   adminFindOneRole(roleId: String!): Role
   adminFindOneSnapshot(snapshotId: String!): Snapshot
-  adminFindOneTeam(teamId: String!): Team
   adminFindOneUser(userId: String!): User
   adminFindUserByIdentity(provider: IdentityProvider!, providerId: String!): User
   adminGetBackup(name: String!): JSON
@@ -673,7 +651,6 @@ type Query {
   userFindManyNetworkToken(input: UserFindManyNetworkTokenInput!): NetworkTokenPaging!
   userFindManyRole(input: UserFindManyRoleInput!): RolePaging!
   userFindManySnapshot(input: UserFindManySnapshotInput!): SnapshotPaging!
-  userFindManyTeam(input: UserFindManyTeamInput!): TeamPaging!
   userFindManyUser(input: UserFindManyUserInput!): UserPaging!
   userFindOneBot(communityId: String!): Bot
   userFindOneBotServer(botId: String!, serverId: String!): BotServer
@@ -684,7 +661,6 @@ type Query {
   userFindOneNetworkAsset(account: String!, cluster: NetworkCluster!): NetworkAsset
   userFindOneRole(roleId: String!): Role
   userFindOneSnapshot(snapshotId: String!): Snapshot
-  userFindOneTeam(teamId: String!): Team
   userFindOneUser(username: String!): User
   userFindOneUserById(userId: String!): User
   userGetBotChannels(botId: String!, serverId: String!): [DiscordChannel!]
@@ -787,24 +763,6 @@ type SolanaNetworkAsset {
   owner: String!
 }
 
-type Team {
-  avatarUrl: String
-  community: Community
-  communityId: String!
-  createdAt: DateTime
-  id: String!
-  identity: Identity
-  identityId: String!
-  members: [CommunityMember!]
-  name: String!
-  updatedAt: DateTime
-}
-
-type TeamPaging {
-  data: [Team!]!
-  meta: PagingMeta!
-}
-
 type User {
   avatarUrl: String
   createdAt: DateTime
@@ -870,12 +828,6 @@ input UserCreateRolePermissionInput {
 
 input UserCreateSnapshotInput {
   roleId: String!
-}
-
-input UserCreateTeamInput {
-  communityId: String!
-  identityId: String!
-  name: String!
 }
 
 input UserFindManyCommunityInput {
@@ -944,13 +896,6 @@ input UserFindManySnapshotInput {
   limit: Int = 10
   page: Int = 1
   roleId: String
-  search: String
-}
-
-input UserFindManyTeamInput {
-  communityId: String!
-  limit: Int = 10
-  page: Int = 1
   search: String
 }
 
@@ -1028,11 +973,6 @@ input UserUpdateRoleConditionInput {
 }
 
 input UserUpdateRoleInput {
-  name: String
-}
-
-input UserUpdateTeamInput {
-  avatarUrl: String
   name: String
 }
 

@@ -6,7 +6,6 @@ import { AdminCommunityMemberFeature } from '@pubkey-link/web-community-member-f
 import { useAppConfig } from '@pubkey-link/web-core-data-access'
 import { AdminLogFeature } from '@pubkey-link/web-log-feature'
 import { AdminRoleFeature } from '@pubkey-link/web-role-feature'
-import { AdminTeamFeature } from '@pubkey-link/web-team-feature'
 import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoute, UiTabRoutes } from '@pubkey-ui/core'
 import { useParams } from 'react-router-dom'
 import { AdminCommunityDetailOverviewTab } from './admin-community-detail-overview.tab'
@@ -19,7 +18,6 @@ export function AdminCommunityDetailFeature() {
   const { item, query } = useAdminFindOneCommunity({ communityId })
 
   const hasSnapshots = hasFeature(AppFeature.CommunitySnapshots)
-  const hasTeams = hasFeature(AppFeature.CommunityTeams)
 
   if (query.isLoading) {
     return <UiLoader />
@@ -34,7 +32,6 @@ export function AdminCommunityDetailFeature() {
       label: 'Overview',
       element: <AdminCommunityDetailOverviewTab communityId={communityId} />,
     },
-    hasTeams && { path: 'teams', label: 'Teams', element: <AdminTeamFeature communityId={communityId} /> },
     {
       path: 'roles',
       label: 'Roles',

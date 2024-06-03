@@ -23,9 +23,6 @@ export class ApiCoreConfigService {
     if (this.featureCommunitySnapshots) {
       features.push(AppFeature.CommunitySnapshots)
     }
-    if (this.featureCommunityTeams) {
-      features.push(AppFeature.CommunityTeams)
-    }
     if (this.featureIdentityGrants) {
       features.push(AppFeature.IdentityGrants)
     }
@@ -203,10 +200,6 @@ export class ApiCoreConfigService {
 
   get featureCommunitySnapshots() {
     return this.service.get<boolean>('featureCommunitySnapshots')
-  }
-
-  get featureCommunityTeams() {
-    return this.service.get<boolean>('featureCommunityTeams')
   }
 
   get featureIdentityGrants() {
