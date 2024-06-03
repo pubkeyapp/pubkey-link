@@ -6,6 +6,8 @@
     "module": "commonjs",
     "target": "es5",
     "types": ["node"],
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "importHelpers": false
   },
   "include": ["**/*.ts"]
