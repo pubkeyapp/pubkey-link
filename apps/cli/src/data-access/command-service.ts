@@ -1,5 +1,3 @@
-import { names } from '@nx/devkit'
-import { NetworkCluster } from '@pubkey-link/sdk'
 import repl from 'node:repl'
 import { getCliConfig } from '../utils/get-cli-config'
 
@@ -82,7 +80,7 @@ export class CommandService {
   }
   async networkSync(cluster: string) {
     const { cookie, sdk } = await this.getConfig()
-    const res = await sdk.adminSyncNetworkAssets({ cluster: names(cluster).className as NetworkCluster }, { cookie })
+    const res = await sdk.adminSyncNetworkAssets(undefined, { cookie })
     if (!res.data?.synced) {
       console.log('Failed to sync network assets')
       return

@@ -29,6 +29,52 @@ function networkInputSolanaCustom(endpoint: string): Prisma.NetworkCreateInput {
     cluster: NetworkCluster.SolanaCustom,
     type: NetworkType.Solana,
     endpoint,
+    assets: {
+      create: [
+        {
+          account: '5dZqkoHPQiBZSwBLkcsivepXHhtr4zMZfRHYNQ2S6rDn',
+          balance: '99999000',
+          resolver: NetworkResolver.SolanaFungible,
+          type: NetworkTokenType.Fungible,
+          decimals: 6,
+          owner: 'ALiC98dw6j47Skrxje3zBN4jTA11w67JRjQRBeZH3BRG',
+          name: 'FT Local',
+          mint: 'LoCaPtFUUtfdmZbw82gQoc2LDBipRVCCe3d6nPSpi1G',
+          group: 'LoCaPtFUUtfdmZbw82gQoc2LDBipRVCCe3d6nPSpi1G',
+          program: TOKEN_2022_PROGRAM_ID.toString(),
+        },
+        {
+          account: '8AnBuLTztyNtRrKgJixg924JowRB6kmp7FsSa423jbL2',
+          balance: '1000',
+          resolver: NetworkResolver.SolanaFungible,
+          type: NetworkTokenType.Fungible,
+          decimals: 6,
+          owner: 'BoBigKFEgt5izFVmpZAqnHDjNXNMYFbYrbiXy4EkfJDE',
+          name: 'FT Local',
+          mint: 'LoCaPtFUUtfdmZbw82gQoc2LDBipRVCCe3d6nPSpi1G',
+          group: 'LoCaPtFUUtfdmZbw82gQoc2LDBipRVCCe3d6nPSpi1G',
+          program: TOKEN_2022_PROGRAM_ID.toString(),
+        },
+      ],
+    },
+    tokens: {
+      create: [
+        {
+          type: NetworkTokenType.Fungible,
+          account: 'LoCaPtFUUtfdmZbw82gQoc2LDBipRVCCe3d6nPSpi1G',
+          program: TOKEN_2022_PROGRAM_ID.toString(),
+          name: 'FT Local',
+          symbol: 'FT',
+        },
+        {
+          type: NetworkTokenType.NonFungible,
+          account: 'NFTZLSyUZRUJh661TL749KK3z1W1NMDocWMggPAvQai',
+          program: TOKEN_2022_PROGRAM_ID.toString(),
+          name: 'NFT Local',
+          symbol: 'NFT',
+        },
+      ],
+    },
   }
 }
 
