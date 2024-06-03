@@ -10,7 +10,6 @@ import { UserLogFeature } from '@pubkey-link/web-log-feature'
 import { NetworkUiClusterBadge } from '@pubkey-link/web-network-ui'
 import { UserRoleFeature } from '@pubkey-link/web-role-feature'
 import { UserSnapshotFeature } from '@pubkey-link/web-snapshot-feature'
-import { UserTeamFeature } from '@pubkey-link/web-team-feature'
 import {
   UiBack,
   UiContainer,
@@ -22,7 +21,7 @@ import {
   UiLoader,
   UiStack,
 } from '@pubkey-ui/core'
-import { IconBrandDiscord, IconUsersGroup } from '@tabler/icons-react'
+import { IconBrandDiscord } from '@tabler/icons-react'
 import { lazy } from 'react'
 import { useParams } from 'react-router-dom'
 
@@ -35,7 +34,6 @@ export function UserCommunityDetailFeature() {
   const { item, isLoading, communityAdmin, role } = useUserFindOneCommunity({ communityId })
 
   const hasSnapshots = hasFeature(AppFeature.CommunitySnapshots)
-  const hasTeams = hasFeature(AppFeature.CommunityTeams)
 
   if (isLoading) {
     return <UiLoader />
@@ -53,12 +51,6 @@ export function UserCommunityDetailFeature() {
       label: 'Dashboard',
       element: <RouteDashboard community={item} role={role} />,
       leftSection: <UiIcon type="dashboard" size={20} />,
-    },
-    hasTeams && {
-      path: 'teams',
-      label: 'Teams',
-      element: <UserTeamFeature communityId={communityId} />,
-      leftSection: <IconUsersGroup size={20} />,
     },
     communityAdmin && {
       path: 'discord',

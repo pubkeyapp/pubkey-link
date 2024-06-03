@@ -26,7 +26,6 @@ export enum AppFeature {
   AnonCommunities = 'AnonCommunities',
   CommunityCreate = 'CommunityCreate',
   CommunitySnapshots = 'CommunitySnapshots',
-  CommunityTeams = 'CommunityTeams',
   IdentityGrants = 'IdentityGrants',
 }
 
