@@ -62,11 +62,12 @@ export class ApiNetworkAssetSyncService {
   }
 
   @Cron(CronExpression.EVERY_10_MINUTES)
-  async syncAllNetworkAssets(cluster: NetworkCluster = NetworkCluster.SolanaMainnet, { force = false } = {}) {
+  async syncAllNetworkAssets({ force = false } = {}) {
     if (!this.core.config.syncNetworkAssets && !force) {
       this.logger.log(`Network asset sync is disabled`)
       return true
     }
+    const cluster = this.network.cluster.getDefaultCluster()
     const network = await this.core.data.network.findUnique({ where: { cluster } })
 
     if (!network?.enableSync && !force) {
@@ -97,7 +98,8 @@ export class ApiNetworkAssetSyncService {
   }
 
   @Cron(CronExpression.EVERY_4_HOURS)
-  async verifyAllNetworkAssets(cluster: NetworkCluster = NetworkCluster.SolanaMainnet) {
+  async verifyAllNetworkAssets() {
+    const cluster = this.network.cluster.getDefaultCluster()
     const assets = await this.core.data.networkAsset.findMany({ where: { cluster } })
     if (!assets.length) {
       this.logger.log(`No assets to sync`)
@@ -112,12 +114,13 @@ export class ApiNetworkAssetSyncService {
   }
 
   async syncIdentity({
-    cluster = NetworkCluster.SolanaMainnet,
+    cluster,
     owner,
   }: {
     cluster?: NetworkCluster
     owner: string
   }): Promise<Prisma.NetworkAssetCreateInput[]> {
+    cluster = cluster ?? this.network.cluster.getDefaultCluster()
     // Get the tokens for the cluster
     const tokens = await this.core.data.networkToken.findMany({ where: { network: { cluster } } })
 

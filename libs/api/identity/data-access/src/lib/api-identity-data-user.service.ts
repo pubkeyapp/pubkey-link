@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { Identity as PrismaIdentity, IdentityProvider, NetworkCluster, UserRole } from '@prisma/client'
+import { Identity as PrismaIdentity, IdentityProvider, UserRole } from '@prisma/client'
 import { ApiCoreService, AppFeature, BaseContext, getRequestDetails } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-access'
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
@@ -57,7 +57,7 @@ export class ApiIdentityDataUserService {
     if (identity.provider !== IdentityProvider.Solana) {
       throw new Error(`Identity ${identityId} not supported`)
     }
-    return this.networkAsset.sync.sync({ cluster: NetworkCluster.SolanaMainnet, identity })
+    return this.networkAsset.sync.sync({ cluster: this.network.cluster.getDefaultCluster(), identity })
   }
 
   async findManyIdentity(actor: User, input: UserFindManyIdentityInput): Promise<PrismaIdentity[]> {
@@ -171,7 +171,7 @@ export class ApiIdentityDataUserService {
         signature,
       },
     })
-    await this.networkAsset.sync.sync({ cluster: NetworkCluster.SolanaMainnet, identity: found.identity })
+    await this.networkAsset.sync.sync({ cluster: this.network.cluster.getDefaultCluster(), identity: found.identity })
     return updated
   }
 
