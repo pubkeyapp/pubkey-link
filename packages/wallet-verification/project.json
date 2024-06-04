@@ -1,0 +1,31 @@
+{
+  "name": "wallet-verification",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/wallet-verification/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/wallet-verification",
+        "main": "packages/wallet-verification/src/index.ts",
+        "tsConfig": "packages/wallet-verification/tsconfig.lib.json",
+        "assets": ["packages/wallet-verification/*.md"],
+        "generatePackageJson": true,
+        "format": ["cjs"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "../../coverage/packages/wallet-verification"
+      }
+    }
+  }
+}
