@@ -1,16 +1,16 @@
 import { Flex, Paper, rem, Stack, Text, Title, useMantineTheme } from '@mantine/core'
 import { useMediaQuery } from '@mantine/hooks'
-import { IdentityProvider } from '@pubkey-link/sdk'
+import { AppFeature, IdentityProvider } from '@pubkey-link/sdk'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
+import { useAppConfig } from '@pubkey-link/web-core-data-access'
 import { useUserFindManyIdentity } from '@pubkey-link/web-identity-data-access'
-import { IdentityUiLinkButton } from '@pubkey-link/web-identity-ui'
+import { IdentityUiLinkButton, IdentityUiSolanaLinkCliButton } from '@pubkey-link/web-identity-ui'
 import { UiStack, useUiColorScheme } from '@pubkey-ui/core'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { useAppConfig } from '@pubkey-link/web-core-data-access'
 
 export function OnboardingFeature() {
   const navigate = useNavigate()
-  const { appConfig } = useAppConfig()
+  const { appConfig, hasFeature } = useAppConfig()
   const { user, refresh, hasSolana } = useAuth()
   const { query } = useUserFindManyIdentity({
     provider: IdentityProvider.Solana,
@@ -20,6 +20,7 @@ export function OnboardingFeature() {
   const isSmall = useMediaQuery(`(max-width: ${breakpoints.sm}`)
   const { colorScheme } = useUiColorScheme()
   const border = `${rem(1)} solid var(mantine-color-${colorScheme === 'dark' ? 'dark-7' : 'gray-3'})`
+  const hasCliVerification = hasFeature(AppFeature.IdentityCliVerification)
 
   if (hasSolana) {
     return <Navigate to="/dashboard" replace />
@@ -59,6 +60,24 @@ export function OnboardingFeature() {
             provider={IdentityProvider.Solana}
             size="xl"
           />
+          {hasCliVerification ? (
+            <IdentityUiSolanaLinkCliButton
+              loading={query.isLoading}
+              disabled={!appConfig?.authLinkProviders?.includes(IdentityProvider.Solana)}
+              identities={[]}
+              refresh={() =>
+                query
+                  .refetch()
+                  .then(() => refresh())
+                  .then(() => {
+                    if (hasSolana) {
+                      navigate('/dashboard')
+                    }
+                  })
+              }
+              size="xl"
+            />
+          ) : null}
         </UiStack>
       </Paper>
     </Flex>

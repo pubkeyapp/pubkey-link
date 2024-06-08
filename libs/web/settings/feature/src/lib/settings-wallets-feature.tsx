@@ -1,18 +1,19 @@
-import { IdentityProvider } from '@pubkey-link/sdk'
+import { AppFeature, IdentityProvider } from '@pubkey-link/sdk'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { useAppConfig } from '@pubkey-link/web-core-data-access'
 import { useUserFindManyIdentity } from '@pubkey-link/web-identity-data-access'
-import { IdentityUiLinkButton, IdentityUiList } from '@pubkey-link/web-identity-ui'
+import { IdentityUiLinkButton, IdentityUiList, IdentityUiSolanaLinkCliButton } from '@pubkey-link/web-identity-ui'
 import { UiGroup, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function SettingsWalletsFeature() {
-  const { appConfig } = useAppConfig()
-  const { user } = useAuth()
+  const { appConfig, hasFeature } = useAppConfig()
+  const { user, refresh, hasSolana } = useAuth()
   const { deleteIdentity, updateIdentity, addIdentityGrant, removeIdentityGrant, items, query } =
     useUserFindManyIdentity({
       provider: IdentityProvider.Solana,
       username: user?.username as string,
     })
+  const hasCliVerification = hasFeature(AppFeature.IdentityCliVerification)
 
   return (
     <UiStack>
@@ -33,6 +34,16 @@ export function SettingsWalletsFeature() {
             <UiInfo message="No wallets found" />
           )}
           <UiGroup justify="end">
+            {hasCliVerification ? (
+              <IdentityUiSolanaLinkCliButton
+                loading={query.isLoading}
+                disabled={!appConfig?.authLinkProviders?.includes(IdentityProvider.Solana)}
+                identities={[]}
+                refresh={() => query.refetch()}
+                size="sm"
+                w={210}
+              />
+            ) : null}
             <IdentityUiLinkButton
               disabled={!appConfig?.authLinkProviders?.includes(IdentityProvider.Solana)}
               identities={[]}

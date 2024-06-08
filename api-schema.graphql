@@ -203,6 +203,7 @@ enum AppFeature {
   AnonCommunities
   CommunityCreate
   CommunitySnapshots
+  IdentityCliVerification
   IdentityGrants
 }
 
@@ -507,6 +508,7 @@ type Mutation {
   userUpdateRoleCondition(input: UserUpdateRoleConditionInput!, roleConditionId: String!): RoleCondition
   userUpdateUser(input: UserUpdateUserInput!): User
   userVerifyIdentityChallenge(input: VerifyIdentityChallengeInput!): IdentityChallenge
+  userVerifyIdentityChallengeCli(input: VerifyIdentityChallengeInput!): IdentityChallenge
 }
 
 type Network {
@@ -672,6 +674,7 @@ type Query {
   userGetTokenAccounts(account: String!, cluster: NetworkCluster!): JSON
   userGetTokenMetadata(account: String!, cluster: NetworkCluster!): JSON
   userRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
+  userRequestIdentityChallengeCli(input: RequestIdentityChallengeInput!): IdentityChallenge
 }
 
 input RequestIdentityChallengeInput {

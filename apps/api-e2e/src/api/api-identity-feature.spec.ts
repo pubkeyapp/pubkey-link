@@ -1,7 +1,8 @@
 import { IdentityProvider } from '@pubkey-link/sdk'
+import { encodeMessage, signWithKeypairCli } from '@pubkey-link/verify-wallet'
+import { Keypair } from '@solana/web3.js'
 import { alice } from '../fixtures'
-import { getAliceCookie, getIdentityChallenge, sdk, signMessage } from '../support'
-import { breakStringSolana } from '../support/break-string'
+import { breakStringSolana, getAliceCookie, getIdentityChallenge, sdk, signMessage } from '../support'
 
 describe('api-identity-feature', () => {
   describe('api-identity-user-resolver', () => {
@@ -16,13 +17,13 @@ describe('api-identity-feature', () => {
     })
 
     it('should fail getIdentityVerificationChallenge with wrong provider', async () => {
-      const cookie = await getAliceCookie()
+      const aliceCookie = await getAliceCookie()
       expect.assertions(1)
 
       try {
         await sdk.userRequestIdentityChallenge(
           { input: { provider: IdentityProvider.Discord, providerId: alice.solana.publicKey.toString() } },
-          { cookie },
+          { cookie: aliceCookie },
         )
       } catch (e) {
         expect(e.message).toEqual('Identity provider Discord not supported')
@@ -30,13 +31,13 @@ describe('api-identity-feature', () => {
     })
 
     it('should fail getIdentityVerificationChallenge with wrong providerId', async () => {
-      const cookie = await getAliceCookie()
+      const aliceCookie = await getAliceCookie()
       expect.assertions(1)
 
       try {
         await sdk.userRequestIdentityChallenge(
           { input: { provider: IdentityProvider.Solana, providerId: 'test' } },
-          { cookie },
+          { cookie: aliceCookie },
         )
       } catch (e) {
         expect(e.message).toEqual('Invalid Solana public key.')
@@ -48,9 +49,15 @@ describe('api-identity-feature', () => {
 
       const challenge = prepare.data?.challenge.challenge as string
       const { message, signature } = signMessage(alice, challenge)
-
+      const message2 = encodeMessage(challenge)
+      console.log({
+        challenge,
+        message,
+        message2,
+        signature,
+      })
       // Sign the challenge
-      const cookie = await getAliceCookie()
+      const aliceCookie = await getAliceCookie()
       const res = await sdk.userVerifyIdentityChallenge(
         {
           input: {
@@ -61,7 +68,7 @@ describe('api-identity-feature', () => {
             signature,
           },
         },
-        { cookie },
+        { cookie: aliceCookie },
       )
 
       expect(res.data?.verified.provider).toEqual(IdentityProvider.Solana)
@@ -78,7 +85,7 @@ describe('api-identity-feature', () => {
       const { message, signature } = signMessage(alice, challenge)
 
       // Sign the challenge
-      const cookie = await getAliceCookie()
+      const aliceCookie = await getAliceCookie()
       expect.assertions(1)
       try {
         await sdk.userVerifyIdentityChallenge(
@@ -91,7 +98,7 @@ describe('api-identity-feature', () => {
               signature,
             },
           },
-          { cookie },
+          { cookie: aliceCookie },
         )
       } catch (e) {
         expect(e.message).toContain('Identity challenge not found.')
@@ -105,7 +112,7 @@ describe('api-identity-feature', () => {
       const { message, signature } = signMessage(alice, challenge)
 
       // Sign the challenge
-      const cookie = await getAliceCookie()
+      const aliceCookie = await getAliceCookie()
       expect.assertions(1)
       try {
         await sdk.userVerifyIdentityChallenge(
@@ -119,16 +126,50 @@ describe('api-identity-feature', () => {
               signature: breakStringSolana(signature),
             },
           },
-          { cookie },
+          { cookie: aliceCookie },
         )
       } catch (e) {
         expect(e.message).toContain('Identity challenge verification failed.')
       }
     })
 
-    it('should link a new Solana identity', async () => {
-      //
-      // const keypair = new Keypair()
+    it('should link a new Solana identity (CLI)', async () => {
+      const aliceCookie = await getAliceCookie()
+      const keypair = Keypair.generate()
+      const resChallenge = await sdk
+        .userRequestIdentityChallengeCli(
+          { input: { provider: IdentityProvider.Solana, providerId: keypair.publicKey.toString() } },
+          { cookie: aliceCookie },
+        )
+        .then((res) => res.data.challenge)
+
+      expect(resChallenge.challenge).toBeDefined()
+      expect(resChallenge.signature).toBeNull()
+      expect(resChallenge.verified).toBe(false)
+
+      const signature = signWithKeypairCli({ keypair, challenge: resChallenge.challenge })
+
+      const resVerify = await sdk
+        .userVerifyIdentityChallengeCli(
+          {
+            input: {
+              provider: IdentityProvider.Solana,
+              providerId: keypair.publicKey.toString(),
+              challenge: resChallenge.challenge,
+              message: '',
+              signature,
+            },
+          },
+          { cookie: aliceCookie },
+        )
+        .then((res) => res.data.verified)
+
+      console.log('resVerify', resVerify)
+      expect(resVerify.verified).toBe(true)
+      expect(resVerify.provider).toEqual(IdentityProvider.Solana)
+      expect(resVerify.providerId).toEqual(keypair.publicKey.toString())
+      expect(resVerify.challenge).toEqual(resChallenge.challenge)
+      expect(resVerify.signature).toEqual(signature)
     })
   })
 })

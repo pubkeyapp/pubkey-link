@@ -5,10 +5,11 @@ import {
   type UserFindManyIdentityInput,
   UserRemoveIdentityGrantInput,
   UserUpdateIdentityInput,
+  VerifyIdentityChallengeInput,
 } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess, toastWarning } from '@pubkey-ui/core'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 
 export function useUserFindManyIdentity({ username, provider }: { username: string; provider?: IdentityProvider }) {
@@ -117,4 +118,23 @@ export function useUserFindManyIdentity({ username, provider }: { username: stri
         .finally(() => query.refetch())
     },
   }
+}
+
+export function useVerifyChallengeCli() {
+  const sdk = useSdk()
+
+  return useMutation({
+    mutationFn: ({ providerId, challenge, signature }: Omit<VerifyIdentityChallengeInput, 'message' | 'provider'>) =>
+      sdk
+        .userVerifyIdentityChallengeCli({
+          input: {
+            provider: IdentityProvider.Solana,
+            message: '',
+            providerId,
+            challenge,
+            signature,
+          },
+        })
+        .then((res) => res.data?.verified),
+  })
 }

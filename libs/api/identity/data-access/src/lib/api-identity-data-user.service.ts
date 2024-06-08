@@ -5,7 +5,7 @@ import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-acce
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
 import { User } from '@pubkey-link/api-user-data-access'
 import { verifyMessageSignature } from '@pubkey-link/verify-wallet'
-
+import { createChallenge, verifySignature } from 'verify-solana-wallet'
 import { ApiIdentitySolanaService } from './api-identity-solana.service'
 import { LinkIdentityInput } from './dto/link-identity-input'
 import { RequestIdentityChallengeInput } from './dto/request-identity-challenge.input'
@@ -117,24 +117,52 @@ export class ApiIdentityDataUserService {
     })
   }
 
+  async requestIdentityChallengeCli(userId: string, { provider, providerId }: RequestIdentityChallengeInput) {
+    // Make sure this feature is enabled
+    this.core.config.ensureFeature(AppFeature.IdentityCliVerification)
+
+    // Make sure the provider is allowed
+    this.solana.ensureAllowedProvider(provider)
+
+    // Make sure the provider is enabled
+    if (!this.core.config.appConfig.authLinkProviders.includes(provider)) {
+      throw new Error(`Provider ${provider} not enabled for linking`)
+    }
+
+    // Make sure the providerId is valid
+    this.solana.ensureValidProviderId(provider, providerId)
+
+    // Generate a random challenge
+    const challenge = createChallenge({
+      message: `Approve this message to sign in ${Date.now()}`,
+      publicKey: providerId,
+    })
+
+    console.log('challenge', challenge)
+    const blockhash = await this.network.ensureBlockhash()
+
+    // Store the challenge
+    return this.core.data.identityChallenge.create({
+      data: {
+        blockhash,
+        identity: {
+          connectOrCreate: {
+            where: { provider_providerId: { provider, providerId } },
+            create: { name: providerId, provider, providerId, verified: false, ownerId: userId },
+          },
+        },
+        userAgent: 'offline',
+        challenge,
+      },
+    })
+  }
+
   async verifyIdentityChallenge(
     ctx: BaseContext,
     userId: string,
     { provider, providerId, challenge, message, signature }: VerifyIdentityChallengeInput,
   ) {
-    // Make sure the provider is allowed
-    this.solana.ensureAllowedProvider(provider)
-    // Make sure the providerId is valid
-    this.solana.ensureValidProviderId(provider, providerId)
-    // Make sure the provider is enabled
-    if (!this.core.config.appConfig.authLinkProviders.includes(provider)) {
-      throw new Error(`Provider ${provider} not enabled for linking`)
-    }
-    // Make sure the identity is owned by the user
-    await this.solana.ensureIdentityOwner(userId, provider, providerId)
-
-    // Make sure we find the challenge
-    const found = await this.solana.ensureIdentityChallenge(provider, providerId, challenge)
+    const found = await this.ensureValidIdentityChallenge({ challenge, provider, providerId, userId })
 
     const { userAgent } = getRequestDetails(ctx)
 
@@ -154,23 +182,44 @@ export class ApiIdentityDataUserService {
 
     if (!found.identity.verified) {
       // Update the identity
-      await this.core.data.identity.update({
-        where: { id: found.identity.id },
-        data: { verified: true },
-      })
-      this.logger.log(`Identity ${found.identity.id} verified`)
+      await this.verifyIdentity({ id: found.identity.id })
     }
 
     // Update the identity
-    const updated = await this.core.data.identityChallenge.update({
-      where: {
-        id: found.id,
-      },
-      data: {
-        verified,
-        signature,
-      },
+    const updated = await this.updateIdentityChallenge({ id: found.id, verified, signature })
+    await this.networkAsset.sync.sync({ cluster: this.network.cluster.getDefaultCluster(), identity: found.identity })
+    return updated
+  }
+
+  async verifyIdentityChallengeCli(
+    userId: string,
+    { provider, providerId, challenge, signature }: VerifyIdentityChallengeInput,
+  ) {
+    const found = await this.ensureValidIdentityChallenge({ challenge, provider, providerId, userId })
+
+    console.log({
+      challenge,
+      publicKey: found.identity.providerId,
+      signature,
     })
+
+    const verified = verifySignature({
+      challenge,
+      publicKey: found.identity.providerId,
+      signature,
+    })
+
+    if (!verified) {
+      throw new Error(`Identity challenge verification failed.`)
+    }
+
+    if (!found.identity.verified) {
+      // Update the identity
+      await this.verifyIdentity({ id: found.identity.id })
+    }
+
+    // Update the identity
+    const updated = await this.updateIdentityChallenge({ id: found.id, verified, signature })
     await this.networkAsset.sync.sync({ cluster: this.network.cluster.getDefaultCluster(), identity: found.identity })
     return updated
   }
@@ -284,5 +333,48 @@ export class ApiIdentityDataUserService {
       throw new Error(`Identity ${provider} ${providerId} not found`)
     }
     return identity
+  }
+
+  private async ensureValidIdentityChallenge({
+    challenge,
+    provider,
+    providerId,
+    userId,
+  }: {
+    challenge: string
+    provider: IdentityProvider
+    providerId: string
+    userId: string
+  }) {
+    // Make sure the provider is allowed
+    this.solana.ensureAllowedProvider(provider)
+    // Make sure the providerId is valid
+    this.solana.ensureValidProviderId(provider, providerId)
+    // Make sure the provider is enabled
+    if (!this.core.config.appConfig.authLinkProviders.includes(provider)) {
+      throw new Error(`Provider ${provider} not enabled for linking`)
+    }
+    // Make sure the identity is owned by the user
+    await this.solana.ensureIdentityOwner(userId, provider, providerId)
+
+    // Make sure we find the challenge
+    return this.solana.ensureIdentityChallenge(provider, providerId, challenge)
+  }
+
+  private async updateIdentityChallenge({
+    id,
+    verified,
+    signature,
+  }: {
+    id: string
+    verified: boolean
+    signature: string
+  }) {
+    return this.core.data.identityChallenge.update({ where: { id }, data: { verified, signature } })
+  }
+
+  private async verifyIdentity({ id }: { id: string }) {
+    await this.core.data.identity.update({ where: { id }, data: { verified: true } })
+    this.logger.log(`Identity ${id} verified`)
   }
 }
