@@ -98,6 +98,7 @@ export class ApiIdentitySolanaService {
     }
     return found
   }
+
   async findIdentity(provider: IdentityProvider, providerId: string) {
     return this.core.data.identity.findFirst({
       where: {

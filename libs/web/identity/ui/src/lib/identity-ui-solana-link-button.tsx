@@ -20,8 +20,6 @@ export function IdentityUiSolanaLinkButton({
     <Button
       size="xl"
       color={solanaPurple}
-      // variant="gradient"
-      // gradient={solanaGradient}
       leftSection={<IdentityUiIcon provider={IdentityProvider.Solana} />}
       {...props}
       onClick={() => {

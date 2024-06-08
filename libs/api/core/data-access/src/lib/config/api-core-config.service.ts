@@ -13,19 +13,6 @@ export class ApiCoreConfigService {
   constructor(private readonly service: ConfigService<ApiCoreConfig>) {}
 
   get appConfig(): AppConfig {
-    const features: AppFeature[] = []
-    if (this.featureAnonCommunities) {
-      features.push(AppFeature.AnonCommunities)
-    }
-    if (this.featureCommunityCreate) {
-      features.push(AppFeature.CommunityCreate)
-    }
-    if (this.featureCommunitySnapshots) {
-      features.push(AppFeature.CommunitySnapshots)
-    }
-    if (this.featureIdentityGrants) {
-      features.push(AppFeature.IdentityGrants)
-    }
     const link: IdentityProvider[] = []
     const login: IdentityProvider[] = []
     if (this.authDiscordLinkEnabled) {
@@ -59,7 +46,7 @@ export class ApiCoreConfigService {
       appThemeColor: this.appThemeColor,
       authLinkProviders: link,
       authLoginProviders: login,
-      features,
+      features: this.featureFlags,
       resolvers,
     }
   }
@@ -186,6 +173,16 @@ export class ApiCoreConfigService {
     return this.service.get('environment')
   }
 
+  get featureFlags(): AppFeature[] {
+    return [
+      { flag: this.featureAnonCommunities, feature: AppFeature.AnonCommunities },
+      { flag: this.featureCommunityCreate, feature: AppFeature.CommunityCreate },
+      { flag: this.featureCommunitySnapshots, feature: AppFeature.CommunitySnapshots },
+      { flag: this.featureIdentityCliVerification, feature: AppFeature.IdentityCliVerification },
+      { flag: this.featureIdentityGrants, feature: AppFeature.IdentityGrants },
+    ].reduce((acc, { flag, feature }) => (flag ? [...acc, feature] : acc), [] as AppFeature[])
+  }
+
   get featureAnonCommunities() {
     return this.service.get<boolean>('featureAnonCommunities')
   }
@@ -200,6 +197,10 @@ export class ApiCoreConfigService {
 
   get featureCommunitySnapshots() {
     return this.service.get<boolean>('featureCommunitySnapshots')
+  }
+
+  get featureIdentityCliVerification() {
+    return this.service.get<boolean>('featureIdentityCliVerification')
   }
 
   get featureIdentityGrants() {

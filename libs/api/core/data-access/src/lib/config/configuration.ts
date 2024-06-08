@@ -54,6 +54,7 @@ export interface ApiCoreConfig {
   featureBetaDasSearch: boolean
   featureCommunityCreate: boolean
   featureCommunitySnapshots: boolean
+  featureIdentityCliVerification: boolean
   featureIdentityGrants: boolean
   featureResolverSolanaFungible: boolean
   featureResolverSolanaNonFungible: boolean
@@ -108,6 +109,7 @@ export function configuration(): ApiCoreConfig {
     featureBetaDasSearch: process.env['FEATURE_BETA_DAS_SEARCH'] === 'true',
     featureCommunityCreate: process.env['FEATURE_COMMUNITY_CREATE'] === 'true',
     featureCommunitySnapshots: process.env['FEATURE_COMMUNITY_SNAPSHOTS'] === 'true',
+    featureIdentityCliVerification: process.env['FEATURE_IDENTITY_CLI_VERIFICATION'] === 'true',
     featureIdentityGrants: process.env['FEATURE_IDENTITY_GRANTS'] === 'true',
     featureResolverSolanaFungible: process.env['FEATURE_RESOLVER_SOLANA_FUNGIBLE'] === 'true',
     featureResolverSolanaNonFungible: process.env['FEATURE_RESOLVER_SOLANA_NON_FUNGIBLE'] === 'true',

@@ -30,6 +30,7 @@ export class ApiUserIdentityResolver {
   userRefreshIdentity(@CtxUserId() userId: string, @Args('identityId') identityId: string) {
     return this.service.user.refreshIdentity(userId, identityId)
   }
+
   @Query(() => IdentityChallenge, { nullable: true })
   userRequestIdentityChallenge(
     @Context() ctx: BaseContext,
@@ -37,6 +38,11 @@ export class ApiUserIdentityResolver {
     @Args('input') input: RequestIdentityChallengeInput,
   ) {
     return this.service.user.requestIdentityChallenge(ctx, userId, input)
+  }
+
+  @Query(() => IdentityChallenge, { nullable: true })
+  userRequestIdentityChallengeCli(@CtxUserId() userId: string, @Args('input') input: RequestIdentityChallengeInput) {
+    return this.service.user.requestIdentityChallengeCli(userId, input)
   }
 
   @Mutation(() => Identity, { nullable: true })
@@ -60,6 +66,11 @@ export class ApiUserIdentityResolver {
     @Args('input') input: VerifyIdentityChallengeInput,
   ) {
     return this.service.user.verifyIdentityChallenge(ctx, userId, input)
+  }
+
+  @Mutation(() => IdentityChallenge, { nullable: true })
+  userVerifyIdentityChallengeCli(@CtxUserId() userId: string, @Args('input') input: VerifyIdentityChallengeInput) {
+    return this.service.user.verifyIdentityChallengeCli(userId, input)
   }
 
   @Query(() => [Identity], { nullable: true })

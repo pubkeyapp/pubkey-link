@@ -226,6 +226,7 @@ export enum AppFeature {
   AnonCommunities = 'AnonCommunities',
   CommunityCreate = 'CommunityCreate',
   CommunitySnapshots = 'CommunitySnapshots',
+  IdentityCliVerification = 'IdentityCliVerification',
   IdentityGrants = 'IdentityGrants',
 }
 
@@ -537,6 +538,7 @@ export type Mutation = {
   userUpdateRoleCondition?: Maybe<RoleCondition>
   userUpdateUser?: Maybe<User>
   userVerifyIdentityChallenge?: Maybe<IdentityChallenge>
+  userVerifyIdentityChallengeCli?: Maybe<IdentityChallenge>
 }
 
 export type MutationAdminAddCommunityMemberArgs = {
@@ -823,6 +825,10 @@ export type MutationUserVerifyIdentityChallengeArgs = {
   input: VerifyIdentityChallengeInput
 }
 
+export type MutationUserVerifyIdentityChallengeCliArgs = {
+  input: VerifyIdentityChallengeInput
+}
+
 export type Network = {
   __typename?: 'Network'
   cluster: NetworkCluster
@@ -994,6 +1000,7 @@ export type Query = {
   userGetTokenAccounts?: Maybe<Scalars['JSON']['output']>
   userGetTokenMetadata?: Maybe<Scalars['JSON']['output']>
   userRequestIdentityChallenge?: Maybe<IdentityChallenge>
+  userRequestIdentityChallengeCli?: Maybe<IdentityChallenge>
 }
 
 export type QueryAdminFindManyBotArgs = {
@@ -1219,6 +1226,10 @@ export type QueryUserGetTokenMetadataArgs = {
 }
 
 export type QueryUserRequestIdentityChallengeArgs = {
+  input: RequestIdentityChallengeInput
+}
+
+export type QueryUserRequestIdentityChallengeCliArgs = {
   input: RequestIdentityChallengeInput
 }
 
@@ -3975,11 +3986,53 @@ export type UserRequestIdentityChallengeQuery = {
   } | null
 }
 
+export type UserRequestIdentityChallengeCliQueryVariables = Exact<{
+  input: RequestIdentityChallengeInput
+}>
+
+export type UserRequestIdentityChallengeCliQuery = {
+  __typename?: 'Query'
+  challenge?: {
+    __typename?: 'IdentityChallenge'
+    id: string
+    createdAt: Date
+    updatedAt: Date
+    provider: IdentityProvider
+    providerId: string
+    challenge: string
+    signature?: string | null
+    blockhash: string
+    userAgent: string
+    verified: boolean
+  } | null
+}
+
 export type UserVerifyIdentityChallengeMutationVariables = Exact<{
   input: VerifyIdentityChallengeInput
 }>
 
 export type UserVerifyIdentityChallengeMutation = {
+  __typename?: 'Mutation'
+  verified?: {
+    __typename?: 'IdentityChallenge'
+    id: string
+    createdAt: Date
+    updatedAt: Date
+    provider: IdentityProvider
+    providerId: string
+    challenge: string
+    signature?: string | null
+    blockhash: string
+    userAgent: string
+    verified: boolean
+  } | null
+}
+
+export type UserVerifyIdentityChallengeCliMutationVariables = Exact<{
+  input: VerifyIdentityChallengeInput
+}>
+
+export type UserVerifyIdentityChallengeCliMutation = {
   __typename?: 'Mutation'
   verified?: {
     __typename?: 'IdentityChallenge'
@@ -8324,9 +8377,25 @@ export const UserRequestIdentityChallengeDocument = gql`
   }
   ${IdentityChallengeDetailsFragmentDoc}
 `
+export const UserRequestIdentityChallengeCliDocument = gql`
+  query userRequestIdentityChallengeCli($input: RequestIdentityChallengeInput!) {
+    challenge: userRequestIdentityChallengeCli(input: $input) {
+      ...IdentityChallengeDetails
+    }
+  }
+  ${IdentityChallengeDetailsFragmentDoc}
+`
 export const UserVerifyIdentityChallengeDocument = gql`
   mutation userVerifyIdentityChallenge($input: VerifyIdentityChallengeInput!) {
     verified: userVerifyIdentityChallenge(input: $input) {
+      ...IdentityChallengeDetails
+    }
+  }
+  ${IdentityChallengeDetailsFragmentDoc}
+`
+export const UserVerifyIdentityChallengeCliDocument = gql`
+  mutation userVerifyIdentityChallengeCli($input: VerifyIdentityChallengeInput!) {
+    verified: userVerifyIdentityChallengeCli(input: $input) {
       ...IdentityChallengeDetails
     }
   }
@@ -8950,7 +9019,9 @@ const UserDeleteIdentityDocumentString = print(UserDeleteIdentityDocument)
 const UserUpdateIdentityDocumentString = print(UserUpdateIdentityDocument)
 const UserRefreshIdentityDocumentString = print(UserRefreshIdentityDocument)
 const UserRequestIdentityChallengeDocumentString = print(UserRequestIdentityChallengeDocument)
+const UserRequestIdentityChallengeCliDocumentString = print(UserRequestIdentityChallengeCliDocument)
 const UserVerifyIdentityChallengeDocumentString = print(UserVerifyIdentityChallengeDocument)
+const UserVerifyIdentityChallengeCliDocumentString = print(UserVerifyIdentityChallengeCliDocument)
 const UserLinkIdentityDocumentString = print(UserLinkIdentityDocument)
 const AnonRequestIdentityChallengeDocumentString = print(AnonRequestIdentityChallengeDocument)
 const AnonVerifyIdentityChallengeDocumentString = print(AnonVerifyIdentityChallengeDocument)
@@ -10354,6 +10425,28 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
+    userRequestIdentityChallengeCli(
+      variables: UserRequestIdentityChallengeCliQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserRequestIdentityChallengeCliQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserRequestIdentityChallengeCliQuery>(
+            UserRequestIdentityChallengeCliDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'userRequestIdentityChallengeCli',
+        'query',
+        variables,
+      )
+    },
     userVerifyIdentityChallenge(
       variables: UserVerifyIdentityChallengeMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -10371,6 +10464,28 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'userVerifyIdentityChallenge',
+        'mutation',
+        variables,
+      )
+    },
+    userVerifyIdentityChallengeCli(
+      variables: UserVerifyIdentityChallengeCliMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserVerifyIdentityChallengeCliMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserVerifyIdentityChallengeCliMutation>(
+            UserVerifyIdentityChallengeCliDocumentString,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'userVerifyIdentityChallengeCli',
         'mutation',
         variables,
       )

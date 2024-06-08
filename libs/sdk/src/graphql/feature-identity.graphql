@@ -127,8 +127,20 @@ query userRequestIdentityChallenge($input: RequestIdentityChallengeInput!) {
   }
 }
 
+query userRequestIdentityChallengeCli($input: RequestIdentityChallengeInput!) {
+  challenge: userRequestIdentityChallengeCli(input: $input) {
+    ...IdentityChallengeDetails
+  }
+}
+
 mutation userVerifyIdentityChallenge($input: VerifyIdentityChallengeInput!) {
   verified: userVerifyIdentityChallenge(input: $input) {
+    ...IdentityChallengeDetails
+  }
+}
+
+mutation userVerifyIdentityChallengeCli($input: VerifyIdentityChallengeInput!) {
+  verified: userVerifyIdentityChallengeCli(input: $input) {
     ...IdentityChallengeDetails
   }
 }
