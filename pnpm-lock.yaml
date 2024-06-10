@@ -284,9 +284,6 @@ dependencies:
   tweetnacl:
     specifier: ^1.0.3
     version: 1.0.3
-  verify-solana-wallet:
-    specifier: ^1.0.0
-    version: 1.0.0
   zod:
     specifier: ^3.22.4
     version: 3.23.8
@@ -5703,10 +5700,6 @@ packages:
 
   /@noble/ed25519@1.7.3:
     resolution: {integrity: sha512-iR8GBkDt0Q3GyaVcIu7mSsVIqnFbkbRzGLWlvhwunacoLwt4J3swfKhfaM6rN6WY+TBGoYT1GtT1mIh2/jGbRQ==}
-    dev: false
-
-  /@noble/ed25519@2.1.0:
-    resolution: {integrity: sha512-KM4qTyXPinyCgMzeYJH/UudpdL+paJXtY3CHtHYZQtBkS8MZoPr4rOikZllIutJe0d06QDQKisyn02gxZ8TcQA==}
     dev: false
 
   /@noble/hashes@1.4.0:
@@ -21743,14 +21736,6 @@ packages:
   /vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
-
-  /verify-solana-wallet@1.0.0:
-    resolution: {integrity: sha512-9uxRjHEvuDzv2VC9r6kP1bshPO817jfdFSuSjniRsQ5CfNN7ovf2Vgwcv4zVwdu5v8rRFdOxv9vqXLgX5MTaew==}
-    dependencies:
-      '@noble/ed25519': 2.1.0
-      '@noble/hashes': 1.4.0
-      bs58: 5.0.0
-    dev: false
 
   /vlq@1.0.1:
     resolution: {integrity: sha512-gQpnTgkubC6hQgdIcRdYGDSDc+SaujOdyesZQMv6JlfQee/9Mp0Qhnys6WxDWvQnL5WZdT7o2Ul187aSt0Rq+w==}

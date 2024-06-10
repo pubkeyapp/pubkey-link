@@ -1,5 +1,5 @@
 import { IdentityProvider } from '@pubkey-link/sdk'
-import { encodeMessage, signWithKeypairCli } from '@pubkey-link/verify-wallet'
+import { signWithKeypairCli } from '@pubkey-link/verify-wallet'
 import { Keypair } from '@solana/web3.js'
 import { alice } from '../fixtures'
 import { breakStringSolana, getAliceCookie, getIdentityChallenge, sdk, signMessage } from '../support'
@@ -49,13 +49,6 @@ describe('api-identity-feature', () => {
 
       const challenge = prepare.data?.challenge.challenge as string
       const { message, signature } = signMessage(alice, challenge)
-      const message2 = encodeMessage(challenge)
-      console.log({
-        challenge,
-        message,
-        message2,
-        signature,
-      })
       // Sign the challenge
       const aliceCookie = await getAliceCookie()
       const res = await sdk.userVerifyIdentityChallenge(

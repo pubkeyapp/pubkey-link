@@ -1,8 +1,8 @@
-import { encode } from 'bs58'
-import { MEMO_PROGRAM_ID } from './constants'
 import { createLedgerPayload } from './create-ledger-payload'
+import { bs58Encode } from './helpers'
+import { MEMO_PROGRAM_ID } from './helpers/constants'
 
-describe('createLedgerPayload', () => {
+describe('create-ledger-payload', () => {
   const challenge = 'test'
   const publicKey = MEMO_PROGRAM_ID
 
@@ -11,7 +11,7 @@ describe('createLedgerPayload', () => {
 
     expect(message).toBeDefined()
 
-    expect(encode(message).length).toBeLessThanOrEqual(88)
-    expect(encode(message).length).toBeGreaterThanOrEqual(87)
+    expect(bs58Encode(message).length).toBeLessThanOrEqual(88)
+    expect(bs58Encode(message).length).toBeGreaterThanOrEqual(87)
   })
 })

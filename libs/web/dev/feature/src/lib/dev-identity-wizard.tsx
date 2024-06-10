@@ -1,6 +1,6 @@
 import { Grid } from '@mantine/core'
 import { IdentityProvider } from '@pubkey-link/sdk'
-import { verifyMessageSignature } from '@pubkey-link/verify-wallet'
+import { verifySignature } from '@pubkey-link/verify-wallet'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { useCreateSignature, useUserFindManyIdentity } from '@pubkey-link/web-identity-data-access'
 import { IdentityUiSolanaWizard, IdentityUiSolanaWizardModal } from '@pubkey-link/web-identity-ui'
@@ -32,7 +32,7 @@ export function DevIdentityWizard() {
         throw new Error('No signature')
       }
 
-      const verified = verifyMessageSignature({
+      const verified = verifySignature({
         message,
         publicKey,
         signature: signature,

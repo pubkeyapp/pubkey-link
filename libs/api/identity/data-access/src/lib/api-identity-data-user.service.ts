@@ -4,8 +4,7 @@ import { ApiCoreService, AppFeature, BaseContext, getRequestDetails } from '@pub
 import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-access'
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
 import { User } from '@pubkey-link/api-user-data-access'
-import { verifyMessageSignature } from '@pubkey-link/verify-wallet'
-import { createChallenge, verifySignature } from 'verify-solana-wallet'
+import { createChallengeCli, verifySignature, verifySignatureCli } from '@pubkey-link/verify-wallet'
 import { ApiIdentitySolanaService } from './api-identity-solana.service'
 import { LinkIdentityInput } from './dto/link-identity-input'
 import { RequestIdentityChallengeInput } from './dto/request-identity-challenge.input'
@@ -133,7 +132,7 @@ export class ApiIdentityDataUserService {
     this.solana.ensureValidProviderId(provider, providerId)
 
     // Generate a random challenge
-    const challenge = createChallenge({
+    const challenge = createChallengeCli({
       message: `Approve this message to sign in ${Date.now()}`,
       publicKey: providerId,
     })
@@ -170,7 +169,7 @@ export class ApiIdentityDataUserService {
       throw new Error(`Identity challenge not found.`)
     }
 
-    const verified = verifyMessageSignature({
+    const verified = verifySignature({
       message,
       publicKey: found.identity.providerId,
       signature,
@@ -203,7 +202,7 @@ export class ApiIdentityDataUserService {
       signature,
     })
 
-    const verified = verifySignature({
+    const verified = verifySignatureCli({
       challenge,
       publicKey: found.identity.providerId,
       signature,
