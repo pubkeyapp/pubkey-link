@@ -1,6 +1,6 @@
 import { Keypair } from '@solana/web3.js'
-import { MEMO_PROGRAM_ID } from './constants'
 import { createLedgerTransaction } from './create-ledger-transaction'
+import { MEMO_PROGRAM_ID } from './helpers/constants'
 
 describe('createLedgerTransaction', () => {
   it('should create a ledger transaction', () => {

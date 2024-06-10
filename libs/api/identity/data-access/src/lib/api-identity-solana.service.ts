@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { IdentityProvider } from '@prisma/client'
 import { ApiCoreService, BaseContext, getRequestDetails } from '@pubkey-link/api-core-data-access'
-import { verifyMessageSignature } from '@pubkey-link/verify-wallet'
+import { verifySignature } from '@pubkey-link/verify-wallet'
 
 import { PublicKey } from '@solana/web3.js'
 
@@ -52,9 +52,9 @@ export class ApiIdentitySolanaService {
     if (found.userAgent !== userAgent) {
       throw new Error(`Identity challenge not found.`)
     }
-
+    console.log('Signature    ', signature)
     // Verify the signature
-    const verified = verifyMessageSignature({
+    const verified = verifySignature({
       message,
       publicKey: found.identity.providerId,
       signature,

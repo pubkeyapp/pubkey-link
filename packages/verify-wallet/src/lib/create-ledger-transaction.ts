@@ -1,6 +1,6 @@
 import { PublicKey, TransactionInstruction, TransactionMessage, VersionedTransaction } from '@solana/web3.js'
-import { MEMO_PROGRAM_ID } from './constants'
 import { createLedgerPayload } from './create-ledger-payload'
+import { MEMO_PROGRAM_ID } from './helpers/constants'
 
 /**
  * Create a ledger transaction for a given challenge

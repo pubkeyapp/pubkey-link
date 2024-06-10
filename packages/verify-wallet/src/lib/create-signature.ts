@@ -1,6 +1,7 @@
 import { PublicKey, VersionedTransaction } from '@solana/web3.js'
-import { encode } from 'bs58'
-import { createLedgerTransaction } from './create-ledger-transaction'
+import { createSignatureLedger } from './create-signature-ledger'
+import { createSignatureWallet } from './create-signature-wallet'
+import { SignedChallenge } from './signed-challenge'
 
 export interface CreateSignature {
   challenge: string
@@ -9,11 +10,6 @@ export interface CreateSignature {
   signMessage?: (message: Uint8Array) => Promise<Uint8Array>
   signTransaction?: (transaction: VersionedTransaction) => Promise<VersionedTransaction>
   useLedger: boolean
-}
-
-export interface SignedChallenge {
-  message: string
-  signature: string
 }
 
 export async function createSignature({
@@ -32,23 +28,11 @@ export async function createSignature({
       return Promise.reject('No blockhash')
     }
 
-    const tx = createLedgerTransaction({ blockhash, challenge, publicKey })
-
-    const signedTx = await signTransaction(tx)
-    const signatureBytes = signedTx.signatures[0]
-
-    return {
-      message: encode(signedTx.message.serialize()),
-      signature: encode(signatureBytes),
-    }
+    return createSignatureLedger({ challenge, blockhash, publicKey, signTransaction })
   }
 
   if (!signMessage) {
     return Promise.reject('No sign message')
   }
-
-  const message = new TextEncoder().encode(challenge)
-  const signature = await signMessage(message)
-
-  return { message: encode(message), signature: encode(signature) }
+  return createSignatureWallet({ challenge, signMessage })
 }
