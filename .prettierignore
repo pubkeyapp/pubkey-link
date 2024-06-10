@@ -11,3 +11,4 @@ node_modules
 dist
 build
 test-ledger
+/.nx/workspace-data
