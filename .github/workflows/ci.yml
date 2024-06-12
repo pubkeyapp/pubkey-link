@@ -18,7 +18,7 @@ jobs:
     uses: nrwl/ci/.github/workflows/nx-cloud-main.yml@v0.13.0
     with:
       node-version: 20.10.0
-      pnpm-version: 8.15.8
+      pnpm-version: 9.3.0
       main-branch-name: main
       number-of-agents: 3
       init-commands: |
@@ -36,7 +36,7 @@ jobs:
     uses: nrwl/ci/.github/workflows/nx-cloud-agents.yml@v0.13.0
     with:
       node-version: 20.10.0
-      pnpm-version: 8.15.8
+      pnpm-version: 9.3.0
       number-of-agents: 3
       install-commands: |
         pnpm install --frozen-lockfile
