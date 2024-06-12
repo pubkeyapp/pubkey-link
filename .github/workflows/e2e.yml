@@ -45,7 +45,7 @@ jobs:
     steps:
       - uses: pnpm/action-setup@v2
         with:
-          version: 8.15.8
+          version: 9.3.0
       - uses: actions/checkout@v3
         name: Checkout [main]
         with:

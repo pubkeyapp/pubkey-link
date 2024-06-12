@@ -9,7 +9,7 @@ FROM node:20.10-alpine as base
 
 RUN apk add --update --no-cache git python3 make g++
 
-RUN corepack enable && corepack prepare pnpm@8 --activate
+RUN corepack enable && corepack prepare pnpm@9.3.0 --activate
 
 # Create app directory
 WORKDIR /workspace

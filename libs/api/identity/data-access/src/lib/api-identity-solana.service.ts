@@ -52,7 +52,7 @@ export class ApiIdentitySolanaService {
     if (found.userAgent !== userAgent) {
       throw new Error(`Identity challenge not found.`)
     }
-    console.log('Signature    ', signature)
+
     // Verify the signature
     const verified = verifySignature({
       message,
