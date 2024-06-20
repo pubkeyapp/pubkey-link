@@ -25,7 +25,16 @@ export class ApiNetworkProvisionService {
       }
     }
     const provisioned = await Promise.all(
-      getProvisionNetworks(endpoints).map((network) => this.provisionNetwork(network)),
+      getProvisionNetworks(endpoints)
+        .map((network) => {
+          // If we are not provisioning the database, we need to remove the assets and tokens and only keep the network.
+          if (!this.core.config.databaseProvision) {
+            delete network.assets
+            delete network.tokens
+          }
+          return network
+        })
+        .map((network) => this.provisionNetwork(network)),
     )
     this.core.eventEmitter.emit(EVENT_NETWORKS_PROVISIONED, provisioned)
   }
