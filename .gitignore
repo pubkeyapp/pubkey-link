@@ -45,3 +45,4 @@ libs/anchor/target/.rustc_info.json
 !libs/anchor/target/types/*.ts
 test-ledger
 .yarn
+nx-cloud.env
