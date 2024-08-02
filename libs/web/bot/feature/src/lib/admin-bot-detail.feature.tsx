@@ -1,8 +1,7 @@
-import { Group } from '@mantine/core'
-import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoutes } from '@pubkey-ui/core'
+import { Button, Group } from '@mantine/core'
 import { useAdminFindOneBot } from '@pubkey-link/web-bot-data-access'
-import { useParams } from 'react-router-dom'
-import { AdminBotDetailOverviewTab } from './admin-bot-detail-overview.tab'
+import { UiBack, UiDebugModal, UiError, UiLoader, UiPage } from '@pubkey-ui/core'
+import { Link, useParams } from 'react-router-dom'
 import { AdminBotDetailSettingsTab } from './admin-bot-detail-settings.tab'
 
 export function AdminBotDetailFeature() {
@@ -22,24 +21,14 @@ export function AdminBotDetailFeature() {
       leftAction={<UiBack />}
       rightAction={
         <Group>
+          <Button size="xs" variant="light" component={Link} to={`/c/${item.communityId}/discord`}>
+            Configure
+          </Button>
           <UiDebugModal data={item} />
         </Group>
       }
     >
-      <UiTabRoutes
-        tabs={[
-          {
-            path: 'overview',
-            label: 'Overview',
-            element: <AdminBotDetailOverviewTab botId={botId} />,
-          },
-          {
-            path: 'settings',
-            label: 'Settings',
-            element: <AdminBotDetailSettingsTab botId={botId} />,
-          },
-        ]}
-      />
+      <AdminBotDetailSettingsTab botId={botId} />
     </UiPage>
   )
 }

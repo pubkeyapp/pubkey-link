@@ -1,4 +1,4 @@
-import { ActionIcon, Anchor, Group, ScrollArea } from '@mantine/core'
+import { ActionIcon, Anchor, Button, Group, ScrollArea } from '@mantine/core'
 import { Bot } from '@pubkey-link/sdk'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
@@ -33,7 +33,7 @@ export function AdminBotUiTable({
           {
             accessor: 'name',
             render: (item) => (
-              <Anchor component={Link} to={`/admin/bots/${item.id}`} size="sm" fw={500}>
+              <Anchor component={Link} to={`./${item.id}`} size="sm" fw={500}>
                 {item.name}
               </Anchor>
             ),
@@ -44,13 +44,11 @@ export function AdminBotUiTable({
             textAlign: 'right',
             render: (item) => (
               <Group gap="xs" justify="right">
-                <ActionIcon
-                  color="brand"
-                  variant="light"
-                  size="sm"
-                  component={Link}
-                  to={`/admin/bots/${item.id}/settings`}
-                >
+                <Button size="xs" variant="light" component={Link} to={`/c/${item.communityId}/discord`}>
+                  Configure
+                </Button>
+
+                <ActionIcon color="brand" variant="light" size="sm" component={Link} to={`./${item.id}/settings`}>
                   <IconPencil size={16} />
                 </ActionIcon>
                 <ActionIcon color="red" variant="light" size="sm" onClick={() => deleteBot(item)}>
