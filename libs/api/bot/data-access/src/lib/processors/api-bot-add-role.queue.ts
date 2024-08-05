@@ -27,38 +27,66 @@ export class ApiBotAddRoleQueue extends WorkerHost {
       )
       return false
     }
+    const identity = await this.core.findUserByIdentity({
+      provider: IdentityProvider.Discord,
+      providerId: payload.discordMember.discordId,
+    })
+    const author = { name: guildMember.user.username, iconURL: guildMember.user.displayAvatarURL() }
     const rolesWithNames = payload.roleIds.map((roleId) => payload.discordRoleMap[roleId])
     const message = `Added roles to ${payload.discordMember.username}: ${rolesWithNames.join(', ')}`
 
     if (payload.botServer.dryRun) {
       this.logger.log(`${message} (dry run)`)
+      await this.instances.sendCommandChannelInfo(payload.botServer, {
+        author,
+        footer: `ID: ${guildMember.user.id}`,
+        description: `Add roles to <@${payload.discordMember.discordId}>: ${payload.roleIds
+          .map((role) => `<@&${role}>`)
+          .join(', ')}
+### ⚠️ Dry Run Enabled
+> When dry run mode is enabled, no changes will be made.`,
+      })
       await job.updateProgress(100)
       return true
     }
 
-    const updated = await guildMember.roles.set(payload.roleIds)
-    if (!updated) {
-      this.logger.warn(`Failed to update member ${payload.discordMember.username} (${payload.discordMember.discordId})`)
-      return false
-    }
-    const identity = await this.core.findUserByIdentity({
-      provider: IdentityProvider.Discord,
-      providerId: payload.discordMember.discordId,
-    })
-    this.logger.verbose(message)
-    await Promise.all([
-      job.log(`${message} (${updated ? 'success' : 'failed'})`),
-      this.instances.sendCommandChannel(payload.botServer, message),
-      this.core.logInfo(message, {
-        botId: payload.botServer.botId,
-        communityId: payload.communityId,
-        userId: identity?.owner?.id,
-        identityProvider: identity?.provider,
-        identityProviderId: identity?.providerId,
-      }),
-    ])
-    await job.updateProgress(100)
-    return true
+    return guildMember.roles
+      .add(payload.roleIds)
+      .then(async (updated) => {
+        this.logger.verbose(message)
+        await Promise.all([
+          job.log(`${message} (${updated ? 'success' : 'failed'})`),
+          this.core.logInfo(message, {
+            botId: payload.botServer.botId,
+            communityId: payload.communityId,
+            userId: identity?.owner?.id,
+            identityProvider: identity?.provider,
+            identityProviderId: identity?.providerId,
+          }),
+        ])
+        await job.updateProgress(100)
+        return true
+      })
+      .catch(async (e) => {
+        const message = `Failed to add roles to ${payload.discordMember.username} (${payload.discordMember.discordId}): ${e.message}`
+        this.logger.warn(message)
+        await Promise.all([
+          this.instances.sendCommandChannelError(payload.botServer, {
+            author,
+            footer: `ID: ${guildMember.user.id}`,
+            title: `Failed to set roles`,
+            description: `Error setting roles for <@${payload.discordMember.discordId}>: ${e.message}`,
+          }),
+          this.core.logError(message, {
+            botId: payload.botServer.botId,
+            communityId: payload.communityId,
+            userId: identity?.owner?.id,
+            identityProvider: identity?.provider,
+            identityProviderId: identity?.providerId,
+          }),
+        ])
+        return false
+      })
   }
 
   @OnWorkerEvent('completed')

@@ -3,9 +3,46 @@ import { OnEvent } from '@nestjs/event-emitter'
 import { Bot, BotServer, CommunityRole, IdentityProvider } from '@prisma/client'
 import { createDiscordRestClient, DiscordBot } from '@pubkey-link/api-bot-util'
 import { ApiCoreService, EVENT_APP_STARTED } from '@pubkey-link/api-core-data-access'
-import { ChannelType, Guild, PermissionsString, User } from 'discord.js'
+import { ChannelType, EmbedAuthorData, Guild, MessageCreateOptions, PermissionsString, User } from 'discord.js'
 import { BotStatus } from './entity/bot-status.enum'
 import { DiscordChannel, DiscordRole, DiscordRoleMap, DiscordServer } from './entity/discord-server.entity'
+
+export interface MessageContent {
+  author?: EmbedAuthorData
+  description: string
+  footer?: string
+  title?: string
+}
+
+function messageContent({
+  author,
+  color,
+  description,
+  footer,
+  title,
+}: MessageContent & { color: number }): MessageCreateOptions {
+  return {
+    embeds: [
+      {
+        author,
+        description,
+        color,
+        title,
+        timestamp: new Date().toISOString(),
+        footer: { text: footer ? footer : '' },
+      },
+    ],
+  }
+}
+function messageContentError(content: MessageContent) {
+  return messageContent({ color: 0xff0000, ...content })
+}
+function messageContentSuccess(content: MessageContent) {
+  return messageContent({ color: 0x00ff00, ...content })
+}
+function messageContentInfo(content: MessageContent) {
+  return messageContent({ color: 0x00ffff, ...content })
+}
 
 @Injectable()
 export class ApiBotInstancesService {
@@ -77,11 +114,23 @@ export class ApiBotInstancesService {
     return this.getDiscordRolesFromBotInstance({ botInstance, serverId })
   }
 
-  async sendCommandChannel(botServer: BotServer, message: string) {
+  async sendCommandChannel(botServer: BotServer, content: string | MessageCreateOptions) {
     if (!botServer.botChannel) {
       return
     }
-    await this.getBotInstance(botServer.botId)?.sendChannel(botServer.botChannel, message)
+    await this.getBotInstance(botServer.botId)?.sendChannel(botServer.botChannel, content)
+  }
+
+  async sendCommandChannelError(botServer: BotServer, options: MessageContent) {
+    await this.sendCommandChannel(botServer, messageContentError(options))
+  }
+
+  async sendCommandChannelSuccess(botServer: BotServer, options: MessageContent) {
+    await this.sendCommandChannel(botServer, messageContentSuccess(options))
+  }
+
+  async sendCommandChannelInfo(botServer: BotServer, options: MessageContent) {
+    await this.sendCommandChannel(botServer, messageContentInfo(options))
   }
 
   /**
@@ -329,34 +378,74 @@ export class ApiBotInstancesService {
   }
 
   private async setupListeners(bot: Bot, instance: DiscordBot) {
-    if (!instance.client?.user) {
+    if (!instance.client?.user?.id) {
       this.logger.warn(`Bot client on instance not found.`)
       return
     }
     this.logger.verbose(`Setting up listeners for bot ${bot.name}`)
-    instance.client.on('guildMemberAdd', (member) =>
-      this.logger.verbose(
-        'guildMemberAdd:' +
-          JSON.stringify({
-            botId: bot.id,
-            communityId: bot.communityId,
-            serverId: member.guild.id,
-            userId: member.id,
-            roleIds: member.roles.cache.map((role) => role.id),
-          }),
-      ),
-    )
-    instance.client.on('guildMemberRemove', (member) =>
-      this.logger.verbose(
-        'guildMemberRemove' +
-          JSON.stringify({
-            botId: bot.id,
-            communityId: bot.communityId,
-            serverId: member.guild.id,
-            userId: member.id,
-          }),
-      ),
-    )
+    instance.client.on('guildMemberAdd', async (member) => {
+      const botServer = await this.ensureBotServer({ botId: bot.id, serverId: member.guild.id })
+      if (!botServer.botChannel) {
+        this.logger.warn(`Bot channel not found for ${member.guild.id}`)
+        return
+      }
+      const author = { name: member.user.username, iconURL: member.user.displayAvatarURL() }
+      await this.sendCommandChannelInfo(botServer, {
+        author,
+        footer: `ID: ${member.user.id}`,
+        description: `<@${member.user.id}> has joined the server.`,
+      })
+    })
+    instance.client.on('guildMemberRemove', async (member) => {
+      const botServer = await this.ensureBotServer({ botId: bot.id, serverId: member.guild.id })
+      if (!botServer.botChannel) {
+        this.logger.warn(`Bot channel not found for ${member.guild.id}`)
+        return
+      }
+      const author = { name: member.user.username, iconURL: member.user.displayAvatarURL() }
+      await this.sendCommandChannelInfo(botServer, {
+        author,
+        footer: `ID: ${member.user.id}`,
+        description: `<@${member.user.id}> has left the server.`,
+      })
+    })
+    instance.client.on('guildMemberUpdate', async (oldMember, newMember) => {
+      const addedRoles = newMember.roles.cache.filter((role) => !oldMember.roles.cache.has(role.id))
+      const removedRoles = oldMember.roles.cache.filter((role) => !newMember.roles.cache.has(role.id))
+
+      if (!addedRoles.size && !removedRoles.size) {
+        return
+      }
+      this.logger.log(
+        `Bot ${instance?.client?.user?.id} updated member ${newMember.user.username} : ${addedRoles.size} added, ${removedRoles.size} removed`,
+      )
+      const botServer = await this.ensureBotServer({
+        botId: `${instance?.client?.user?.id}`,
+        serverId: newMember.guild.id,
+      })
+
+      if (!botServer.botChannel) {
+        this.logger.warn(`Bot channel not found for ${newMember.guild.id}`)
+        return
+      }
+      const author = { name: newMember.user.username, iconURL: newMember.user.displayAvatarURL() }
+
+      addedRoles.forEach((role) => {
+        this.sendCommandChannelInfo(botServer, {
+          author,
+          footer: `ID: ${newMember.user.id}`,
+          description: `**<@${newMember.user.id}> was given the <@&${role.id}> role.**`,
+        })
+      })
+
+      removedRoles.forEach((role) => {
+        this.sendCommandChannelInfo(botServer, {
+          author,
+          footer: `ID: ${newMember.user.id}`,
+          description: `**<@${newMember.user.id}> was removed from the <@&${role.id}> role.**`,
+        })
+      })
+    })
   }
 
   isStarted(botId: string) {
