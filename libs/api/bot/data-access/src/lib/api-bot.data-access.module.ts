@@ -3,6 +3,7 @@ import { BullBoardModule } from '@bull-board/nestjs'
 import { BullModule } from '@nestjs/bullmq'
 import { Module } from '@nestjs/common'
 import { ApiCoreDataAccessModule } from '@pubkey-link/api-core-data-access'
+import { ApiBotCommandsService } from './api-bot-commands.service'
 import { ApiBotDataAdminService } from './api-bot-data-admin.service'
 import { ApiBotDataUserService } from './api-bot-data-user.service'
 import { ApiBotDataService } from './api-bot-data.service'
@@ -24,12 +25,13 @@ const processors = [ApiBotAddRoleQueue, ApiBotRemoveRoleQueue]
     BullBoardModule.forFeature({ name: API_BOT_REMOVE_ROLE_QUEUE, adapter: BullMQAdapter }),
   ],
   providers: [
+    ApiBotCommandsService,
     ApiBotDataAdminService,
-    ApiBotInstancesService,
-    ApiBotSyncService,
     ApiBotDataService,
     ApiBotDataUserService,
+    ApiBotInstancesService,
     ApiBotService,
+    ApiBotSyncService,
     ...processors,
   ],
   exports: [ApiBotService],
