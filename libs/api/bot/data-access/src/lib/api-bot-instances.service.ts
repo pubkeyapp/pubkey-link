@@ -4,6 +4,7 @@ import { Bot, BotServer, CommunityRole, IdentityProvider } from '@prisma/client'
 import { createDiscordRestClient, DiscordBot } from '@pubkey-link/api-bot-util'
 import { ApiCoreService, EVENT_APP_STARTED } from '@pubkey-link/api-core-data-access'
 import { ChannelType, EmbedAuthorData, Guild, MessageCreateOptions, PermissionsString, User } from 'discord.js'
+import { ApiBotCommandsService } from './api-bot-commands.service'
 import { BotStatus } from './entity/bot-status.enum'
 import { DiscordChannel, DiscordRole, DiscordRoleMap, DiscordServer } from './entity/discord-server.entity'
 
@@ -48,8 +49,7 @@ function messageContentInfo(content: MessageContent) {
 export class ApiBotInstancesService {
   private readonly logger = new Logger(ApiBotInstancesService.name)
   private readonly bots = new Map<string, DiscordBot>()
-
-  constructor(private readonly core: ApiCoreService) {}
+  constructor(private readonly core: ApiCoreService, private readonly command: ApiBotCommandsService) {}
 
   @OnEvent(EVENT_APP_STARTED)
   async onApplicationStarted() {
@@ -241,6 +241,7 @@ export class ApiBotInstancesService {
     this.logger.verbose(`Starting bot ${bot.name}`)
     const instance = new DiscordBot({ botId: bot.id, token: bot.token })
     await instance.start()
+    await this.setupApplicationCommands(bot, instance)
     await this.setupListeners(bot, instance)
     this.bots.set(bot.id, instance)
 
@@ -377,12 +378,56 @@ export class ApiBotInstancesService {
     return found
   }
 
+  private async setupApplicationCommands(bot: Bot, instance: DiscordBot) {
+    if (!instance.client?.user?.id) {
+      this.logger.warn(`Bot client on instance not found.`)
+      return
+    }
+    this.logger.verbose(`Setting up application commands for bot ${bot.name}`)
+
+    const existingCommands = await instance.client?.application?.commands.fetch()
+    const existingCommandNames = existingCommands?.map((c) => c.name)
+    this.logger.verbose(`Found ${existingCommands?.size} existing commands: ${existingCommands?.map((c) => c.name)}`)
+
+    console.log(existingCommands?.map((c) => c.toJSON()))
+    for (const command of this.command.commands.values()) {
+      console.log(` Registering command ${command.data.name}`)
+      if (existingCommandNames?.includes(command.data.name)) {
+        this.logger.verbose(`Command ${command.data.name} already exists`)
+        // continue
+      }
+      const created = await instance.client?.application?.commands.create(command.data)
+      if (!created) {
+        throw new Error(`Failed to create command ${command.data.name}`)
+      } else {
+        this.logger.verbose(`Created command ${command.data.name}`)
+      }
+    }
+  }
+
   private async setupListeners(bot: Bot, instance: DiscordBot) {
     if (!instance.client?.user?.id) {
       this.logger.warn(`Bot client on instance not found.`)
       return
     }
     this.logger.verbose(`Setting up listeners for bot ${bot.name}`)
+
+    instance.client.on('interactionCreate', async (interaction) => {
+      if (!interaction.isChatInputCommand()) {
+        return
+      }
+
+      const command = this.command.commands.get(interaction.commandName)
+      if (!command) {
+        this.logger.warn(`Unknown command ${interaction.commandName}`)
+        return
+      }
+      const result = await command.execute(interaction)
+      if (result) {
+        await interaction.reply(result)
+      }
+    })
+
     instance.client.on('guildMemberAdd', async (member) => {
       const botServer = await this.ensureBotServer({ botId: bot.id, serverId: member.guild.id })
       if (!botServer.botChannel) {
