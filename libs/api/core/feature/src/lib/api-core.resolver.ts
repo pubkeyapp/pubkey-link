@@ -1,5 +1,7 @@
-import { ApiCoreService, AppConfig } from '@pubkey-link/api-core-data-access'
+import { UseGuards } from '@nestjs/common'
 import { Float, Query, Resolver } from '@nestjs/graphql'
+import { ApiAuthGraphQLAdminGuard } from '@pubkey-link/api-auth-data-access'
+import { ApiCoreService, AppConfig, StatRecord } from '@pubkey-link/api-core-data-access'
 
 @Resolver()
 export class ApiCoreResolver {
@@ -8,6 +10,12 @@ export class ApiCoreResolver {
   @Query(() => AppConfig)
   appConfig(): AppConfig {
     return this.service.config.appConfig
+  }
+
+  @Query(() => [StatRecord], { nullable: true })
+  @UseGuards(ApiAuthGraphQLAdminGuard)
+  adminTableStats() {
+    return this.service.tableStats()
   }
 
   @Query(() => Float)

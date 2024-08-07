@@ -28,3 +28,10 @@ query appConfig {
     ...AppConfigDetails
   }
 }
+
+query adminTableStats {
+  items: adminTableStats {
+    name
+    value
+  }
+}
