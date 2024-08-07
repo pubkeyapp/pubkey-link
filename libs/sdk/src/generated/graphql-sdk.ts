@@ -965,6 +965,7 @@ export type Query = {
   adminFindUserByIdentity?: Maybe<User>
   adminGetBackup?: Maybe<Scalars['JSON']['output']>
   adminGetBackups: Array<Scalars['String']['output']>
+  adminTableStats?: Maybe<Array<StatRecord>>
   anonGetCommunities: Array<Community>
   anonRequestIdentityChallenge?: Maybe<IdentityChallenge>
   appConfig: AppConfig
@@ -1330,6 +1331,12 @@ export type SolanaNetworkAsset = {
   amount: Scalars['String']['output']
   group?: Maybe<Scalars['String']['output']>
   owner: Scalars['String']['output']
+}
+
+export type StatRecord = {
+  __typename?: 'StatRecord'
+  name: Scalars['String']['output']
+  value: Scalars['String']['output']
 }
 
 export type User = {
@@ -3601,6 +3608,13 @@ export type AppConfigQuery = {
     features: Array<AppFeature>
     resolvers: Array<NetworkResolver>
   }
+}
+
+export type AdminTableStatsQueryVariables = Exact<{ [key: string]: never }>
+
+export type AdminTableStatsQuery = {
+  __typename?: 'Query'
+  items?: Array<{ __typename?: 'StatRecord'; name: string; value: string }> | null
 }
 
 export type IdentitySummaryFragment = {
@@ -8273,6 +8287,14 @@ export const AppConfigDocument = gql`
   }
   ${AppConfigDetailsFragmentDoc}
 `
+export const AdminTableStatsDocument = gql`
+  query adminTableStats {
+    items: adminTableStats {
+      name
+      value
+    }
+  }
+`
 export const AdminFindManyIdentityDocument = gql`
   query adminFindManyIdentity($input: AdminFindManyIdentityInput!) {
     items: adminFindManyIdentity(input: $input) {
@@ -9008,6 +9030,7 @@ const UserUpdateCommunityDocumentString = print(UserUpdateCommunityDocument)
 const UserDeleteCommunityDocumentString = print(UserDeleteCommunityDocument)
 const UptimeDocumentString = print(UptimeDocument)
 const AppConfigDocumentString = print(AppConfigDocument)
+const AdminTableStatsDocumentString = print(AdminTableStatsDocument)
 const AdminFindManyIdentityDocumentString = print(AdminFindManyIdentityDocument)
 const AdminFindUserByIdentityDocumentString = print(AdminFindUserByIdentityDocument)
 const AdminCreateIdentityDocumentString = print(AdminCreateIdentityDocument)
@@ -10190,6 +10213,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'appConfig',
+        'query',
+        variables,
+      )
+    },
+    adminTableStats(
+      variables?: AdminTableStatsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminTableStatsQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminTableStatsQuery>(AdminTableStatsDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminTableStats',
         'query',
         variables,
       )

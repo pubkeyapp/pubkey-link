@@ -1,5 +1,5 @@
-import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { Controller, Get } from '@nestjs/common'
+import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 
 @Controller()
 export class ApiCoreController {

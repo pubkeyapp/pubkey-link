@@ -3,6 +3,8 @@ import { EventEmitter2 } from '@nestjs/event-emitter'
 import { CommunityRole, IdentityProvider, LogLevel, LogRelatedType, Prisma, User, UserRole } from '@prisma/client'
 import { ApiCorePrismaClient, prismaClient } from './api-core-prisma-client'
 import { ApiCoreConfigService } from './config/api-core-config.service'
+
+import { StatRecord } from './entity/stat-record'
 import { slugifyId, slugifyUsername } from './helpers/slugify-id'
 
 @Injectable()
@@ -164,6 +166,26 @@ export class ApiCoreService {
       return user.private
     }
     return false
+  }
+
+  async tableStats(): Promise<StatRecord[]> {
+    // Get all the table counts from the database
+    const tables: { name: string; value: bigint }[] = await this.data.$queryRaw(Prisma.sql`
+        SELECT
+          relname AS name, n_live_tup AS value
+        FROM
+          pg_stat_user_tables
+        ORDER BY
+          relname;
+    `)
+
+    return (
+      tables
+        // sort by value (bigint) descending
+        ?.sort((a, b) => Number(b.value) - Number(a.value))
+        // map to StatRecord
+        ?.map(({ name, value }) => ({ name, value: value.toString() })) ?? []
+    )
   }
 }
 
