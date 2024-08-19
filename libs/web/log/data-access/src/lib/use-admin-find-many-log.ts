@@ -1,6 +1,6 @@
 import { AdminFindManyLogInput, LogLevel } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
-import { toastSuccess } from '@pubkey-ui/core'
+import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
@@ -43,9 +43,26 @@ export function useAdminFindManyLog(props: Partial<AdminFindManyLogInput> & { co
     },
     setSearch,
     deleteLog: (logId: string) =>
-      sdk.adminDeleteLog({ logId }).then(() => {
-        toastSuccess('Log deleted')
-        return query.refetch()
-      }),
+      sdk
+        .adminDeleteLog({ logId })
+        .then(() => {
+          toastSuccess('Log deleted')
+          return query.refetch()
+        })
+        .catch((err) => {
+          toastError(err.message)
+          return undefined
+        }),
+    purgeLogs: () =>
+      sdk
+        .adminPurgeLogs()
+        .then(() => {
+          toastSuccess('Logs purged')
+          return query.refetch()
+        })
+        .catch((err) => {
+          toastError(err.message)
+          return undefined
+        }),
   }
 }

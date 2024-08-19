@@ -1,4 +1,4 @@
-import { AvatarProps, Group, type GroupProps, Stack, Text, TextProps } from '@mantine/core'
+import { AvatarProps, Badge, Group, type GroupProps, Stack, Text, TextProps } from '@mantine/core'
 import { Community } from '@pubkey-link/sdk'
 import { UiAnchor, type UiAnchorProps } from '@pubkey-ui/core'
 import { ReactNode } from 'react'
@@ -42,5 +42,13 @@ export function CommunityUiItem({
         </Stack>
       </Group>
     </UiAnchor>
+  )
+}
+
+export function CommunityUiSyncBadge({ community }: { community: Community }) {
+  return (
+    <Badge variant="dot" color={community.enableSync ? 'lime' : 'orange'} size="xs">
+      Sync {community.enableSync ? 'Enabled' : 'Disabled'}
+    </Badge>
   )
 }

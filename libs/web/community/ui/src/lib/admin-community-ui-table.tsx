@@ -1,8 +1,9 @@
-import { ActionIcon, Anchor, Group, ScrollArea } from '@mantine/core'
+import { ActionIcon, Anchor, Badge, Group, ScrollArea } from '@mantine/core'
 import { Community } from '@pubkey-link/sdk'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'
+import { CommunityUiSyncBadge } from './community-ui-item'
 
 export function AdminCommunityUiTable({
   deleteCommunity,
@@ -37,6 +38,19 @@ export function AdminCommunityUiTable({
                 {item.name}
               </Anchor>
             ),
+          },
+          {
+            accessor: 'Sync',
+            render: (item) => <CommunityUiSyncBadge community={item} />,
+          },
+          {
+            accessor: 'featured',
+            render: (item) =>
+              item.featured ? (
+                <Badge variant="dot" color="green" size="xs">
+                  Featured
+                </Badge>
+              ) : null,
           },
           {
             accessor: 'actions',

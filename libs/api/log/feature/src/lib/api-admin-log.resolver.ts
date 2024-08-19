@@ -22,4 +22,9 @@ export class ApiAdminLogResolver {
   adminFindOneLog(@Args('logId') logId: string) {
     return this.service.admin.findOneLog(logId)
   }
+
+  @Mutation(() => Boolean, { nullable: true })
+  adminPurgeLogs() {
+    return this.service.admin.purgeLogs()
+  }
 }

@@ -68,3 +68,7 @@ query adminFindOneLog($logId: String!) {
 mutation adminDeleteLog($logId: String!) {
   deleted: adminDeleteLog(logId: $logId)
 }
+
+mutation adminPurgeLogs {
+  purged: adminPurgeLogs
+}

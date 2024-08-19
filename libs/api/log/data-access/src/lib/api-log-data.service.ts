@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
+import { Cron, CronExpression } from '@nestjs/schedule'
 import { Prisma } from '@prisma/client'
 import { ApiCoreService, PagingInputFields } from '@pubkey-link/api-core-data-access'
 import { LogPaging } from './entity/log.entity'
 
 @Injectable()
 export class ApiLogDataService {
+  private readonly logger = new Logger(ApiLogDataService.name)
   constructor(private readonly core: ApiCoreService) {}
 
   async delete(logId: string) {
@@ -28,5 +30,17 @@ export class ApiLogDataService {
       throw new Error('Log not found')
     }
     return found
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async purgeLogs() {
+    const logDays = process.env['LOG_DAYS'] ?? '7'
+    const date = new Date(new Date().getTime() - parseInt(logDays) * 24 * 60 * 60 * 1000)
+    this.logger.log(`Purging logs older than ${logDays} days... (${date})`)
+    const count = await this.core.data.log.count({ where: { createdAt: { lt: date } } })
+    this.logger.log(`Purging ${count} logs...`)
+    const deleted = await this.core.data.log.deleteMany({ where: { createdAt: { lt: date } } })
+    this.logger.log(`Purged ${deleted.count} logs`)
+    return !!deleted
   }
 }

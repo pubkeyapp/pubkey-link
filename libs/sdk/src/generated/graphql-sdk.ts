@@ -489,6 +489,7 @@ export type Mutation = {
   adminDeleteSnapshot?: Maybe<Scalars['Boolean']['output']>
   adminDeleteUser?: Maybe<Scalars['Boolean']['output']>
   adminFetchBackup: Scalars['Boolean']['output']
+  adminPurgeLogs?: Maybe<Scalars['Boolean']['output']>
   adminRemoveCommunityMember?: Maybe<Scalars['Boolean']['output']>
   adminRestoreBackup: Scalars['Boolean']['output']
   adminSyncIdentity?: Maybe<Scalars['Boolean']['output']>
@@ -5022,6 +5023,10 @@ export type AdminDeleteLogMutationVariables = Exact<{
 
 export type AdminDeleteLogMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
+export type AdminPurgeLogsMutationVariables = Exact<{ [key: string]: never }>
+
+export type AdminPurgeLogsMutation = { __typename?: 'Mutation'; purged?: boolean | null }
+
 export type NetworkAssetDetailsFragment = {
   __typename?: 'NetworkAsset'
   id: string
@@ -8506,6 +8511,11 @@ export const AdminDeleteLogDocument = gql`
     deleted: adminDeleteLog(logId: $logId)
   }
 `
+export const AdminPurgeLogsDocument = gql`
+  mutation adminPurgeLogs {
+    purged: adminPurgeLogs
+  }
+`
 export const UserFindManyNetworkAssetDocument = gql`
   query userFindManyNetworkAsset($input: UserFindManyNetworkAssetInput!) {
     paging: userFindManyNetworkAsset(input: $input) {
@@ -9055,6 +9065,7 @@ const UserFindOneLogDocumentString = print(UserFindOneLogDocument)
 const AdminFindManyLogDocumentString = print(AdminFindManyLogDocument)
 const AdminFindOneLogDocumentString = print(AdminFindOneLogDocument)
 const AdminDeleteLogDocumentString = print(AdminDeleteLogDocument)
+const AdminPurgeLogsDocumentString = print(AdminPurgeLogsDocument)
 const UserFindManyNetworkAssetDocumentString = print(UserFindManyNetworkAssetDocument)
 const UserFindOneNetworkAssetDocumentString = print(UserFindOneNetworkAssetDocument)
 const AdminFindManyNetworkAssetDocumentString = print(AdminFindManyNetworkAssetDocument)
@@ -10740,6 +10751,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'adminDeleteLog',
+        'mutation',
+        variables,
+      )
+    },
+    adminPurgeLogs(
+      variables?: AdminPurgeLogsMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminPurgeLogsMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminPurgeLogsMutation>(AdminPurgeLogsDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminPurgeLogs',
         'mutation',
         variables,
       )

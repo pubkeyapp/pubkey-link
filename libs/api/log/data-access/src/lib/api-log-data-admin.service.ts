@@ -25,4 +25,8 @@ export class ApiLogDataAdminService {
   async findOneLog(logId: string) {
     return this.data.findOne(logId)
   }
+
+  async purgeLogs() {
+    return this.data.purgeLogs()
+  }
 }

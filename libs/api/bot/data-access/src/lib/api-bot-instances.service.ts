@@ -389,18 +389,18 @@ export class ApiBotInstancesService {
     const existingCommandNames = existingCommands?.map((c) => c.name)
     this.logger.verbose(`Found ${existingCommands?.size} existing commands: ${existingCommands?.map((c) => c.name)}`)
 
-    console.log(existingCommands?.map((c) => c.toJSON()))
+    // console.log(existingCommands?.map((c) => c.toJSON()))
     for (const command of this.command.commands.values()) {
-      console.log(` Registering command ${command.data.name}`)
+      this.logger.verbose(`  => Registering command ${command.data.name}`)
       if (existingCommandNames?.includes(command.data.name)) {
-        this.logger.verbose(`Command ${command.data.name} already exists`)
-        // continue
+        this.logger.verbose(`    => Command ${command.data.name} already exists`)
+        continue
       }
       const created = await instance.client?.application?.commands.create(command.data)
       if (!created) {
         throw new Error(`Failed to create command ${command.data.name}`)
       } else {
-        this.logger.verbose(`Created command ${command.data.name}`)
+        this.logger.verbose(`    => Created command ${command.data.name}`)
       }
     }
   }

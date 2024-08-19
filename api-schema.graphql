@@ -459,6 +459,7 @@ type Mutation {
   adminDeleteSnapshot(snapshotId: String!): Boolean
   adminDeleteUser(userId: String!): Boolean
   adminFetchBackup(url: String!): Boolean!
+  adminPurgeLogs: Boolean
   adminRemoveCommunityMember(communityMemberId: String!): Boolean
   adminRestoreBackup(name: String!): Boolean!
   adminSyncIdentity(identityId: String!): Boolean

@@ -1,11 +1,11 @@
-import { Group, Select } from '@mantine/core'
+import { Button, Group, Select } from '@mantine/core'
+import { UiPageLimit, UiSearchField } from '@pubkey-link/web-core-ui'
 import { useAdminFindManyLog } from '@pubkey-link/web-log-data-access'
 import { AdminLogUiSelectLevel, AdminLogUiTable } from '@pubkey-link/web-log-ui'
-import { UiPageLimit, UiSearchField } from '@pubkey-link/web-core-ui'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function AdminLogListFeature({ communityId, userId }: { communityId?: string; userId?: string }) {
-  const { deleteLog, items, level, setLevel, pagination, query, interval, setInterval, setSearch } =
+  const { deleteLog, items, level, setLevel, pagination, query, interval, purgeLogs, setInterval, setSearch } =
     useAdminFindManyLog({
       limit: 50,
       communityId,
@@ -32,6 +32,15 @@ export function AdminLogListFeature({ communityId, userId }: { communityId?: str
         />
         <AdminLogUiSelectLevel value={level} setValue={setLevel} />
         <UiPageLimit limit={pagination.limit} setLimit={pagination.setLimit} setPage={pagination.setPage} />
+        <Button
+          variant="light"
+          onClick={() => {
+            if (!window.confirm('Are you sure?')) return
+            return purgeLogs()
+          }}
+        >
+          Purge Logs
+        </Button>
       </Group>
 
       {query.isLoading ? (

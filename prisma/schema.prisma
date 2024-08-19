@@ -175,6 +175,9 @@ model Log {
   userId             String?
   role               Role?             @relation(fields: [roleId], references: [id], onDelete: Cascade)
   roleId             String?
+
+  @@index([createdAt])
+  @@index([createdAt, communityId])
 }
 
 model Network {
