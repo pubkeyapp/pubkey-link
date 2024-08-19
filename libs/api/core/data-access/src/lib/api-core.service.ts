@@ -5,6 +5,7 @@ import { ApiCorePrismaClient, prismaClient } from './api-core-prisma-client'
 import { ApiCoreConfigService } from './config/api-core-config.service'
 
 import { StatRecord } from './entity/stat-record'
+import { StatRecordGroup } from './entity/stat-record-group'
 import { slugifyId, slugifyUsername } from './helpers/slugify-id'
 
 @Injectable()
@@ -168,7 +169,30 @@ export class ApiCoreService {
     return false
   }
 
-  async tableStats(): Promise<StatRecord[]> {
+  async tableStats(): Promise<StatRecordGroup[]> {
+    return [
+      {
+        name: 'Identities by Provider',
+        records: await this.getIdentityCount(),
+      },
+      {
+        name: 'Row Counts',
+        records: await this.getTableRowCount(),
+      },
+    ]
+  }
+
+  private async getIdentityCount(): Promise<StatRecord[]> {
+    return this.data.identity.groupBy({ by: ['provider'], _count: { provider: true } }).then((identities) =>
+      identities
+        // order by count descending
+        .sort((a, b) => Number(b._count.provider) - Number(a._count.provider))
+        // map to StatRecord
+        .map((identity) => ({ name: identity.provider, value: identity._count.provider.toString() })),
+    )
+  }
+
+  private async getTableRowCount(): Promise<StatRecord[]> {
     // Get all the table counts from the database
     const tables: { name: string; value: bigint }[] = await this.data.$queryRaw(Prisma.sql`
         SELECT

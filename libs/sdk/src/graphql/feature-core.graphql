@@ -32,6 +32,9 @@ query appConfig {
 query adminTableStats {
   items: adminTableStats {
     name
-    value
+    records {
+      name
+      value
+    }
   }
 }

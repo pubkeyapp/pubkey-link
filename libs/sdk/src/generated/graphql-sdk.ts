@@ -966,7 +966,7 @@ export type Query = {
   adminFindUserByIdentity?: Maybe<User>
   adminGetBackup?: Maybe<Scalars['JSON']['output']>
   adminGetBackups: Array<Scalars['String']['output']>
-  adminTableStats?: Maybe<Array<StatRecord>>
+  adminTableStats?: Maybe<Array<StatRecordGroup>>
   anonGetCommunities: Array<Community>
   anonRequestIdentityChallenge?: Maybe<IdentityChallenge>
   appConfig: AppConfig
@@ -1338,6 +1338,12 @@ export type StatRecord = {
   __typename?: 'StatRecord'
   name: Scalars['String']['output']
   value: Scalars['String']['output']
+}
+
+export type StatRecordGroup = {
+  __typename?: 'StatRecordGroup'
+  name: Scalars['String']['output']
+  records: Array<StatRecord>
 }
 
 export type User = {
@@ -3615,7 +3621,11 @@ export type AdminTableStatsQueryVariables = Exact<{ [key: string]: never }>
 
 export type AdminTableStatsQuery = {
   __typename?: 'Query'
-  items?: Array<{ __typename?: 'StatRecord'; name: string; value: string }> | null
+  items?: Array<{
+    __typename?: 'StatRecordGroup'
+    name: string
+    records: Array<{ __typename?: 'StatRecord'; name: string; value: string }>
+  }> | null
 }
 
 export type IdentitySummaryFragment = {
@@ -8296,7 +8306,10 @@ export const AdminTableStatsDocument = gql`
   query adminTableStats {
     items: adminTableStats {
       name
-      value
+      records {
+        name
+        value
+      }
     }
   }
 `

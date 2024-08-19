@@ -640,7 +640,7 @@ type Query {
   adminFindUserByIdentity(provider: IdentityProvider!, providerId: String!): User
   adminGetBackup(name: String!): JSON
   adminGetBackups: [String!]!
-  adminTableStats: [StatRecord!]
+  adminTableStats: [StatRecordGroup!]
   anonGetCommunities: [Community!]!
   anonRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
   appConfig: AppConfig!
@@ -771,6 +771,11 @@ type SolanaNetworkAsset {
 type StatRecord {
   name: String!
   value: String!
+}
+
+type StatRecordGroup {
+  name: String!
+  records: [StatRecord!]!
 }
 
 type User {
