@@ -64,7 +64,7 @@ export class ApiNetworkAssetSyncService {
   @Cron(CronExpression.EVERY_10_MINUTES)
   async syncAllNetworkAssets({ force = false } = {}) {
     if (!this.core.config.syncNetworkAssets && !force) {
-      this.logger.log(`Network asset sync is disabled`)
+      this.logger.warn(`[GLOBAL] Network asset sync is disabled (SYNC_NETWORK_ASSETS!=true, force=${force})`)
       return true
     }
     const cluster = this.network.cluster.getDefaultCluster()

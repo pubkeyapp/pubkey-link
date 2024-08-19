@@ -30,7 +30,7 @@ export class ApiRoleResolverService {
   @OnEvent('communities.provisioned', { async: true })
   async syncAllCommunityRoles() {
     if (!this.core.config.syncCommunityRoles) {
-      this.logger.log(`Role validation is disabled`)
+      this.logger.warn(`[GLOBAL] Role validation is disabled (SYNC_COMMUNITY_ROLES!=true)`)
       return
     }
     const communities = await this.core.data.community.findMany({
