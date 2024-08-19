@@ -236,10 +236,10 @@ export class ApiBotInstancesService {
 
   async startBot(bot: Bot) {
     if (this.bots.get(bot.id)) {
-      throw new Error(`Bot ${bot.name} already started`)
+      throw new Error(`[${bot.name}] bot already started`)
     }
-    this.logger.verbose(`Starting bot ${bot.name}`)
-    const instance = new DiscordBot({ botId: bot.id, token: bot.token })
+    this.logger.verbose(`[${bot.name}] Starting bot...`)
+    const instance = new DiscordBot({ botId: bot.id, token: bot.token, name: bot.name })
     await instance.start()
     await this.setupApplicationCommands(bot, instance)
     await this.setupListeners(bot, instance)
@@ -251,7 +251,7 @@ export class ApiBotInstancesService {
   async stopBot(bot: Bot) {
     const instance = this.bots.get(bot.id)
     if (!instance) {
-      throw new Error(`Bot ${bot.name} not started`)
+      throw new Error(`[${bot.name}] bot not started`)
     }
     await instance.stop()
     this.bots.delete(bot.id)
@@ -266,7 +266,7 @@ export class ApiBotInstancesService {
   ensureBotInstance(botId: string) {
     const instance = this.bots.get(botId)
     if (!instance) {
-      throw new Error(`Bot ${botId} not started`)
+      throw new Error(`[${botId}] bot not started`)
     }
     return instance
   }
@@ -383,24 +383,24 @@ export class ApiBotInstancesService {
       this.logger.warn(`Bot client on instance not found.`)
       return
     }
-    this.logger.verbose(`Setting up application commands for bot ${bot.name}`)
+    this.logger.verbose(`[${bot.name}] Setting up application commands for bot ${bot.name}`)
 
     const existingCommands = await instance.client?.application?.commands.fetch()
     const existingCommandNames = existingCommands?.map((c) => c.name)
-    this.logger.verbose(`Found ${existingCommands?.size} existing commands: ${existingCommands?.map((c) => c.name)}`)
+    this.logger.debug(`Found ${existingCommands?.size} existing commands: ${existingCommands?.map((c) => c.name)}`)
 
     // console.log(existingCommands?.map((c) => c.toJSON()))
     for (const command of this.command.commands.values()) {
-      this.logger.verbose(`  => Registering command ${command.data.name}`)
+      this.logger.debug(`  => Registering command ${command.data.name}`)
       if (existingCommandNames?.includes(command.data.name)) {
-        this.logger.verbose(`    => Command ${command.data.name} already exists`)
+        this.logger.debug(`    => Command ${command.data.name} already exists`)
         continue
       }
       const created = await instance.client?.application?.commands.create(command.data)
       if (!created) {
         throw new Error(`Failed to create command ${command.data.name}`)
       } else {
-        this.logger.verbose(`    => Created command ${command.data.name}`)
+        this.logger.debug(`    => Created command ${command.data.name}`)
       }
     }
   }
@@ -410,7 +410,7 @@ export class ApiBotInstancesService {
       this.logger.warn(`Bot client on instance not found.`)
       return
     }
-    this.logger.verbose(`Setting up listeners for bot ${bot.name}`)
+    this.logger.verbose(`[${bot.name}] Setting up listeners...`)
 
     instance.client.on('interactionCreate', async (interaction) => {
       if (!interaction.isChatInputCommand()) {

@@ -28,19 +28,19 @@ export class DiscordBot {
   private readonly logger = new Logger(DiscordBot.name)
   client?: Client
   rest?: REST
-  constructor(private readonly config: { botId: string; token: string }) {}
+  constructor(private readonly config: { botId: string; token: string; name: string }) {}
 
   async start() {
-    this.logger.verbose(`Starting bot...`)
+    this.logger.verbose(`[${this.config.name}] Starting bot...`)
     this.client = await createDiscordClient(this.config.token)
     this.rest = createDiscordRestClient(this.config.token)
-    this.logger.verbose(`Bot started`)
+    this.logger.verbose(`[${this.config.name}] Bot started`)
   }
 
   async stop() {
-    this.logger.verbose(`Stopping bot...`)
+    this.logger.verbose(`[${this.config.name}] Stopping bot...`)
     await this.client?.destroy()
-    this.logger.verbose(`Bot stopped`)
+    this.logger.verbose(`[${this.config.name}] Bot stopped`)
   }
 
   async addRoleConnection(input: RESTDiscordRoleConnection): Promise<RESTDiscordRoleConnection[]> {
@@ -48,7 +48,7 @@ export class DiscordBot {
 
     const found = existing.find((item) => item.key === input.key)
     if (found) {
-      throw new Error(`Role ${input.key} already exists`)
+      throw new Error(`[${this.config.name}] Role ${input.key} already exists`)
     }
 
     const roles = await this.rest
@@ -68,7 +68,7 @@ export class DiscordBot {
   ): Promise<{ discordId: string; username: string; roleIds: string[] }[]> {
     const guild = await this.getServer(guildId)
     if (!guild) {
-      throw new Error(`Could not fetch guild with id ${guildId}`)
+      throw new Error(`[${this.config.name}] Could not fetch guild with id ${guildId}`)
     }
 
     const members = await this.getEachMember(guild)
@@ -82,7 +82,7 @@ export class DiscordBot {
   async getDiscordServerChannels(guildId: string) {
     const guild = await this.getServer(guildId)
     if (!guild) {
-      throw new Error(`Could not fetch guild with id ${guildId}`)
+      throw new Error(`[${this.config.name}] Could not fetch guild with id ${guildId}`)
     }
 
     return guild.channels.fetch().then((res) => res.map((channel) => channel as NonThreadGuildBasedChannel))
@@ -111,7 +111,7 @@ export class DiscordBot {
     }
 
     this.logger.verbose(
-      `[${this.client?.user?.username}] getEachMember(${guild.name}): found ${count} members in ${batches} batches`,
+      `[${this.config.name}] getEachMember(${guild.name}): found ${count} members in ${batches} batches`,
     )
 
     return result
@@ -162,11 +162,11 @@ export class DiscordBot {
   async leaveServer(serverId: string) {
     const server = await this.client?.guilds.fetch({ guild: serverId })
     if (!server) {
-      throw new Error(`Server ${serverId} not found`)
+      throw new Error(`[${this.config.name}] Server ${serverId} not found`)
     }
 
     const result = await server.leave()
-    this.logger.verbose(`Bot ${this.client?.user?.username} left server ${result.name}`)
+    this.logger.verbose(`[${this.config.name}] Bot ${this.client?.user?.username} left server ${result.name}`)
     return true
   }
 
@@ -179,7 +179,7 @@ export class DiscordBot {
         await channel.send(content)
       }
     } else {
-      throw new Error('Channel not text based')
+      throw new Error(`[${this.config.name}] Channel not text based`)
     }
   }
 
@@ -187,7 +187,7 @@ export class DiscordBot {
     const found = this.client?.channels.cache.get(channelId)
 
     if (!found) {
-      throw new Error('Channel not found')
+      throw new Error(`[${this.config.name}] Channel not found`)
     }
     return found
   }
@@ -197,7 +197,7 @@ export class DiscordBot {
 
     const found = existing.find((item) => item.key === key)
     if (!found) {
-      throw new Error(`Role ${key} not found`)
+      throw new Error(`[${this.config.name}] Role ${key} not found`)
     }
 
     const roles = await this.rest
