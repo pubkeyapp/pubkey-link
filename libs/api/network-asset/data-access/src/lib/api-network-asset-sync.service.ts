@@ -97,7 +97,9 @@ export class ApiNetworkAssetSyncService {
     return results.every((r) => r)
   }
 
-  @Cron(CronExpression.EVERY_4_HOURS)
+  @Cron(CronExpression.EVERY_4_HOURS, {
+    disabled: process.env['FEATURE_VERIFY_NETWORK_ASSETS'] !== 'true',
+  })
   async verifyAllNetworkAssets() {
     const cluster = this.network.cluster.getDefaultCluster()
     const assets = await this.core.data.networkAsset.findMany({ where: { cluster } })

@@ -37,6 +37,7 @@ export const validationSchema = Joi.object({
   FEATURE_RESOLVER_SOLANA_FUNGIBLE: Joi.boolean().default(true),
   FEATURE_RESOLVER_SOLANA_NON_FUNGIBLE: Joi.boolean().default(true),
   FEATURE_RESOLVER_SOLANA_VALIDATOR: Joi.boolean().default(false),
+  FEATURE_VERIFY_NETWORK_ASSETS: Joi.boolean().default(false),
   GRAPHQL_PLAYGROUND: Joi.boolean().default(false),
   JWT_SECRET: Joi.string().required(),
   HOST: Joi.string().default('0.0.0.0'),
