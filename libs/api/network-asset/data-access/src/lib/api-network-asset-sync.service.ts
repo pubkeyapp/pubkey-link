@@ -50,7 +50,13 @@ export class ApiNetworkAssetSyncService {
       return true
     }
 
-    const job = await this.networkAssetSyncQueue.add('sync', { cluster, identity })
+    const job = await this.networkAssetSyncQueue.add(
+      'sync',
+      { cluster, identity },
+      {
+        jobId: `sync-${cluster}-${identity.providerId}`,
+      },
+    )
 
     return !!job.id
   }
