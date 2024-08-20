@@ -103,6 +103,42 @@ export class ApiNetworkAssetSyncService {
     return results.every((r) => r)
   }
 
+  async cleanupNetworkAssets({ cluster }: { cluster: NetworkCluster }) {
+    const assetCount = await this.core.data.networkAsset.count({ where: { cluster } })
+    if (assetCount < 1) {
+      this.logger.log(`No assets to sync`)
+      return true
+    }
+
+    const allNetworkTokens = await this.core.data.networkToken.findMany({ where: { cluster } })
+    const tokens = [
+      ...new Set([
+        ...allNetworkTokens.map((token) => token.mintList).flat(),
+        ...allNetworkTokens.map((token) => token.account),
+      ]),
+    ]
+
+    this.logger.log(`Queuing ${assetCount} assets to clean up, looking for ${tokens.length} token groups`, tokens)
+
+    const assetsNotInAnyKnownTokenGroup = await this.core.data.networkAsset.findMany({
+      where: {
+        cluster,
+        OR: [{ group: null }, { group: { notIn: tokens } }],
+      },
+    })
+
+    if (assetsNotInAnyKnownTokenGroup.length > 0) {
+      for (const asset of assetsNotInAnyKnownTokenGroup) {
+        this.logger.log(
+          `cleanupNetworkAssets: Removing asset ${asset.account} ${asset.name} as it is not in any known token group`,
+        )
+        await this.core.data.networkAsset.delete({ where: { id: asset.id } })
+      }
+    }
+
+    return true
+  }
+
   @Cron(CronExpression.EVERY_4_HOURS, {
     disabled: process.env['FEATURE_VERIFY_NETWORK_ASSETS'] !== 'true',
   })

@@ -9,7 +9,9 @@ import { AdminNetworkDetailSettingsTab } from './admin-network-detail-settings.t
 
 export function AdminNetworkDetailFeature() {
   const { networkId } = useParams<{ networkId: string }>() as { networkId: string }
-  const { item, query, syncNetworkAssets, verifyNetworkAssets } = useAdminFindOneNetwork({ networkId })
+  const { item, query, cleanupNetworkAssets, syncNetworkAssets, verifyNetworkAssets } = useAdminFindOneNetwork({
+    networkId,
+  })
 
   if (query.isLoading) {
     return <UiLoader />
@@ -26,6 +28,9 @@ export function AdminNetworkDetailFeature() {
         <Group>
           <Button size="xs" onClick={() => syncNetworkAssets()} variant="light">
             Sync Assets
+          </Button>
+          <Button size="xs" onClick={() => cleanupNetworkAssets()} variant="light">
+            Cleanup Assets
           </Button>
           <Button size="xs" onClick={() => verifyNetworkAssets()} variant="light">
             Verify Assets

@@ -439,6 +439,7 @@ enum LogRelatedType {
 
 type Mutation {
   adminAddCommunityMember(communityId: String!, input: AdminAddCommunityMemberInput!): CommunityMember
+  adminCleanupNetworkAssets(cluster: NetworkCluster!): Boolean
   adminCreateBackup: Boolean!
   adminCreateBot(input: AdminCreateBotInput!): Bot
   adminCreateCommunity(input: AdminCreateCommunityInput!): Community

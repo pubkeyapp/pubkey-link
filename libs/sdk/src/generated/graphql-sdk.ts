@@ -469,6 +469,7 @@ export enum LogRelatedType {
 export type Mutation = {
   __typename?: 'Mutation'
   adminAddCommunityMember?: Maybe<CommunityMember>
+  adminCleanupNetworkAssets?: Maybe<Scalars['Boolean']['output']>
   adminCreateBackup: Scalars['Boolean']['output']
   adminCreateBot?: Maybe<Bot>
   adminCreateCommunity?: Maybe<Community>
@@ -545,6 +546,10 @@ export type Mutation = {
 export type MutationAdminAddCommunityMemberArgs = {
   communityId: Scalars['String']['input']
   input: AdminAddCommunityMemberInput
+}
+
+export type MutationAdminCleanupNetworkAssetsArgs = {
+  cluster: NetworkCluster
 }
 
 export type MutationAdminCreateBotArgs = {
@@ -5207,6 +5212,12 @@ export type AdminFindOneNetworkAssetQuery = {
   } | null
 }
 
+export type AdminCleanupNetworkAssetsMutationVariables = Exact<{
+  cluster: NetworkCluster
+}>
+
+export type AdminCleanupNetworkAssetsMutation = { __typename?: 'Mutation'; cleanup?: boolean | null }
+
 export type AdminDeleteNetworkAssetMutationVariables = Exact<{
   networkAssetId: Scalars['String']['input']
 }>
@@ -8573,6 +8584,11 @@ export const AdminFindOneNetworkAssetDocument = gql`
   }
   ${NetworkAssetDetailsFragmentDoc}
 `
+export const AdminCleanupNetworkAssetsDocument = gql`
+  mutation adminCleanupNetworkAssets($cluster: NetworkCluster!) {
+    cleanup: adminCleanupNetworkAssets(cluster: $cluster)
+  }
+`
 export const AdminDeleteNetworkAssetDocument = gql`
   mutation adminDeleteNetworkAsset($networkAssetId: String!) {
     deleted: adminDeleteNetworkAsset(networkAssetId: $networkAssetId)
@@ -9083,6 +9099,7 @@ const UserFindManyNetworkAssetDocumentString = print(UserFindManyNetworkAssetDoc
 const UserFindOneNetworkAssetDocumentString = print(UserFindOneNetworkAssetDocument)
 const AdminFindManyNetworkAssetDocumentString = print(AdminFindManyNetworkAssetDocument)
 const AdminFindOneNetworkAssetDocumentString = print(AdminFindOneNetworkAssetDocument)
+const AdminCleanupNetworkAssetsDocumentString = print(AdminCleanupNetworkAssetsDocument)
 const AdminDeleteNetworkAssetDocumentString = print(AdminDeleteNetworkAssetDocument)
 const AdminSyncNetworkAssetsDocumentString = print(AdminSyncNetworkAssetsDocument)
 const AdminVerifyNetworkAssetsDocumentString = print(AdminVerifyNetworkAssetsDocument)
@@ -10870,6 +10887,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
           }),
         'adminFindOneNetworkAsset',
         'query',
+        variables,
+      )
+    },
+    adminCleanupNetworkAssets(
+      variables: AdminCleanupNetworkAssetsMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminCleanupNetworkAssetsMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminCleanupNetworkAssetsMutation>(AdminCleanupNetworkAssetsDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminCleanupNetworkAssets',
+        'mutation',
         variables,
       )
     },

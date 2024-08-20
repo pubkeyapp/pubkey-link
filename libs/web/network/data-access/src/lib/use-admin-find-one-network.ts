@@ -1,4 +1,4 @@
-import { AdminUpdateNetworkInput } from '@pubkey-link/sdk'
+import { AdminUpdateNetworkInput, NetworkCluster } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
@@ -15,6 +15,11 @@ export function useAdminFindOneNetwork({ networkId }: { networkId: string }) {
   return {
     item,
     query,
+    cleanupNetworkAssets: () =>
+      sdk.adminCleanupNetworkAssets({ cluster: item?.cluster ?? NetworkCluster.SolanaMainnet }).then(() => {
+        toastSuccess('NetworkAssets cleaned up')
+        return query.refetch()
+      }),
     syncNetworkAssets: () =>
       sdk.adminSyncNetworkAssets().then(() => {
         toastSuccess('NetworkAssets synced')

@@ -54,6 +54,10 @@ query adminFindOneNetworkAsset($networkAssetId: String!) {
   }
 }
 
+mutation adminCleanupNetworkAssets($cluster: NetworkCluster!) {
+  cleanup: adminCleanupNetworkAssets(cluster: $cluster)
+}
+
 mutation adminDeleteNetworkAsset($networkAssetId: String!) {
   deleted: adminDeleteNetworkAsset(networkAssetId: $networkAssetId)
 }
