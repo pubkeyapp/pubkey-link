@@ -29,6 +29,7 @@ export const validationSchema = Joi.object({
   DATABASE_URL: Joi.string(),
   // Features
   FEATURE_ANON_COMMUNITIES: Joi.boolean().default(true),
+  FEATURE_BETA_DAS_BURNT: Joi.boolean().default(false),
   FEATURE_BETA_DAS_SEARCH: Joi.boolean().default(false),
   FEATURE_COMMUNITY_CREATE: Joi.boolean().default(true),
   FEATURE_COMMUNITY_SNAPSHOTS: Joi.boolean().default(false),

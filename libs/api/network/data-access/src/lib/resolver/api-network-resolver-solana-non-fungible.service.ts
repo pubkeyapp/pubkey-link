@@ -88,7 +88,7 @@ export class ApiNetworkResolverSolanaNonFungibleService {
       limit: limit,
       page,
       sortBy: { sortBy: 'updated', sortDirection: 'desc' },
-      burnt: true,
+      burnt: this.core.config.featureBetaDasBurnt,
     })
   }
 }
