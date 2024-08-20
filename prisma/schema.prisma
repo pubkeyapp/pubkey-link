@@ -178,6 +178,7 @@ model Log {
 
   @@index([createdAt])
   @@index([createdAt, communityId])
+  @@index([networkAssetId])
 }
 
 model Network {
@@ -219,6 +220,7 @@ model NetworkAsset {
   @@unique([account, cluster])
   @@index([cluster, owner, type])
   @@index([cluster, group, type])
+  @@index([id])
 }
 
 model NetworkToken {
