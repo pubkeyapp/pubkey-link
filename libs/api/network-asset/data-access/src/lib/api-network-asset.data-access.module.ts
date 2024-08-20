@@ -25,7 +25,13 @@ const processors = [ApiNetworkAssetSyncQueue, ApiNetworkAssetUpsertQueue, ApiNet
   imports: [
     ApiCoreDataAccessModule,
     ApiNetworkDataAccessModule,
-    BullModule.registerQueue({ name: API_NETWORK_ASSET_SYNC }),
+    BullModule.registerQueue({
+      name: API_NETWORK_ASSET_SYNC,
+      defaultJobOptions: {
+        removeOnComplete: true,
+        removeOnFail: { age: 60 * 60 },
+      },
+    }),
     BullModule.registerQueue({ name: API_NETWORK_ASSET_VERIFY }),
     BullModule.registerQueue({ name: API_NETWORK_ASSET_UPSERT_QUEUE }),
     BullModule.registerFlowProducer({ name: API_NETWORK_ASSET_UPSERT_FLOW }),
