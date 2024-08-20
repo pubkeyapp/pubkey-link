@@ -49,12 +49,18 @@ export class ApiNetworkResolverSolanaNonFungibleService {
       }
     }
     const tokensWithMintList = tokens.filter((t) => t.mintList.length)
-    const converted = items?.map((asset) => {
-      const mint = tokensWithMintList.find((t) => t.mintList.includes(asset.id))
-      const group = findAssetGroupValue(asset) ?? mint?.account
+    const tokenMints = [...tokensWithMintList.map((t) => t.mintList).flat(), ...tokens.map((t) => t.account)]
+    const converted = items
+      ?.map((asset) => {
+        const mint = tokensWithMintList.find((t) => t.mintList.includes(asset.id))
+        const group = findAssetGroupValue(asset) ?? mint?.account
 
-      return convertDasApiAsset({ asset, cluster, group: mint ? mint.account : group })
-    })
+        return convertDasApiAsset({ asset, cluster, group: mint ? mint.account : group })
+      })
+      .filter((asset) => {
+        // Filter out assets that are not part of a group we are interested in
+        return asset.group ? tokenMints.includes(asset.group) : false
+      })
     if (!converted.length) {
       return []
     }
