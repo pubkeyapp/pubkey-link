@@ -78,7 +78,7 @@ export class ApiRoleResolverService {
     const hasValidatorCondition: RoleCondition | undefined = conditions.find(
       (c) => c.type === NetworkTokenType.Validator,
     )
-    const voteAccounts = hasValidatorCondition ? await this.network.cluster.getVoteAccounts() : []
+    const voteAccounts = hasValidatorCondition ? await this.network.cluster.getVoteAccounts(community.cluster) : []
 
     for (const user of users) {
       // We are now in the context of a user
