@@ -1,4 +1,10 @@
-import { AppConfig, AppFeature, IdentityProvider } from '@pubkey-link/sdk'
+import {
+  AppConfig,
+  AppFeature,
+  getNetworkTokenTypeForResolver,
+  IdentityProvider,
+  NetworkTokenType,
+} from '@pubkey-link/sdk'
 import {
   BACKGROUND_COLORS,
   backgroundColorIds,
@@ -19,6 +25,7 @@ export interface AppConfigContext {
   appConfigLoading: boolean
   authEnabled: boolean
   enabledProviders: IdentityProvider[]
+  enabledTokenTypes: NetworkTokenType[]
   hasFeature: (feature: AppFeature) => boolean
   features: AppFeature[]
 }
@@ -57,6 +64,11 @@ export function AppConfigProvider({ children }: { children: ReactNode }) {
     return themeWithBrand(color, override)
   }, [appConfig])
 
+  const enabledTokenTypes: NetworkTokenType[] = useMemo(
+    () => (appConfig?.resolvers ?? []).map(getNetworkTokenTypeForResolver),
+    [appConfig?.resolvers],
+  )
+
   const value = {
     appConfig: appConfig,
     appConfigLoading: configQuery.isLoading,
@@ -65,6 +77,7 @@ export function AppConfigProvider({ children }: { children: ReactNode }) {
     appTheme,
     authEnabled,
     enabledProviders,
+    enabledTokenTypes,
     hasFeature: (feature: AppFeature) => features.includes(feature),
     features,
   }
