@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { CommunityRole, IdentityProvider, LogLevel, LogRelatedType, Prisma, User, UserRole } from '@prisma/client'
 import { ApiCorePrismaClient, prismaClient } from './api-core-prisma-client'
@@ -9,10 +9,14 @@ import { StatRecordGroup } from './entity/stat-record-group'
 import { slugifyId, slugifyUsername } from './helpers/slugify-id'
 
 @Injectable()
-export class ApiCoreService {
+export class ApiCoreService implements OnModuleInit {
   private readonly logger = new Logger(ApiCoreService.name)
   readonly data: ApiCorePrismaClient = prismaClient
   constructor(readonly eventEmitter: EventEmitter2, readonly config: ApiCoreConfigService) {}
+
+  async onModuleInit() {
+    await this.databaseCleanupDeprecated()
+  }
 
   async createCommunity({ input, userId }: { input: Prisma.CommunityCreateInput; userId?: string }) {
     const id = slugifyId(input.name).toLowerCase()
@@ -210,6 +214,28 @@ export class ApiCoreService {
         // map to StatRecord
         ?.map(({ name, value }) => ({ name, value: value.toString() })) ?? []
     )
+  }
+
+  // This is a method that will clean up some deprecated fields in the database
+  private async databaseCleanupDeprecated() {
+    const botServers = await this.data.botServer.findMany({
+      where: { mentionUsers: { not: null }, mentionRoles: { not: null } },
+    })
+
+    if (!botServers.length) {
+      this.logger.log('No deprecated fields found in the database')
+      return
+    }
+
+    this.logger.log('Starting database cleanup for deprecated fields')
+    for (const item of botServers) {
+      const updated = await this.data.botServer.update({
+        where: { id: item.id },
+        data: { mentionUsers: null, mentionRoles: null },
+      })
+      this.logger.log(`cleanupDeprecated: Updated botServer ${updated.id}, deleted mentionUsers and mentionRoles`)
+    }
+    this.logger.log('Finished database cleanup for deprecated fields')
   }
 }
 
