@@ -14,10 +14,6 @@ export class BotServer {
   botId!: string
   @Field({ nullable: true })
   enableSync?: boolean
-  @Field({ nullable: true })
-  mentionUsers?: boolean
-  @Field({ nullable: true })
-  mentionRoles?: boolean
   @Field(() => [String], { nullable: true })
   adminRoles?: string[]
   @Field({ nullable: true })

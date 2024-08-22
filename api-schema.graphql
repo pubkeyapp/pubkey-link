@@ -251,8 +251,6 @@ type BotServer {
   dryRun: Boolean
   enableSync: Boolean
   id: String!
-  mentionRoles: Boolean
-  mentionUsers: Boolean
   serverId: String!
   updatedAt: DateTime
   verbose: Boolean
@@ -956,8 +954,6 @@ input UserUpdateBotServerInput {
   botChannel: String
   dryRun: Boolean
   enableSync: Boolean
-  mentionRoles: Boolean
-  mentionUsers: Boolean
   verbose: Boolean
 }
 

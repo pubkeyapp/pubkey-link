@@ -15,7 +15,7 @@ import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-access'
 import { ApiNetworkService } from '@pubkey-link/api-network-data-access'
 import { RoleCondition } from './entity/role-condition.entity'
-import { Role } from './entity/role.entity'
+import { Role, RoleMap } from './entity/role.entity'
 
 @Injectable()
 export class ApiRoleResolverService {
@@ -58,8 +58,9 @@ export class ApiRoleResolverService {
     await this.syncCommunityMembers(communityId)
     const startedAt = Date.now()
 
-    const [conditions, users] = await Promise.all([
+    const [conditions, roleMap, users] = await Promise.all([
       this.getRoleConditions({ communityId }),
+      this.getRoleMap({ communityId }),
       this.getRoleValidationUsers({ communityId }),
     ])
 
@@ -78,7 +79,7 @@ export class ApiRoleResolverService {
     const hasValidatorCondition: RoleCondition | undefined = conditions.find(
       (c) => c.type === NetworkTokenType.Validator,
     )
-    const voteAccounts = hasValidatorCondition ? await this.network.cluster.getVoteAccounts() : []
+    const voteAccounts = hasValidatorCondition ? await this.network.cluster.getVoteAccounts(community.cluster) : []
 
     for (const user of users) {
       // We are now in the context of a user
@@ -99,21 +100,21 @@ export class ApiRoleResolverService {
       }
 
       const roles: Role[] = (resolved.conditions.map((c) => c.role) ?? []) as Role[]
-      if (roles?.length) {
-        const ensureRoles = await this.ensureCommunityMemberRoles({
-          communityId,
+      const ensureRoles = await this.ensureCommunityMemberRoles({
+        communityId,
+        userId: resolved.userId,
+        roles: roles ?? [],
+        roleMap,
+      })
+      if (ensureRoles.granted || ensureRoles.revoked) {
+        await this.core.logInfo(`Roles set: ${ensureRoles.granted} granted, ${ensureRoles.revoked} revoked`, {
           userId: resolved.userId,
-          roles: roles ?? [],
+          communityId,
+          data: JSON.stringify({ roles, ensureRoles }, null, 2),
         })
-        if (ensureRoles.granted || ensureRoles.revoked) {
-          await this.core.logInfo(`Roles set: ${ensureRoles.granted} granted, ${ensureRoles.revoked} revoked`, {
-            userId: resolved.userId,
-            communityId,
-          })
-        }
-        result.totalGranted += ensureRoles.granted
-        result.totalRevoked += ensureRoles.revoked
       }
+      result.totalGranted += ensureRoles.granted
+      result.totalRevoked += ensureRoles.revoked
     }
 
     if (result.totalGranted || result.totalRevoked) {
@@ -207,10 +208,12 @@ export class ApiRoleResolverService {
     communityId,
     userId,
     roles,
+    roleMap,
   }: {
     communityId: string
     userId: string
     roles: Role[]
+    roleMap: RoleMap
   }): Promise<{
     granted: number
     revoked: number
@@ -230,28 +233,31 @@ export class ApiRoleResolverService {
     }
 
     for (const role of toRevoke) {
+      const roleName = roleMap[role.roleId]?.name ?? 'Unknown Role (to be revoked)'
       const deleted = await this.core.data.communityMemberRole.delete({
         where: { id: role.id },
       })
-      const roleName = roles.find((r) => r.id === role.roleId)?.name
       await this.core.logInfo(`Role revoked: ${roleName}`, {
         userId,
         communityId,
+        roleId: role.roleId,
         relatedId: role.id,
         relatedType: 'Role',
       })
       result.revoked += deleted ? 1 : 0
     }
     for (const role of toGrant) {
+      const roleName = roleMap[role.id]?.name ?? 'Unknown Role (to be granted)'
       const created = await this.core.data.communityMemberRole.create({
         data: {
           role: { connect: { id: role.id } },
           member: { connect: { communityId_userId: { communityId, userId } } },
         },
       })
-      await this.core.logInfo(`Role granted: ${role.name}`, {
+      await this.core.logInfo(`Role granted: ${roleName}`, {
         userId,
         communityId,
+        roleId: role.id,
         relatedId: role.id,
         relatedType: 'Role',
       })
@@ -427,6 +433,12 @@ export class ApiRoleResolverService {
           token: condition.token ?? undefined,
         })),
       )
+  }
+
+  private async getRoleMap({ communityId }: { communityId: string }): Promise<RoleMap> {
+    const roles = await this.core.data.role.findMany({ where: { communityId }, orderBy: { name: 'asc' } })
+
+    return roles.reduce((acc, role) => ({ ...acc, [role.id]: role }), {} as RoleMap)
   }
 
   private async getRoleValidationUsers({ communityId }: { communityId: string }): Promise<RoleValidationUser[]> {

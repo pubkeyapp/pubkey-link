@@ -46,8 +46,8 @@ model BotServer {
   serverId     String
   enableSync   Boolean  @default(false)
   dryRun       Boolean  @default(true)
-  mentionRoles Boolean  @default(false)
-  mentionUsers Boolean  @default(false)
+  mentionRoles Boolean? @default(false) // This field is deprecated and will be removed in a future version
+  mentionUsers Boolean? @default(false) // This field is deprecated and will be removed in a future version
   verbose      Boolean  @default(false)
   adminRoles   String[]
   botChannel   String?

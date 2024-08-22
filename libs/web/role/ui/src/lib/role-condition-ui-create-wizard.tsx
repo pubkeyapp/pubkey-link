@@ -1,5 +1,6 @@
 import { Box, Button, Group, Stepper } from '@mantine/core'
-import { Community, getEnumOptions, NetworkToken, NetworkTokenType, Role } from '@pubkey-link/sdk'
+import { Community, NetworkToken, NetworkTokenType, Role } from '@pubkey-link/sdk'
+import { useAppConfig } from '@pubkey-link/web-core-data-access'
 import { NetworkTokenUiItem } from '@pubkey-link/web-network-token-ui'
 import { useUserFindOneRole } from '@pubkey-link/web-role-data-access'
 import { toastError, toastSuccess, UiCard, UiInfo, UiInfoTable, UiStack } from '@pubkey-ui/core'
@@ -12,6 +13,7 @@ import { RoleUiItem } from './role-ui-item'
 export function RoleConditionUiCreateWizard(props: { role: Role; community: Community; tokens: NetworkToken[] }) {
   const { query, createRoleCondition } = useUserFindOneRole({ roleId: props.role.id })
   const [networkTokenType, setNetworkTokenType] = useState<NetworkTokenType | undefined>(undefined)
+  const { enabledTokenTypes } = useAppConfig()
   const [networkToken, setNetworkToken] = useState<NetworkToken | undefined>(undefined)
   const tokens: NetworkToken[] = useMemo(() => {
     if (networkTokenType === NetworkTokenType.Fungible) {
@@ -62,6 +64,7 @@ export function RoleConditionUiCreateWizard(props: { role: Role; community: Comm
           >
             <Stepper.Step label="Condition Type" description="Select Condition Type">
               <RoleConditionUiSelectType
+                enabledTokenTypes={enabledTokenTypes}
                 networkTokenType={networkTokenType}
                 setNetworkTokenType={(type) => {
                   setNetworkTokenType(type ?? undefined)
@@ -118,9 +121,11 @@ export function RoleConditionUiCreateWizard(props: { role: Role; community: Comm
 }
 
 function RoleConditionUiSelectType({
+  enabledTokenTypes,
   networkTokenType,
   setNetworkTokenType,
 }: {
+  enabledTokenTypes: NetworkTokenType[]
   networkTokenType: NetworkTokenType | undefined
   setNetworkTokenType: (type: NetworkTokenType | undefined) => void
 }) {
@@ -134,7 +139,7 @@ function RoleConditionUiSelectType({
     />
   ) : (
     <UiStack>
-      {getEnumOptions(NetworkTokenType).map(({ value: type }) => (
+      {enabledTokenTypes.map((type) => (
         <RoleConditionUiNavLink
           type={type}
           key={type}

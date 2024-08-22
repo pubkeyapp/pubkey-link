@@ -73,6 +73,13 @@ export class ApiNetworkAssetSyncService {
       this.logger.warn(`[GLOBAL] Network asset sync is disabled (SYNC_NETWORK_ASSETS!=true, force=${force})`)
       return true
     }
+    if (!this.core.config.featureResolverSolanaFungible && !this.core.config.featureResolverSolanaNonFungible) {
+      this.logger.warn(
+        `[GLOBAL] Network asset sync is disabled (FEATURE_RESOLVER_SOLANA_FUNGIBLE!=true and FEATURE_RESOLVER_SOLANA_NON_FUNGIBLE!=true)`,
+      )
+      return true
+    }
+
     const cluster = this.network.cluster.getDefaultCluster()
     const network = await this.core.data.network.findUnique({ where: { cluster } })
 

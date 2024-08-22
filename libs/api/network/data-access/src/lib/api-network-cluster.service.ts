@@ -141,8 +141,8 @@ export class ApiNetworkClusterService {
     return list
   }
 
-  async getVoteAccounts() {
-    return this.getConnection(NetworkCluster.SolanaDevnet)
+  async getVoteAccounts(cluster: NetworkCluster) {
+    return this.getConnection(cluster)
       .then((conn) => conn.getVoteAccounts('confirmed'))
       .then((accounts) => accounts.current.map((account) => account.nodePubkey))
   }

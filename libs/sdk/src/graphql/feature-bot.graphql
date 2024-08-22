@@ -25,8 +25,6 @@ fragment BotServerDetails on BotServer {
   botChannel
   dryRun
   enableSync
-  mentionRoles
-  mentionUsers
   verbose
 }
 
