@@ -1,4 +1,4 @@
-import { Community, NetworkToken } from '@pubkey-link/sdk'
+import { Community, NetworkToken, NetworkTokenType } from '@pubkey-link/sdk'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { NetworkTokenUiDetail } from '@pubkey-link/web-network-token-feature'
 import { useUserFindManyRole } from '@pubkey-link/web-role-data-access'
@@ -17,6 +17,7 @@ export function CommunityDashboardMemberCardRoles({ community }: { community: Co
   const uniqueTokens = Array.from(new Set(tokens.map((token) => token?.account)))
     .map((account) => tokens.find((token) => token?.account === account))
     .filter((token) => token !== undefined)
+    .filter((token) => token?.type === NetworkTokenType.Fungible || token?.type === NetworkTokenType.NonFungible)
 
   return (
     <UiStack>
@@ -24,15 +25,15 @@ export function CommunityDashboardMemberCardRoles({ community }: { community: Co
         <UiLoader />
       ) : filtered?.length ? (
         <UiStack>
-          <UiCard title="Community Assets">
-            {user?.username && uniqueTokens?.length ? (
+          {user?.username && uniqueTokens?.length ? (
+            <UiCard title="Community Assets">
               <UiStack>
                 {((uniqueTokens ?? []) as NetworkToken[]).map((token) => (
                   <NetworkTokenUiDetail key={token.id} token={token} username={user.username!} />
                 ))}
               </UiStack>
-            ) : null}
-          </UiCard>
+            </UiCard>
+          ) : null}
           <UiCard title="Community Roles">
             <RoleUiList mt="xs" roles={filtered ?? []} />
           </UiCard>
