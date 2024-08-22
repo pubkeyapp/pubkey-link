@@ -23,3 +23,5 @@ export class Role {
 
 @ObjectType()
 export class RolePaging extends PagingResponse<Role>(Role) {}
+
+export type RoleMap = Record<string, Role>
