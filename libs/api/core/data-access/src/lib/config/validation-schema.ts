@@ -45,7 +45,6 @@ export const validationSchema = Joi.object({
   NODE_ENV: Joi.string().valid('development', 'production', 'test', 'provision').default('development'),
   PORT: Joi.number().default(3000),
   REDIS_URL: Joi.string().required().error(new Error(`REDIS_URL is required.`)),
-  SESSION_SECRET: Joi.string().required(),
   // Solana endpoints
   SOLANA_CUSTOM_ENDPOINT: Joi.string(),
   SOLANA_DEVNET_ENDPOINT: Joi.string(),

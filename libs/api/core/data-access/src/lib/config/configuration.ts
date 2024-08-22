@@ -68,8 +68,6 @@ export interface ApiCoreConfig {
   port: number
   // Redis
   redisUrl: string
-  // Session
-  sessionSecret: string
   // Solana Endpoints
   solanaCustomEndpoint: string
   solanaDevnetEndpoint: string
@@ -120,7 +118,6 @@ export function configuration(): ApiCoreConfig {
     jwtSecret: process.env['JWT_SECRET'] as string,
     port: parseInt(process.env['PORT'] as string, 10) || 3000,
     redisUrl: process.env['REDIS_URL'] as string,
-    sessionSecret: process.env['SESSION_SECRET'] as string,
     solanaCustomEndpoint: process.env['SOLANA_CUSTOM_ENDPOINT'] as string,
     solanaDevnetEndpoint: process.env['SOLANA_DEVNET_ENDPOINT'] as string,
     solanaMainnetEndpoint: process.env['SOLANA_MAINNET_ENDPOINT'] as string,

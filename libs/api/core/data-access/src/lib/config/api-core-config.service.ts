@@ -269,10 +269,6 @@ export class ApiCoreConfigService {
     return this.service.get('redisUrl')
   }
 
-  get sessionSecret() {
-    return this.service.get<string>('sessionSecret') as string
-  }
-
   get solanaCustomEndpoint() {
     return this.service.get<string>('solanaCustomEndpoint') as string
   }
