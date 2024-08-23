@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express-serve-static-core'
 import * as process from 'process'
 
 export class BullDashboardMiddleware implements NestMiddleware {
-  private readonly envCreds = process.env['BULL_ADMIN'] ?? `admin:${Math.random().toString(36).substring(16)}`
+  private readonly envCreds = process.env['BULL_ADMIN'] ?? `admin:${Math.random().toString(36).substring(2, 18)}`
   private readonly encodedCreds = Buffer.from(this.envCreds).toString('base64')
 
   constructor() {
