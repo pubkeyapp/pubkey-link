@@ -1,0 +1,25 @@
+setup:
+  addons:
+    - plan: heroku-postgresql
+      as: DATABASE
+    - plan: heroku-redis
+      as: REDIS
+  config:
+    JWT_SECRET:
+      generator: secret
+    CLOAK_KEYCHAIN:
+    CLOAK_MASTER_KEY:
+    AUTH_SOLANA_ADMIN_IDS:
+      value: add-your-pubkey-id-here
+    AUTH_SOLANA_LOGIN_ENABLED:
+      value: true
+    AUTH_SOLANA_REGISTER_ENABLED:
+      value: true
+    API_URL:
+      value: https://your-app-name.herokuapp.com/api
+    SOLANA_MAINNET_ENDPOINT:
+      value: https://api.mainnet-beta.solana.com
+
+build:
+  docker:
+    web: Dockerfile

@@ -1,6 +1,14 @@
 # PubKey Link
 
-## Getting Started
+## Deployment
+
+If you want to deploy the application, you can use one of the following options:
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://www.heroku.com/deploy)
+
+## Development
+
+If you want to run the application locally, you can use the following commands.
 
 ### Prerequisites
 
