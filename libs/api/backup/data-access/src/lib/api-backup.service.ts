@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Identity, IdentityProvider, LogLevel, Prisma, UserRole, UserStatus } from '@prisma/client'
-import { ApiCoreService } from '@pubkey-link/api-core-data-access'
+import { ApiCoreService, getRandomString } from '@pubkey-link/api-core-data-access'
 import { existsSync } from 'node:fs'
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 
@@ -238,7 +238,7 @@ function getBackupTimestamp() {
 }
 
 function getBackupMetadata(backupLocation: string) {
-  const secret = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+  const secret = getRandomString(21)
   const timestamp = getBackupTimestamp()
   const backupName = `${timestamp}${'.backup.json'}`
   const backupPath = `${backupLocation}/${backupName}`

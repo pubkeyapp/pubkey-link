@@ -1,9 +1,10 @@
 import { HttpStatus, Logger, NestMiddleware } from '@nestjs/common'
 import { NextFunction, Request, Response } from 'express-serve-static-core'
 import * as process from 'process'
+import { getRandomString } from '../helpers/get-random-string'
 
 export class BullDashboardMiddleware implements NestMiddleware {
-  private readonly envCreds = process.env['BULL_ADMIN'] ?? `admin:${Math.random().toString(36).substring(2, 18)}`
+  private readonly envCreds = process.env['BULL_ADMIN'] ?? `admin:${getRandomString(12)}`
   private readonly encodedCreds = Buffer.from(this.envCreds).toString('base64')
 
   constructor() {

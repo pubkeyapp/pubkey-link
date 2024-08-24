@@ -6,6 +6,7 @@ import { ApiCoreConfigService } from './config/api-core-config.service'
 
 import { StatRecord } from './entity/stat-record'
 import { StatRecordGroup } from './entity/stat-record-group'
+import { getRandomString } from './helpers/get-random-string'
 import { slugifyId, slugifyUsername } from './helpers/slugify-id'
 
 @Injectable()
@@ -123,7 +124,7 @@ export class ApiCoreService implements OnModuleInit {
     if (!exists) {
       return username
     }
-    const newUsername = `${username}-${Math.floor(Math.random() * 1000)}`
+    const newUsername = `${username}-${getRandomString(4).toLowerCase()}`
     return this.findUsername(newUsername)
   }
 
