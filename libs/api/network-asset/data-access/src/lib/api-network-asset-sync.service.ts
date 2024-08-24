@@ -125,7 +125,9 @@ export class ApiNetworkAssetSyncService {
       ]),
     ]
 
-    this.logger.log(`Queuing ${assetCount} assets to clean up, looking for ${tokens.length} token groups`, tokens)
+    this.logger.log(
+      `Queuing ${assetCount} assets to clean up, looking for ${tokens.length} token groups: ${tokens.join(', ')}`,
+    )
 
     const assetsNotInAnyKnownTokenGroup = await this.core.data.networkAsset.findMany({
       where: {

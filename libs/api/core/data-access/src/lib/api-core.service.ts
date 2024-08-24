@@ -133,28 +133,28 @@ export class ApiCoreService implements OnModuleInit {
   }
   async logError(message: string, input?: Omit<CoreLogInput, 'level'>) {
     if (this.config.isDevelopment) {
-      this.logger.error(message, JSON.stringify(input, null, 2))
+      this.logger.error({ message, input }, 'ApiCoreService.logError')
     }
     return this.log(message, { ...input, level: LogLevel.Error })
   }
 
   async logInfo(message: string, input?: Omit<CoreLogInput, 'level'>) {
     if (this.config.isDevelopment) {
-      this.logger.log(message, JSON.stringify(input, null, 2))
+      this.logger.log({ message, input }, 'ApiCoreService.logInfo')
     }
     return this.log(message, { ...input, level: LogLevel.Info })
   }
 
   async logVerbose(message: string, input?: Omit<CoreLogInput, 'level'>) {
     if (this.config.isDevelopment) {
-      this.logger.verbose(message, JSON.stringify(input, null, 2))
+      this.logger.verbose({ message, input }, 'ApiCoreService.logVerbose')
     }
     return this.log(message, { ...input, level: LogLevel.Verbose })
   }
 
   async logWarning(message: string, input?: Omit<CoreLogInput, 'level'>) {
     if (this.config.isDevelopment) {
-      this.logger.warn(message, JSON.stringify(input, null, 2))
+      this.logger.warn({ message, input }, 'ApiCoreService.logWarning')
     }
     return this.log(message, { ...input, level: LogLevel.Warning })
   }

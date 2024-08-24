@@ -12,7 +12,6 @@ export class ApiAuthStrategyDiscordModule {
       this.logger.warn(`Discord Auth DISABLED`)
       return { module: ApiAuthStrategyDiscordModule }
     }
-    this.logger.verbose(`Discord Auth ENABLED`)
     return {
       module: ApiAuthStrategyDiscordModule,
       imports: [ApiCoreDataAccessModule],

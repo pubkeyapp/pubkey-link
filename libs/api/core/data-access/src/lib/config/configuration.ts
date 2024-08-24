@@ -1,4 +1,6 @@
 // Remove trailing slashes from the URLs to avoid double slashes
+import { LogLevel } from '@ogma/common'
+
 const API_URL = getUrl('API_URL') as string
 
 if (!API_URL) {
@@ -62,6 +64,10 @@ export interface ApiCoreConfig {
   featureResolverSolanaValidator: boolean
   // Host
   host: string
+  // Logger
+  logColor: boolean
+  logJson: boolean
+  logLevel: keyof typeof LogLevel
   // JWT
   jwtSecret: string
   // Port
@@ -115,6 +121,9 @@ export function configuration(): ApiCoreConfig {
     featureResolverSolanaNonFungible: process.env['FEATURE_RESOLVER_SOLANA_NON_FUNGIBLE'] === 'true',
     featureResolverSolanaValidator: process.env['FEATURE_RESOLVER_SOLANA_VALIDATOR'] === 'true',
     host: process.env['HOST'] as string,
+    logColor: process.env['LOG_COLOR'] === 'true',
+    logJson: process.env['LOG_JSON'] === 'true',
+    logLevel: process.env['LOG_LEVEL'] as keyof typeof LogLevel,
     jwtSecret: process.env['JWT_SECRET'] as string,
     port: parseInt(process.env['PORT'] as string, 10) || 3000,
     redisUrl: process.env['REDIS_URL'] as string,

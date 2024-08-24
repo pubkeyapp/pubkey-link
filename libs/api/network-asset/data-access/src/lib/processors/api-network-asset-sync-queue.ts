@@ -39,7 +39,7 @@ export class ApiNetworkAssetSyncQueue extends WorkerHost {
     } else {
       const message = `No assets found for ${job.data.identity.provider} identity ${job.data.identity.providerId}`
       await job.log(message)
-      await this.core.logWarning(message, {
+      await this.core.logVerbose(message, {
         identityProvider: job.data.identity.provider,
         identityProviderId: job.data.identity.providerId,
         userId: job.data.identity.ownerId,

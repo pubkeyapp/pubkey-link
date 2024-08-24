@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { LogLevel } from '@ogma/common'
 import { IdentityProvider } from '@prisma/client'
 import { RedisOptions } from 'bullmq'
 import { CookieOptions } from 'express-serve-static-core'
@@ -233,6 +234,18 @@ export class ApiCoreConfigService {
 
   get jwtSecret() {
     return this.service.get<string>('jwtSecret') as string
+  }
+
+  get logColor() {
+    return this.service.get<boolean>('logColor')
+  }
+
+  get logJson() {
+    return this.service.get<boolean>('logJson')
+  }
+
+  get logLevel() {
+    return this.service.get<keyof typeof LogLevel>('logLevel')
   }
 
   get port() {

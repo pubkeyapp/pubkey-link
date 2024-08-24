@@ -6,6 +6,7 @@ import { ApiCoreService } from './api-core.service'
 import { ApiCoreConfigModule } from './config/api-core-config.module'
 import { ApiCoreGraphQLModule } from './graphql/api-core-graphql.module'
 import { serveStaticFactory } from './helpers/serve-static-factory'
+import { ApiCoreLoggingModule } from './logging/api-core-logging.module'
 import { ApiCoreMetricsModule } from './metrics/api-core-metrics.module'
 import { ApiCoreQueuesModule } from './queues/api-core-queues.module'
 
@@ -13,6 +14,7 @@ import { ApiCoreQueuesModule } from './queues/api-core-queues.module'
   imports: [
     ApiCoreConfigModule,
     ApiCoreGraphQLModule,
+    ApiCoreLoggingModule,
     ApiCoreMetricsModule,
     ApiCoreQueuesModule,
     EventEmitterModule.forRoot(),

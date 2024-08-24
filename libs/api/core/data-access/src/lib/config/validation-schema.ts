@@ -42,6 +42,11 @@ export const validationSchema = Joi.object({
   GRAPHQL_PLAYGROUND: Joi.boolean().default(false),
   JWT_SECRET: Joi.string().required(),
   HOST: Joi.string().default('0.0.0.0'),
+  LOG_COLOR: Joi.boolean().default('true'),
+  LOG_JSON: Joi.boolean().default(process.env['NODE_ENV'] === 'production'),
+  LOG_LEVEL: Joi.string()
+    .equal('ALL', 'SILLY', 'FINE', 'VERBOSE', 'DEBUG', 'INFO', 'LOG', 'WARN', 'ERROR', 'FATAL', 'OFF')
+    .default('INFO'),
   NODE_ENV: Joi.string().valid('development', 'production', 'test', 'provision').default('development'),
   PORT: Joi.number().default(3000),
   REDIS_URL: Joi.string().required().error(new Error(`REDIS_URL is required.`)),

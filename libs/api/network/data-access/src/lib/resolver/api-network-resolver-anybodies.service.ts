@@ -41,7 +41,7 @@ export class ApiNetworkResolverAnybodiesService {
       }
       const vaultAssets = await this.getAnybodiesVaultWithAssets({ owner, token })
       if (!vaultAssets?.length) {
-        this.logger.warn(
+        this.logger.verbose(
           `resolveNetworkAssetAnybodies: No assets found for ${owner} on ${cluster} for vault: ${token.vault}`,
         )
         continue
