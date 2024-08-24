@@ -1,13 +1,12 @@
-import { Group } from '@mantine/core'
+import { Checkbox, Group } from '@mantine/core'
 import { Community } from '@pubkey-link/sdk'
 import { useUserFindManyCommunityMember } from '@pubkey-link/web-community-member-data-access'
 import { UserAddCommunityMemberModal, UserCommunityMemberUiTable } from '@pubkey-link/web-community-member-ui'
-import { CommunityUiSelectRole } from '@pubkey-link/web-community-ui'
 import { UiPageLimit, UiSearchField } from '@pubkey-link/web-core-ui'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function UserCommunityMemberListFeature({ community }: { community: Community }) {
-  const { addCommunityMember, removeCommunityMember, items, pagination, query, setSearch, role, setRole } =
+  const { addCommunityMember, removeCommunityMember, items, pagination, query, setSearch, admin, setAdmin } =
     useUserFindManyCommunityMember({
       communityId: community.id,
       limit: 20,
@@ -19,7 +18,7 @@ export function UserCommunityMemberListFeature({ community }: { community: Commu
         <UiSearchField placeholder="Search member" setSearch={setSearch} />
         <UiDebugModal data={items} />
         <UserAddCommunityMemberModal add={addCommunityMember} />
-        <CommunityUiSelectRole placeholder="Filter by Role" value={role} setValue={setRole} />
+        <Checkbox label="Admins" checked={admin} onChange={() => setAdmin(!admin)} />
         <UiPageLimit limit={pagination.limit} setLimit={pagination.setLimit} setPage={pagination.setPage} />
       </Group>
 

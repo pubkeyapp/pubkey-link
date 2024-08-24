@@ -157,7 +157,6 @@ describe('api-identity-feature', () => {
         )
         .then((res) => res.data.verified)
 
-      console.log('resVerify', resVerify)
       expect(resVerify.verified).toBe(true)
       expect(resVerify.provider).toEqual(IdentityProvider.Solana)
       expect(resVerify.providerId).toEqual(keypair.publicKey.toString())

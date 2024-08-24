@@ -83,7 +83,8 @@ model CommunityMember {
   id          String                @id @default(cuid())
   createdAt   DateTime              @default(now())
   updatedAt   DateTime              @updatedAt
-  role        CommunityRole
+  role        CommunityRole? // This field is deprecated and will be removed in a future version. Use the `admin` field instead.
+  admin       Boolean               @default(false)
   community   Community             @relation(fields: [communityId], references: [id], onDelete: Cascade)
   communityId String
   user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)

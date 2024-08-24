@@ -2,7 +2,6 @@ import { Field, HideField, ObjectType } from '@nestjs/graphql'
 import { PagingResponse } from '@pubkey-link/api-core-data-access'
 import { User } from '@pubkey-link/api-user-data-access'
 import { CommunityMemberRole } from './community-member-role.entity'
-import { CommunityRole } from './community-role.enum'
 
 @ObjectType()
 export class CommunityMember {
@@ -12,8 +11,8 @@ export class CommunityMember {
   createdAt?: Date
   @Field({ nullable: true })
   updatedAt?: Date
-  @Field(() => CommunityRole)
-  role!: CommunityRole
+  @Field()
+  admin!: boolean
   @Field(() => User, { nullable: true })
   user?: User
   @HideField()

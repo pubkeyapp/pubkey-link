@@ -5,7 +5,6 @@ import {
   ApiCommunityMemberService,
   CommunityMember,
   CommunityMemberPaging,
-  CommunityRole,
   UserAddCommunityMemberInput,
   UserFindManyCommunityMemberInput,
   UserUpdateCommunityMemberInput,
@@ -30,9 +29,9 @@ export class ApiUserCommunityMemberResolver {
     return this.service.user.removeCommunityMember(userId, communityMemberId)
   }
 
-  @Query(() => CommunityRole, { nullable: true })
-  userGetCommunityRole(@CtxUserId() userId: string, @Args('communityId') communityId: string) {
-    return this.service.user.getCommunityRole({ communityId, userId })
+  @Query(() => CommunityMember, { nullable: true })
+  userGetCommunityMember(@CtxUserId() userId: string, @Args('communityId') communityId: string) {
+    return this.service.user.getCommunityMember({ communityId, userId })
   }
 
   @Query(() => CommunityMemberPaging)

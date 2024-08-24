@@ -25,7 +25,7 @@ export type Scalars = {
 }
 
 export type AdminAddCommunityMemberInput = {
-  role: CommunityRole
+  admin: Scalars['Boolean']['input']
   userId: Scalars['String']['input']
 }
 
@@ -88,10 +88,10 @@ export type AdminFindManyCommunityInput = {
 }
 
 export type AdminFindManyCommunityMemberInput = {
+  admin?: InputMaybe<Scalars['Boolean']['input']>
   communityId: Scalars['String']['input']
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
-  role?: InputMaybe<CommunityRole>
   search?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -182,7 +182,7 @@ export type AdminUpdateCommunityInput = {
 }
 
 export type AdminUpdateCommunityMemberInput = {
-  role: CommunityRole
+  admin: Scalars['Boolean']['input']
 }
 
 export type AdminUpdateNetworkInput = {
@@ -309,10 +309,10 @@ export type Community = {
 
 export type CommunityMember = {
   __typename?: 'CommunityMember'
+  admin: Scalars['Boolean']['output']
   communityId: Scalars['String']['output']
   createdAt?: Maybe<Scalars['DateTime']['output']>
   id: Scalars['String']['output']
-  role: CommunityRole
   roles?: Maybe<Array<Role>>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   user?: Maybe<User>
@@ -329,11 +329,6 @@ export type CommunityPaging = {
   __typename?: 'CommunityPaging'
   data: Array<Community>
   meta: PagingMeta
-}
-
-export enum CommunityRole {
-  Admin = 'Admin',
-  Member = 'Member',
 }
 
 export type DiscordChannel = {
@@ -1001,7 +996,7 @@ export type Query = {
   userGetBotServer?: Maybe<DiscordServer>
   userGetBotServers?: Maybe<Array<DiscordServer>>
   userGetCommunities: Array<Community>
-  userGetCommunityRole?: Maybe<CommunityRole>
+  userGetCommunityMember?: Maybe<CommunityMember>
   userGetTokenAccounts?: Maybe<Scalars['JSON']['output']>
   userGetTokenMetadata?: Maybe<Scalars['JSON']['output']>
   userRequestIdentityChallenge?: Maybe<IdentityChallenge>
@@ -1216,7 +1211,7 @@ export type QueryUserGetCommunitiesArgs = {
   username: Scalars['String']['input']
 }
 
-export type QueryUserGetCommunityRoleArgs = {
+export type QueryUserGetCommunityMemberArgs = {
   communityId: Scalars['String']['input']
 }
 
@@ -1367,7 +1362,7 @@ export type User = {
 }
 
 export type UserAddCommunityMemberInput = {
-  role: CommunityRole
+  admin: Scalars['Boolean']['input']
   userId: Scalars['String']['input']
 }
 
@@ -1424,10 +1419,10 @@ export type UserFindManyCommunityInput = {
 }
 
 export type UserFindManyCommunityMemberInput = {
+  admin?: InputMaybe<Scalars['Boolean']['input']>
   communityId: Scalars['String']['input']
   limit?: InputMaybe<Scalars['Int']['input']>
   page?: InputMaybe<Scalars['Int']['input']>
-  role?: InputMaybe<CommunityRole>
   search?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -1544,7 +1539,7 @@ export type UserUpdateCommunityInput = {
 }
 
 export type UserUpdateCommunityMemberInput = {
-  role: CommunityRole
+  admin: Scalars['Boolean']['input']
 }
 
 export type UserUpdateIdentityInput = {
@@ -2196,7 +2191,7 @@ export type CommunityMemberDetailsFragment = {
   communityId: string
   createdAt?: Date | null
   id: string
-  role: CommunityRole
+  admin: boolean
   updatedAt?: Date | null
   userId: string
   user?: {
@@ -2303,7 +2298,7 @@ export type AdminFindManyCommunityMemberQuery = {
       communityId: string
       createdAt?: Date | null
       id: string
-      role: CommunityRole
+      admin: boolean
       updatedAt?: Date | null
       userId: string
       user?: {
@@ -2420,7 +2415,7 @@ export type AdminFindOneCommunityMemberQuery = {
     communityId: string
     createdAt?: Date | null
     id: string
-    role: CommunityRole
+    admin: boolean
     updatedAt?: Date | null
     userId: string
     user?: {
@@ -2527,7 +2522,7 @@ export type AdminAddCommunityMemberMutation = {
     communityId: string
     createdAt?: Date | null
     id: string
-    role: CommunityRole
+    admin: boolean
     updatedAt?: Date | null
     userId: string
     user?: {
@@ -2634,7 +2629,7 @@ export type AdminUpdateCommunityMemberMutation = {
     communityId: string
     createdAt?: Date | null
     id: string
-    role: CommunityRole
+    admin: boolean
     updatedAt?: Date | null
     userId: string
     user?: {
@@ -2735,11 +2730,111 @@ export type AdminRemoveCommunityMemberMutationVariables = Exact<{
 
 export type AdminRemoveCommunityMemberMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
-export type UserGetCommunityRoleQueryVariables = Exact<{
+export type UserGetCommunityMemberQueryVariables = Exact<{
   communityId: Scalars['String']['input']
 }>
 
-export type UserGetCommunityRoleQuery = { __typename?: 'Query'; role?: CommunityRole | null }
+export type UserGetCommunityMemberQuery = {
+  __typename?: 'Query'
+  member?: {
+    __typename?: 'CommunityMember'
+    communityId: string
+    createdAt?: Date | null
+    id: string
+    admin: boolean
+    updatedAt?: Date | null
+    userId: string
+    user?: {
+      __typename?: 'User'
+      avatarUrl?: string | null
+      createdAt?: Date | null
+      developer?: boolean | null
+      private?: boolean | null
+      lastLogin?: Date | null
+      id: string
+      name?: string | null
+      profileUrl: string
+      role?: UserRole | null
+      status?: UserStatus | null
+      updatedAt?: Date | null
+      username?: string | null
+    } | null
+    roles?: Array<{
+      __typename?: 'Role'
+      createdAt?: Date | null
+      id: string
+      communityId: string
+      name: string
+      updatedAt?: Date | null
+      viewUrl?: string | null
+      conditions?: Array<{
+        __typename?: 'RoleCondition'
+        createdAt?: Date | null
+        id: string
+        type: NetworkTokenType
+        amount?: string | null
+        amountMax?: string | null
+        filters?: any | null
+        config?: any | null
+        tokenId?: string | null
+        roleId?: string | null
+        updatedAt?: Date | null
+        valid?: boolean | null
+        token?: {
+          __typename?: 'NetworkToken'
+          id: string
+          createdAt?: Date | null
+          updatedAt?: Date | null
+          cluster: NetworkCluster
+          type: NetworkTokenType
+          account: string
+          program: string
+          name: string
+          mintList?: Array<string> | null
+          vault?: string | null
+          symbol?: string | null
+          description?: string | null
+          imageUrl?: string | null
+          metadataUrl?: string | null
+          raw?: any | null
+        } | null
+        asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+      }> | null
+      permissions?: Array<{
+        __typename?: 'RolePermission'
+        createdAt?: Date | null
+        id: string
+        updatedAt?: Date | null
+        botId?: string | null
+        roleId?: string | null
+        botRole?: {
+          __typename?: 'BotRole'
+          botId?: string | null
+          createdAt?: Date | null
+          id: string
+          serverId?: string | null
+          updatedAt?: Date | null
+          serverRoleId?: string | null
+          serverRole?: {
+            __typename?: 'DiscordRole'
+            id: string
+            name: string
+            managed: boolean
+            color: number
+            position: number
+          } | null
+          server?: {
+            __typename?: 'DiscordServer'
+            id: string
+            name: string
+            icon?: string | null
+            permissions?: Array<string> | null
+          } | null
+        } | null
+      }> | null
+    }> | null
+  } | null
+}
 
 export type UserFindManyCommunityMemberQueryVariables = Exact<{
   input: UserFindManyCommunityMemberInput
@@ -2754,7 +2849,7 @@ export type UserFindManyCommunityMemberQuery = {
       communityId: string
       createdAt?: Date | null
       id: string
-      role: CommunityRole
+      admin: boolean
       updatedAt?: Date | null
       userId: string
       user?: {
@@ -2871,7 +2966,7 @@ export type UserFindOneCommunityMemberQuery = {
     communityId: string
     createdAt?: Date | null
     id: string
-    role: CommunityRole
+    admin: boolean
     updatedAt?: Date | null
     userId: string
     user?: {
@@ -2978,7 +3073,7 @@ export type UserAddCommunityMemberMutation = {
     communityId: string
     createdAt?: Date | null
     id: string
-    role: CommunityRole
+    admin: boolean
     updatedAt?: Date | null
     userId: string
     user?: {
@@ -3085,7 +3180,7 @@ export type UserUpdateCommunityMemberMutation = {
     communityId: string
     createdAt?: Date | null
     id: string
-    role: CommunityRole
+    admin: boolean
     updatedAt?: Date | null
     userId: string
     user?: {
@@ -7636,7 +7731,7 @@ export const CommunityMemberDetailsFragmentDoc = gql`
     communityId
     createdAt
     id
-    role
+    admin
     updatedAt
     user {
       ...UserDetails
@@ -8132,10 +8227,13 @@ export const AdminRemoveCommunityMemberDocument = gql`
     deleted: adminRemoveCommunityMember(communityMemberId: $communityMemberId)
   }
 `
-export const UserGetCommunityRoleDocument = gql`
-  query userGetCommunityRole($communityId: String!) {
-    role: userGetCommunityRole(communityId: $communityId)
+export const UserGetCommunityMemberDocument = gql`
+  query userGetCommunityMember($communityId: String!) {
+    member: userGetCommunityMember(communityId: $communityId) {
+      ...CommunityMemberDetails
+    }
   }
+  ${CommunityMemberDetailsFragmentDoc}
 `
 export const UserFindManyCommunityMemberDocument = gql`
   query userFindManyCommunityMember($input: UserFindManyCommunityMemberInput!) {
@@ -9035,7 +9133,7 @@ const AdminFindOneCommunityMemberDocumentString = print(AdminFindOneCommunityMem
 const AdminAddCommunityMemberDocumentString = print(AdminAddCommunityMemberDocument)
 const AdminUpdateCommunityMemberDocumentString = print(AdminUpdateCommunityMemberDocument)
 const AdminRemoveCommunityMemberDocumentString = print(AdminRemoveCommunityMemberDocument)
-const UserGetCommunityRoleDocumentString = print(UserGetCommunityRoleDocument)
+const UserGetCommunityMemberDocumentString = print(UserGetCommunityMemberDocument)
 const UserFindManyCommunityMemberDocumentString = print(UserFindManyCommunityMemberDocument)
 const UserFindOneCommunityMemberDocumentString = print(UserFindOneCommunityMemberDocument)
 const UserAddCommunityMemberDocumentString = print(UserAddCommunityMemberDocument)
@@ -9836,11 +9934,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
-    userGetCommunityRole(
-      variables: UserGetCommunityRoleQueryVariables,
+    userGetCommunityMember(
+      variables: UserGetCommunityMemberQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
-      data: UserGetCommunityRoleQuery
+      data: UserGetCommunityMemberQuery
       errors?: GraphQLError[]
       extensions?: any
       headers: Headers
@@ -9848,11 +9946,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     }> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.rawRequest<UserGetCommunityRoleQuery>(UserGetCommunityRoleDocumentString, variables, {
+          client.rawRequest<UserGetCommunityMemberQuery>(UserGetCommunityMemberDocumentString, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'userGetCommunityRole',
+        'userGetCommunityMember',
         'query',
         variables,
       )
@@ -11945,8 +12043,6 @@ export const AppFeatureSchema = z.nativeEnum(AppFeature)
 
 export const BotStatusSchema = z.nativeEnum(BotStatus)
 
-export const CommunityRoleSchema = z.nativeEnum(CommunityRole)
-
 export const IdentityProviderSchema = z.nativeEnum(IdentityProvider)
 
 export const LogLevelSchema = z.nativeEnum(LogLevel)
@@ -11967,7 +12063,7 @@ export const UserStatusSchema = z.nativeEnum(UserStatus)
 
 export function AdminAddCommunityMemberInputSchema(): z.ZodObject<Properties<AdminAddCommunityMemberInput>> {
   return z.object({
-    role: CommunityRoleSchema,
+    admin: z.boolean(),
     userId: z.string(),
   })
 }
@@ -12050,10 +12146,10 @@ export function AdminFindManyCommunityInputSchema(): z.ZodObject<Properties<Admi
 
 export function AdminFindManyCommunityMemberInputSchema(): z.ZodObject<Properties<AdminFindManyCommunityMemberInput>> {
   return z.object({
+    admin: z.boolean().nullish(),
     communityId: z.string(),
     limit: z.number().nullish(),
     page: z.number().nullish(),
-    role: CommunityRoleSchema.nullish(),
     search: z.string().nullish(),
   })
 }
@@ -12166,7 +12262,7 @@ export function AdminUpdateCommunityInputSchema(): z.ZodObject<Properties<AdminU
 
 export function AdminUpdateCommunityMemberInputSchema(): z.ZodObject<Properties<AdminUpdateCommunityMemberInput>> {
   return z.object({
-    role: CommunityRoleSchema,
+    admin: z.boolean(),
   })
 }
 
@@ -12221,7 +12317,7 @@ export function RequestIdentityChallengeInputSchema(): z.ZodObject<Properties<Re
 
 export function UserAddCommunityMemberInputSchema(): z.ZodObject<Properties<UserAddCommunityMemberInput>> {
   return z.object({
-    role: CommunityRoleSchema,
+    admin: z.boolean(),
     userId: z.string(),
   })
 }
@@ -12296,10 +12392,10 @@ export function UserFindManyCommunityInputSchema(): z.ZodObject<Properties<UserF
 
 export function UserFindManyCommunityMemberInputSchema(): z.ZodObject<Properties<UserFindManyCommunityMemberInput>> {
   return z.object({
+    admin: z.boolean().nullish(),
     communityId: z.string(),
     limit: z.number().nullish(),
     page: z.number().nullish(),
-    role: CommunityRoleSchema.nullish(),
     search: z.string().nullish(),
   })
 }
@@ -12423,7 +12519,7 @@ export function UserUpdateCommunityInputSchema(): z.ZodObject<Properties<UserUpd
 
 export function UserUpdateCommunityMemberInputSchema(): z.ZodObject<Properties<UserUpdateCommunityMemberInput>> {
   return z.object({
-    role: CommunityRoleSchema,
+    admin: z.boolean(),
   })
 }
 

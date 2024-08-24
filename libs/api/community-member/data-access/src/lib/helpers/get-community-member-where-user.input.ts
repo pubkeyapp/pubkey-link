@@ -7,8 +7,8 @@ export function getCommunityMemberWhereUserInput(
   const where: Prisma.CommunityMemberWhereInput = {
     communityId: input.communityId,
   }
-  if (input.role) {
-    where.role = input.role
+  if (input.admin) {
+    where.admin = input.admin
   }
 
   if (input.search) {

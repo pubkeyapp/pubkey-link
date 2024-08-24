@@ -8,7 +8,7 @@ import { UiDebugModal } from '@pubkey-ui/core'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'
-import { CommunityMemberUiRoleBadge } from './community-member-ui-role-badge'
+import { CommunityMemberUiAdminBadge } from './community-member-ui-admin-badge'
 import { UserCommunityMemberUiUpdateForm } from './user-community-member-ui-update-form'
 
 export function UserCommunityMemberUiTable({
@@ -41,7 +41,12 @@ export function UserCommunityMemberUiTable({
         columns={[
           {
             accessor: 'user',
-            render: (item) => (item.user ? <UserUiItem user={item.user} to={item.user.profileUrl} /> : null),
+            render: (item) =>
+              item.user ? (
+                <UserUiItem user={item.user} to={item.user.profileUrl}>
+                  <CommunityMemberUiAdminBadge size="xs" member={item} />
+                </UserUiItem>
+              ) : null,
           },
           {
             accessor: 'roles',
@@ -54,10 +59,6 @@ export function UserCommunityMemberUiTable({
                 ))}
               </Group>
             ),
-          },
-          {
-            accessor: 'role',
-            render: (item) => <CommunityMemberUiRoleBadge role={item.role} />,
           },
           {
             accessor: 'actions',

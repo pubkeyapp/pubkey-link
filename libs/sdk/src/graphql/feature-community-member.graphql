@@ -2,7 +2,7 @@ fragment CommunityMemberDetails on CommunityMember {
   communityId
   createdAt
   id
-  role
+  admin
   updatedAt
   user {
     ...UserDetails
@@ -45,8 +45,10 @@ mutation adminRemoveCommunityMember($communityMemberId: String!) {
   deleted: adminRemoveCommunityMember(communityMemberId: $communityMemberId)
 }
 
-query userGetCommunityRole($communityId: String!) {
-  role: userGetCommunityRole(communityId: $communityId)
+query userGetCommunityMember($communityId: String!) {
+  member: userGetCommunityMember(communityId: $communityId) {
+    ...CommunityMemberDetails
+  }
 }
 
 query userFindManyCommunityMember($input: UserFindManyCommunityMemberInput!) {

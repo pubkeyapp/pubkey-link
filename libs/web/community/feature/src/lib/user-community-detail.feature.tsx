@@ -31,7 +31,7 @@ const RouteSettings = lazy(() => import('./user-community-detail-settings.tab'))
 export function UserCommunityDetailFeature() {
   const { hasFeature } = useAppConfig()
   const { communityId } = useParams<{ communityId: string }>() as { communityId: string }
-  const { item, isLoading, communityAdmin, role } = useUserFindOneCommunity({ communityId })
+  const { item, isLoading, communityAdmin, member } = useUserFindOneCommunity({ communityId })
 
   const hasSnapshots = hasFeature(AppFeature.CommunitySnapshots)
 
@@ -41,7 +41,7 @@ export function UserCommunityDetailFeature() {
   if (!item) {
     return <UiError message="Community not found." />
   }
-  if (!role) {
+  if (!member) {
     return <UiError message="You are not a member." />
   }
 
@@ -49,7 +49,7 @@ export function UserCommunityDetailFeature() {
     {
       path: 'dashboard',
       label: 'Dashboard',
-      element: <RouteDashboard community={item} role={role} />,
+      element: <RouteDashboard community={item} member={member} />,
       leftSection: <UiIcon type="dashboard" size={20} />,
     },
     communityAdmin && {

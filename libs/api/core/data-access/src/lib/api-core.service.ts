@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { CommunityRole, IdentityProvider, LogLevel, LogRelatedType, Prisma, User, UserRole } from '@prisma/client'
+import { IdentityProvider, LogLevel, LogRelatedType, Prisma, User, UserRole } from '@prisma/client'
 import { ApiCorePrismaClient, prismaClient } from './api-core-prisma-client'
 import { ApiCoreConfigService } from './config/api-core-config.service'
 
@@ -34,7 +34,7 @@ export class ApiCoreService implements OnModuleInit {
           ? {
               create: {
                 userId,
-                role: CommunityRole.Admin,
+                admin: true,
               },
             }
           : undefined,
@@ -42,20 +42,20 @@ export class ApiCoreService implements OnModuleInit {
     })
   }
 
-  async ensureCommunityAccess({
+  async ensureCommunityMember({
     communityId,
     userId,
   }: {
     communityId: string
     userId: string
-  }): Promise<CommunityRole> {
+  }): Promise<{ admin: boolean }> {
     const user = await this.findUserById(userId)
     if (!user) {
       throw new Error(`User ${userId} not found`)
     }
     // Admins have Admin role in all communities
     if (user.role === UserRole.Admin) {
-      return CommunityRole.Admin
+      return { admin: true }
     }
     const found = await this.data.communityMember.findUnique({
       where: { communityId_userId: { communityId, userId } },
@@ -63,15 +63,15 @@ export class ApiCoreService implements OnModuleInit {
     if (!found) {
       throw new Error(`User ${userId} is not a member of community ${communityId}`)
     }
-    return found.role
+    return { admin: found.admin }
   }
 
   async ensureCommunityAdmin({ communityId, userId }: { communityId: string; userId: string }): Promise<boolean> {
-    const role = await this.ensureCommunityAccess({ communityId, userId })
-    if (role !== CommunityRole.Admin) {
+    const { admin } = await this.ensureCommunityMember({ communityId, userId })
+    if (!admin) {
       throw new Error(`User ${userId} is not an admin of community ${communityId}`)
     }
-    return role === CommunityRole.Admin
+    return admin
   }
 
   async ensureUserAdmin(userId: string): Promise<boolean> {
@@ -218,19 +218,41 @@ export class ApiCoreService implements OnModuleInit {
 
   // This is a method that will clean up some deprecated fields in the database
   private async databaseCleanupDeprecated() {
+    // We deprecated the 'role: CommunityRole' in favor of the 'admin: boolean' field.
+    const communityRoles = await this.data.communityMember.findMany({
+      where: {
+        role: { not: null },
+      },
+    })
+    // We deprecated the 'mentionUsers' and 'mentionRoles' fields as they were no longer used
     const botServers = await this.data.botServer.findMany({
       where: { mentionUsers: { not: null }, mentionRoles: { not: null } },
     })
 
-    if (!botServers.length) {
+    if (!botServers.length && !communityRoles.length) {
       this.logger.log('No deprecated fields found in the database')
       return
     }
 
     this.logger.log('Starting database cleanup for deprecated fields')
+
+    for (const item of communityRoles) {
+      const admin = item.role === 'Admin'
+      const updated = await this.data.communityMember.update({
+        where: { id: item.id },
+        // Set the role to null and the admin boolean based on the old role
+        data: { role: null, admin },
+        include: { community: true, user: true },
+      })
+      this.logger.log(
+        `cleanupDeprecated: Updated communityMember ${updated.user?.username}, deleted role, set admin=${admin}`,
+      )
+    }
+
     for (const item of botServers) {
       const updated = await this.data.botServer.update({
         where: { id: item.id },
+        // Set the mentionUsers and mentionRoles to null
         data: { mentionUsers: null, mentionRoles: null },
       })
       this.logger.log(`cleanupDeprecated: Updated botServer ${updated.id}, deleted mentionUsers and mentionRoles`)

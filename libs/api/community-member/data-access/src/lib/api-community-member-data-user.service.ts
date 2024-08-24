@@ -26,7 +26,7 @@ export class ApiCommunityMemberDataUserService {
     userId: string,
     input: UserFindManyCommunityMemberInput,
   ): Promise<CommunityMemberPaging> {
-    await this.core.ensureCommunityAccess({ userId, communityId: input.communityId })
+    await this.core.ensureCommunityMember({ userId, communityId: input.communityId })
     return this.data.findMany({
       orderBy: { createdAt: 'desc' },
       where: getCommunityMemberWhereUserInput(input),
@@ -47,7 +47,7 @@ export class ApiCommunityMemberDataUserService {
     return this.data.update(communityMemberId, input)
   }
 
-  async getCommunityRole({ communityId, userId }: { communityId: string; userId: string }) {
-    return this.data.getRole({ communityId, userId })
+  async getCommunityMember({ communityId, userId }: { communityId: string; userId: string }) {
+    return this.data.getMember({ communityId, userId })
   }
 }

@@ -3,7 +3,7 @@
 # ------------------------------------------------------
 
 input AdminAddCommunityMemberInput {
-  role: CommunityRole!
+  admin: Boolean!
   userId: String!
 }
 
@@ -66,10 +66,10 @@ input AdminFindManyCommunityInput {
 }
 
 input AdminFindManyCommunityMemberInput {
+  admin: Boolean
   communityId: String!
   limit: Int = 10
   page: Int = 1
-  role: CommunityRole
   search: String
 }
 
@@ -160,7 +160,7 @@ input AdminUpdateCommunityInput {
 }
 
 input AdminUpdateCommunityMemberInput {
-  role: CommunityRole!
+  admin: Boolean!
 }
 
 input AdminUpdateNetworkInput {
@@ -280,10 +280,10 @@ type Community {
 }
 
 type CommunityMember {
+  admin: Boolean!
   communityId: String!
   createdAt: DateTime
   id: String!
-  role: CommunityRole!
   roles: [Role!]
   updatedAt: DateTime
   user: User
@@ -298,11 +298,6 @@ type CommunityMemberPaging {
 type CommunityPaging {
   data: [Community!]!
   meta: PagingMeta!
-}
-
-enum CommunityRole {
-  Admin
-  Member
 }
 
 """
@@ -671,7 +666,7 @@ type Query {
   userGetBotServer(botId: String!, serverId: String!): DiscordServer
   userGetBotServers(botId: String!): [DiscordServer!]
   userGetCommunities(username: String!): [Community!]!
-  userGetCommunityRole(communityId: String!): CommunityRole
+  userGetCommunityMember(communityId: String!): CommunityMember
   userGetTokenAccounts(account: String!, cluster: NetworkCluster!): JSON
   userGetTokenMetadata(account: String!, cluster: NetworkCluster!): JSON
   userRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
@@ -794,7 +789,7 @@ type User {
 }
 
 input UserAddCommunityMemberInput {
-  role: CommunityRole!
+  admin: Boolean!
   userId: String!
 }
 
@@ -851,10 +846,10 @@ input UserFindManyCommunityInput {
 }
 
 input UserFindManyCommunityMemberInput {
+  admin: Boolean
   communityId: String!
   limit: Int = 10
   page: Int = 1
-  role: CommunityRole
   search: String
 }
 
@@ -970,7 +965,7 @@ input UserUpdateCommunityInput {
 }
 
 input UserUpdateCommunityMemberInput {
-  role: CommunityRole!
+  admin: Boolean!
 }
 
 input UserUpdateIdentityInput {

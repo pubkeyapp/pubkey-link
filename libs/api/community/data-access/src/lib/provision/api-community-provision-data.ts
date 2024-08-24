@@ -1,4 +1,4 @@
-import { CommunityRole, NetworkCluster, NetworkTokenType, Prisma } from '@prisma/client'
+import { NetworkCluster, NetworkTokenType, Prisma } from '@prisma/client'
 
 const cluster = NetworkCluster.SolanaMainnet
 const DL_SERVER = '953959331353751632'
@@ -158,8 +158,8 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     enableSync: true,
     members: {
       create: [
-        { user: { connect: { id: 'alice' } }, role: CommunityRole.Admin },
-        { user: { connect: { id: 'dave' } }, role: CommunityRole.Admin },
+        { user: { connect: { id: 'alice' } }, admin: true },
+        { user: { connect: { id: 'dave' } }, admin: true },
       ],
     },
     roles: {
@@ -183,8 +183,8 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     websiteUrl: 'https://app.pubkey.link',
     members: {
       create: [
-        { user: { connect: { id: 'alice' } }, role: CommunityRole.Admin },
-        { user: { connect: { id: 'dave' } }, role: CommunityRole.Admin },
+        { user: { connect: { id: 'alice' } }, admin: true },
+        { user: { connect: { id: 'dave' } }, admin: true },
       ],
     },
     bot: { create: PK_BOT.clientId ? PK_BOT : undefined },
@@ -272,8 +272,8 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     },
     members: {
       create: [
-        { user: { connect: { id: 'alice' } }, role: CommunityRole.Admin },
-        { user: { connect: { id: 'bob' } }, role: CommunityRole.Member },
+        { user: { connect: { id: 'alice' } }, admin: true },
+        { user: { connect: { id: 'bob' } }, admin: false },
       ],
     },
   },
@@ -287,8 +287,8 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
     githubUrl: 'https://githun.com/marinade-finance',
     members: {
       create: [
-        { user: { connect: { id: 'alice' } }, role: CommunityRole.Admin },
-        { user: { connect: { id: 'bob' } }, role: CommunityRole.Member },
+        { user: { connect: { id: 'alice' } }, admin: true },
+        { user: { connect: { id: 'bob' } }, admin: false },
       ],
     },
     roles: {
@@ -317,8 +317,8 @@ export const provisionCommunities: Prisma.CommunityCreateInput[] = [
       'https://waq26xbzlmlh6koszuoh5k3ttw4op5fp3teymntjv5drqlkxlepq.arweave.net/sCGvXDlbFn8p0s0cfqtznbjn9K_cyYY2aa9HGC1XWR8',
     members: {
       create: [
-        { user: { connect: { id: 'alice' } }, role: CommunityRole.Admin },
-        { user: { connect: { id: 'bob' } }, role: CommunityRole.Member },
+        { user: { connect: { id: 'alice' } }, admin: true },
+        { user: { connect: { id: 'bob' } }, admin: false },
       ],
     },
     bot: LOS_BOT.clientId ? { create: LOS_BOT } : undefined,

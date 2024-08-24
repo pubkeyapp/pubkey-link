@@ -6,7 +6,7 @@ import { UserUiItem } from '@pubkey-link/web-user-ui'
 import { IconPencil, IconTrash } from '@tabler/icons-react'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { AdminCommunityMemberUiUpdateForm } from './admin-community-member-ui-update-form'
-import { CommunityMemberUiRoleBadge } from './community-member-ui-role-badge'
+import { CommunityMemberUiAdminBadge } from './community-member-ui-admin-badge'
 
 export function AdminCommunityMemberUiTable({
   deleteCommunityMember,
@@ -38,11 +38,12 @@ export function AdminCommunityMemberUiTable({
         columns={[
           {
             accessor: 'user',
-            render: (item) => (item.user ? <UserUiItem user={item.user} to={item.user.profileUrl} /> : null),
-          },
-          {
-            accessor: 'role',
-            render: (item) => <CommunityMemberUiRoleBadge role={item.role} />,
+            render: (item) =>
+              item.user ? (
+                <UserUiItem user={item.user} to={item.user.profileUrl}>
+                  <CommunityMemberUiAdminBadge size="xs" member={item} />
+                </UserUiItem>
+              ) : null,
           },
           {
             accessor: 'actions',

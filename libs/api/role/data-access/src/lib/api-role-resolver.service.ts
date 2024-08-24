@@ -3,7 +3,6 @@ import { OnEvent } from '@nestjs/event-emitter'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import {
   CommunityMember,
-  CommunityRole,
   IdentityProvider,
   NetworkAsset,
   NetworkToken,
@@ -172,7 +171,7 @@ export class ApiRoleResolverService {
       .map((userId) => ({
         communityId,
         userId,
-        role: CommunityRole.Member,
+        admin: false,
       }))
 
     if (newMembers.length) {
@@ -185,9 +184,7 @@ export class ApiRoleResolverService {
     }
 
     // Now delete any members that are no longer owners of the tokens
-    const deleteMembers = existing
-      .filter((e) => !userIds.includes(e.userId))
-      .filter((e) => e.role !== CommunityRole.Admin)
+    const deleteMembers = existing.filter((e) => !userIds.includes(e.userId)).filter((e) => !e.admin)
 
     if (deleteMembers.length) {
       for (const deleteMember of deleteMembers) {

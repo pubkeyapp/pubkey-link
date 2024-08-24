@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { CommunityRole, Prisma } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { ApiCoreService, PagingInputFields } from '@pubkey-link/api-core-data-access'
 
 import { RolePaging } from './entity/role.entity'
@@ -46,7 +46,7 @@ export class ApiRoleDataService {
 
   async ensureRoleAdmin({ userId, roleId }: { userId: string; roleId: string }) {
     const { role, communityRole } = await this.ensureRoleAccess({ userId, roleId })
-    if (communityRole !== CommunityRole.Admin) {
+    if (!communityRole.admin) {
       throw new Error('User is not an admin')
     }
     return { role, communityRole }
@@ -55,7 +55,7 @@ export class ApiRoleDataService {
   async ensureRoleAccess({ userId, roleId }: { userId: string; roleId: string }) {
     const role = await this.findOne(roleId)
 
-    const communityRole = await this.core.ensureCommunityAccess({ communityId: role.communityId, userId })
+    const communityRole = await this.core.ensureCommunityMember({ communityId: role.communityId, userId })
 
     return { role, communityRole }
   }

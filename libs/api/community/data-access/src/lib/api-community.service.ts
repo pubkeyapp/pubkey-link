@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { CommunityRole } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { ApiCommunityDataAdminService } from './api-community-data-admin.service'
 import { ApiCommunityDataAnonService } from './api-community-data-anon.service'
@@ -17,7 +16,7 @@ export class ApiCommunityService {
   async ensureCommunityAdmin(userId: string, communityId: string) {
     const found = await this.core.data.community.findUnique({
       where: { id: communityId },
-      include: { members: { where: { userId, role: CommunityRole.Admin } } },
+      include: { members: { where: { userId, admin: true } } },
     })
     if (!found) {
       throw new Error(`Community ${communityId} not found`)

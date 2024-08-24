@@ -1,6 +1,6 @@
 import { Button, Group } from '@mantine/core'
-import { CommunityMember, CommunityRole, getEnumOptions, UserUpdateCommunityMemberInput } from '@pubkey-link/sdk'
-import { formFieldSelect, UiForm, UiFormField } from '@pubkey-ui/core'
+import { CommunityMember, UserUpdateCommunityMemberInput } from '@pubkey-link/sdk'
+import { formFieldCheckbox, UiForm, UiFormField } from '@pubkey-ui/core'
 
 export function UserCommunityMemberUiUpdateForm({
   submit,
@@ -10,14 +10,13 @@ export function UserCommunityMemberUiUpdateForm({
   communityMember: CommunityMember
 }) {
   const model: UserUpdateCommunityMemberInput = {
-    role: communityMember.role,
+    admin: communityMember.admin,
   }
 
   const fields: UiFormField<UserUpdateCommunityMemberInput>[] = [
-    formFieldSelect('role', {
-      label: 'Role',
-      description: 'The role of the user in the community.',
-      options: getEnumOptions(CommunityRole),
+    formFieldCheckbox('admin', {
+      label: 'Admin',
+      description: 'This member is an admin of the community.',
     }),
   ]
   return (

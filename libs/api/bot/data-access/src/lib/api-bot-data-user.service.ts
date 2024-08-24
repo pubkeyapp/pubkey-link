@@ -32,7 +32,7 @@ export class ApiBotDataUserService {
   }
 
   async findOneBot(userId: string, communityId: string) {
-    await this.core.ensureCommunityAccess({ communityId, userId })
+    await this.core.ensureCommunityMember({ communityId, userId })
     const bot = await this.data.findByCommunityId(communityId)
     if (!bot) {
       return null

@@ -1,9 +1,4 @@
-import {
-  CommunityMember,
-  CommunityRole,
-  UserFindManyCommunityMemberInput,
-  UserUpdateCommunityMemberInput,
-} from '@pubkey-link/sdk'
+import { CommunityMember, UserFindManyCommunityMemberInput, UserUpdateCommunityMemberInput } from '@pubkey-link/sdk'
 import { getAliceCookie, getBobCookie, sdk } from '../support'
 
 const defaultCommunityId = 'pubkey'
@@ -21,13 +16,13 @@ xdescribe('api-community-member-feature', () => {
     describe('authorized', () => {
       it('should update a community-member', async () => {
         const input: UserUpdateCommunityMemberInput = {
-          role: CommunityRole.Admin,
+          admin: true,
         }
 
         const res = await sdk.userUpdateCommunityMember({ communityMemberId, input }, { cookie: alice })
 
         const item: CommunityMember = res.data.updated
-        expect(item.role).toBe(input.role)
+        expect(item.admin).toBe(input.admin)
       })
 
       it('should find a list of communityMembers (find all)', async () => {
@@ -89,7 +84,7 @@ xdescribe('api-community-member-feature', () => {
             {
               communityMemberId,
               input: {
-                role: CommunityRole.Admin,
+                admin: true,
               },
             },
             { cookie: bob },

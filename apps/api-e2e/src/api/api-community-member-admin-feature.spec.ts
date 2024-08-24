@@ -1,9 +1,4 @@
-import {
-  AdminFindManyCommunityMemberInput,
-  AdminUpdateCommunityMemberInput,
-  CommunityMember,
-  CommunityRole,
-} from '@pubkey-link/sdk'
+import { AdminFindManyCommunityMemberInput, AdminUpdateCommunityMemberInput, CommunityMember } from '@pubkey-link/sdk'
 import { getAliceCookie, getBobCookie, sdk } from '../support'
 
 const defaultCommunityId = 'pubkey'
@@ -27,7 +22,7 @@ xdescribe('api-community-member-feature', () => {
 
       it('should update a community-member', async () => {
         const input: AdminUpdateCommunityMemberInput = {
-          role: CommunityRole.Admin,
+          admin: true,
         }
 
         const res = await sdk.adminUpdateCommunityMember({ communityMemberId, input }, { cookie: alice })
@@ -92,10 +87,7 @@ xdescribe('api-community-member-feature', () => {
       it('should not update a community-member', async () => {
         expect.assertions(1)
         try {
-          await sdk.adminUpdateCommunityMember(
-            { communityMemberId, input: { role: CommunityRole.Admin } },
-            { cookie: bob },
-          )
+          await sdk.adminUpdateCommunityMember({ communityMemberId, input: { admin: true } }, { cookie: bob })
         } catch (e) {
           expect(e.message).toBe('Unauthorized: User is not Admin')
         }

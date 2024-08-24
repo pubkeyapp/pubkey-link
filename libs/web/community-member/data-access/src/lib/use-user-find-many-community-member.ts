@@ -1,9 +1,4 @@
-import {
-  CommunityMember,
-  CommunityRole,
-  UserAddCommunityMemberInput,
-  UserFindManyCommunityMemberInput,
-} from '@pubkey-link/sdk'
+import { CommunityMember, UserAddCommunityMemberInput, UserFindManyCommunityMemberInput } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
@@ -16,9 +11,9 @@ export function useUserFindManyCommunityMember(
   const [limit, setLimit] = useState(props?.limit ?? 10)
   const [page, setPage] = useState(props?.page ?? 1)
   const [search, setSearch] = useState<string>(props?.search ?? '')
-  const [role, setRole] = useState<CommunityRole | undefined>(props?.role ?? undefined)
+  const [admin, setAdmin] = useState<boolean>(props?.admin ?? false)
 
-  const input: UserFindManyCommunityMemberInput = { page, limit, search, communityId: props.communityId, role }
+  const input: UserFindManyCommunityMemberInput = { page, limit, search, communityId: props.communityId, admin }
   const query = useQuery({
     queryKey: ['user', 'find-many-community-member', input],
     queryFn: () => sdk.userFindManyCommunityMember({ input }).then((res) => res.data),
@@ -29,8 +24,8 @@ export function useUserFindManyCommunityMember(
   return {
     items,
     query,
-    role,
-    setRole,
+    admin,
+    setAdmin,
     pagination: {
       page,
       setPage,

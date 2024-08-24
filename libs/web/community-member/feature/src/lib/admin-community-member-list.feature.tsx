@@ -1,12 +1,11 @@
-import { Group } from '@mantine/core'
+import { Checkbox, Group } from '@mantine/core'
 import { useAdminFindManyCommunityMember } from '@pubkey-link/web-community-member-data-access'
 import { AdminAddCommunityMemberModal, AdminCommunityMemberUiTable } from '@pubkey-link/web-community-member-ui'
-import { CommunityUiSelectRole } from '@pubkey-link/web-community-ui'
 import { UiPageLimit, UiSearchField } from '@pubkey-link/web-core-ui'
 import { UiDebugModal, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function AdminCommunityMemberListFeature({ communityId }: { communityId: string }) {
-  const { addCommunityMember, removeCommunityMember, items, pagination, query, role, setRole, setSearch } =
+  const { addCommunityMember, removeCommunityMember, items, pagination, query, admin, setAdmin, setSearch } =
     useAdminFindManyCommunityMember({
       communityId,
     })
@@ -17,7 +16,7 @@ export function AdminCommunityMemberListFeature({ communityId }: { communityId: 
         <UiSearchField placeholder="Search member" setSearch={setSearch} />
         <UiDebugModal data={items} />
         <AdminAddCommunityMemberModal create={addCommunityMember} />
-        <CommunityUiSelectRole placeholder="Filter by Role" value={role} setValue={setRole} />
+        <Checkbox label="Admins" checked={admin} onChange={() => setAdmin(!admin)} />
         <UiPageLimit limit={pagination.limit} setLimit={pagination.setLimit} setPage={pagination.setPage} />
       </Group>
 

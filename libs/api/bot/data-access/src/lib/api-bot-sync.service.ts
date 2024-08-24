@@ -1,11 +1,10 @@
 import { InjectQueue } from '@nestjs/bullmq'
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { Bot, BotServer, CommunityRole, Identity, IdentityProvider, UserStatus } from '@prisma/client'
+import { Identity, IdentityProvider, UserStatus } from '@prisma/client'
 import { DiscordBot } from '@pubkey-link/api-bot-util'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
 import { Queue } from 'bullmq'
-import { Guild } from 'discord.js'
 import { ApiBotInstancesService } from './api-bot-instances.service'
 import { CommunityMemberSummary } from './entity/community-member-summary'
 import { CommunityRoleMap, DiscordServerMember } from './entity/discord-server.entity'
@@ -24,68 +23,6 @@ export class ApiBotSyncService {
     private readonly core: ApiCoreService,
     private readonly instances: ApiBotInstancesService,
   ) {}
-
-  async syncAdminUsers({ botServer, bot, guild }: { botServer: BotServer; bot: Bot; guild: Guild }) {
-    const adminRoles = botServer.adminRoles ?? []
-    if (!adminRoles?.length) {
-      return
-    }
-    const adminDiscordIds = adminRoles
-      .map((role) => guild.roles.cache.get(role)?.members.map((member) => member.user.id))
-      .flat() as string[]
-
-    if (!adminDiscordIds?.length) {
-      return
-    }
-
-    const uniqueAdminDiscordIds = [...new Set(adminDiscordIds)]
-    const users = await this.core.data.identity
-      .findMany({
-        where: { provider: IdentityProvider.Discord, providerId: { in: uniqueAdminDiscordIds } },
-        select: { ownerId: true },
-      })
-      .then((e) => e.map((e) => e.ownerId))
-
-    if (!users?.length) {
-      console.log('No users found for admin roles')
-      return
-    }
-
-    const existing = await this.core.data.communityMember
-      .findMany({
-        where: { userId: { in: users }, community: { bot: { id: bot.id } } },
-      })
-      .then((e) => e)
-
-    const nonAdmins = existing.filter((e) => e.role !== CommunityRole.Admin)
-    const nonExisting = users.filter((e) => !existing.find((m) => m.userId === e))
-
-    const toCreate = [...nonAdmins.map((e) => e.userId), ...nonExisting]
-
-    for (const userId of toCreate) {
-      const result = await this.core.data.communityMember.upsert({
-        where: { communityId_userId: { userId, communityId: bot.communityId } },
-        create: { userId, communityId: bot.communityId, role: CommunityRole.Admin },
-        update: { role: CommunityRole.Admin },
-        include: { user: true },
-      })
-      const isUpdated = result.createdAt !== result.updatedAt
-      if (isUpdated) {
-        await this.core.logInfo(`Updated ${result.user.username} to Admin`, {
-          botId: bot.id,
-          communityId: bot.communityId,
-          userId,
-        })
-      } else {
-        await this.core.logInfo(`Created ${result.user.username} as Admin`, {
-          botId: bot.id,
-          communityId: bot.communityId,
-          userId,
-        })
-      }
-    }
-    return uniqueAdminDiscordIds
-  }
 
   private async ensureCommunityInfo({
     botId,

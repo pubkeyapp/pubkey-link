@@ -1,11 +1,11 @@
-import { CommunityRole, UserUpdateCommunityInput } from '@pubkey-link/sdk'
-import { useUserGetCommunityRole } from '@pubkey-link/web-community-member-data-access'
+import { UserUpdateCommunityInput } from '@pubkey-link/sdk'
+import { useUserGetCommunityMember } from '@pubkey-link/web-community-member-data-access'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
 import { useQuery } from '@tanstack/react-query'
 
 export function useUserFindOneCommunity({ communityId }: { communityId: string }) {
-  const { item: role, query: roleQuery } = useUserGetCommunityRole({ communityId })
+  const { item: member, query: roleQuery } = useUserGetCommunityMember({ communityId })
   const sdk = useSdk()
   const query = useQuery({
     queryKey: ['user', 'find-one-community', communityId],
@@ -17,8 +17,8 @@ export function useUserFindOneCommunity({ communityId }: { communityId: string }
 
   return {
     item,
-    role,
-    communityAdmin: role === CommunityRole.Admin,
+    member,
+    communityAdmin: member?.admin,
     isLoading,
     updateCommunity: async (input: UserUpdateCommunityInput) =>
       sdk

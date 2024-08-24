@@ -1,27 +1,24 @@
 import { SimpleGrid } from '@mantine/core'
-import { Community, CommunityRole } from '@pubkey-link/sdk'
+import { Community, CommunityMember } from '@pubkey-link/sdk'
 import { UiCard, UiCardTitle, UiStack } from '@pubkey-ui/core'
 import { CommunityDashboardCardBot } from './community-dashboard-card-bot'
 import { CommunityDashboardMemberCardRoles } from './community-dashboard-member-card-roles'
 
 export default function UserCommunityDetailDashboardTab({
   community,
-  role,
+  member,
 }: {
   community: Community
-  role: CommunityRole
+  member: CommunityMember
 }) {
-  switch (role) {
-    case CommunityRole.Admin:
-      return (
-        <UiStack>
-          <CommunityDashboardMember community={community} />
-          <CommunityDashboardAdmin community={community} />
-        </UiStack>
-      )
-    case CommunityRole.Member:
-      return <CommunityDashboardMember community={community} />
-  }
+  return member.admin ? (
+    <UiStack>
+      <CommunityDashboardMember community={community} />
+      <CommunityDashboardAdmin community={community} />
+    </UiStack>
+  ) : (
+    <CommunityDashboardMember community={community} />
+  )
 }
 
 function CommunityDashboardAdmin({ community }: { community: Community }) {
