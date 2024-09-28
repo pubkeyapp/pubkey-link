@@ -28,6 +28,7 @@ export enum AppFeature {
   CommunitySnapshots = 'CommunitySnapshots',
   IdentityCliVerification = 'IdentityCliVerification',
   IdentityGrants = 'IdentityGrants',
+  PubkeyProtocol = 'PubkeyProtocol',
 }
 
 registerEnumType(AppFeature, { name: 'AppFeature' })

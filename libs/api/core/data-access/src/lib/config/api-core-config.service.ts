@@ -181,6 +181,7 @@ export class ApiCoreConfigService {
       { flag: this.featureCommunitySnapshots, feature: AppFeature.CommunitySnapshots },
       { flag: this.featureIdentityCliVerification, feature: AppFeature.IdentityCliVerification },
       { flag: this.featureIdentityGrants, feature: AppFeature.IdentityGrants },
+      { flag: this.featurePubkeyProtocol, feature: AppFeature.PubkeyProtocol },
     ].reduce((acc, { flag, feature }) => (flag ? [...acc, feature] : acc), [] as AppFeature[])
   }
 
@@ -194,6 +195,10 @@ export class ApiCoreConfigService {
 
   get featureBetaDasSearch() {
     return this.service.get<boolean>('featureBetaDasSearch')
+  }
+
+  get featurePubkeyProtocol() {
+    return this.service.get<boolean>('featurePubkeyProtocol')
   }
 
   get featureCommunityCreate() {

@@ -228,6 +228,7 @@ export enum AppFeature {
   CommunitySnapshots = 'CommunitySnapshots',
   IdentityCliVerification = 'IdentityCliVerification',
   IdentityGrants = 'IdentityGrants',
+  PubkeyProtocol = 'PubkeyProtocol',
 }
 
 export type Bot = {
