@@ -257,6 +257,18 @@ export class ApiCoreConfigService {
     return this.service.get<number>('port')
   }
 
+  get pubkeyProtocolCluster() {
+    return this.service.get<string>('pubkeyProtocolCluster')
+  }
+
+  get pubkeyProtocolEndpoint() {
+    return this.service.get<string>('pubkeyProtocolEndpoint')
+  }
+
+  get pubkeyProtocolFeePayer() {
+    return this.service.get<string>('pubkeyProtocolFeePayer')
+  }
+
   get prefix() {
     return '/api'
   }

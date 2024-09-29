@@ -73,6 +73,10 @@ export interface ApiCoreConfig {
   jwtSecret: string
   // Port
   port: number
+  // PubKey Protocol
+  pubkeyProtocolCluster?: string
+  pubkeyProtocolEndpoint?: string
+  pubkeyProtocolFeePayer?: string
   // Redis
   redisUrl: string
   // Solana Endpoints
@@ -128,6 +132,9 @@ export function configuration(): ApiCoreConfig {
     logLevel: process.env['LOG_LEVEL'] as keyof typeof LogLevel,
     jwtSecret: process.env['JWT_SECRET'] as string,
     port: parseInt(process.env['PORT'] as string, 10) || 3000,
+    pubkeyProtocolCluster: process.env['PUBKEY_PROTOCOL_CLUSTER'] as string,
+    pubkeyProtocolEndpoint: process.env['PUBKEY_PROTOCOL_ENDPOINT'] as string,
+    pubkeyProtocolFeePayer: process.env['PUBKEY_PROTOCOL_FEE_PAYER'] as string,
     redisUrl: process.env['REDIS_URL'] as string,
     solanaCustomEndpoint: process.env['SOLANA_CUSTOM_ENDPOINT'] as string,
     solanaDevnetEndpoint: process.env['SOLANA_DEVNET_ENDPOINT'] as string,

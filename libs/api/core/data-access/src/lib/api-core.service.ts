@@ -8,12 +8,17 @@ import { StatRecord } from './entity/stat-record'
 import { StatRecordGroup } from './entity/stat-record-group'
 import { getRandomString } from './helpers/get-random-string'
 import { slugifyId, slugifyUsername } from './helpers/slugify-id'
+import { ApiCoreProtocolService } from './protocol/api-core-protocol.service'
 
 @Injectable()
 export class ApiCoreService implements OnModuleInit {
   private readonly logger = new Logger(ApiCoreService.name)
   readonly data: ApiCorePrismaClient = prismaClient
-  constructor(readonly eventEmitter: EventEmitter2, readonly config: ApiCoreConfigService) {}
+  constructor(
+    readonly eventEmitter: EventEmitter2,
+    readonly config: ApiCoreConfigService,
+    readonly protocol: ApiCoreProtocolService,
+  ) {}
 
   async onModuleInit() {
     await this.databaseCleanupDeprecated()

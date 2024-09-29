@@ -26,7 +26,7 @@ async function bootstrap() {
   Logger.log(`🔋 FEATURES: ${core.config.appConfig.features.join(', ')}`)
   Logger.log(`🔋 RESOLVERS: ${core.config.appConfig.resolvers.join(', ')}`)
   Logger.log(`🔋 LINK PROVIDERS: ${core.config.appConfig.authLinkProviders.join(', ')}`)
-  Logger.log(`🔋 LOGIN PROVIDERS: ${core.config.appConfig.authLoginProviders.join(', ')}}`)
+  Logger.log(`🔋 LOGIN PROVIDERS: ${core.config.appConfig.authLoginProviders.join(', ')}`)
   if (core.config.isDevelopment) {
     Logger.warn(`🐞 Application is running in development mode.`)
     exec('prettier --write ./api-schema.graphql ./api-swagger.json', { cwd: process.cwd() })
