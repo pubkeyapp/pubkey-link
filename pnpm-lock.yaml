@@ -122,6 +122,12 @@ importers:
       '@prisma/client':
         specifier: 5.18.0
         version: 5.18.0(prisma@5.18.0)
+      '@pubkey-program-library/anchor':
+        specifier: ^1.7.1
+        version: 1.7.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@pubkey-program-library/sdk':
+        specifier: ^1.7.1
+        version: 1.7.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@pubkey-ui/core':
         specifier: ^1.7.0
         version: 1.7.0(@types/react@18.3.1)(dayjs@1.11.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -369,12 +375,6 @@ importers:
       '@pmmmwh/react-refresh-webpack-plugin':
         specifier: ^0.5.11
         version: 0.5.13(react-refresh@0.14.2)(type-fest@4.18.2)(webpack-dev-server@4.15.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)(webpack@5.91.0(@swc/core@1.5.7(@swc/helpers@0.5.11))(esbuild@0.19.12)))(webpack@5.91.0(@swc/core@1.5.7(@swc/helpers@0.5.11))(esbuild@0.19.12))
-      '@pubkey-program-library/anchor':
-        specifier: ^1.7.1
-        version: 1.7.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@pubkey-program-library/sdk':
-        specifier: ^1.7.1
-        version: 1.7.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@solana-developers/preset-anchor':
         specifier: 2.0.0
         version: 2.0.0(@babel/traverse@7.24.5)(@swc-node/register@1.9.2(@swc/core@1.5.7(@swc/helpers@0.5.11))(@swc/types@0.1.7)(typescript@5.4.5))(@swc/core@1.5.7(@swc/helpers@0.5.11))(@types/node@18.19.24)(node-notifier@10.0.1)(nx@19.2.2(@swc-node/register@1.9.2(@swc/core@1.5.7(@swc/helpers@0.5.11))(@swc/types@0.1.7)(typescript@5.4.5))(@swc/core@1.5.7(@swc/helpers@0.5.11)))(ts-node@10.9.2(@swc/core@1.5.7(@swc/helpers@0.5.11))(@types/node@18.19.24)(typescript@5.4.5))(typescript@5.4.5)
