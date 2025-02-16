@@ -36,6 +36,10 @@ mutation adminUpdateAllocation($allocationId: String!, $input: AdminUpdateAlloca
   }
 }
 
+query adminGetAllocationSnapshots($allocationId: String!) {
+  snapshots: adminGetAllocationSnapshots(allocationId: $allocationId)
+}
+
 mutation adminCheckAllocation($allocationId: String!, $address: [String!]!) {
   check: adminCheckAllocation(allocationId: $allocationId, address: $address)
 }

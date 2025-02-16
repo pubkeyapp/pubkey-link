@@ -668,6 +668,7 @@ type Query {
   adminFindOneSnapshot(snapshotId: String!): Snapshot
   adminFindOneUser(userId: String!): User
   adminFindUserByIdentity(provider: IdentityProvider!, providerId: String!): User
+  adminGetAllocationSnapshots(allocationId: String!): JSON
   adminGetBackup(name: String!): JSON
   adminGetBackups: [String!]!
   adminGetVoteIdentities(networkId: String!): [String!]!

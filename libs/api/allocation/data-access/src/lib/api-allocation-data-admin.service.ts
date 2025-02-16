@@ -38,20 +38,31 @@ export class ApiAllocationDataAdminService {
   async checkAllocation(allocationId: string, address: string[]) {
     console.log('checkAllocation', allocationId, address)
     const allocation = await this.data.findOne(allocationId)
-    if(!allocation) {
+    if (!allocation) {
       throw new Error('Allocation not found')
     }
     const results = []
     for (const addr of address) {
-      const result = await this.checkAllocationByAddress(addr, allocation.url)
+      const result = await this.checkAllocationByAddress(allocation.url, addr)
       results.push(result)
     }
     return results
   }
-  async checkAllocationByAddress(address: string, url: string) {
-    console.log('checkAllocationByAddress', address)
-    const result = await fetch(url + '/wallet/' + address)
-    return await result.json()
+
+  async getAllocationSnapshots(allocationId: string) {
+    const allocation = await this.data.findOne(allocationId)
+    if (!allocation) {
+      throw new Error('Allocation not found')
+    }
+    return this.checkAllocationSnapshots(allocation.url)
   }
 
+  private async checkAllocationByAddress(url: string, address: string) {
+    const result = await fetch(`${url}/wallet/${address}`)
+    return await result.json()
+  }
+  private async checkAllocationSnapshots(url: string) {
+    const result = await fetch(`${url}/snapshots`)
+    return await result.json()
+  }
 }

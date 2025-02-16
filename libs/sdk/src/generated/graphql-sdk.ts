@@ -1027,6 +1027,7 @@ export type Query = {
   adminFindOneSnapshot?: Maybe<Snapshot>
   adminFindOneUser?: Maybe<User>
   adminFindUserByIdentity?: Maybe<User>
+  adminGetAllocationSnapshots?: Maybe<Scalars['JSON']['output']>
   adminGetBackup?: Maybe<Scalars['JSON']['output']>
   adminGetBackups: Array<Scalars['String']['output']>
   adminGetVoteIdentities: Array<Scalars['String']['output']>
@@ -1165,6 +1166,10 @@ export type QueryAdminFindOneUserArgs = {
 export type QueryAdminFindUserByIdentityArgs = {
   provider: IdentityProvider
   providerId: Scalars['String']['input']
+}
+
+export type QueryAdminGetAllocationSnapshotsArgs = {
+  allocationId: Scalars['String']['input']
 }
 
 export type QueryAdminGetBackupArgs = {
@@ -1736,6 +1741,12 @@ export type AdminUpdateAllocationMutation = {
     updatedAt?: Date | null
   } | null
 }
+
+export type AdminGetAllocationSnapshotsQueryVariables = Exact<{
+  allocationId: Scalars['String']['input']
+}>
+
+export type AdminGetAllocationSnapshotsQuery = { __typename?: 'Query'; snapshots?: any | null }
 
 export type AdminCheckAllocationMutationVariables = Exact<{
   allocationId: Scalars['String']['input']
@@ -9229,6 +9240,11 @@ export const AdminUpdateAllocationDocument = gql`
   }
   ${AllocationDetailsFragmentDoc}
 `
+export const AdminGetAllocationSnapshotsDocument = gql`
+  query adminGetAllocationSnapshots($allocationId: String!) {
+    snapshots: adminGetAllocationSnapshots(allocationId: $allocationId)
+  }
+`
 export const AdminCheckAllocationDocument = gql`
   mutation adminCheckAllocation($allocationId: String!, $address: [String!]!) {
     check: adminCheckAllocation(allocationId: $allocationId, address: $address)
@@ -10444,6 +10460,7 @@ const AdminFindManyAllocationDocumentString = print(AdminFindManyAllocationDocum
 const AdminFindOneAllocationDocumentString = print(AdminFindOneAllocationDocument)
 const AdminCreateAllocationDocumentString = print(AdminCreateAllocationDocument)
 const AdminUpdateAllocationDocumentString = print(AdminUpdateAllocationDocument)
+const AdminGetAllocationSnapshotsDocumentString = print(AdminGetAllocationSnapshotsDocument)
 const AdminCheckAllocationDocumentString = print(AdminCheckAllocationDocument)
 const AdminDeleteAllocationDocumentString = print(AdminDeleteAllocationDocument)
 const LogoutDocumentString = print(LogoutDocument)
@@ -10667,6 +10684,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
           }),
         'adminUpdateAllocation',
         'mutation',
+        variables,
+      )
+    },
+    adminGetAllocationSnapshots(
+      variables: AdminGetAllocationSnapshotsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminGetAllocationSnapshotsQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminGetAllocationSnapshotsQuery>(AdminGetAllocationSnapshotsDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminGetAllocationSnapshots',
+        'query',
         variables,
       )
     },

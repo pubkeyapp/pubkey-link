@@ -48,4 +48,9 @@ export class ApiAllocationAdminResolver {
   ) {
     return this.service.admin.checkAllocation(allocationId, address)
   }
+
+  @Query(() => GraphQLJSON, { nullable: true })
+  adminGetAllocationSnapshots(@Args('allocationId') allocationId: string) {
+    return this.service.admin.getAllocationSnapshots(allocationId)
+  }
 }

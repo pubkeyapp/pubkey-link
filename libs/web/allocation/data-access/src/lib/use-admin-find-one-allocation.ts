@@ -1,7 +1,7 @@
 import { AdminUpdateAllocationInput } from '@pubkey-link/sdk'
 import { useSdk } from '@pubkey-link/web-core-data-access'
 import { toastError, toastSuccess } from '@pubkey-ui/core'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 
 export function useAdminFindOneAllocation({ allocationId }: { allocationId: string }) {
   const sdk = useSdk()
@@ -32,31 +32,5 @@ export function useAdminFindOneAllocation({ allocationId }: { allocationId: stri
           toastError(err.message)
           return false
         }),
-    checkAllocation: async (address: string[]) =>
-      sdk
-        .adminCheckAllocation({ allocationId, address })
-        .then((res) => res.data)
-        .then(async (res) => {
-          if (res) {
-            toastSuccess('Allocation checked')
-            await query.refetch()
-            return res.check
-          }
-          toastError('Allocation not checked')
-          return false
-        })
-        .catch((err) => {
-          toastError(err.message)
-          return false
-        }),
   }
-}
-
-export function useAdminCheckAllocation({allocationId}:{allocationId:string}) {
-  const sdk = useSdk()
-  return useMutation({
-    mutationFn: async (address: string[]) => {
-      return sdk.adminCheckAllocation({ allocationId, address }).then((res) => res.data)
-  },
-  })
 }
