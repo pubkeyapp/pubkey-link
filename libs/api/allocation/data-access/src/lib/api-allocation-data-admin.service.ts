@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
+import { ApiAllocationDataService } from './api-allocation-data.service'
 import { AdminCreateAllocationInput } from './dto/admin-create-allocation.input'
 import { AdminFindManyAllocationInput } from './dto/admin-find-many-allocation.input'
 import { AdminUpdateAllocationInput } from './dto/admin-update-allocation.input'
 import { AllocationPaging } from './entity/allocation.entity'
 import { getAllocationWhereAdminInput } from './helpers/get-allocation-where-admin.input'
-import { ApiAllocationDataService } from './api-allocation-data.service'
 
 @Injectable()
 export class ApiAllocationDataAdminService {
@@ -33,5 +33,12 @@ export class ApiAllocationDataAdminService {
 
   async updateAllocation(allocationId: string, input: AdminUpdateAllocationInput) {
     return this.data.update(allocationId, input)
+  }
+
+  async checkAllocation(allocationId: string, address: string[]) {
+    console.log('checkAllocation', allocationId, address)
+    return {
+      success: true,
+    }
   }
 }

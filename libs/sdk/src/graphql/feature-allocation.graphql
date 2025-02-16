@@ -36,6 +36,10 @@ mutation adminUpdateAllocation($allocationId: String!, $input: AdminUpdateAlloca
   }
 }
 
+mutation adminCheckAllocation($allocationId: String!, $address: [String!]!) {
+  check: adminCheckAllocation(allocationId: $allocationId, address: $address)
+}
+
 mutation adminDeleteAllocation($allocationId: String!) {
   deleted: adminDeleteAllocation(allocationId: $allocationId)
 }

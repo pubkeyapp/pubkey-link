@@ -32,5 +32,22 @@ export function useAdminFindOneAllocation({ allocationId }: { allocationId: stri
           toastError(err.message)
           return false
         }),
+    checkAllocation: async (address: string[]) =>
+      sdk
+        .adminCheckAllocation({ allocationId, address })
+        .then((res) => res.data)
+        .then(async (res) => {
+          if (res) {
+            toastSuccess('Allocation checked')
+            await query.refetch()
+            return res.check
+          }
+          toastError('Allocation not checked')
+          return false
+        })
+        .catch((err) => {
+          toastError(err.message)
+          return false
+        }),
   }
 }

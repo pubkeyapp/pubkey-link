@@ -1,15 +1,15 @@
-import { Resolver } from '@nestjs/graphql'
-import { ApiAllocationService } from '@pubkey-link/api-allocation-data-access'
-import { ApiAuthGraphQLAdminGuard } from '@pubkey-link/api-auth-data-access'
-import { Mutation, Query, Args } from '@nestjs/graphql'
 import { UseGuards } from '@nestjs/common'
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import {
   AdminCreateAllocationInput,
   AdminFindManyAllocationInput,
+  AdminUpdateAllocationInput,
   Allocation,
   AllocationPaging,
-  AdminUpdateAllocationInput,
+  ApiAllocationService,
 } from '@pubkey-link/api-allocation-data-access'
+import { ApiAuthGraphQLAdminGuard } from '@pubkey-link/api-auth-data-access'
+import { GraphQLJSON } from 'graphql-scalars'
 
 @Resolver()
 @UseGuards(ApiAuthGraphQLAdminGuard)
@@ -39,5 +39,13 @@ export class ApiAllocationAdminResolver {
   @Mutation(() => Allocation, { nullable: true })
   adminUpdateAllocation(@Args('allocationId') allocationId: string, @Args('input') input: AdminUpdateAllocationInput) {
     return this.service.admin.updateAllocation(allocationId, input)
+  }
+
+  @Mutation(() => GraphQLJSON, { nullable: true })
+  adminCheckAllocation(
+    @Args('allocationId') allocationId: string,
+    @Args({ name: 'address', type: () => [String] }) address: string[],
+  ) {
+    return this.service.admin.checkAllocation(allocationId, address)
   }
 }

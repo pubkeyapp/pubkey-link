@@ -491,6 +491,7 @@ export enum LogRelatedType {
 export type Mutation = {
   __typename?: 'Mutation'
   adminAddCommunityMember?: Maybe<CommunityMember>
+  adminCheckAllocation?: Maybe<Scalars['JSON']['output']>
   adminCleanupNetworkAssets?: Maybe<Scalars['Boolean']['output']>
   adminCreateAllocation?: Maybe<Allocation>
   adminCreateBackup: Scalars['Boolean']['output']
@@ -573,6 +574,11 @@ export type Mutation = {
 export type MutationAdminAddCommunityMemberArgs = {
   communityId: Scalars['String']['input']
   input: AdminAddCommunityMemberInput
+}
+
+export type MutationAdminCheckAllocationArgs = {
+  address: Array<Scalars['String']['input']>
+  allocationId: Scalars['String']['input']
 }
 
 export type MutationAdminCleanupNetworkAssetsArgs = {
@@ -1730,6 +1736,13 @@ export type AdminUpdateAllocationMutation = {
     updatedAt?: Date | null
   } | null
 }
+
+export type AdminCheckAllocationMutationVariables = Exact<{
+  allocationId: Scalars['String']['input']
+  address: Array<Scalars['String']['input']> | Scalars['String']['input']
+}>
+
+export type AdminCheckAllocationMutation = { __typename?: 'Mutation'; check?: any | null }
 
 export type AdminDeleteAllocationMutationVariables = Exact<{
   allocationId: Scalars['String']['input']
@@ -9216,6 +9229,11 @@ export const AdminUpdateAllocationDocument = gql`
   }
   ${AllocationDetailsFragmentDoc}
 `
+export const AdminCheckAllocationDocument = gql`
+  mutation adminCheckAllocation($allocationId: String!, $address: [String!]!) {
+    check: adminCheckAllocation(allocationId: $allocationId, address: $address)
+  }
+`
 export const AdminDeleteAllocationDocument = gql`
   mutation adminDeleteAllocation($allocationId: String!) {
     deleted: adminDeleteAllocation(allocationId: $allocationId)
@@ -10426,6 +10444,7 @@ const AdminFindManyAllocationDocumentString = print(AdminFindManyAllocationDocum
 const AdminFindOneAllocationDocumentString = print(AdminFindOneAllocationDocument)
 const AdminCreateAllocationDocumentString = print(AdminCreateAllocationDocument)
 const AdminUpdateAllocationDocumentString = print(AdminUpdateAllocationDocument)
+const AdminCheckAllocationDocumentString = print(AdminCheckAllocationDocument)
 const AdminDeleteAllocationDocumentString = print(AdminDeleteAllocationDocument)
 const LogoutDocumentString = print(LogoutDocument)
 const MeDocumentString = print(MeDocument)
@@ -10647,6 +10666,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'adminUpdateAllocation',
+        'mutation',
+        variables,
+      )
+    },
+    adminCheckAllocation(
+      variables: AdminCheckAllocationMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminCheckAllocationMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminCheckAllocationMutation>(AdminCheckAllocationDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminCheckAllocation',
         'mutation',
         variables,
       )
