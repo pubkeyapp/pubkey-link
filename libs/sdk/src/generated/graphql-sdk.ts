@@ -29,6 +29,12 @@ export type AdminAddCommunityMemberInput = {
   userId: Scalars['String']['input']
 }
 
+export type AdminCreateAllocationInput = {
+  description?: InputMaybe<Scalars['String']['input']>
+  name: Scalars['String']['input']
+  url: Scalars['String']['input']
+}
+
 export type AdminCreateBotInput = {
   clientId: Scalars['String']['input']
   clientSecret: Scalars['String']['input']
@@ -64,6 +70,12 @@ export type AdminCreateRoleInput = {
 
 export type AdminCreateSnapshotInput = {
   roleId: Scalars['String']['input']
+}
+
+export type AdminFindManyAllocationInput = {
+  limit?: InputMaybe<Scalars['Int']['input']>
+  page?: InputMaybe<Scalars['Int']['input']>
+  search?: InputMaybe<Scalars['String']['input']>
 }
 
 export type AdminFindManyBotInput = {
@@ -151,6 +163,12 @@ export type AdminFindManyUserInput = {
   status?: InputMaybe<UserStatus>
 }
 
+export type AdminUpdateAllocationInput = {
+  description?: InputMaybe<Scalars['String']['input']>
+  name?: InputMaybe<Scalars['String']['input']>
+  url?: InputMaybe<Scalars['String']['input']>
+}
+
 export type AdminUpdateBotInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>
   clientId?: InputMaybe<Scalars['String']['input']>
@@ -199,6 +217,22 @@ export type AdminUpdateUserInput = {
   role?: InputMaybe<UserRole>
   status?: InputMaybe<UserStatus>
   username?: InputMaybe<Scalars['String']['input']>
+}
+
+export type Allocation = {
+  __typename?: 'Allocation'
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  description?: Maybe<Scalars['String']['output']>
+  id: Scalars['String']['output']
+  name: Scalars['String']['output']
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+  url: Scalars['String']['output']
+}
+
+export type AllocationPaging = {
+  __typename?: 'AllocationPaging'
+  data: Array<Allocation>
+  meta: PagingMeta
 }
 
 export type AppConfig = {
@@ -458,6 +492,7 @@ export type Mutation = {
   __typename?: 'Mutation'
   adminAddCommunityMember?: Maybe<CommunityMember>
   adminCleanupNetworkAssets?: Maybe<Scalars['Boolean']['output']>
+  adminCreateAllocation?: Maybe<Allocation>
   adminCreateBackup: Scalars['Boolean']['output']
   adminCreateBot?: Maybe<Bot>
   adminCreateCommunity?: Maybe<Community>
@@ -466,6 +501,7 @@ export type Mutation = {
   adminCreateNetworkToken?: Maybe<NetworkToken>
   adminCreateRole?: Maybe<Role>
   adminCreateSnapshot?: Maybe<Snapshot>
+  adminDeleteAllocation?: Maybe<Scalars['Boolean']['output']>
   adminDeleteBackup: Scalars['Boolean']['output']
   adminDeleteBot?: Maybe<Scalars['Boolean']['output']>
   adminDeleteCommunity?: Maybe<Scalars['Boolean']['output']>
@@ -485,6 +521,7 @@ export type Mutation = {
   adminSetIdentityVerified?: Maybe<Scalars['Boolean']['output']>
   adminSyncIdentity?: Maybe<Scalars['Boolean']['output']>
   adminSyncNetworkAssets?: Maybe<Scalars['Boolean']['output']>
+  adminUpdateAllocation?: Maybe<Allocation>
   adminUpdateBot?: Maybe<Bot>
   adminUpdateCommunity?: Maybe<Community>
   adminUpdateCommunityMember?: Maybe<CommunityMember>
@@ -542,6 +579,10 @@ export type MutationAdminCleanupNetworkAssetsArgs = {
   cluster: NetworkCluster
 }
 
+export type MutationAdminCreateAllocationArgs = {
+  input: AdminCreateAllocationInput
+}
+
 export type MutationAdminCreateBotArgs = {
   input: AdminCreateBotInput
 }
@@ -568,6 +609,10 @@ export type MutationAdminCreateRoleArgs = {
 
 export type MutationAdminCreateSnapshotArgs = {
   input: AdminCreateSnapshotInput
+}
+
+export type MutationAdminDeleteAllocationArgs = {
+  allocationId: Scalars['String']['input']
 }
 
 export type MutationAdminDeleteBackupArgs = {
@@ -637,6 +682,11 @@ export type MutationAdminSetIdentityVerifiedArgs = {
 
 export type MutationAdminSyncIdentityArgs = {
   identityId: Scalars['String']['input']
+}
+
+export type MutationAdminUpdateAllocationArgs = {
+  allocationId: Scalars['String']['input']
+  input: AdminUpdateAllocationInput
 }
 
 export type MutationAdminUpdateBotArgs = {
@@ -947,6 +997,7 @@ export type PagingMeta = {
 
 export type Query = {
   __typename?: 'Query'
+  adminFindManyAllocation: AllocationPaging
   adminFindManyBot: BotPaging
   adminFindManyCommunity: CommunityPaging
   adminFindManyCommunityMember: CommunityMemberPaging
@@ -958,6 +1009,7 @@ export type Query = {
   adminFindManyRole: RolePaging
   adminFindManySnapshot: SnapshotPaging
   adminFindManyUser: UserPaging
+  adminFindOneAllocation?: Maybe<Allocation>
   adminFindOneBot?: Maybe<Bot>
   adminFindOneCommunity?: Maybe<Community>
   adminFindOneCommunityMember?: Maybe<CommunityMember>
@@ -1012,6 +1064,10 @@ export type Query = {
   userRequestIdentityChallengeCli?: Maybe<IdentityChallenge>
 }
 
+export type QueryAdminFindManyAllocationArgs = {
+  input: AdminFindManyAllocationInput
+}
+
 export type QueryAdminFindManyBotArgs = {
   input: AdminFindManyBotInput
 }
@@ -1054,6 +1110,10 @@ export type QueryAdminFindManySnapshotArgs = {
 
 export type QueryAdminFindManyUserArgs = {
   input: AdminFindManyUserInput
+}
+
+export type QueryAdminFindOneAllocationArgs = {
+  allocationId: Scalars['String']['input']
 }
 
 export type QueryAdminFindOneBotArgs = {
@@ -1578,6 +1638,104 @@ export type VerifyIdentityChallengeInput = {
   providerId: Scalars['String']['input']
   signature: Scalars['String']['input']
 }
+
+export type AllocationDetailsFragment = {
+  __typename?: 'Allocation'
+  createdAt?: Date | null
+  id: string
+  name: string
+  description?: string | null
+  url: string
+  updatedAt?: Date | null
+}
+
+export type AdminFindManyAllocationQueryVariables = Exact<{
+  input: AdminFindManyAllocationInput
+}>
+
+export type AdminFindManyAllocationQuery = {
+  __typename?: 'Query'
+  paging: {
+    __typename?: 'AllocationPaging'
+    data: Array<{
+      __typename?: 'Allocation'
+      createdAt?: Date | null
+      id: string
+      name: string
+      description?: string | null
+      url: string
+      updatedAt?: Date | null
+    }>
+    meta: {
+      __typename?: 'PagingMeta'
+      currentPage: number
+      isFirstPage: boolean
+      isLastPage: boolean
+      nextPage?: number | null
+      pageCount?: number | null
+      previousPage?: number | null
+      totalCount?: number | null
+    }
+  }
+}
+
+export type AdminFindOneAllocationQueryVariables = Exact<{
+  allocationId: Scalars['String']['input']
+}>
+
+export type AdminFindOneAllocationQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'Allocation'
+    createdAt?: Date | null
+    id: string
+    name: string
+    description?: string | null
+    url: string
+    updatedAt?: Date | null
+  } | null
+}
+
+export type AdminCreateAllocationMutationVariables = Exact<{
+  input: AdminCreateAllocationInput
+}>
+
+export type AdminCreateAllocationMutation = {
+  __typename?: 'Mutation'
+  created?: {
+    __typename?: 'Allocation'
+    createdAt?: Date | null
+    id: string
+    name: string
+    description?: string | null
+    url: string
+    updatedAt?: Date | null
+  } | null
+}
+
+export type AdminUpdateAllocationMutationVariables = Exact<{
+  allocationId: Scalars['String']['input']
+  input: AdminUpdateAllocationInput
+}>
+
+export type AdminUpdateAllocationMutation = {
+  __typename?: 'Mutation'
+  updated?: {
+    __typename?: 'Allocation'
+    createdAt?: Date | null
+    id: string
+    name: string
+    description?: string | null
+    url: string
+    updatedAt?: Date | null
+  } | null
+}
+
+export type AdminDeleteAllocationMutationVariables = Exact<{
+  allocationId: Scalars['String']['input']
+}>
+
+export type AdminDeleteAllocationMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never }>
 
@@ -8610,6 +8768,16 @@ export type UserUpdateUserMutation = {
   } | null
 }
 
+export const AllocationDetailsFragmentDoc = gql`
+  fragment AllocationDetails on Allocation {
+    createdAt
+    id
+    name
+    description
+    url
+    updatedAt
+  }
+`
 export const BotServerDetailsFragmentDoc = gql`
   fragment BotServerDetails on BotServer {
     id
@@ -9008,6 +9176,49 @@ export const UserSummaryFragmentDoc = gql`
     profileUrl
     role
     username
+  }
+`
+export const AdminFindManyAllocationDocument = gql`
+  query adminFindManyAllocation($input: AdminFindManyAllocationInput!) {
+    paging: adminFindManyAllocation(input: $input) {
+      data {
+        ...AllocationDetails
+      }
+      meta {
+        ...PagingMetaDetails
+      }
+    }
+  }
+  ${AllocationDetailsFragmentDoc}
+  ${PagingMetaDetailsFragmentDoc}
+`
+export const AdminFindOneAllocationDocument = gql`
+  query adminFindOneAllocation($allocationId: String!) {
+    item: adminFindOneAllocation(allocationId: $allocationId) {
+      ...AllocationDetails
+    }
+  }
+  ${AllocationDetailsFragmentDoc}
+`
+export const AdminCreateAllocationDocument = gql`
+  mutation adminCreateAllocation($input: AdminCreateAllocationInput!) {
+    created: adminCreateAllocation(input: $input) {
+      ...AllocationDetails
+    }
+  }
+  ${AllocationDetailsFragmentDoc}
+`
+export const AdminUpdateAllocationDocument = gql`
+  mutation adminUpdateAllocation($allocationId: String!, $input: AdminUpdateAllocationInput!) {
+    updated: adminUpdateAllocation(allocationId: $allocationId, input: $input) {
+      ...AllocationDetails
+    }
+  }
+  ${AllocationDetailsFragmentDoc}
+`
+export const AdminDeleteAllocationDocument = gql`
+  mutation adminDeleteAllocation($allocationId: String!) {
+    deleted: adminDeleteAllocation(allocationId: $allocationId)
   }
 `
 export const LogoutDocument = gql`
@@ -10211,6 +10422,11 @@ export type SdkFunctionWrapper = <T>(
 ) => Promise<T>
 
 const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, _variables) => action()
+const AdminFindManyAllocationDocumentString = print(AdminFindManyAllocationDocument)
+const AdminFindOneAllocationDocumentString = print(AdminFindOneAllocationDocument)
+const AdminCreateAllocationDocumentString = print(AdminCreateAllocationDocument)
+const AdminUpdateAllocationDocumentString = print(AdminUpdateAllocationDocument)
+const AdminDeleteAllocationDocumentString = print(AdminDeleteAllocationDocument)
 const LogoutDocumentString = print(LogoutDocument)
 const MeDocumentString = print(MeDocument)
 const AdminCreateBackupDocumentString = print(AdminCreateBackupDocument)
@@ -10351,6 +10567,111 @@ const UserFindOneUserByIdDocumentString = print(UserFindOneUserByIdDocument)
 const UserUpdateUserDocumentString = print(UserUpdateUserDocument)
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    adminFindManyAllocation(
+      variables: AdminFindManyAllocationQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindManyAllocationQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindManyAllocationQuery>(AdminFindManyAllocationDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindManyAllocation',
+        'query',
+        variables,
+      )
+    },
+    adminFindOneAllocation(
+      variables: AdminFindOneAllocationQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindOneAllocationQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindOneAllocationQuery>(AdminFindOneAllocationDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindOneAllocation',
+        'query',
+        variables,
+      )
+    },
+    adminCreateAllocation(
+      variables: AdminCreateAllocationMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminCreateAllocationMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminCreateAllocationMutation>(AdminCreateAllocationDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminCreateAllocation',
+        'mutation',
+        variables,
+      )
+    },
+    adminUpdateAllocation(
+      variables: AdminUpdateAllocationMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminUpdateAllocationMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminUpdateAllocationMutation>(AdminUpdateAllocationDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminUpdateAllocation',
+        'mutation',
+        variables,
+      )
+    },
+    adminDeleteAllocation(
+      variables: AdminDeleteAllocationMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminDeleteAllocationMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminDeleteAllocationMutation>(AdminDeleteAllocationDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminDeleteAllocation',
+        'mutation',
+        variables,
+      )
+    },
     logout(
       variables?: LogoutMutationVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -13269,6 +13590,14 @@ export function AdminAddCommunityMemberInputSchema(): z.ZodObject<Properties<Adm
   })
 }
 
+export function AdminCreateAllocationInputSchema(): z.ZodObject<Properties<AdminCreateAllocationInput>> {
+  return z.object({
+    description: z.string().nullish(),
+    name: z.string(),
+    url: z.string(),
+  })
+}
+
 export function AdminCreateBotInputSchema(): z.ZodObject<Properties<AdminCreateBotInput>> {
   return z.object({
     clientId: z.string(),
@@ -13317,6 +13646,14 @@ export function AdminCreateRoleInputSchema(): z.ZodObject<Properties<AdminCreate
 export function AdminCreateSnapshotInputSchema(): z.ZodObject<Properties<AdminCreateSnapshotInput>> {
   return z.object({
     roleId: z.string(),
+  })
+}
+
+export function AdminFindManyAllocationInputSchema(): z.ZodObject<Properties<AdminFindManyAllocationInput>> {
+  return z.object({
+    limit: z.number().nullish(),
+    page: z.number().nullish(),
+    search: z.string().nullish(),
   })
 }
 
@@ -13424,6 +13761,14 @@ export function AdminFindManyUserInputSchema(): z.ZodObject<Properties<AdminFind
     role: UserRoleSchema.nullish(),
     search: z.string().nullish(),
     status: UserStatusSchema.nullish(),
+  })
+}
+
+export function AdminUpdateAllocationInputSchema(): z.ZodObject<Properties<AdminUpdateAllocationInput>> {
+  return z.object({
+    description: z.string().nullish(),
+    name: z.string().nullish(),
+    url: z.string().nullish(),
   })
 }
 

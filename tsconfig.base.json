@@ -15,6 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@pubkey-link/api-allocation-data-access": ["libs/api/allocation/data-access/src/index.ts"],
+      "@pubkey-link/api-allocation-feature": ["libs/api/allocation/feature/src/index.ts"],
       "@pubkey-link/api-auth-data-access": ["libs/api/auth/data-access/src/index.ts"],
       "@pubkey-link/api-auth-feature": ["libs/api/auth/feature/src/index.ts"],
       "@pubkey-link/api-backup-data-access": ["libs/api/backup/data-access/src/index.ts"],
@@ -49,6 +51,9 @@
       "@pubkey-link/sdk": ["libs/sdk/src/index.ts"],
       "@pubkey-link/tools": ["libs/tools/src/index.ts"],
       "@pubkey-link/verify-wallet": ["packages/verify-wallet/src/index.ts"],
+      "@pubkey-link/web-allocation-data-access": ["libs/web/allocation/data-access/src/index.ts"],
+      "@pubkey-link/web-allocation-feature": ["libs/web/allocation/feature/src/index.ts"],
+      "@pubkey-link/web-allocation-ui": ["libs/web/allocation/ui/src/index.ts"],
       "@pubkey-link/web-auth-data-access": ["libs/web/auth/data-access/src/index.ts"],
       "@pubkey-link/web-auth-feature": ["libs/web/auth/feature/src/index.ts"],
       "@pubkey-link/web-auth-ui": ["libs/web/auth/ui/src/index.ts"],

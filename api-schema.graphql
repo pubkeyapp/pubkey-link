@@ -7,6 +7,12 @@ input AdminAddCommunityMemberInput {
   userId: String!
 }
 
+input AdminCreateAllocationInput {
+  description: String
+  name: String!
+  url: String!
+}
+
 input AdminCreateBotInput {
   clientId: String!
   clientSecret: String!
@@ -42,6 +48,12 @@ input AdminCreateRoleInput {
 
 input AdminCreateSnapshotInput {
   roleId: String!
+}
+
+input AdminFindManyAllocationInput {
+  limit: Int = 10
+  page: Int = 1
+  search: String
 }
 
 input AdminFindManyBotInput {
@@ -129,6 +141,12 @@ input AdminFindManyUserInput {
   status: UserStatus
 }
 
+input AdminUpdateAllocationInput {
+  description: String
+  name: String
+  url: String
+}
+
 input AdminUpdateBotInput {
   avatarUrl: String
   clientId: String
@@ -177,6 +195,20 @@ input AdminUpdateUserInput {
   role: UserRole
   status: UserStatus
   username: String
+}
+
+type Allocation {
+  createdAt: DateTime
+  description: String
+  id: String!
+  name: String!
+  updatedAt: DateTime
+  url: String!
+}
+
+type AllocationPaging {
+  data: [Allocation!]!
+  meta: PagingMeta!
 }
 
 type AppConfig {
@@ -428,6 +460,7 @@ enum LogRelatedType {
 type Mutation {
   adminAddCommunityMember(communityId: String!, input: AdminAddCommunityMemberInput!): CommunityMember
   adminCleanupNetworkAssets(cluster: NetworkCluster!): Boolean
+  adminCreateAllocation(input: AdminCreateAllocationInput!): Allocation
   adminCreateBackup: Boolean!
   adminCreateBot(input: AdminCreateBotInput!): Bot
   adminCreateCommunity(input: AdminCreateCommunityInput!): Community
@@ -436,6 +469,7 @@ type Mutation {
   adminCreateNetworkToken(input: AdminCreateNetworkTokenInput!): NetworkToken
   adminCreateRole(input: AdminCreateRoleInput!): Role
   adminCreateSnapshot(input: AdminCreateSnapshotInput!): Snapshot
+  adminDeleteAllocation(allocationId: String!): Boolean
   adminDeleteBackup(name: String!): Boolean!
   adminDeleteBot(botId: String!): Boolean
   adminDeleteCommunity(communityId: String!): Boolean
@@ -455,6 +489,7 @@ type Mutation {
   adminSetIdentityVerified(identityId: String!, verified: Boolean!): Boolean
   adminSyncIdentity(identityId: String!): Boolean
   adminSyncNetworkAssets: Boolean
+  adminUpdateAllocation(allocationId: String!, input: AdminUpdateAllocationInput!): Allocation
   adminUpdateBot(botId: String!, input: AdminUpdateBotInput!): Bot
   adminUpdateCommunity(communityId: String!, input: AdminUpdateCommunityInput!): Community
   adminUpdateCommunityMember(communityMemberId: String!, input: AdminUpdateCommunityMemberInput!): CommunityMember
@@ -608,6 +643,7 @@ type PagingMeta {
 }
 
 type Query {
+  adminFindManyAllocation(input: AdminFindManyAllocationInput!): AllocationPaging!
   adminFindManyBot(input: AdminFindManyBotInput!): BotPaging!
   adminFindManyCommunity(input: AdminFindManyCommunityInput!): CommunityPaging!
   adminFindManyCommunityMember(input: AdminFindManyCommunityMemberInput!): CommunityMemberPaging!
@@ -619,6 +655,7 @@ type Query {
   adminFindManyRole(input: AdminFindManyRoleInput!): RolePaging!
   adminFindManySnapshot(input: AdminFindManySnapshotInput!): SnapshotPaging!
   adminFindManyUser(input: AdminFindManyUserInput!): UserPaging!
+  adminFindOneAllocation(allocationId: String!): Allocation
   adminFindOneBot(botId: String!): Bot
   adminFindOneCommunity(communityId: String!): Community
   adminFindOneCommunityMember(communityMemberId: String!): CommunityMember

@@ -16,6 +16,7 @@ import { ApiUserFeatureModule } from '@pubkey-link/api-user-feature'
 import { ApiCoreProtocolController } from './api-core-protocol.controller'
 import { ApiCoreController } from './api-core.controller'
 import { ApiCoreResolver } from './api-core.resolver'
+import { ApiAllocationFeatureModule } from '@pubkey-link/api-allocation-feature'
 
 const imports = [
   // The api-feature generator will add the imports here
@@ -33,6 +34,7 @@ const imports = [
   ApiRoleFeatureModule,
   ApiSnapshotFeatureModule,
   ApiUserFeatureModule,
+  ApiAllocationFeatureModule,
 ]
 
 @Module({

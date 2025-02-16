@@ -7,6 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Allocation {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String
+  description String?
+  url         String
+}
+
 model Bot {
   id           String      @id @default(cuid())
   createdAt    DateTime    @default(now())

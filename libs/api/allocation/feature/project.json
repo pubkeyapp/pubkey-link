@@ -1,0 +1,19 @@
+{
+  "name": "api-allocation-feature",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api/allocation/feature/src",
+  "projectType": "library",
+  "tags": ["app:api", "type:feature"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/api/allocation/feature/jest.config.ts"
+      }
+    }
+  }
+}

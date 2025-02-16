@@ -1,4 +1,5 @@
 import { ActionIcon, Group, Tooltip } from '@mantine/core'
+import { AdminAllocationFeature } from '@pubkey-link/web-allocation-feature'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { AdminCommunityFeature } from '@pubkey-link/web-community-feature'
 import { DevAdminRoutes } from '@pubkey-link/web-dev-feature'
@@ -12,6 +13,7 @@ import {
   IconChartBar,
   IconCheckupList,
   IconFileText,
+  IconListNumbers,
   IconNetwork,
   IconUsers,
   IconUsersGroup,
@@ -23,6 +25,7 @@ const AdminStatsFeature = lazy(() => import('./web-core-admin-stats'))
 
 const links: UiDashboardItem[] = [
   // Admin Dashboard Links are added by the web-crud generator
+  { label: 'Allocations', icon: IconListNumbers, to: '/admin/allocations' },
   { label: 'Communities', icon: IconUsersGroup, to: '/admin/communities' },
   { label: 'Logs', icon: IconFileText, to: '/admin/logs' },
   { label: 'Networks', icon: IconNetwork, to: '/admin/networks' },
@@ -33,6 +36,7 @@ const links: UiDashboardItem[] = [
 
 const routes: RouteObject[] = [
   // Admin Dashboard Routes are added by the web-crud generator
+  { path: 'allocations/*', element: <AdminAllocationFeature /> },
   { path: 'communities/*', element: <AdminCommunityFeature /> },
   { path: 'development/*', element: <DevAdminRoutes /> },
   { path: 'logs/*', element: <AdminLogFeature /> },

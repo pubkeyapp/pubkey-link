@@ -1,0 +1,41 @@
+fragment AllocationDetails on Allocation {
+  createdAt
+  id
+  name
+  description
+  url
+  updatedAt
+}
+
+query adminFindManyAllocation($input: AdminFindManyAllocationInput!) {
+  paging: adminFindManyAllocation(input: $input) {
+    data {
+      ...AllocationDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query adminFindOneAllocation($allocationId: String!) {
+  item: adminFindOneAllocation(allocationId: $allocationId) {
+    ...AllocationDetails
+  }
+}
+
+mutation adminCreateAllocation($input: AdminCreateAllocationInput!) {
+  created: adminCreateAllocation(input: $input) {
+    ...AllocationDetails
+  }
+}
+
+mutation adminUpdateAllocation($allocationId: String!, $input: AdminUpdateAllocationInput!) {
+  updated: adminUpdateAllocation(allocationId: $allocationId, input: $input) {
+    ...AllocationDetails
+  }
+}
+
+mutation adminDeleteAllocation($allocationId: String!) {
+  deleted: adminDeleteAllocation(allocationId: $allocationId)
+}

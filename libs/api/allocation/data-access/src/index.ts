@@ -1,0 +1,6 @@
+export * from './lib/api-allocation.data-access.module'
+export * from './lib/api-allocation.service'
+export * from './lib/entity/allocation.entity'
+export * from './lib/dto/admin-create-allocation.input'
+export * from './lib/dto/admin-find-many-allocation.input'
+export * from './lib/dto/admin-update-allocation.input'
