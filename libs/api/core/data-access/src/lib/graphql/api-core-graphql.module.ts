@@ -4,7 +4,7 @@ import { GraphQLModule } from '@nestjs/graphql'
 import { AppContext } from '../entity/app-context'
 import { join } from 'path'
 
-const isPlaygroundEnabled = process.env['GRAPHQL_PLAYGROUND']?.toLowerCase() === 'true';
+const isPlaygroundEnabled = process.env['GRAPHQL_PLAYGROUND']?.toLowerCase() === 'true'
 
 @Module({
   imports: [
@@ -13,11 +13,13 @@ const isPlaygroundEnabled = process.env['GRAPHQL_PLAYGROUND']?.toLowerCase() ===
       sortSchema: true,
       driver: ApolloDriver,
       introspection: isPlaygroundEnabled,
-      playground: isPlaygroundEnabled ? {
-        settings: {
-          'request.credentials': 'include',
-        },
-      } : false,
+      playground: isPlaygroundEnabled
+        ? {
+            settings: {
+              'request.credentials': 'include',
+            },
+          }
+        : false,
       resolvers: {
         // JSON: GraphQLJSON,
       },
