@@ -8,6 +8,7 @@ export function getNetworkTokenType(int: DasApiAsset['interface'] | string) {
     case 'FungibleAsset':
     case 'FungibleToken':
       return NetworkTokenType.Fungible
+    case 'MplCoreCollection':
     case 'ProgrammableNFT':
     case 'V1_NFT':
     case 'V2_NFT':

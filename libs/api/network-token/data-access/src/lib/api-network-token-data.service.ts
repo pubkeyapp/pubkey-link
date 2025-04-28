@@ -86,9 +86,14 @@ export class ApiNetworkTokenDataService {
       throw new Error(`Account ${input.account} not found on cluster ${input.cluster}`)
     }
 
+    const type =
+      info.owner.toString() === 'CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d'
+        ? NetworkTokenType.NonFungible
+        : getNetworkTokenType(info?.data?.program)
+
     const data: Prisma.NetworkTokenCreateInput = {
       network: { connect: { cluster: input.cluster } },
-      type: getNetworkTokenType(info?.data?.program),
+      type,
       account: input.account,
       name: input.account.toString(),
       program: info.owner.toBase58(),

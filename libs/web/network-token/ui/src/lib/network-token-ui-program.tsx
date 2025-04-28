@@ -5,6 +5,7 @@ export function NetworkTokenUiProgram({ program }: { program: string }) {
 }
 
 const map = new Map<string, string>()
+  .set('CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d', 'MPL Core')
   .set('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'Token')
   .set('TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb', 'Token 2022')
   .set(SystemProgram.programId.toString(), 'System Program')
