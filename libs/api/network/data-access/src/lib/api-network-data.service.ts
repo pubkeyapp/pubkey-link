@@ -25,6 +25,20 @@ export class ApiNetworkDataService implements OnModuleInit {
   }
 
   async delete(networkId: string) {
+    const network = await this.findOne(networkId)
+    if (!network) {
+      throw new Error(`Network ${networkId} not found`)
+    }
+    const [assetCount, tokenCount] = await Promise.all([
+      this.core.data.networkAsset.count({ where: { cluster: network.cluster } }),
+      this.core.data.networkToken.count({ where: { cluster: network.cluster } }),
+    ])
+    if (assetCount > 0) {
+      throw new Error(`Network ${networkId} has assets, please remove them first`)
+    }
+    if (tokenCount > 0) {
+      throw new Error(`Network ${networkId} has tokens, please remove them first`)
+    }
     const deleted = await this.core.data.network.delete({ where: { id: networkId } })
     this.core.eventEmitter.emit(EVENT_NETWORK_DELETED, { network: deleted })
     return !!deleted
