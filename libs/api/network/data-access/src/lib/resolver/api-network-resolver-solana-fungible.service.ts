@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { NetworkCluster, NetworkToken } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { formatParsedTokenAccounts, NetworkAssetInput } from '@pubkey-link/api-network-util'
+import { formatParsedTokenAccounts, getParsedTokenAccounts, NetworkAssetInput } from '@pubkey-link/api-network-util'
 import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
 
@@ -30,20 +30,29 @@ export class ApiNetworkResolverSolanaFungibleService {
       (acc, curr) => ({ ...acc, [curr.account]: curr }),
       {} as Record<string, NetworkToken>,
     )
-    return this.cluster.getConnection(cluster).then((conn) =>
-      Promise.all([
-        conn.getParsedTokenAccountsByOwner(address, { programId: TOKEN_PROGRAM_ID }).then((res) => res.value ?? []),
-        conn
-          .getParsedTokenAccountsByOwner(address, { programId: TOKEN_2022_PROGRAM_ID })
-          .then((res) => res.value ?? []),
-      ])
-        .then(([tokenAccounts, token2022Accounts]) =>
-          // Merge token and token2022 accounts
-          [...tokenAccounts, ...token2022Accounts]
-            // Filter by mints
-            .filter((account) => mints.includes(account.account.data.parsed.info.mint.toString())),
-        )
-        .then((accounts) => formatParsedTokenAccounts({ accounts, owner, cluster, tokenMap })),
-    )
+
+    const connection = await this.cluster.getConnection(cluster)
+    return Promise.all([
+      getParsedTokenAccounts({
+        address,
+        connection,
+        enabled: tokens.some((token) => token.program === TOKEN_PROGRAM_ID.toBase58()),
+        programId: TOKEN_PROGRAM_ID,
+      }),
+      getParsedTokenAccounts({
+        address,
+        connection,
+        enabled: tokens.some((token) => token.program === TOKEN_2022_PROGRAM_ID.toBase58()),
+        programId: TOKEN_2022_PROGRAM_ID,
+      }),
+    ]).then((results) => {
+      // Flatten the results into a single array
+      const accounts = results
+        .flat()
+        // Filter out accounts that are not in the mints array
+        .filter((account) => mints.includes(account.account.data.parsed.info.mint))
+
+      return formatParsedTokenAccounts({ accounts, owner, cluster, tokenMap })
+    })
   }
 }
