@@ -2,6 +2,7 @@ fragment NetworkTokenDetails on NetworkToken {
   id
   createdAt
   updatedAt
+  cache
   cluster
   type
   account

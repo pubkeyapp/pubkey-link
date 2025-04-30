@@ -232,6 +232,7 @@ model NetworkToken {
   network     Network          @relation(fields: [cluster], references: [cluster])
   cluster     NetworkCluster
   type        NetworkTokenType
+  cache       Boolean          @default(false)
   name        String
   account     String
   mintList    String[]

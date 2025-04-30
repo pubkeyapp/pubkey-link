@@ -162,6 +162,7 @@ input AdminUpdateNetworkInput {
 }
 
 input AdminUpdateNetworkTokenInput {
+  cache: Boolean
   name: String
 }
 
@@ -567,6 +568,7 @@ enum NetworkResolver {
 
 type NetworkToken {
   account: String!
+  cache: Boolean
   cluster: NetworkCluster!
   createdAt: DateTime
   description: String

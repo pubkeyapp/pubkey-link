@@ -4,6 +4,7 @@ import { AppUiDebugModal } from '@pubkey-link/web-core-ui'
 import { NetworkUiClusterBadge } from '@pubkey-link/web-network-ui'
 import { UiAnchor, type UiAnchorProps, UiCopy } from '@pubkey-ui/core'
 import { NetworkTokenUiAvatar } from './network-token-ui-avatar'
+import { NetworkTokenUiCache } from './network-token-ui-cache'
 import { NetworkTokenUiExplorerIcon } from './network-token-ui-explorer-icon'
 import { NetworkTokenUiTypeBadge } from './network-token-ui-type-badge'
 
@@ -40,6 +41,7 @@ export function NetworkTokenUiItem({
               {networkToken?.name}
             </Text>
             <NetworkTokenUiTypeBadge type={networkToken.type} />
+            <NetworkTokenUiCache token={networkToken} />
             <NetworkUiClusterBadge cluster={networkToken.cluster} size="xs" style={{ textTransform: 'inherit' }} />
           </Group>
           {to ? (

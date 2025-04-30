@@ -19,6 +19,8 @@ export class NetworkToken {
   cluster!: NetworkCluster
   @Field()
   account!: string
+  @Field({ nullable: true })
+  cache?: boolean
   @Field()
   name!: string
   @Field()
