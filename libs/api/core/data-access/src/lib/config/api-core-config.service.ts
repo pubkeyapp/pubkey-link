@@ -149,6 +149,18 @@ export class ApiCoreConfigService {
     return this.service.get<boolean>('botAutoStart') ?? false
   }
 
+  get cacheContextHeliusApiKey(): string {
+    return this.service.get<string>('cacheContextHeliusApiKey') as string
+  }
+
+  get cacheCronExpression(): string {
+    return this.service.get<string>('cacheCronExpression') as string
+  }
+
+  get cacheRestEnabled(): boolean {
+    return this.service.get<boolean>('cacheRestEnabled') ?? false
+  }
+
   get cookieDomains(): string[] {
     return this.service.get<string[]>('cookieDomains') ?? []
   }
@@ -200,6 +212,7 @@ export class ApiCoreConfigService {
   get featureFlags(): AppFeature[] {
     return [
       { flag: this.featureAnonCommunities, feature: AppFeature.AnonCommunities },
+      { flag: this.featureCacheEnabled, feature: AppFeature.CacheEnabled },
       { flag: this.featureCommunityCreate, feature: AppFeature.CommunityCreate },
       { flag: this.featureCommunitySnapshots, feature: AppFeature.CommunitySnapshots },
       { flag: this.featureIdentityCliVerification, feature: AppFeature.IdentityCliVerification },
@@ -218,6 +231,10 @@ export class ApiCoreConfigService {
 
   get featureBetaDasSearch() {
     return this.service.get<boolean>('featureBetaDasSearch')
+  }
+
+  get featureCacheEnabled(): boolean {
+    return this.service.get<boolean>('featureCacheEnabled') ?? false
   }
 
   get featurePubkeyProtocol() {

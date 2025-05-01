@@ -115,6 +115,10 @@ export class ApiNetworkTokenDataService {
     return !!deleted
   }
 
+  async findCacheNetworkTokens() {
+    return await this.core.data.networkToken.findMany({ where: { cache: true } })
+  }
+
   async findMany({
     limit = 10,
     page = 1,

@@ -1,3 +1,4 @@
+import { CronExpression } from '@nestjs/schedule'
 import * as Joi from 'joi'
 
 export const validationSchema = Joi.object({
@@ -26,6 +27,11 @@ export const validationSchema = Joi.object({
   AUTH_TELEGRAM_BOT_TOKEN: Joi.string(),
   // Bot
   BOT_AUTO_START: Joi.boolean().default(true),
+  // Cache
+  CACHE_CONTEXT_HELIUS_API_KEY: Joi.string(),
+  CACHE_CRON_EXPRESSION: Joi.string().default(CronExpression.EVERY_10_MINUTES),
+  CACHE_REST_ENABLED: Joi.boolean().default(false),
+  // Cloak
   CLOAK_MASTER_KEY: Joi.string().required().error(new Error(`CLOAK_MASTER_KEY is required.`)),
   CLOAK_KEYCHAIN: Joi.string().required().error(new Error(`CLOAK_KEYCHAIN is required.`)),
   COOKIE_NAME: Joi.string().default('__session'),
@@ -36,6 +42,7 @@ export const validationSchema = Joi.object({
   FEATURE_ANON_COMMUNITIES: Joi.boolean().default(true),
   FEATURE_BETA_DAS_BURNT: Joi.boolean().default(false),
   FEATURE_BETA_DAS_SEARCH: Joi.boolean().default(false),
+  FEATURE_CACHE_ENABLED: Joi.boolean().default(false),
   FEATURE_COMMUNITY_CREATE: Joi.boolean().default(true),
   FEATURE_COMMUNITY_SNAPSHOTS: Joi.boolean().default(false),
   FEATURE_IDENTITY_CLI_VERIFICATION: Joi.boolean().default(false),
