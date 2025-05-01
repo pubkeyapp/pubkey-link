@@ -282,6 +282,26 @@ export enum BotStatus {
   Inactive = 'Inactive',
 }
 
+export type CacheGroup = {
+  __typename?: 'CacheGroup'
+  cluster: NetworkCluster
+  resolvers: Array<CacheResolver>
+}
+
+export type CacheResolver = {
+  __typename?: 'CacheResolver'
+  address: Scalars['String']['output']
+  id: Scalars['String']['output']
+  type: Scalars['String']['output']
+}
+
+export type CacheStatus = {
+  __typename?: 'CacheStatus'
+  caches: Array<CacheGroup>
+  enabled: Scalars['Boolean']['output']
+  restEnabled: Scalars['Boolean']['output']
+}
+
 export type Community = {
   __typename?: 'Community'
   avatarUrl?: Maybe<Scalars['String']['output']>
@@ -458,6 +478,7 @@ export enum LogRelatedType {
 export type Mutation = {
   __typename?: 'Mutation'
   adminAddCommunityMember?: Maybe<CommunityMember>
+  adminCacheResolve?: Maybe<Scalars['JSON']['output']>
   adminCleanupNetworkAssets?: Maybe<Scalars['Boolean']['output']>
   adminCreateBackup: Scalars['Boolean']['output']
   adminCreateBot?: Maybe<Bot>
@@ -537,6 +558,11 @@ export type Mutation = {
 export type MutationAdminAddCommunityMemberArgs = {
   communityId: Scalars['String']['input']
   input: AdminAddCommunityMemberInput
+}
+
+export type MutationAdminCacheResolveArgs = {
+  cacheId: Scalars['String']['input']
+  cluster: NetworkCluster
 }
 
 export type MutationAdminCleanupNetworkAssetsArgs = {
@@ -949,6 +975,8 @@ export type PagingMeta = {
 
 export type Query = {
   __typename?: 'Query'
+  adminCacheDetail?: Maybe<Scalars['JSON']['output']>
+  adminCacheStatus?: Maybe<CacheStatus>
   adminFindManyBot: BotPaging
   adminFindManyCommunity: CommunityPaging
   adminFindManyCommunityMember: CommunityMemberPaging
@@ -1013,6 +1041,11 @@ export type Query = {
   userGetTokenMetadata?: Maybe<Scalars['JSON']['output']>
   userRequestIdentityChallenge?: Maybe<IdentityChallenge>
   userRequestIdentityChallengeCli?: Maybe<IdentityChallenge>
+}
+
+export type QueryAdminCacheDetailArgs = {
+  cacheId: Scalars['String']['input']
+  cluster: NetworkCluster
 }
 
 export type QueryAdminFindManyBotArgs = {
@@ -2225,6 +2258,47 @@ export type UserGetBotServerQuery = {
     permissions?: Array<string> | null
   } | null
 }
+
+export type CacheStatusDetailsFragment = {
+  __typename?: 'CacheStatus'
+  enabled: boolean
+  restEnabled: boolean
+  caches: Array<{
+    __typename?: 'CacheGroup'
+    cluster: NetworkCluster
+    resolvers: Array<{ __typename?: 'CacheResolver'; id: string; address: string; type: string }>
+  }>
+}
+
+export type AdminCacheStatusQueryVariables = Exact<{ [key: string]: never }>
+
+export type AdminCacheStatusQuery = {
+  __typename?: 'Query'
+  adminCacheStatus?: {
+    __typename?: 'CacheStatus'
+    enabled: boolean
+    restEnabled: boolean
+    caches: Array<{
+      __typename?: 'CacheGroup'
+      cluster: NetworkCluster
+      resolvers: Array<{ __typename?: 'CacheResolver'; id: string; address: string; type: string }>
+    }>
+  } | null
+}
+
+export type AdminCacheDetailQueryVariables = Exact<{
+  cluster: NetworkCluster
+  cacheId: Scalars['String']['input']
+}>
+
+export type AdminCacheDetailQuery = { __typename?: 'Query'; adminCacheDetail?: any | null }
+
+export type AdminCacheResolveMutationVariables = Exact<{
+  cluster: NetworkCluster
+  cacheId: Scalars['String']['input']
+}>
+
+export type AdminCacheResolveMutation = { __typename?: 'Mutation'; adminCacheResolve?: any | null }
 
 export type CommunityMemberDetailsFragment = {
   __typename?: 'CommunityMember'
@@ -8693,6 +8767,20 @@ export const DiscordChannelDetailsFragmentDoc = gql`
     type
   }
 `
+export const CacheStatusDetailsFragmentDoc = gql`
+  fragment CacheStatusDetails on CacheStatus {
+    enabled
+    restEnabled
+    caches {
+      cluster
+      resolvers {
+        id
+        address
+        type
+      }
+    }
+  }
+`
 export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
     createdAt
@@ -9278,6 +9366,24 @@ export const UserGetBotServerDocument = gql`
     }
   }
   ${DiscordServerDetailsFragmentDoc}
+`
+export const AdminCacheStatusDocument = gql`
+  query adminCacheStatus {
+    adminCacheStatus {
+      ...CacheStatusDetails
+    }
+  }
+  ${CacheStatusDetailsFragmentDoc}
+`
+export const AdminCacheDetailDocument = gql`
+  query adminCacheDetail($cluster: NetworkCluster!, $cacheId: String!) {
+    adminCacheDetail(cluster: $cluster, cacheId: $cacheId)
+  }
+`
+export const AdminCacheResolveDocument = gql`
+  mutation adminCacheResolve($cluster: NetworkCluster!, $cacheId: String!) {
+    adminCacheResolve(cluster: $cluster, cacheId: $cacheId)
+  }
 `
 export const AdminFindManyCommunityMemberDocument = gql`
   query adminFindManyCommunityMember($input: AdminFindManyCommunityMemberInput!) {
@@ -10310,6 +10416,9 @@ const UserGetBotChannelsDocumentString = print(UserGetBotChannelsDocument)
 const UserGetBotRolesDocumentString = print(UserGetBotRolesDocument)
 const UserGetBotServersDocumentString = print(UserGetBotServersDocument)
 const UserGetBotServerDocumentString = print(UserGetBotServerDocument)
+const AdminCacheStatusDocumentString = print(AdminCacheStatusDocument)
+const AdminCacheDetailDocumentString = print(AdminCacheDetailDocument)
+const AdminCacheResolveDocumentString = print(AdminCacheResolveDocument)
 const AdminFindManyCommunityMemberDocumentString = print(AdminFindManyCommunityMemberDocument)
 const AdminFindOneCommunityMemberDocumentString = print(AdminFindOneCommunityMemberDocument)
 const AdminAddCommunityMemberDocumentString = print(AdminAddCommunityMemberDocument)
@@ -11013,6 +11122,69 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
           }),
         'userGetBotServer',
         'query',
+        variables,
+      )
+    },
+    adminCacheStatus(
+      variables?: AdminCacheStatusQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminCacheStatusQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminCacheStatusQuery>(AdminCacheStatusDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminCacheStatus',
+        'query',
+        variables,
+      )
+    },
+    adminCacheDetail(
+      variables: AdminCacheDetailQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminCacheDetailQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminCacheDetailQuery>(AdminCacheDetailDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminCacheDetail',
+        'query',
+        variables,
+      )
+    },
+    adminCacheResolve(
+      variables: AdminCacheResolveMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminCacheResolveMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminCacheResolveMutation>(AdminCacheResolveDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminCacheResolve',
+        'mutation',
         variables,
       )
     },

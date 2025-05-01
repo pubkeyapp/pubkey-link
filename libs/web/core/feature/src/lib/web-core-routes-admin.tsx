@@ -1,5 +1,6 @@
 import { ActionIcon, Group, Tooltip } from '@mantine/core'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
+import { AdminCacheFeature } from '@pubkey-link/web-cache-feature'
 import { AdminCommunityFeature } from '@pubkey-link/web-community-feature'
 import { DevAdminRoutes } from '@pubkey-link/web-dev-feature'
 import { AdminLogFeature } from '@pubkey-link/web-log-feature'
@@ -12,7 +13,7 @@ import {
   IconBug,
   IconCalendarTime,
   IconChartBar,
-  IconCheckupList,
+  IconFileDatabase,
   IconFileText,
   IconNetwork,
   IconUsers,
@@ -25,17 +26,19 @@ const AdminStatsFeature = lazy(() => import('./web-core-admin-stats'))
 
 const links: UiDashboardItem[] = [
   // Admin Dashboard Links are added by the web-crud generator
+  { label: 'Cache', icon: IconFileDatabase, to: '/admin/cache' },
   { label: 'Communities', icon: IconUsersGroup, to: '/admin/communities' },
   { label: 'Logs', icon: IconFileText, to: '/admin/logs' },
   { label: 'Networks', icon: IconNetwork, to: '/admin/networks' },
   { label: 'Users', icon: IconUsers, to: '/admin/users' },
   { label: 'Scheduled Jobs', icon: IconCalendarTime, to: '/admin/schedule' },
   { label: 'Stats', icon: IconChartBar, to: '/admin/stats' },
-  { label: 'Verify', icon: IconCheckupList, to: '/admin/verify' },
+  // { label: 'Verify', icon: IconCheckupList, to: '/admin/verify' },
 ]
 
 const routes: RouteObject[] = [
   // Admin Dashboard Routes are added by the web-crud generator
+  { path: 'cache/*', element: <AdminCacheFeature /> },
   { path: 'communities/*', element: <AdminCommunityFeature /> },
   { path: 'development/*', element: <DevAdminRoutes /> },
   { path: 'logs/*', element: <AdminLogFeature /> },

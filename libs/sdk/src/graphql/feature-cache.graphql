@@ -1,0 +1,26 @@
+fragment CacheStatusDetails on CacheStatus {
+  enabled
+  restEnabled
+  caches {
+    cluster
+    resolvers {
+      id
+      address
+      type
+    }
+  }
+}
+
+query adminCacheStatus {
+  adminCacheStatus {
+    ...CacheStatusDetails
+  }
+}
+
+query adminCacheDetail($cluster: NetworkCluster!, $cacheId: String!) {
+  adminCacheDetail(cluster: $cluster, cacheId: $cacheId)
+}
+
+mutation adminCacheResolve($cluster: NetworkCluster!, $cacheId: String!) {
+  adminCacheResolve(cluster: $cluster, cacheId: $cacheId)
+}
