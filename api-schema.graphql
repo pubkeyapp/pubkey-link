@@ -633,6 +633,7 @@ type Query {
   adminGetBackup(name: String!): JSON
   adminGetBackups: [String!]!
   adminGetVoteIdentities(networkId: String!): [String!]!
+  adminScheduledJobs: [ScheduledJob!]!
   adminTableStats: [StatRecordGroup!]
   anonGetCommunities: [Community!]!
   anonRequestIdentityChallenge(input: RequestIdentityChallengeInput!): IdentityChallenge
@@ -720,6 +721,11 @@ type RolePermission {
   role: Role
   roleId: String
   updatedAt: DateTime
+}
+
+type ScheduledJob {
+  job: JSON
+  name: String!
 }
 
 type Snapshot {

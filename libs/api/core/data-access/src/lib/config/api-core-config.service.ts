@@ -193,6 +193,10 @@ export class ApiCoreConfigService {
     return this.service.get('environment')
   }
 
+  get featureCacheEnabled() {
+    return this.service.get<boolean>('featureCacheEnabled') ?? false
+  }
+
   get featureFlags(): AppFeature[] {
     return [
       { flag: this.featureAnonCommunities, feature: AppFeature.AnonCommunities },

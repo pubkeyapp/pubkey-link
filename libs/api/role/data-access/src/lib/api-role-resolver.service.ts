@@ -27,7 +27,10 @@ export class ApiRoleResolverService {
     readonly networkAsset: ApiNetworkAssetService,
   ) {}
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_MINUTE, {
+    disabled: process.env['SYNC_COMMUNITY_ROLES'] !== 'true',
+    name: 'role::sync-all-community-roles',
+  })
   @OnEvent('communities.provisioned', { async: true })
   async syncAllCommunityRoles() {
     if (!this.core.config.syncCommunityRoles) {

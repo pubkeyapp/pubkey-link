@@ -11,6 +11,7 @@ import { ApiNetworkAssetFeatureModule } from '@pubkey-link/api-network-asset-fea
 import { ApiNetworkFeatureModule } from '@pubkey-link/api-network-feature'
 import { ApiNetworkTokenFeatureModule } from '@pubkey-link/api-network-token-feature'
 import { ApiRoleFeatureModule } from '@pubkey-link/api-role-feature'
+import { ApiScheduleFeatureModule } from '@pubkey-link/api-schedule-feature'
 import { ApiSnapshotFeatureModule } from '@pubkey-link/api-snapshot-feature'
 import { ApiUserFeatureModule } from '@pubkey-link/api-user-feature'
 import { ApiCoreProtocolController } from './api-core-protocol.controller'
@@ -31,6 +32,7 @@ const imports = [
   ApiNetworkFeatureModule,
   ApiNetworkTokenFeatureModule,
   ApiRoleFeatureModule,
+  ApiScheduleFeatureModule,
   ApiSnapshotFeatureModule,
   ApiUserFeatureModule,
 ]

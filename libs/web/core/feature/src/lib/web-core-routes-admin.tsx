@@ -4,11 +4,13 @@ import { AdminCommunityFeature } from '@pubkey-link/web-community-feature'
 import { DevAdminRoutes } from '@pubkey-link/web-dev-feature'
 import { AdminLogFeature } from '@pubkey-link/web-log-feature'
 import { AdminNetworkFeature } from '@pubkey-link/web-network-feature'
+import { AdminScheduleFeature } from '@pubkey-link/web-schedule-feature'
 import { AdminUserFeature } from '@pubkey-link/web-user-feature'
 import { AdminVerifyFeature } from '@pubkey-link/web-verify-feature'
 import { UiContainer, UiDashboardGrid, UiDashboardItem, UiNotFound } from '@pubkey-ui/core'
 import {
   IconBug,
+  IconCalendarTime,
   IconChartBar,
   IconCheckupList,
   IconFileText,
@@ -27,6 +29,7 @@ const links: UiDashboardItem[] = [
   { label: 'Logs', icon: IconFileText, to: '/admin/logs' },
   { label: 'Networks', icon: IconNetwork, to: '/admin/networks' },
   { label: 'Users', icon: IconUsers, to: '/admin/users' },
+  { label: 'Scheduled Jobs', icon: IconCalendarTime, to: '/admin/schedule' },
   { label: 'Stats', icon: IconChartBar, to: '/admin/stats' },
   { label: 'Verify', icon: IconCheckupList, to: '/admin/verify' },
 ]
@@ -37,6 +40,7 @@ const routes: RouteObject[] = [
   { path: 'development/*', element: <DevAdminRoutes /> },
   { path: 'logs/*', element: <AdminLogFeature /> },
   { path: 'networks/*', element: <AdminNetworkFeature /> },
+  { path: 'schedule/*', element: <AdminScheduleFeature /> },
   { path: 'stats/*', element: <AdminStatsFeature /> },
   { path: 'users/*', element: <AdminUserFeature /> },
   { path: 'verify/*', element: <AdminVerifyFeature /> },

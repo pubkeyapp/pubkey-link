@@ -76,7 +76,10 @@ export class ApiNetworkDataService implements OnModuleInit {
     return this.cluster.getVoteIdentities(network.cluster)
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_30_MINUTES, {
+    disabled: process.env['SYNC_VOTE_IDENTITIES'] !== 'true',
+    name: 'network::refresh-all-vote-identities',
+  })
   async refreshAllVoteIdentities() {
     const networks = await this.core.data.network.findMany()
     if (!networks.length) {

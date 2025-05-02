@@ -69,7 +69,10 @@ export class ApiNetworkAssetSyncService {
     return !!job.id
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_30_MINUTES, {
+    disabled: process.env['SYNC_NETWORK_ASSETS'] !== 'true',
+    name: 'network-asset::sync-all-network-assets',
+  })
   async syncAllNetworkAssets({ force = false } = {}) {
     if (!this.core.config.syncNetworkAssets && !force) {
       this.logger.warn(`[GLOBAL] syncAllNetworkAssets: sync is disabled (SYNC_NETWORK_ASSETS!=true, force=${force})`)
@@ -155,6 +158,7 @@ export class ApiNetworkAssetSyncService {
 
   @Cron(CronExpression.EVERY_4_HOURS, {
     disabled: process.env['FEATURE_VERIFY_NETWORK_ASSETS'] !== 'true',
+    name: 'network-asset::verify-all-network-assets',
   })
   async verifyAllNetworkAssets() {
     const cluster = this.network.cluster.getDefaultCluster()

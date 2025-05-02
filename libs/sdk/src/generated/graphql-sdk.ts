@@ -972,6 +972,7 @@ export type Query = {
   adminGetBackup?: Maybe<Scalars['JSON']['output']>
   adminGetBackups: Array<Scalars['String']['output']>
   adminGetVoteIdentities: Array<Scalars['String']['output']>
+  adminScheduledJobs: Array<ScheduledJob>
   adminTableStats?: Maybe<Array<StatRecordGroup>>
   anonGetCommunities: Array<Community>
   anonRequestIdentityChallenge?: Maybe<IdentityChallenge>
@@ -1297,6 +1298,12 @@ export type RolePermission = {
   role?: Maybe<Role>
   roleId?: Maybe<Scalars['String']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type ScheduledJob = {
+  __typename?: 'ScheduledJob'
+  job?: Maybe<Scalars['JSON']['output']>
+  name: Scalars['String']['output']
 }
 
 export type Snapshot = {
@@ -7492,6 +7499,13 @@ export type UserSyncCommunityRolesMutationVariables = Exact<{
 
 export type UserSyncCommunityRolesMutation = { __typename?: 'Mutation'; result?: any | null }
 
+export type AdminScheduledJobsQueryVariables = Exact<{ [key: string]: never }>
+
+export type AdminScheduledJobsQuery = {
+  __typename?: 'Query'
+  items: Array<{ __typename?: 'ScheduledJob'; name: string; job?: any | null }>
+}
+
 export type SnapshotDetailsFragment = {
   __typename?: 'Snapshot'
   createdAt?: Date | null
@@ -10043,6 +10057,14 @@ export const UserSyncCommunityRolesDocument = gql`
     result: userSyncCommunityRoles(communityId: $communityId)
   }
 `
+export const AdminScheduledJobsDocument = gql`
+  query adminScheduledJobs {
+    items: adminScheduledJobs {
+      name
+      job
+    }
+  }
+`
 export const UserFindManySnapshotDocument = gql`
   query userFindManySnapshot($input: UserFindManySnapshotInput!) {
     paging: userFindManySnapshot(input: $input) {
@@ -10333,6 +10355,7 @@ const UserDeleteRoleDocumentString = print(UserDeleteRoleDocument)
 const UserDeleteRoleConditionDocumentString = print(UserDeleteRoleConditionDocument)
 const UserDeleteRolePermissionDocumentString = print(UserDeleteRolePermissionDocument)
 const UserSyncCommunityRolesDocumentString = print(UserSyncCommunityRolesDocument)
+const AdminScheduledJobsDocumentString = print(AdminScheduledJobsDocument)
 const UserFindManySnapshotDocumentString = print(UserFindManySnapshotDocument)
 const UserFindOneSnapshotDocumentString = print(UserFindOneSnapshotDocument)
 const UserCreateSnapshotDocumentString = print(UserCreateSnapshotDocument)
@@ -12887,6 +12910,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
           }),
         'userSyncCommunityRoles',
         'mutation',
+        variables,
+      )
+    },
+    adminScheduledJobs(
+      variables?: AdminScheduledJobsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminScheduledJobsQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminScheduledJobsQuery>(AdminScheduledJobsDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminScheduledJobs',
+        'query',
         variables,
       )
     },

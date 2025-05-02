@@ -61,6 +61,7 @@ export interface ApiCoreConfig {
   featureAnonCommunities: boolean
   featureBetaDasBurnt: boolean
   featureBetaDasSearch: boolean
+  featureCacheEnabled: boolean
   featureCommunityCreate: boolean
   featureCommunitySnapshots: boolean
   featureIdentityCliVerification: boolean
@@ -95,6 +96,7 @@ export interface ApiCoreConfig {
   syncBotServers: boolean
   syncCommunityRoles: boolean
   syncNetworkAssets: boolean
+  syncVoteIdentities: boolean
   // Web URL
   webUrl: string
 }
@@ -129,6 +131,7 @@ export function configuration(): ApiCoreConfig {
     featureAnonCommunities: process.env['FEATURE_ANON_COMMUNITIES'] === 'true',
     featureBetaDasBurnt: process.env['FEATURE_BETA_DAS_BURNT'] === 'true',
     featureBetaDasSearch: process.env['FEATURE_BETA_DAS_SEARCH'] === 'true',
+    featureCacheEnabled: process.env['FEATURE_CACHE_ENABLED'] === 'true',
     featureCommunityCreate: process.env['FEATURE_COMMUNITY_CREATE'] === 'true',
     featureCommunitySnapshots: process.env['FEATURE_COMMUNITY_SNAPSHOTS'] === 'true',
     featureIdentityCliVerification: process.env['FEATURE_IDENTITY_CLI_VERIFICATION'] === 'true',
@@ -155,6 +158,7 @@ export function configuration(): ApiCoreConfig {
     syncBotServers: process.env['SYNC_BOT_SERVERS'] === 'true',
     syncCommunityRoles: process.env['SYNC_COMMUNITY_ROLES'] === 'true',
     syncNetworkAssets: process.env['SYNC_NETWORK_ASSETS'] === 'true',
+    syncVoteIdentities: process.env['SYNC_VOTE_IDENTITIES'] === 'true',
     webUrl: WEB_URL,
   }
 }

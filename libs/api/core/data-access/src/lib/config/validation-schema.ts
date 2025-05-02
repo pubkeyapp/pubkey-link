@@ -63,6 +63,7 @@ export const validationSchema = Joi.object({
   SOLANA_MAINNET_ENDPOINT: Joi.string(),
   SOLANA_TESTNET_ENDPOINT: Joi.string(),
   SYNC_BOT_SERVERS: Joi.boolean().default(true),
-  SYNC_NETWORK_ASSETS: Joi.boolean().default(true),
   SYNC_COMMUNITY_ROLES: Joi.boolean().default(true),
+  SYNC_NETWORK_ASSETS: Joi.boolean().default(true),
+  SYNC_VOTE_IDENTITIES: Joi.boolean().default(true),
 })

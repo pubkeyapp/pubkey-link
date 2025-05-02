@@ -32,7 +32,7 @@ export class ApiLogDataService {
     return found
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, { name: 'log::purge-logs' })
   async purgeLogs() {
     const logDays = process.env['LOG_DAYS'] ?? '7'
     const date = new Date(new Date().getTime() - parseInt(logDays) * 24 * 60 * 60 * 1000)

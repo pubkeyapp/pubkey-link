@@ -95,7 +95,10 @@ export class ApiBotSyncService {
     return true
   }
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_MINUTE, {
+    disabled: process.env['SYNC_BOT_SERVERS'] !== 'true',
+    name: 'bot::sync-all-bot-servers',
+  })
   private async syncAllBotServers(): Promise<void> {
     if (!this.core.config.syncBotServers) {
       this.logger.warn(`[GLOBAL] Bot server sync is disabled (SYNC_BOT_SERVERS!=true)`)

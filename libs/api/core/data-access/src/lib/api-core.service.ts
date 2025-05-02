@@ -1,5 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { EventEmitter2 } from '@nestjs/event-emitter'
+import { SchedulerRegistry } from '@nestjs/schedule'
 import { IdentityProvider, LogLevel, LogRelatedType, NetworkCluster, Prisma, User, UserRole } from '@prisma/client'
 import { ApiCorePrismaClient, prismaClient } from './api-core-prisma-client'
 import { ApiCoreConfigService } from './config/api-core-config.service'
@@ -16,6 +17,7 @@ export class ApiCoreService implements OnModuleInit {
   constructor(
     readonly eventEmitter: EventEmitter2,
     readonly config: ApiCoreConfigService,
+    readonly scheduler: SchedulerRegistry,
     readonly protocol: ApiCoreProtocolService,
   ) {}
 

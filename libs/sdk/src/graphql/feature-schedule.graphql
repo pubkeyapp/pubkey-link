@@ -1,0 +1,6 @@
+query adminScheduledJobs {
+  items: adminScheduledJobs {
+    name
+    job
+  }
+}
