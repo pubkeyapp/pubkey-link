@@ -71,7 +71,7 @@
     "@ogma/platform-express": "^5.0.1",
     "@ogma/platform-graphql": "^5.0.1",
     "@prisma/client": "5.18.0",
-    "@pubkey-cache/resolver": "1.0.0-canary-20250430161448",
+    "@pubkey-cache/resolver": "1.0.0-canary-20250502012006",
     "@pubkey-program-library/anchor": "^1.7.1",
     "@pubkey-program-library/sdk": "^1.7.1",
     "@pubkey-ui/core": "^1.7.0",
