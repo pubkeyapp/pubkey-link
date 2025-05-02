@@ -1,0 +1,15 @@
+fragment CacheConfigDetails on CacheConfig {
+  key
+  type
+  value
+}
+
+query adminCacheConfig {
+  adminCacheConfig {
+    ...CacheConfigDetails
+  }
+}
+
+mutation adminCacheConfigSet($key: CacheConfigKey!, $value: String!) {
+  adminCacheConfigSet(key: $key, value: $value)
+}

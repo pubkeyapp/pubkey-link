@@ -18,6 +18,7 @@ import { ApiCoreProtocolController } from './api-core-protocol.controller'
 import { ApiCoreController } from './api-core.controller'
 import { ApiCoreResolver } from './api-core.resolver'
 import { ApiCacheFeatureModule } from '@pubkey-link/api-cache-feature'
+import { ApiCacheConfigFeatureModule } from '@pubkey-link/api-cache-config-feature'
 
 const imports = [
   // The api-feature generator will add the imports here
@@ -37,6 +38,7 @@ const imports = [
   ApiSnapshotFeatureModule,
   ApiUserFeatureModule,
   ApiCacheFeatureModule,
+  ApiCacheConfigFeatureModule,
 ]
 
 @Module({

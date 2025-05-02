@@ -3,10 +3,6 @@ import { NetworkCluster } from '@prisma/client'
 
 @ObjectType()
 export class CacheStatus {
-  @Field(() => Boolean)
-  enabled!: boolean
-  @Field(() => Boolean)
-  restEnabled!: boolean
   @Field(() => [CacheGroup])
   caches!: CacheGroup[]
 }

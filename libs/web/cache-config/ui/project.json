@@ -1,0 +1,12 @@
+{
+  "name": "web-cache-config-ui",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/web/cache-config/ui/src",
+  "projectType": "library",
+  "tags": ["app:web", "type:ui"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

@@ -26,7 +26,6 @@ export class AppConfig {
 
 export enum AppFeature {
   AnonCommunities = 'AnonCommunities',
-  CacheEnabled = 'CacheEnabled',
   CommunityCreate = 'CommunityCreate',
   CommunitySnapshots = 'CommunitySnapshots',
   IdentityCliVerification = 'IdentityCliVerification',

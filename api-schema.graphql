@@ -255,6 +255,24 @@ enum BotStatus {
   Inactive
 }
 
+type CacheConfig {
+  key: CacheConfigKey!
+  type: CacheConfigType!
+  value: String!
+}
+
+enum CacheConfigKey {
+  CronExpression
+  HeliusApiKey
+  RestEnabled
+}
+
+enum CacheConfigType {
+  Boolean
+  Secret
+  String
+}
+
 type CacheGroup {
   cluster: NetworkCluster!
   resolvers: [CacheResolver!]!
@@ -268,8 +286,6 @@ type CacheResolver {
 
 type CacheStatus {
   caches: [CacheGroup!]!
-  enabled: Boolean!
-  restEnabled: Boolean!
 }
 
 type Community {
@@ -445,6 +461,7 @@ enum LogRelatedType {
 
 type Mutation {
   adminAddCommunityMember(communityId: String!, input: AdminAddCommunityMemberInput!): CommunityMember
+  adminCacheConfigSet(key: CacheConfigKey!, value: String!): Boolean
   adminCacheResolve(cacheId: String!, cluster: NetworkCluster!): JSON
   adminCleanupNetworkAssets(cluster: NetworkCluster!): Boolean
   adminCreateBackup: Boolean!
@@ -628,6 +645,7 @@ type PagingMeta {
 }
 
 type Query {
+  adminCacheConfig: [CacheConfig!]
   adminCacheDetail(cacheId: String!, cluster: NetworkCluster!): JSON
   adminCacheStatus: CacheStatus
   adminFindManyBot(input: AdminFindManyBotInput!): BotPaging!

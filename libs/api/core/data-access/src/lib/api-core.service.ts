@@ -2,6 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { SchedulerRegistry } from '@nestjs/schedule'
 import { IdentityProvider, LogLevel, LogRelatedType, NetworkCluster, Prisma, User, UserRole } from '@prisma/client'
+import { CronJob } from 'cron'
 import { ApiCorePrismaClient, prismaClient } from './api-core-prisma-client'
 import { ApiCoreConfigService } from './config/api-core-config.service'
 import { StatRecord } from './entity/stat-record'
@@ -16,8 +17,8 @@ export class ApiCoreService implements OnModuleInit {
   readonly data: ApiCorePrismaClient = prismaClient
   constructor(
     readonly eventEmitter: EventEmitter2,
-    readonly config: ApiCoreConfigService,
     readonly scheduler: SchedulerRegistry,
+    readonly config: ApiCoreConfigService,
     readonly protocol: ApiCoreProtocolService,
   ) {}
 
@@ -194,6 +195,24 @@ export class ApiCoreService implements OnModuleInit {
       return user.private
     }
     return false
+  }
+
+  async scheduleJob(jobName: string, cronTime: string, handler: () => Promise<void>) {
+    if (this.scheduler.getCronJobs().has(jobName)) {
+      const job = this.scheduler.getCronJobs().get(jobName)
+      if (job) {
+        job.stop()
+        this.scheduler.deleteCronJob(jobName)
+        this.logger.verbose(`[scheduleJob] (${jobName}) Deleted job`)
+      }
+    }
+    const job = new CronJob(cronTime, async () => {
+      this.logger.verbose(`[scheduleJob] (${jobName}) Running job`)
+      await handler()
+    })
+    this.scheduler.addCronJob(jobName, job)
+    job.start()
+    this.logger.log(`[scheduleJob] (${jobName}) Added job at ${cronTime}`)
   }
 
   async tableStats(): Promise<StatRecordGroup[]> {

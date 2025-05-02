@@ -1,4 +1,3 @@
-import { CronExpression } from '@nestjs/schedule'
 import * as Joi from 'joi'
 
 export const validationSchema = Joi.object({
@@ -27,10 +26,6 @@ export const validationSchema = Joi.object({
   AUTH_TELEGRAM_BOT_TOKEN: Joi.string(),
   // Bot
   BOT_AUTO_START: Joi.boolean().default(true),
-  // Cache
-  CACHE_CONTEXT_HELIUS_API_KEY: Joi.string(),
-  CACHE_CRON_EXPRESSION: Joi.string().default(CronExpression.EVERY_10_MINUTES),
-  CACHE_REST_ENABLED: Joi.boolean().default(false),
   // Cloak
   CLOAK_MASTER_KEY: Joi.string().required().error(new Error(`CLOAK_MASTER_KEY is required.`)),
   CLOAK_KEYCHAIN: Joi.string().required().error(new Error(`CLOAK_KEYCHAIN is required.`)),

@@ -10,12 +10,15 @@ export class ApiCacheController {
 
   @Get()
   index() {
+    if (!this.service.restEnabled) {
+      throw new BadRequestException('REST API is not enabled')
+    }
     return this.service.status
   }
 
   @Get('assets-owner/:cluster/:id/:owner')
   assetsOwner(@Param('cluster') cluster: NetworkCluster, @Param('id') id: string, @Param('owner') owner: string) {
-    if (!this.service.status.restEnabled) {
+    if (!this.service.restEnabled) {
       throw new BadRequestException('REST API is not enabled')
     }
     return this.service.assetsOwner({ cluster, id, owner })
@@ -23,7 +26,7 @@ export class ApiCacheController {
 
   @Get('asset-snapshot/:cluster/:id')
   assetSnapshot(@Param('cluster') cluster: NetworkCluster, @Param('id') id: string) {
-    if (!this.service.status.restEnabled) {
+    if (!this.service.restEnabled) {
       throw new BadRequestException('REST API is not enabled')
     }
     return this.service.assetsSnapshot({ cluster, id })
@@ -31,7 +34,7 @@ export class ApiCacheController {
 
   @Get('resolve/:cluster/:id')
   resolve(@Param('cluster') cluster: NetworkCluster, @Param('id') id: string) {
-    if (!this.service.status.restEnabled) {
+    if (!this.service.restEnabled) {
       throw new BadRequestException('REST API is not enabled')
     }
     return this.service.resolveCache({ cluster, id })
@@ -39,7 +42,7 @@ export class ApiCacheController {
 
   @Get('resolve-all')
   resolveAll() {
-    if (!this.service.status.restEnabled) {
+    if (!this.service.restEnabled) {
       throw new BadRequestException('REST API is not enabled')
     }
     return this.service.resolveAllCaches()

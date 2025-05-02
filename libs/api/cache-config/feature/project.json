@@ -1,0 +1,19 @@
+{
+  "name": "api-cache-config-feature",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api/cache-config/feature/src",
+  "projectType": "library",
+  "tags": ["app:api", "type:feature"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/api/cache-config/feature/jest.config.ts"
+      }
+    }
+  }
+}

@@ -49,9 +49,6 @@ export interface ApiCoreConfig {
   botAutoStart: boolean
   // Cookies
   cookieDomains: string[]
-  cacheContextHeliusApiKey: string
-  cacheCronExpression: string
-  cacheRestEnabled: boolean
   cookieName: string
   cookieSecure: boolean
   // CORS
@@ -126,9 +123,6 @@ export function configuration(): ApiCoreConfig {
     authTelegramBotToken: process.env['AUTH_TELEGRAM_BOT_TOKEN'] as string,
     botAutoStart: process.env['BOT_AUTO_START'] === 'true',
     cookieDomains,
-    cacheContextHeliusApiKey: process.env['CACHE_CONTEXT_HELIUS_API_KEY'] as string,
-    cacheCronExpression: process.env['CACHE_CRON_EXPRESSION'] as string,
-    cacheRestEnabled: process.env['CACHE_REST_ENABLED'] === 'true',
     cookieName: '__session',
     cookieSecure: process.env['COOKIE_SECURE'] === 'true',
     corsOrigins,

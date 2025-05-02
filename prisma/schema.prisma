@@ -55,6 +55,24 @@ model BotServer {
   @@unique([botId, serverId])
 }
 
+model CacheConfig {
+  key   CacheConfigKey  @id
+  type  CacheConfigType
+  value String
+}
+
+enum CacheConfigKey {
+  CronExpression
+  HeliusApiKey
+  RestEnabled
+}
+
+enum CacheConfigType {
+  Boolean
+  Secret
+  String
+}
+
 model Community {
   id          String            @id @default(cuid())
   createdAt   DateTime          @default(now())
@@ -126,19 +144,6 @@ model Identity {
   @@unique([provider, providerId])
 }
 
-model IdentityGrant {
-  id         String           @id @default(cuid())
-  createdAt  DateTime         @default(now())
-  updatedAt  DateTime         @updatedAt
-  identity   Identity         @relation(fields: [provider, providerId], references: [provider, providerId], onDelete: Cascade)
-  provider   IdentityProvider
-  providerId String
-  grantee    User             @relation(fields: [granteeId], references: [id], onDelete: Cascade)
-  granteeId  String
-
-  @@unique([provider, providerId, granteeId])
-}
-
 model IdentityChallenge {
   id         String           @id @default(cuid())
   createdAt  DateTime         @default(now())
@@ -152,6 +157,19 @@ model IdentityChallenge {
   identity   Identity         @relation(fields: [provider, providerId], references: [provider, providerId], onDelete: Cascade)
   provider   IdentityProvider
   providerId String
+}
+
+model IdentityGrant {
+  id         String           @id @default(cuid())
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  identity   Identity         @relation(fields: [provider, providerId], references: [provider, providerId], onDelete: Cascade)
+  provider   IdentityProvider
+  providerId String
+  grantee    User             @relation(fields: [granteeId], references: [id], onDelete: Cascade)
+  granteeId  String
+
+  @@unique([provider, providerId, granteeId])
 }
 
 model Log {

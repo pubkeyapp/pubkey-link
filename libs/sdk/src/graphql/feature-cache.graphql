@@ -1,6 +1,4 @@
 fragment CacheStatusDetails on CacheStatus {
-  enabled
-  restEnabled
   caches {
     cluster
     resolvers {

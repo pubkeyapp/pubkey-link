@@ -282,6 +282,25 @@ export enum BotStatus {
   Inactive = 'Inactive',
 }
 
+export type CacheConfig = {
+  __typename?: 'CacheConfig'
+  key: CacheConfigKey
+  type: CacheConfigType
+  value: Scalars['String']['output']
+}
+
+export enum CacheConfigKey {
+  CronExpression = 'CronExpression',
+  HeliusApiKey = 'HeliusApiKey',
+  RestEnabled = 'RestEnabled',
+}
+
+export enum CacheConfigType {
+  Boolean = 'Boolean',
+  Secret = 'Secret',
+  String = 'String',
+}
+
 export type CacheGroup = {
   __typename?: 'CacheGroup'
   cluster: NetworkCluster
@@ -298,8 +317,6 @@ export type CacheResolver = {
 export type CacheStatus = {
   __typename?: 'CacheStatus'
   caches: Array<CacheGroup>
-  enabled: Scalars['Boolean']['output']
-  restEnabled: Scalars['Boolean']['output']
 }
 
 export type Community = {
@@ -478,6 +495,7 @@ export enum LogRelatedType {
 export type Mutation = {
   __typename?: 'Mutation'
   adminAddCommunityMember?: Maybe<CommunityMember>
+  adminCacheConfigSet?: Maybe<Scalars['Boolean']['output']>
   adminCacheResolve?: Maybe<Scalars['JSON']['output']>
   adminCleanupNetworkAssets?: Maybe<Scalars['Boolean']['output']>
   adminCreateBackup: Scalars['Boolean']['output']
@@ -558,6 +576,11 @@ export type Mutation = {
 export type MutationAdminAddCommunityMemberArgs = {
   communityId: Scalars['String']['input']
   input: AdminAddCommunityMemberInput
+}
+
+export type MutationAdminCacheConfigSetArgs = {
+  key: CacheConfigKey
+  value: Scalars['String']['input']
 }
 
 export type MutationAdminCacheResolveArgs = {
@@ -975,6 +998,7 @@ export type PagingMeta = {
 
 export type Query = {
   __typename?: 'Query'
+  adminCacheConfig?: Maybe<Array<CacheConfig>>
   adminCacheDetail?: Maybe<Scalars['JSON']['output']>
   adminCacheStatus?: Maybe<CacheStatus>
   adminFindManyBot: BotPaging
@@ -2259,10 +2283,34 @@ export type UserGetBotServerQuery = {
   } | null
 }
 
+export type CacheConfigDetailsFragment = {
+  __typename?: 'CacheConfig'
+  key: CacheConfigKey
+  type: CacheConfigType
+  value: string
+}
+
+export type AdminCacheConfigQueryVariables = Exact<{ [key: string]: never }>
+
+export type AdminCacheConfigQuery = {
+  __typename?: 'Query'
+  adminCacheConfig?: Array<{
+    __typename?: 'CacheConfig'
+    key: CacheConfigKey
+    type: CacheConfigType
+    value: string
+  }> | null
+}
+
+export type AdminCacheConfigSetMutationVariables = Exact<{
+  key: CacheConfigKey
+  value: Scalars['String']['input']
+}>
+
+export type AdminCacheConfigSetMutation = { __typename?: 'Mutation'; adminCacheConfigSet?: boolean | null }
+
 export type CacheStatusDetailsFragment = {
   __typename?: 'CacheStatus'
-  enabled: boolean
-  restEnabled: boolean
   caches: Array<{
     __typename?: 'CacheGroup'
     cluster: NetworkCluster
@@ -2276,8 +2324,6 @@ export type AdminCacheStatusQuery = {
   __typename?: 'Query'
   adminCacheStatus?: {
     __typename?: 'CacheStatus'
-    enabled: boolean
-    restEnabled: boolean
     caches: Array<{
       __typename?: 'CacheGroup'
       cluster: NetworkCluster
@@ -8767,10 +8813,15 @@ export const DiscordChannelDetailsFragmentDoc = gql`
     type
   }
 `
+export const CacheConfigDetailsFragmentDoc = gql`
+  fragment CacheConfigDetails on CacheConfig {
+    key
+    type
+    value
+  }
+`
 export const CacheStatusDetailsFragmentDoc = gql`
   fragment CacheStatusDetails on CacheStatus {
-    enabled
-    restEnabled
     caches {
       cluster
       resolvers {
@@ -9366,6 +9417,19 @@ export const UserGetBotServerDocument = gql`
     }
   }
   ${DiscordServerDetailsFragmentDoc}
+`
+export const AdminCacheConfigDocument = gql`
+  query adminCacheConfig {
+    adminCacheConfig {
+      ...CacheConfigDetails
+    }
+  }
+  ${CacheConfigDetailsFragmentDoc}
+`
+export const AdminCacheConfigSetDocument = gql`
+  mutation adminCacheConfigSet($key: CacheConfigKey!, $value: String!) {
+    adminCacheConfigSet(key: $key, value: $value)
+  }
 `
 export const AdminCacheStatusDocument = gql`
   query adminCacheStatus {
@@ -10416,6 +10480,8 @@ const UserGetBotChannelsDocumentString = print(UserGetBotChannelsDocument)
 const UserGetBotRolesDocumentString = print(UserGetBotRolesDocument)
 const UserGetBotServersDocumentString = print(UserGetBotServersDocument)
 const UserGetBotServerDocumentString = print(UserGetBotServerDocument)
+const AdminCacheConfigDocumentString = print(AdminCacheConfigDocument)
+const AdminCacheConfigSetDocumentString = print(AdminCacheConfigSetDocument)
 const AdminCacheStatusDocumentString = print(AdminCacheStatusDocument)
 const AdminCacheDetailDocumentString = print(AdminCacheDetailDocument)
 const AdminCacheResolveDocumentString = print(AdminCacheResolveDocument)
@@ -11122,6 +11188,48 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
           }),
         'userGetBotServer',
         'query',
+        variables,
+      )
+    },
+    adminCacheConfig(
+      variables?: AdminCacheConfigQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminCacheConfigQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminCacheConfigQuery>(AdminCacheConfigDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminCacheConfig',
+        'query',
+        variables,
+      )
+    },
+    adminCacheConfigSet(
+      variables: AdminCacheConfigSetMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminCacheConfigSetMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminCacheConfigSetMutation>(AdminCacheConfigSetDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminCacheConfigSet',
+        'mutation',
         variables,
       )
     },
@@ -13507,6 +13615,10 @@ export const definedNonNullAnySchema = z.any().refine((v) => isDefinedNonNullAny
 export const AppFeatureSchema = z.nativeEnum(AppFeature)
 
 export const BotStatusSchema = z.nativeEnum(BotStatus)
+
+export const CacheConfigKeySchema = z.nativeEnum(CacheConfigKey)
+
+export const CacheConfigTypeSchema = z.nativeEnum(CacheConfigType)
 
 export const IdentityProviderSchema = z.nativeEnum(IdentityProvider)
 
