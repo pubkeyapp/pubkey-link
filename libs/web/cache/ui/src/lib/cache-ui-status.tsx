@@ -1,5 +1,5 @@
 import { CacheStatus, NetworkCluster } from '@pubkey-link/sdk'
-import { UiStack } from '@pubkey-ui/core'
+import { UiInfo, UiStack } from '@pubkey-ui/core'
 import { CacheUiGroup } from './cache-ui-group'
 
 export function CacheUiStatus({
@@ -9,6 +9,9 @@ export function CacheUiStatus({
   status: CacheStatus
   resolve: (cluster: NetworkCluster, resolverId: string) => Promise<void>
 }) {
+  if (!status.caches?.length) {
+    return <UiInfo message="No caches found." />
+  }
   return (
     <UiStack>
       {status?.caches?.map((group) => (
