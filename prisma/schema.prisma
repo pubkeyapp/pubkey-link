@@ -251,6 +251,7 @@ model NetworkToken {
   cluster     NetworkCluster
   type        NetworkTokenType
   cache       Boolean          @default(false)
+  featured    Boolean          @default(false)
   name        String
   account     String
   mintList    String[]

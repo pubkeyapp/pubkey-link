@@ -185,6 +185,7 @@ export type AdminUpdateNetworkInput = {
 
 export type AdminUpdateNetworkTokenInput = {
   cache?: InputMaybe<Scalars['Boolean']['input']>
+  featured?: InputMaybe<Scalars['Boolean']['input']>
   name?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -317,6 +318,33 @@ export type CacheResolver = {
 export type CacheStatus = {
   __typename?: 'CacheStatus'
   caches: Array<CacheGroup>
+}
+
+export type Collection = {
+  __typename?: 'Collection'
+  assets?: Maybe<Array<CollectionAsset>>
+  attributes?: Maybe<Array<CollectionAssetAttribute>>
+  description: Scalars['String']['output']
+  id: Scalars['String']['output']
+  imageUrl: Scalars['String']['output']
+  name: Scalars['String']['output']
+}
+
+export type CollectionAsset = {
+  __typename?: 'CollectionAsset'
+  attributes?: Maybe<Array<CollectionAssetAttribute>>
+  description: Scalars['String']['output']
+  id: Scalars['String']['output']
+  imageUrl: Scalars['String']['output']
+  name: Scalars['String']['output']
+  owner: Scalars['String']['output']
+}
+
+export type CollectionAssetAttribute = {
+  __typename?: 'CollectionAssetAttribute'
+  count?: Maybe<Scalars['Int']['output']>
+  key: Scalars['String']['output']
+  value?: Maybe<Scalars['String']['output']>
 }
 
 export type Community = {
@@ -957,6 +985,7 @@ export type NetworkToken = {
   cluster: NetworkCluster
   createdAt?: Maybe<Scalars['DateTime']['output']>
   description?: Maybe<Scalars['String']['output']>
+  featured?: Maybe<Scalars['Boolean']['output']>
   id: Scalars['String']['output']
   imageUrl?: Maybe<Scalars['String']['output']>
   metadataUrl?: Maybe<Scalars['String']['output']>
@@ -1033,6 +1062,8 @@ export type Query = {
   appConfig: AppConfig
   me?: Maybe<User>
   uptime: Scalars['Float']['output']
+  userCollectionFindMany?: Maybe<Array<Collection>>
+  userCollectionFindOne?: Maybe<Collection>
   userFindManyBotRoles?: Maybe<Array<BotRole>>
   userFindManyCommunity: CommunityPaging
   userFindManyCommunityMember: CommunityMemberPaging
@@ -1171,6 +1202,10 @@ export type QueryAdminGetVoteIdentitiesArgs = {
 
 export type QueryAnonRequestIdentityChallengeArgs = {
   input: RequestIdentityChallengeInput
+}
+
+export type QueryUserCollectionFindOneArgs = {
+  collectionId: Scalars['String']['input']
 }
 
 export type QueryUserFindManyBotRolesArgs = {
@@ -1980,6 +2015,7 @@ export type UserFindManyBotRolesQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -2346,6 +2382,43 @@ export type AdminCacheResolveMutationVariables = Exact<{
 
 export type AdminCacheResolveMutation = { __typename?: 'Mutation'; adminCacheResolve?: any | null }
 
+export type UserCollectionFindManyQueryVariables = Exact<{ [key: string]: never }>
+
+export type UserCollectionFindManyQuery = {
+  __typename?: 'Query'
+  items?: Array<{ __typename?: 'Collection'; id: string; name: string; description: string; imageUrl: string }> | null
+}
+
+export type UserCollectionFindOneQueryVariables = Exact<{
+  collectionId: Scalars['String']['input']
+}>
+
+export type UserCollectionFindOneQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'Collection'
+    id: string
+    name: string
+    description: string
+    imageUrl: string
+    attributes?: Array<{
+      __typename?: 'CollectionAssetAttribute'
+      key: string
+      value?: string | null
+      count?: number | null
+    }> | null
+    assets?: Array<{
+      __typename?: 'CollectionAsset'
+      id: string
+      name: string
+      description: string
+      imageUrl: string
+      owner: string
+      attributes?: Array<{ __typename?: 'CollectionAssetAttribute'; key: string; value?: string | null }> | null
+    }> | null
+  } | null
+}
+
 export type CommunityMemberDetailsFragment = {
   __typename?: 'CommunityMember'
   communityId: string
@@ -2414,6 +2487,7 @@ export type AdminFindManyCommunityMemberQuery = {
             createdAt?: Date | null
             updatedAt?: Date | null
             cache?: boolean | null
+            featured?: boolean | null
             cluster: NetworkCluster
             type: NetworkTokenType
             account: string
@@ -2555,6 +2629,7 @@ export type AdminFindOneCommunityMemberQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -2686,6 +2761,7 @@ export type AdminAddCommunityMemberMutation = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -2817,6 +2893,7 @@ export type AdminUpdateCommunityMemberMutation = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -2953,6 +3030,7 @@ export type UserGetCommunityMemberQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -3085,6 +3163,7 @@ export type UserFindManyCommunityMemberQuery = {
             createdAt?: Date | null
             updatedAt?: Date | null
             cache?: boolean | null
+            featured?: boolean | null
             cluster: NetworkCluster
             type: NetworkTokenType
             account: string
@@ -3226,6 +3305,7 @@ export type UserFindOneCommunityMemberQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -3357,6 +3437,7 @@ export type UserAddCommunityMemberMutation = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -3488,6 +3569,7 @@ export type UserUpdateCommunityMemberMutation = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -3792,6 +3874,7 @@ export type AnonGetCommunitiesQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -3899,6 +3982,7 @@ export type UserGetCommunitiesQuery = {
             createdAt?: Date | null
             updatedAt?: Date | null
             cache?: boolean | null
+            featured?: boolean | null
             cluster: NetworkCluster
             type: NetworkTokenType
             account: string
@@ -4013,6 +4097,7 @@ export type UserGetCommunitiesQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -4138,6 +4223,7 @@ export type UserFindManyCommunityQuery = {
             createdAt?: Date | null
             updatedAt?: Date | null
             cache?: boolean | null
+            featured?: boolean | null
             cluster: NetworkCluster
             type: NetworkTokenType
             account: string
@@ -4995,6 +5081,7 @@ export type LogDetailsFragment = {
         createdAt?: Date | null
         updatedAt?: Date | null
         cache?: boolean | null
+        featured?: boolean | null
         cluster: NetworkCluster
         type: NetworkTokenType
         account: string
@@ -5192,6 +5279,7 @@ export type UserFindManyLogQuery = {
             createdAt?: Date | null
             updatedAt?: Date | null
             cache?: boolean | null
+            featured?: boolean | null
             cluster: NetworkCluster
             type: NetworkTokenType
             account: string
@@ -5399,6 +5487,7 @@ export type UserFindOneLogQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -5597,6 +5686,7 @@ export type AdminFindManyLogQuery = {
             createdAt?: Date | null
             updatedAt?: Date | null
             cache?: boolean | null
+            featured?: boolean | null
             cluster: NetworkCluster
             type: NetworkTokenType
             account: string
@@ -5804,6 +5894,7 @@ export type AdminFindOneLogQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -6104,6 +6195,7 @@ export type NetworkTokenDetailsFragment = {
   createdAt?: Date | null
   updatedAt?: Date | null
   cache?: boolean | null
+  featured?: boolean | null
   cluster: NetworkCluster
   type: NetworkTokenType
   account: string
@@ -6131,6 +6223,7 @@ export type AdminFindManyNetworkTokenQuery = {
       createdAt?: Date | null
       updatedAt?: Date | null
       cache?: boolean | null
+      featured?: boolean | null
       cluster: NetworkCluster
       type: NetworkTokenType
       account: string
@@ -6168,6 +6261,7 @@ export type AdminFindOneNetworkTokenQuery = {
     createdAt?: Date | null
     updatedAt?: Date | null
     cache?: boolean | null
+    featured?: boolean | null
     cluster: NetworkCluster
     type: NetworkTokenType
     account: string
@@ -6194,6 +6288,7 @@ export type AdminCreateNetworkTokenMutation = {
     createdAt?: Date | null
     updatedAt?: Date | null
     cache?: boolean | null
+    featured?: boolean | null
     cluster: NetworkCluster
     type: NetworkTokenType
     account: string
@@ -6221,6 +6316,7 @@ export type AdminUpdateNetworkTokenMutation = {
     createdAt?: Date | null
     updatedAt?: Date | null
     cache?: boolean | null
+    featured?: boolean | null
     cluster: NetworkCluster
     type: NetworkTokenType
     account: string
@@ -6247,6 +6343,7 @@ export type AdminUpdateNetworkTokenMetadataMutation = {
     createdAt?: Date | null
     updatedAt?: Date | null
     cache?: boolean | null
+    featured?: boolean | null
     cluster: NetworkCluster
     type: NetworkTokenType
     account: string
@@ -6281,6 +6378,7 @@ export type UserFindManyNetworkTokenQuery = {
       createdAt?: Date | null
       updatedAt?: Date | null
       cache?: boolean | null
+      featured?: boolean | null
       cluster: NetworkCluster
       type: NetworkTokenType
       account: string
@@ -6491,6 +6589,7 @@ export type RoleDetailsFragment = {
       createdAt?: Date | null
       updatedAt?: Date | null
       cache?: boolean | null
+      featured?: boolean | null
       cluster: NetworkCluster
       type: NetworkTokenType
       account: string
@@ -6582,6 +6681,7 @@ export type RoleConditionDetailsFragment = {
     createdAt?: Date | null
     updatedAt?: Date | null
     cache?: boolean | null
+    featured?: boolean | null
     cluster: NetworkCluster
     type: NetworkTokenType
     account: string
@@ -6665,6 +6765,7 @@ export type AdminFindManyRoleQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -6782,6 +6883,7 @@ export type AdminFindOneRoleQuery = {
         createdAt?: Date | null
         updatedAt?: Date | null
         cache?: boolean | null
+        featured?: boolean | null
         cluster: NetworkCluster
         type: NetworkTokenType
         account: string
@@ -6888,6 +6990,7 @@ export type AdminCreateRoleMutation = {
         createdAt?: Date | null
         updatedAt?: Date | null
         cache?: boolean | null
+        featured?: boolean | null
         cluster: NetworkCluster
         type: NetworkTokenType
         account: string
@@ -6995,6 +7098,7 @@ export type AdminUpdateRoleMutation = {
         createdAt?: Date | null
         updatedAt?: Date | null
         cache?: boolean | null
+        featured?: boolean | null
         cluster: NetworkCluster
         type: NetworkTokenType
         account: string
@@ -7109,6 +7213,7 @@ export type UserFindManyRoleQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -7258,6 +7363,7 @@ export type UserFindOneRoleQuery = {
         createdAt?: Date | null
         updatedAt?: Date | null
         cache?: boolean | null
+        featured?: boolean | null
         cluster: NetworkCluster
         type: NetworkTokenType
         account: string
@@ -7332,6 +7438,7 @@ export type UserCreateRoleMutation = {
         createdAt?: Date | null
         updatedAt?: Date | null
         cache?: boolean | null
+        featured?: boolean | null
         cluster: NetworkCluster
         type: NetworkTokenType
         account: string
@@ -7430,6 +7537,7 @@ export type UserCreateRoleConditionMutation = {
       createdAt?: Date | null
       updatedAt?: Date | null
       cache?: boolean | null
+      featured?: boolean | null
       cluster: NetworkCluster
       type: NetworkTokenType
       account: string
@@ -7520,6 +7628,7 @@ export type UserUpdateRoleMutation = {
         createdAt?: Date | null
         updatedAt?: Date | null
         cache?: boolean | null
+        featured?: boolean | null
         cluster: NetworkCluster
         type: NetworkTokenType
         account: string
@@ -7619,6 +7728,7 @@ export type UserUpdateRoleConditionMutation = {
       createdAt?: Date | null
       updatedAt?: Date | null
       cache?: boolean | null
+      featured?: boolean | null
       cluster: NetworkCluster
       type: NetworkTokenType
       account: string
@@ -7700,6 +7810,7 @@ export type SnapshotDetailsFragment = {
         createdAt?: Date | null
         updatedAt?: Date | null
         cache?: boolean | null
+        featured?: boolean | null
         cluster: NetworkCluster
         type: NetworkTokenType
         account: string
@@ -7829,6 +7940,7 @@ export type UserFindManySnapshotQuery = {
             createdAt?: Date | null
             updatedAt?: Date | null
             cache?: boolean | null
+            featured?: boolean | null
             cluster: NetworkCluster
             type: NetworkTokenType
             account: string
@@ -7967,6 +8079,7 @@ export type UserFindOneSnapshotQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -8081,6 +8194,7 @@ export type UserCreateSnapshotMutation = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -8203,6 +8317,7 @@ export type AdminFindManySnapshotQuery = {
             createdAt?: Date | null
             updatedAt?: Date | null
             cache?: boolean | null
+            featured?: boolean | null
             cluster: NetworkCluster
             type: NetworkTokenType
             account: string
@@ -8341,6 +8456,7 @@ export type AdminFindOneSnapshotQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -8455,6 +8571,7 @@ export type AdminCreateSnapshotMutation = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
+          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -8994,6 +9111,7 @@ export const NetworkTokenDetailsFragmentDoc = gql`
     createdAt
     updatedAt
     cache
+    featured
     cluster
     type
     account
@@ -9447,6 +9565,42 @@ export const AdminCacheDetailDocument = gql`
 export const AdminCacheResolveDocument = gql`
   mutation adminCacheResolve($cluster: NetworkCluster!, $cacheId: String!) {
     adminCacheResolve(cluster: $cluster, cacheId: $cacheId)
+  }
+`
+export const UserCollectionFindManyDocument = gql`
+  query userCollectionFindMany {
+    items: userCollectionFindMany {
+      id
+      name
+      description
+      imageUrl
+    }
+  }
+`
+export const UserCollectionFindOneDocument = gql`
+  query userCollectionFindOne($collectionId: String!) {
+    item: userCollectionFindOne(collectionId: $collectionId) {
+      id
+      name
+      description
+      imageUrl
+      attributes {
+        key
+        value
+        count
+      }
+      assets {
+        id
+        name
+        description
+        imageUrl
+        owner
+        attributes {
+          key
+          value
+        }
+      }
+    }
   }
 `
 export const AdminFindManyCommunityMemberDocument = gql`
@@ -10485,6 +10639,8 @@ const AdminCacheConfigSetDocumentString = print(AdminCacheConfigSetDocument)
 const AdminCacheStatusDocumentString = print(AdminCacheStatusDocument)
 const AdminCacheDetailDocumentString = print(AdminCacheDetailDocument)
 const AdminCacheResolveDocumentString = print(AdminCacheResolveDocument)
+const UserCollectionFindManyDocumentString = print(UserCollectionFindManyDocument)
+const UserCollectionFindOneDocumentString = print(UserCollectionFindOneDocument)
 const AdminFindManyCommunityMemberDocumentString = print(AdminFindManyCommunityMemberDocument)
 const AdminFindOneCommunityMemberDocumentString = print(AdminFindOneCommunityMemberDocument)
 const AdminAddCommunityMemberDocumentString = print(AdminAddCommunityMemberDocument)
@@ -11293,6 +11449,48 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
           }),
         'adminCacheResolve',
         'mutation',
+        variables,
+      )
+    },
+    userCollectionFindMany(
+      variables?: UserCollectionFindManyQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserCollectionFindManyQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserCollectionFindManyQuery>(UserCollectionFindManyDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userCollectionFindMany',
+        'query',
+        variables,
+      )
+    },
+    userCollectionFindOne(
+      variables: UserCollectionFindOneQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserCollectionFindOneQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserCollectionFindOneQuery>(UserCollectionFindOneDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userCollectionFindOne',
+        'query',
         variables,
       )
     },
@@ -13846,6 +14044,7 @@ export function AdminUpdateNetworkInputSchema(): z.ZodObject<Properties<AdminUpd
 export function AdminUpdateNetworkTokenInputSchema(): z.ZodObject<Properties<AdminUpdateNetworkTokenInput>> {
   return z.object({
     cache: z.boolean().nullish(),
+    featured: z.boolean().nullish(),
     name: z.string().nullish(),
   })
 }

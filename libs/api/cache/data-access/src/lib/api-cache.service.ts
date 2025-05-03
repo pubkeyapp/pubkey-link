@@ -129,7 +129,7 @@ export class ApiCacheService {
     this.logger.verbose(`[loadCaches] Caches configured: ${this.caches.map((c) => c.cluster).join(', ')}`)
   }
 
-  private createTokenResolver(token: NetworkToken) {
+  createTokenResolver(token: NetworkToken) {
     if (token.type === NetworkTokenType.NonFungible) {
       return createResolver(ResolverType['helius-collection-assets'], token.account)
     }
@@ -237,7 +237,7 @@ export class ApiCacheService {
       : { error: 'No snapshot found' }
   }
 
-  private async getResolver(param: { cluster: NetworkCluster; id: string }) {
+  async getResolver(param: { cluster: NetworkCluster; id: string }) {
     const cache = this.caches.find((c) => c.cluster === param.cluster)
     if (!cache) {
       throw new Error(`Cache not found for cluster: ${param.cluster}`)

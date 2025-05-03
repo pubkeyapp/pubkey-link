@@ -1,0 +1,33 @@
+query userCollectionFindMany {
+  items: userCollectionFindMany {
+    id
+    name
+    description
+    imageUrl
+  }
+}
+
+query userCollectionFindOne($collectionId: String!) {
+  item: userCollectionFindOne(collectionId: $collectionId) {
+    id
+    name
+    description
+    imageUrl
+    attributes {
+      key
+      value
+      count
+    }
+    assets {
+      id
+      name
+      description
+      imageUrl
+      owner
+      attributes {
+        key
+        value
+      }
+    }
+  }
+}

@@ -6,4 +6,6 @@ export class AdminUpdateNetworkTokenInput {
   name?: string
   @Field({ nullable: true })
   cache?: boolean
+  @Field({ nullable: true })
+  featured?: boolean
 }

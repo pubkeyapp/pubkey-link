@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Group, Tooltip, UnstyledButton } from '@mantine/core'
+import { ActionIcon, Box, Flex, Group, Tooltip, UnstyledButton } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { AppLogo, AppUiHeader, AppUiThemeSwitch } from '@pubkey-link/web-core-ui'
@@ -11,7 +11,7 @@ export function WebCoreLayout({ children }: { children: ReactNode }) {
   const { isAdmin, user, logout } = useAuth()
   const [opened, { toggle }] = useDisclosure(false)
   return (
-    <Box>
+    <Flex h="100%" direction="column" justify="space-between">
       <AppUiHeader
         logoSmall={<AppLogo height={28} />}
         logo={<AppLogo height={28} />}
@@ -45,8 +45,9 @@ export function WebCoreLayout({ children }: { children: ReactNode }) {
           </Group>
         }
       />
-
-      <Suspense fallback={<UiLoader mt="xl" size="xl" type="dots" />}>{children}</Suspense>
-    </Box>
+      <Box style={{ flexGrow: 1, overflow: 'auto' }}>
+        <Suspense fallback={<UiLoader mt="xl" size="xl" type="dots" />}>{children}</Suspense>
+      </Box>
+    </Flex>
   )
 }

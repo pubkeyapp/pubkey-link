@@ -1,3 +1,4 @@
+import { UserCollectionFeature } from '@pubkey-link/web-collection-feature'
 import { UserCommunityFeature } from '@pubkey-link/web-community-feature'
 import { DashboardFeature } from '@pubkey-link/web-dashboard-feature'
 import { UserNetworkAssetDetailFeature } from '@pubkey-link/web-network-asset-feature'
@@ -17,6 +18,7 @@ const routes: RouteObject[] = [
   // User Dashboard Routes are added by the web-crud generator
   { path: '/assets/:cluster/:account/*', element: <UserNetworkAssetDetailFeature /> },
   { path: '/c/*', element: <UserCommunityFeature /> },
+  { path: '/collections/*', element: <UserCollectionFeature /> },
   { path: '/dashboard', element: <DashboardFeature links={links} /> },
   { path: '/settings/*', element: <UserProfileRedirectFeature to="settings" /> },
   { path: '/u/*', element: <UserProfileFeature /> },

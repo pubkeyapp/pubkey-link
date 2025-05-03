@@ -9,3 +9,14 @@ export function NetworkTokenUiCache({ token, ...props }: BadgeProps & { token: N
     </Badge>
   )
 }
+export function NetworkTokenUiFeatured({ token, ...props }: BadgeProps & { token: NetworkToken }) {
+  if (!token.featured) {
+    return null
+  }
+
+  return (
+    <Badge size="xs" variant="dot" style={{ textTransform: 'inherit' }} color="green" {...props}>
+      Featured
+    </Badge>
+  )
+}

@@ -163,6 +163,7 @@ input AdminUpdateNetworkInput {
 
 input AdminUpdateNetworkTokenInput {
   cache: Boolean
+  featured: Boolean
   name: String
 }
 
@@ -286,6 +287,30 @@ type CacheResolver {
 
 type CacheStatus {
   caches: [CacheGroup!]!
+}
+
+type Collection {
+  assets: [CollectionAsset!]
+  attributes: [CollectionAssetAttribute!]
+  description: String!
+  id: String!
+  imageUrl: String!
+  name: String!
+}
+
+type CollectionAsset {
+  attributes: [CollectionAssetAttribute!]
+  description: String!
+  id: String!
+  imageUrl: String!
+  name: String!
+  owner: String!
+}
+
+type CollectionAssetAttribute {
+  count: Int
+  key: String!
+  value: String
 }
 
 type Community {
@@ -607,6 +632,7 @@ type NetworkToken {
   cluster: NetworkCluster!
   createdAt: DateTime
   description: String
+  featured: Boolean
   id: String!
   imageUrl: String
   metadataUrl: String
@@ -680,6 +706,8 @@ type Query {
   appConfig: AppConfig!
   me: User
   uptime: Float!
+  userCollectionFindMany: [Collection!]
+  userCollectionFindOne(collectionId: String!): Collection
   userFindManyBotRoles(botId: String!, serverId: String!): [BotRole!]
   userFindManyCommunity(input: UserFindManyCommunityInput!): CommunityPaging!
   userFindManyCommunityMember(input: UserFindManyCommunityMemberInput!): CommunityMemberPaging!
