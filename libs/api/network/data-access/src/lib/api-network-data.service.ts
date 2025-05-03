@@ -1,18 +1,20 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
+import { OnEvent } from '@nestjs/event-emitter'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { NetworkCluster, Prisma } from '@prisma/client'
-import { ApiCoreService, PagingInputFields } from '@pubkey-link/api-core-data-access'
+import { ApiCoreService, EVENT_APP_STARTED, PagingInputFields } from '@pubkey-link/api-core-data-access'
 import { getNetworkType } from '@pubkey-link/api-network-util'
 import { ApiNetworkClusterService } from './api-network-cluster.service'
 import { EVENT_NETWORK_CREATED, EVENT_NETWORK_DELETED, EVENT_NETWORK_UPDATED } from './api-network.events'
 import { NetworkPaging } from './entity/network.entity'
 
 @Injectable()
-export class ApiNetworkDataService implements OnModuleInit {
+export class ApiNetworkDataService {
   private readonly logger = new Logger(ApiNetworkDataService.name)
   constructor(private readonly cluster: ApiNetworkClusterService, private readonly core: ApiCoreService) {}
 
-  async onModuleInit() {
+  @OnEvent(EVENT_APP_STARTED)
+  async onApplicationStarted() {
     await this.refreshAllVoteIdentities()
   }
 
@@ -77,10 +79,15 @@ export class ApiNetworkDataService implements OnModuleInit {
   }
 
   @Cron(CronExpression.EVERY_30_MINUTES, {
-    disabled: process.env['SYNC_VOTE_IDENTITIES'] !== 'true',
+    disabled:
+      process.env['SYNC_VOTE_IDENTITIES'] !== 'true' || process.env['FEATURE_RESOLVER_SOLANA_VALIDATOR'] !== 'true',
     name: 'network::refresh-all-vote-identities',
   })
   async refreshAllVoteIdentities() {
+    if (!this.core.config.featureResolverSolanaValidator) {
+      this.logger.warn('ResolverSolanaValidator is disabled, skipping vote identity refresh')
+      return
+    }
     const networks = await this.core.data.network.findMany()
     if (!networks.length) {
       this.logger.log('No networks found')
