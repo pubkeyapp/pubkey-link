@@ -54,4 +54,4 @@ WORKDIR /workspace/api
 EXPOSE 3000
 
 # Start server
-CMD pnpm prestart && pnpm start
+CMD pnpm start
