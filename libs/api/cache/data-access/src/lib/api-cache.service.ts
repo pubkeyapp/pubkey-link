@@ -237,7 +237,7 @@ export class ApiCacheService {
       : { error: 'No snapshot found' }
   }
 
-  async getResolver(param: { cluster: NetworkCluster; id: string }) {
+  private async getResolver(param: { cluster: NetworkCluster; id: string }) {
     const cache = this.caches.find((c) => c.cluster === param.cluster)
     if (!cache) {
       throw new Error(`Cache not found for cluster: ${param.cluster}`)

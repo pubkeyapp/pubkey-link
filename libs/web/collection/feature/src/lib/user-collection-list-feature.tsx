@@ -1,16 +1,28 @@
-import { Text } from '@mantine/core'
-import { useUserCollectionAssetFindOne, useUserCollectionFindMany } from '@pubkey-link/web-collection-data-access'
+import { Button } from '@mantine/core'
+import { useUserCollectionFindMany } from '@pubkey-link/web-collection-data-access'
 import { CollectionUiGrid } from '@pubkey-link/web-collection-ui'
-import { UiDebug, UiInfo, UiLoader, UiPage, UiStack } from '@pubkey-ui/core'
+import { useUserFindOneCommunity } from '@pubkey-link/web-community-data-access'
+import { UiInfo, UiLoader, UiPage } from '@pubkey-ui/core'
 import { IconImageInPicture } from '@tabler/icons-react'
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
-export function UserCollectionListFeature() {
-  const { data, isLoading } = useUserCollectionFindMany()
+export function UserCollectionListFeature({ communityId }: { communityId: string }) {
+  const { data, isLoading } = useUserCollectionFindMany({ communityId })
+  const { item, isAdmin } = useUserFindOneCommunity({ communityId })
 
   return (
-    <UiPage title="Collections" leftAction={<IconImageInPicture />}>
+    <UiPage
+      title="Collections"
+      leftAction={<IconImageInPicture />}
+      rightAction={
+        isAdmin ? (
+          <Button size="xs" variant="light" component={Link} to={`${item?.viewUrl}/collections/manage`}>
+            Manage
+          </Button>
+        ) : undefined
+      }
+    >
       {isLoading ? (
         <UiLoader />
       ) : data?.length ? (
@@ -19,21 +31,5 @@ export function UserCollectionListFeature() {
         <UiInfo message="No featured collections found" />
       )}
     </UiPage>
-  )
-}
-
-export function UserCollectionAssetFeature() {
-  const { assetId, collectionId } = useParams() as { assetId: string; collectionId: string }
-  const { data, isLoading } = useUserCollectionAssetFindOne({ assetId, collectionId })
-
-  if (isLoading) {
-    return <UiLoader />
-  }
-
-  return (
-    <UiStack>
-      <Text>Collection Detail: {'data?.name'}</Text>
-      <UiDebug data={data} />
-    </UiStack>
   )
 }

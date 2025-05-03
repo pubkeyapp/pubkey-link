@@ -1,9 +1,5 @@
 import { useAdminFindOneNetworkToken } from '@pubkey-link/web-network-token-data-access'
-import {
-  AdminNetworkTokenUiUpdateForm,
-  NetworkTokenUiToggleCache,
-  NetworkTokenUiToggleFeatured,
-} from '@pubkey-link/web-network-token-ui'
+import { AdminNetworkTokenUiUpdateForm, NetworkTokenUiToggleCache } from '@pubkey-link/web-network-token-ui'
 import { UiCard, UiError, UiLoader } from '@pubkey-ui/core'
 
 export function AdminNetworkTokenDetailSettingsTab({ networkTokenId }: { networkTokenId: string }) {
@@ -19,7 +15,6 @@ export function AdminNetworkTokenDetailSettingsTab({ networkTokenId }: { network
   return (
     <UiCard>
       <NetworkTokenUiToggleCache networkToken={item} updateToken={updateNetworkToken} />
-      <NetworkTokenUiToggleFeatured networkToken={item} updateToken={updateNetworkToken} />
       <AdminNetworkTokenUiUpdateForm networkToken={item} submit={updateNetworkToken} />
     </UiCard>
   )

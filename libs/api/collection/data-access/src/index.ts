@@ -1,3 +1,7 @@
 export * from './lib/api-collection.data-access.module'
 export * from './lib/api-collection.service'
+export * from './lib/dto/user-collection-create-input'
+export * from './lib/dto/user-collection-find-many.input'
+export * from './lib/entity/collection-asset'
+export * from './lib/entity/collection-asset-attribute'
 export * from './lib/entity/collection.entity'

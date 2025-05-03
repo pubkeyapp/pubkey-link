@@ -185,7 +185,6 @@ export type AdminUpdateNetworkInput = {
 
 export type AdminUpdateNetworkTokenInput = {
   cache?: InputMaybe<Scalars['Boolean']['input']>
-  featured?: InputMaybe<Scalars['Boolean']['input']>
   name?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -324,10 +323,14 @@ export type Collection = {
   __typename?: 'Collection'
   assets?: Maybe<Array<CollectionAsset>>
   attributes?: Maybe<Array<CollectionAssetAttribute>>
+  createdAt?: Maybe<Scalars['DateTime']['output']>
   description: Scalars['String']['output']
   id: Scalars['String']['output']
   imageUrl: Scalars['String']['output']
   name: Scalars['String']['output']
+  slug: Scalars['String']['output']
+  token?: Maybe<NetworkToken>
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
 export type CollectionAsset = {
@@ -566,6 +569,8 @@ export type Mutation = {
   logout?: Maybe<Scalars['Boolean']['output']>
   userAddCommunityMember?: Maybe<CommunityMember>
   userAddIdentityGrant?: Maybe<Scalars['Boolean']['output']>
+  userCollectionCreate?: Maybe<Collection>
+  userCollectionDelete?: Maybe<Collection>
   userCreateBot?: Maybe<Bot>
   userCreateCommunity?: Maybe<Community>
   userCreateRole?: Maybe<Role>
@@ -767,6 +772,14 @@ export type MutationUserAddCommunityMemberArgs = {
 
 export type MutationUserAddIdentityGrantArgs = {
   input: UserAddIdentityGrantInput
+}
+
+export type MutationUserCollectionCreateArgs = {
+  input: UserCollectionCreateInput
+}
+
+export type MutationUserCollectionDeleteArgs = {
+  collectionId: Scalars['String']['input']
 }
 
 export type MutationUserCreateBotArgs = {
@@ -985,7 +998,6 @@ export type NetworkToken = {
   cluster: NetworkCluster
   createdAt?: Maybe<Scalars['DateTime']['output']>
   description?: Maybe<Scalars['String']['output']>
-  featured?: Maybe<Scalars['Boolean']['output']>
   id: Scalars['String']['output']
   imageUrl?: Maybe<Scalars['String']['output']>
   metadataUrl?: Maybe<Scalars['String']['output']>
@@ -1202,6 +1214,10 @@ export type QueryAdminGetVoteIdentitiesArgs = {
 
 export type QueryAnonRequestIdentityChallengeArgs = {
   input: RequestIdentityChallengeInput
+}
+
+export type QueryUserCollectionFindManyArgs = {
+  input: UserCollectionFindManyInput
 }
 
 export type QueryUserCollectionFindOneArgs = {
@@ -1485,6 +1501,16 @@ export type UserAddIdentityGrantInput = {
   granteeId: Scalars['String']['input']
   provider: IdentityProvider
   providerId: Scalars['String']['input']
+}
+
+export type UserCollectionCreateInput = {
+  communityId: Scalars['String']['input']
+  tokenId: Scalars['String']['input']
+}
+
+export type UserCollectionFindManyInput = {
+  communityId: Scalars['String']['input']
+  search?: InputMaybe<Scalars['String']['input']>
 }
 
 export type UserCreateBotInput = {
@@ -2015,7 +2041,6 @@ export type UserFindManyBotRolesQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -2382,11 +2407,87 @@ export type AdminCacheResolveMutationVariables = Exact<{
 
 export type AdminCacheResolveMutation = { __typename?: 'Mutation'; adminCacheResolve?: any | null }
 
-export type UserCollectionFindManyQueryVariables = Exact<{ [key: string]: never }>
+export type CollectionDetailsFragment = {
+  __typename?: 'Collection'
+  id: string
+  slug: string
+  name: string
+  description: string
+  imageUrl: string
+  token?: {
+    __typename?: 'NetworkToken'
+    id: string
+    createdAt?: Date | null
+    updatedAt?: Date | null
+    cache?: boolean | null
+    cluster: NetworkCluster
+    type: NetworkTokenType
+    account: string
+    program: string
+    name: string
+    mintList?: Array<string> | null
+    symbol?: string | null
+    description?: string | null
+    imageUrl?: string | null
+    metadataUrl?: string | null
+    raw?: any | null
+  } | null
+}
+
+export type CollectionAssetAttributeDetailsFragment = {
+  __typename?: 'CollectionAssetAttribute'
+  key: string
+  value?: string | null
+  count?: number | null
+}
+
+export type CollectionAssetDetailsFragment = {
+  __typename?: 'CollectionAsset'
+  id: string
+  name: string
+  description: string
+  imageUrl: string
+  owner: string
+  attributes?: Array<{
+    __typename?: 'CollectionAssetAttribute'
+    key: string
+    value?: string | null
+    count?: number | null
+  }> | null
+}
+
+export type UserCollectionFindManyQueryVariables = Exact<{
+  input: UserCollectionFindManyInput
+}>
 
 export type UserCollectionFindManyQuery = {
   __typename?: 'Query'
-  items?: Array<{ __typename?: 'Collection'; id: string; name: string; description: string; imageUrl: string }> | null
+  items?: Array<{
+    __typename?: 'Collection'
+    id: string
+    slug: string
+    name: string
+    description: string
+    imageUrl: string
+    token?: {
+      __typename?: 'NetworkToken'
+      id: string
+      createdAt?: Date | null
+      updatedAt?: Date | null
+      cache?: boolean | null
+      cluster: NetworkCluster
+      type: NetworkTokenType
+      account: string
+      program: string
+      name: string
+      mintList?: Array<string> | null
+      symbol?: string | null
+      description?: string | null
+      imageUrl?: string | null
+      metadataUrl?: string | null
+      raw?: any | null
+    } | null
+  }> | null
 }
 
 export type UserCollectionFindOneQueryVariables = Exact<{
@@ -2398,6 +2499,7 @@ export type UserCollectionFindOneQuery = {
   item?: {
     __typename?: 'Collection'
     id: string
+    slug: string
     name: string
     description: string
     imageUrl: string
@@ -2414,8 +2516,99 @@ export type UserCollectionFindOneQuery = {
       description: string
       imageUrl: string
       owner: string
-      attributes?: Array<{ __typename?: 'CollectionAssetAttribute'; key: string; value?: string | null }> | null
+      attributes?: Array<{
+        __typename?: 'CollectionAssetAttribute'
+        key: string
+        value?: string | null
+        count?: number | null
+      }> | null
     }> | null
+    token?: {
+      __typename?: 'NetworkToken'
+      id: string
+      createdAt?: Date | null
+      updatedAt?: Date | null
+      cache?: boolean | null
+      cluster: NetworkCluster
+      type: NetworkTokenType
+      account: string
+      program: string
+      name: string
+      mintList?: Array<string> | null
+      symbol?: string | null
+      description?: string | null
+      imageUrl?: string | null
+      metadataUrl?: string | null
+      raw?: any | null
+    } | null
+  } | null
+}
+
+export type UserCollectionCreateMutationVariables = Exact<{
+  input: UserCollectionCreateInput
+}>
+
+export type UserCollectionCreateMutation = {
+  __typename?: 'Mutation'
+  created?: {
+    __typename?: 'Collection'
+    id: string
+    slug: string
+    name: string
+    description: string
+    imageUrl: string
+    token?: {
+      __typename?: 'NetworkToken'
+      id: string
+      createdAt?: Date | null
+      updatedAt?: Date | null
+      cache?: boolean | null
+      cluster: NetworkCluster
+      type: NetworkTokenType
+      account: string
+      program: string
+      name: string
+      mintList?: Array<string> | null
+      symbol?: string | null
+      description?: string | null
+      imageUrl?: string | null
+      metadataUrl?: string | null
+      raw?: any | null
+    } | null
+  } | null
+}
+
+export type UserCollectionDeleteMutationVariables = Exact<{
+  collectionId: Scalars['String']['input']
+}>
+
+export type UserCollectionDeleteMutation = {
+  __typename?: 'Mutation'
+  deleted?: {
+    __typename?: 'Collection'
+    id: string
+    slug: string
+    name: string
+    description: string
+    imageUrl: string
+    token?: {
+      __typename?: 'NetworkToken'
+      id: string
+      createdAt?: Date | null
+      updatedAt?: Date | null
+      cache?: boolean | null
+      cluster: NetworkCluster
+      type: NetworkTokenType
+      account: string
+      program: string
+      name: string
+      mintList?: Array<string> | null
+      symbol?: string | null
+      description?: string | null
+      imageUrl?: string | null
+      metadataUrl?: string | null
+      raw?: any | null
+    } | null
   } | null
 }
 
@@ -2487,7 +2680,6 @@ export type AdminFindManyCommunityMemberQuery = {
             createdAt?: Date | null
             updatedAt?: Date | null
             cache?: boolean | null
-            featured?: boolean | null
             cluster: NetworkCluster
             type: NetworkTokenType
             account: string
@@ -2629,7 +2821,6 @@ export type AdminFindOneCommunityMemberQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -2761,7 +2952,6 @@ export type AdminAddCommunityMemberMutation = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -2893,7 +3083,6 @@ export type AdminUpdateCommunityMemberMutation = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -3030,7 +3219,6 @@ export type UserGetCommunityMemberQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -3163,7 +3351,6 @@ export type UserFindManyCommunityMemberQuery = {
             createdAt?: Date | null
             updatedAt?: Date | null
             cache?: boolean | null
-            featured?: boolean | null
             cluster: NetworkCluster
             type: NetworkTokenType
             account: string
@@ -3305,7 +3492,6 @@ export type UserFindOneCommunityMemberQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -3437,7 +3623,6 @@ export type UserAddCommunityMemberMutation = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -3569,7 +3754,6 @@ export type UserUpdateCommunityMemberMutation = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -3874,7 +4058,6 @@ export type AnonGetCommunitiesQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -3982,7 +4165,6 @@ export type UserGetCommunitiesQuery = {
             createdAt?: Date | null
             updatedAt?: Date | null
             cache?: boolean | null
-            featured?: boolean | null
             cluster: NetworkCluster
             type: NetworkTokenType
             account: string
@@ -4097,7 +4279,6 @@ export type UserGetCommunitiesQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -4223,7 +4404,6 @@ export type UserFindManyCommunityQuery = {
             createdAt?: Date | null
             updatedAt?: Date | null
             cache?: boolean | null
-            featured?: boolean | null
             cluster: NetworkCluster
             type: NetworkTokenType
             account: string
@@ -5081,7 +5261,6 @@ export type LogDetailsFragment = {
         createdAt?: Date | null
         updatedAt?: Date | null
         cache?: boolean | null
-        featured?: boolean | null
         cluster: NetworkCluster
         type: NetworkTokenType
         account: string
@@ -5279,7 +5458,6 @@ export type UserFindManyLogQuery = {
             createdAt?: Date | null
             updatedAt?: Date | null
             cache?: boolean | null
-            featured?: boolean | null
             cluster: NetworkCluster
             type: NetworkTokenType
             account: string
@@ -5487,7 +5665,6 @@ export type UserFindOneLogQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -5686,7 +5863,6 @@ export type AdminFindManyLogQuery = {
             createdAt?: Date | null
             updatedAt?: Date | null
             cache?: boolean | null
-            featured?: boolean | null
             cluster: NetworkCluster
             type: NetworkTokenType
             account: string
@@ -5894,7 +6070,6 @@ export type AdminFindOneLogQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -6195,7 +6370,6 @@ export type NetworkTokenDetailsFragment = {
   createdAt?: Date | null
   updatedAt?: Date | null
   cache?: boolean | null
-  featured?: boolean | null
   cluster: NetworkCluster
   type: NetworkTokenType
   account: string
@@ -6223,7 +6397,6 @@ export type AdminFindManyNetworkTokenQuery = {
       createdAt?: Date | null
       updatedAt?: Date | null
       cache?: boolean | null
-      featured?: boolean | null
       cluster: NetworkCluster
       type: NetworkTokenType
       account: string
@@ -6261,7 +6434,6 @@ export type AdminFindOneNetworkTokenQuery = {
     createdAt?: Date | null
     updatedAt?: Date | null
     cache?: boolean | null
-    featured?: boolean | null
     cluster: NetworkCluster
     type: NetworkTokenType
     account: string
@@ -6288,7 +6460,6 @@ export type AdminCreateNetworkTokenMutation = {
     createdAt?: Date | null
     updatedAt?: Date | null
     cache?: boolean | null
-    featured?: boolean | null
     cluster: NetworkCluster
     type: NetworkTokenType
     account: string
@@ -6316,7 +6487,6 @@ export type AdminUpdateNetworkTokenMutation = {
     createdAt?: Date | null
     updatedAt?: Date | null
     cache?: boolean | null
-    featured?: boolean | null
     cluster: NetworkCluster
     type: NetworkTokenType
     account: string
@@ -6343,7 +6513,6 @@ export type AdminUpdateNetworkTokenMetadataMutation = {
     createdAt?: Date | null
     updatedAt?: Date | null
     cache?: boolean | null
-    featured?: boolean | null
     cluster: NetworkCluster
     type: NetworkTokenType
     account: string
@@ -6378,7 +6547,6 @@ export type UserFindManyNetworkTokenQuery = {
       createdAt?: Date | null
       updatedAt?: Date | null
       cache?: boolean | null
-      featured?: boolean | null
       cluster: NetworkCluster
       type: NetworkTokenType
       account: string
@@ -6589,7 +6757,6 @@ export type RoleDetailsFragment = {
       createdAt?: Date | null
       updatedAt?: Date | null
       cache?: boolean | null
-      featured?: boolean | null
       cluster: NetworkCluster
       type: NetworkTokenType
       account: string
@@ -6681,7 +6848,6 @@ export type RoleConditionDetailsFragment = {
     createdAt?: Date | null
     updatedAt?: Date | null
     cache?: boolean | null
-    featured?: boolean | null
     cluster: NetworkCluster
     type: NetworkTokenType
     account: string
@@ -6765,7 +6931,6 @@ export type AdminFindManyRoleQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -6883,7 +7048,6 @@ export type AdminFindOneRoleQuery = {
         createdAt?: Date | null
         updatedAt?: Date | null
         cache?: boolean | null
-        featured?: boolean | null
         cluster: NetworkCluster
         type: NetworkTokenType
         account: string
@@ -6990,7 +7154,6 @@ export type AdminCreateRoleMutation = {
         createdAt?: Date | null
         updatedAt?: Date | null
         cache?: boolean | null
-        featured?: boolean | null
         cluster: NetworkCluster
         type: NetworkTokenType
         account: string
@@ -7098,7 +7261,6 @@ export type AdminUpdateRoleMutation = {
         createdAt?: Date | null
         updatedAt?: Date | null
         cache?: boolean | null
-        featured?: boolean | null
         cluster: NetworkCluster
         type: NetworkTokenType
         account: string
@@ -7213,7 +7375,6 @@ export type UserFindManyRoleQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -7363,7 +7524,6 @@ export type UserFindOneRoleQuery = {
         createdAt?: Date | null
         updatedAt?: Date | null
         cache?: boolean | null
-        featured?: boolean | null
         cluster: NetworkCluster
         type: NetworkTokenType
         account: string
@@ -7438,7 +7598,6 @@ export type UserCreateRoleMutation = {
         createdAt?: Date | null
         updatedAt?: Date | null
         cache?: boolean | null
-        featured?: boolean | null
         cluster: NetworkCluster
         type: NetworkTokenType
         account: string
@@ -7537,7 +7696,6 @@ export type UserCreateRoleConditionMutation = {
       createdAt?: Date | null
       updatedAt?: Date | null
       cache?: boolean | null
-      featured?: boolean | null
       cluster: NetworkCluster
       type: NetworkTokenType
       account: string
@@ -7628,7 +7786,6 @@ export type UserUpdateRoleMutation = {
         createdAt?: Date | null
         updatedAt?: Date | null
         cache?: boolean | null
-        featured?: boolean | null
         cluster: NetworkCluster
         type: NetworkTokenType
         account: string
@@ -7728,7 +7885,6 @@ export type UserUpdateRoleConditionMutation = {
       createdAt?: Date | null
       updatedAt?: Date | null
       cache?: boolean | null
-      featured?: boolean | null
       cluster: NetworkCluster
       type: NetworkTokenType
       account: string
@@ -7810,7 +7966,6 @@ export type SnapshotDetailsFragment = {
         createdAt?: Date | null
         updatedAt?: Date | null
         cache?: boolean | null
-        featured?: boolean | null
         cluster: NetworkCluster
         type: NetworkTokenType
         account: string
@@ -7940,7 +8095,6 @@ export type UserFindManySnapshotQuery = {
             createdAt?: Date | null
             updatedAt?: Date | null
             cache?: boolean | null
-            featured?: boolean | null
             cluster: NetworkCluster
             type: NetworkTokenType
             account: string
@@ -8079,7 +8233,6 @@ export type UserFindOneSnapshotQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -8194,7 +8347,6 @@ export type UserCreateSnapshotMutation = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -8317,7 +8469,6 @@ export type AdminFindManySnapshotQuery = {
             createdAt?: Date | null
             updatedAt?: Date | null
             cache?: boolean | null
-            featured?: boolean | null
             cluster: NetworkCluster
             type: NetworkTokenType
             account: string
@@ -8456,7 +8607,6 @@ export type AdminFindOneSnapshotQuery = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -8571,7 +8721,6 @@ export type AdminCreateSnapshotMutation = {
           createdAt?: Date | null
           updatedAt?: Date | null
           cache?: boolean | null
-          featured?: boolean | null
           cluster: NetworkCluster
           type: NetworkTokenType
           account: string
@@ -8949,6 +9098,58 @@ export const CacheStatusDetailsFragmentDoc = gql`
     }
   }
 `
+export const NetworkTokenDetailsFragmentDoc = gql`
+  fragment NetworkTokenDetails on NetworkToken {
+    id
+    createdAt
+    updatedAt
+    cache
+    cluster
+    type
+    account
+    program
+    name
+    mintList
+    symbol
+    description
+    imageUrl
+    metadataUrl
+    raw
+  }
+`
+export const CollectionDetailsFragmentDoc = gql`
+  fragment CollectionDetails on Collection {
+    id
+    slug
+    name
+    description
+    imageUrl
+    token {
+      ...NetworkTokenDetails
+    }
+  }
+  ${NetworkTokenDetailsFragmentDoc}
+`
+export const CollectionAssetAttributeDetailsFragmentDoc = gql`
+  fragment CollectionAssetAttributeDetails on CollectionAssetAttribute {
+    key
+    value
+    count
+  }
+`
+export const CollectionAssetDetailsFragmentDoc = gql`
+  fragment CollectionAssetDetails on CollectionAsset {
+    id
+    name
+    description
+    imageUrl
+    owner
+    attributes {
+      ...CollectionAssetAttributeDetails
+    }
+  }
+  ${CollectionAssetAttributeDetailsFragmentDoc}
+`
 export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
     createdAt
@@ -9103,26 +9304,6 @@ export const NetworkAssetDetailsFragmentDoc = gql`
     explorerUrl
     metadata
     attributes
-  }
-`
-export const NetworkTokenDetailsFragmentDoc = gql`
-  fragment NetworkTokenDetails on NetworkToken {
-    id
-    createdAt
-    updatedAt
-    cache
-    featured
-    cluster
-    type
-    account
-    program
-    name
-    mintList
-    symbol
-    description
-    imageUrl
-    metadataUrl
-    raw
   }
 `
 export const RoleConditionDetailsFragmentDoc = gql`
@@ -9568,40 +9749,44 @@ export const AdminCacheResolveDocument = gql`
   }
 `
 export const UserCollectionFindManyDocument = gql`
-  query userCollectionFindMany {
-    items: userCollectionFindMany {
-      id
-      name
-      description
-      imageUrl
+  query userCollectionFindMany($input: UserCollectionFindManyInput!) {
+    items: userCollectionFindMany(input: $input) {
+      ...CollectionDetails
     }
   }
+  ${CollectionDetailsFragmentDoc}
 `
 export const UserCollectionFindOneDocument = gql`
   query userCollectionFindOne($collectionId: String!) {
     item: userCollectionFindOne(collectionId: $collectionId) {
-      id
-      name
-      description
-      imageUrl
+      ...CollectionDetails
       attributes {
-        key
-        value
-        count
+        ...CollectionAssetAttributeDetails
       }
       assets {
-        id
-        name
-        description
-        imageUrl
-        owner
-        attributes {
-          key
-          value
-        }
+        ...CollectionAssetDetails
       }
     }
   }
+  ${CollectionDetailsFragmentDoc}
+  ${CollectionAssetAttributeDetailsFragmentDoc}
+  ${CollectionAssetDetailsFragmentDoc}
+`
+export const UserCollectionCreateDocument = gql`
+  mutation userCollectionCreate($input: UserCollectionCreateInput!) {
+    created: userCollectionCreate(input: $input) {
+      ...CollectionDetails
+    }
+  }
+  ${CollectionDetailsFragmentDoc}
+`
+export const UserCollectionDeleteDocument = gql`
+  mutation userCollectionDelete($collectionId: String!) {
+    deleted: userCollectionDelete(collectionId: $collectionId) {
+      ...CollectionDetails
+    }
+  }
+  ${CollectionDetailsFragmentDoc}
 `
 export const AdminFindManyCommunityMemberDocument = gql`
   query adminFindManyCommunityMember($input: AdminFindManyCommunityMemberInput!) {
@@ -10641,6 +10826,8 @@ const AdminCacheDetailDocumentString = print(AdminCacheDetailDocument)
 const AdminCacheResolveDocumentString = print(AdminCacheResolveDocument)
 const UserCollectionFindManyDocumentString = print(UserCollectionFindManyDocument)
 const UserCollectionFindOneDocumentString = print(UserCollectionFindOneDocument)
+const UserCollectionCreateDocumentString = print(UserCollectionCreateDocument)
+const UserCollectionDeleteDocumentString = print(UserCollectionDeleteDocument)
 const AdminFindManyCommunityMemberDocumentString = print(AdminFindManyCommunityMemberDocument)
 const AdminFindOneCommunityMemberDocumentString = print(AdminFindOneCommunityMemberDocument)
 const AdminAddCommunityMemberDocumentString = print(AdminAddCommunityMemberDocument)
@@ -11453,7 +11640,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
       )
     },
     userCollectionFindMany(
-      variables?: UserCollectionFindManyQueryVariables,
+      variables: UserCollectionFindManyQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
     ): Promise<{
       data: UserCollectionFindManyQuery
@@ -11491,6 +11678,48 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
           }),
         'userCollectionFindOne',
         'query',
+        variables,
+      )
+    },
+    userCollectionCreate(
+      variables: UserCollectionCreateMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserCollectionCreateMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserCollectionCreateMutation>(UserCollectionCreateDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userCollectionCreate',
+        'mutation',
+        variables,
+      )
+    },
+    userCollectionDelete(
+      variables: UserCollectionDeleteMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserCollectionDeleteMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserCollectionDeleteMutation>(UserCollectionDeleteDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userCollectionDelete',
+        'mutation',
         variables,
       )
     },
@@ -14044,7 +14273,6 @@ export function AdminUpdateNetworkInputSchema(): z.ZodObject<Properties<AdminUpd
 export function AdminUpdateNetworkTokenInputSchema(): z.ZodObject<Properties<AdminUpdateNetworkTokenInput>> {
   return z.object({
     cache: z.boolean().nullish(),
-    featured: z.boolean().nullish(),
     name: z.string().nullish(),
   })
 }
@@ -14095,6 +14323,20 @@ export function UserAddIdentityGrantInputSchema(): z.ZodObject<Properties<UserAd
     granteeId: z.string(),
     provider: IdentityProviderSchema,
     providerId: z.string(),
+  })
+}
+
+export function UserCollectionCreateInputSchema(): z.ZodObject<Properties<UserCollectionCreateInput>> {
+  return z.object({
+    communityId: z.string(),
+    tokenId: z.string(),
+  })
+}
+
+export function UserCollectionFindManyInputSchema(): z.ZodObject<Properties<UserCollectionFindManyInput>> {
+  return z.object({
+    communityId: z.string(),
+    search: z.string().nullish(),
   })
 }
 

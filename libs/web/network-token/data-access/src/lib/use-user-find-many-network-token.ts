@@ -28,6 +28,7 @@ export function useUserFindManyNetworkToken(props: Partial<UserFindManyNetworkTo
 
   return {
     items,
+    isLoading: query.isLoading,
     query,
     type,
     cluster,

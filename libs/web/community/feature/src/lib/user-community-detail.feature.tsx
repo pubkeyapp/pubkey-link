@@ -4,7 +4,6 @@ import { CommunityUiAdminIcon, CommunityUiItem } from '@pubkey-link/web-communit
 import { AppUiDebugModal } from '@pubkey-link/web-core-ui'
 import { UiBack, UiContainer, UiError, UiGroup, UiLoader, UiStack } from '@pubkey-ui/core'
 import { useParams } from 'react-router-dom'
-import { CommunityDashboardMemberCardRoles } from './community-dashboard-member-card-roles'
 import { UserCommunityDetailFeatureAdmin } from './user-community-detail-feature-admin'
 
 export function UserCommunityDetailFeature() {
@@ -42,7 +41,7 @@ export function UserCommunityDetailFeature() {
         {member?.admin ? (
           <UserCommunityDetailFeatureAdmin communityAdmin={!!communityAdmin} communityId={communityId} item={item} />
         ) : (
-          <CommunityDashboardMemberCardRoles community={item} />
+          <UserCommunityDetailFeatureAdmin communityAdmin={!!communityAdmin} communityId={communityId} item={item} />
         )}
       </UiStack>
     </UiContainer>

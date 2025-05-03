@@ -61,16 +61,21 @@ model CacheConfig {
   value String
 }
 
-enum CacheConfigKey {
-  CronExpression
-  HeliusApiKey
-  RestEnabled
-}
+model Collection {
+  id          String       @id @default(cuid())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  community   Community    @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  communityId String
+  token       NetworkToken @relation(fields: [tokenId], references: [id], onDelete: Cascade)
+  tokenId     String
+  slug        String
+  name        String
+  description String?
+  imageUrl    String?
 
-enum CacheConfigType {
-  Boolean
-  Secret
-  String
+  @@unique([communityId, tokenId])
+  @@unique([communityId, slug])
 }
 
 model Community {
@@ -87,6 +92,7 @@ model Community {
   telegramUrl String?
   enableSync  Boolean           @default(true)
   featured    Boolean           @default(false)
+  collections Collection[]
   members     CommunityMember[]
   roles       Role[]
   cluster     NetworkCluster? // This field is deprecated and will be removed in a future version
@@ -251,7 +257,6 @@ model NetworkToken {
   cluster     NetworkCluster
   type        NetworkTokenType
   cache       Boolean          @default(false)
-  featured    Boolean          @default(false)
   name        String
   account     String
   mintList    String[]
@@ -262,6 +267,7 @@ model NetworkToken {
   description String?
   symbol      String?
   raw         Json?
+  collections Collection[]
   conditions  RoleCondition[]
 
   @@unique([account, cluster])
@@ -339,6 +345,18 @@ model User {
 enum BotStatus {
   Active
   Inactive
+}
+
+enum CacheConfigKey {
+  CronExpression
+  HeliusApiKey
+  RestEnabled
+}
+
+enum CacheConfigType {
+  Boolean
+  Secret
+  String
 }
 
 enum CommunityRole {

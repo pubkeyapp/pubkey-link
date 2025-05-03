@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common'
 import { ApiAuthFeatureModule } from '@pubkey-link/api-auth-feature'
 import { ApiBackupFeatureModule } from '@pubkey-link/api-backup-feature'
 import { ApiBotFeatureModule } from '@pubkey-link/api-bot-feature'
+import { ApiCacheConfigFeatureModule } from '@pubkey-link/api-cache-config-feature'
+import { ApiCacheFeatureModule } from '@pubkey-link/api-cache-feature'
+import { ApiCollectionFeatureModule } from '@pubkey-link/api-collection-feature'
 import { ApiCommunityFeatureModule } from '@pubkey-link/api-community-feature'
 import { ApiCommunityMemberFeatureModule } from '@pubkey-link/api-community-member-feature'
 import { ApiCoreDataAccessModule } from '@pubkey-link/api-core-data-access'
@@ -17,15 +20,15 @@ import { ApiUserFeatureModule } from '@pubkey-link/api-user-feature'
 import { ApiCoreProtocolController } from './api-core-protocol.controller'
 import { ApiCoreController } from './api-core.controller'
 import { ApiCoreResolver } from './api-core.resolver'
-import { ApiCacheFeatureModule } from '@pubkey-link/api-cache-feature'
-import { ApiCacheConfigFeatureModule } from '@pubkey-link/api-cache-config-feature'
-import { ApiCollectionFeatureModule } from '@pubkey-link/api-collection-feature'
 
 const imports = [
   // The api-feature generator will add the imports here
   ApiAuthFeatureModule,
   ApiBackupFeatureModule,
   ApiBotFeatureModule,
+  ApiCacheConfigFeatureModule,
+  ApiCacheFeatureModule,
+  ApiCollectionFeatureModule,
   ApiCommunityFeatureModule,
   ApiCommunityMemberFeatureModule,
   ApiCoreDataAccessModule,
@@ -38,9 +41,6 @@ const imports = [
   ApiScheduleFeatureModule,
   ApiSnapshotFeatureModule,
   ApiUserFeatureModule,
-  ApiCacheFeatureModule,
-  ApiCacheConfigFeatureModule,
-  ApiCollectionFeatureModule,
 ]
 
 @Module({

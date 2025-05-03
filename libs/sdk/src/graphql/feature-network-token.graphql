@@ -3,7 +3,6 @@ fragment NetworkTokenDetails on NetworkToken {
   createdAt
   updatedAt
   cache
-  featured
   cluster
   type
   account

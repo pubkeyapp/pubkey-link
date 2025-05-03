@@ -1,33 +1,57 @@
-query userCollectionFindMany {
-  items: userCollectionFindMany {
-    id
-    name
-    description
-    imageUrl
+fragment CollectionDetails on Collection {
+  id
+  slug
+  name
+  description
+  imageUrl
+  token {
+    ...NetworkTokenDetails
+  }
+}
+
+fragment CollectionAssetAttributeDetails on CollectionAssetAttribute {
+  key
+  value
+  count
+}
+
+fragment CollectionAssetDetails on CollectionAsset {
+  id
+  name
+  description
+  imageUrl
+  owner
+  attributes {
+    ...CollectionAssetAttributeDetails
+  }
+}
+
+query userCollectionFindMany($input: UserCollectionFindManyInput!) {
+  items: userCollectionFindMany(input: $input) {
+    ...CollectionDetails
   }
 }
 
 query userCollectionFindOne($collectionId: String!) {
   item: userCollectionFindOne(collectionId: $collectionId) {
-    id
-    name
-    description
-    imageUrl
+    ...CollectionDetails
     attributes {
-      key
-      value
-      count
+      ...CollectionAssetAttributeDetails
     }
     assets {
-      id
-      name
-      description
-      imageUrl
-      owner
-      attributes {
-        key
-        value
-      }
+      ...CollectionAssetDetails
     }
+  }
+}
+
+mutation userCollectionCreate($input: UserCollectionCreateInput!) {
+  created: userCollectionCreate(input: $input) {
+    ...CollectionDetails
+  }
+}
+
+mutation userCollectionDelete($collectionId: String!) {
+  deleted: userCollectionDelete(collectionId: $collectionId) {
+    ...CollectionDetails
   }
 }

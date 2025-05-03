@@ -17,6 +17,7 @@ export function useUserFindOneCommunity({ communityId }: { communityId: string }
 
   return {
     item,
+    isAdmin: !!member?.admin,
     member,
     communityAdmin: member?.admin,
     isLoading,

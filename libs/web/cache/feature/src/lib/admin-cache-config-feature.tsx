@@ -3,15 +3,21 @@ import { CacheConfigKey, CacheConfigType, getEnumOptions } from '@pubkey-link/sd
 import { useAdminCacheConfig, useAdminCacheConfigSet } from '@pubkey-link/web-cache-data-access'
 import { UiBack, UiLoader, UiPage, UiStack } from '@pubkey-ui/core'
 
+interface CacheConfigItem {
+  key: CacheConfigKey
+  type: CacheConfigType
+  value: string
+}
+
 export function AdminCacheConfigFeature() {
   const { isLoading, data, refetch } = useAdminCacheConfig()
   const cacheConfigSetMutation = useAdminCacheConfigSet()
-  const items = getEnumOptions(CacheConfigKey).map((item) => {
+  const items: CacheConfigItem[] = getEnumOptions(CacheConfigKey).map((item) => {
     const found = data?.find((i) => i.key === item.value)
     return {
       key: item.value,
-      type: found?.type,
-      value: found?.value,
+      type: found?.type ?? CacheConfigType.String,
+      value: found?.value ?? '',
     }
   })
 
@@ -39,13 +45,11 @@ export function AdminCacheConfigFeature() {
                   </Table.Td>
                   <Table.Td>
                     <CacheConfigInput
-                      key={item.key}
-                      type={item.type ?? CacheConfigType.String}
+                      item={item}
                       onChange={async (value) => {
                         await cacheConfigSetMutation.mutateAsync({ key: item.key, value })
                         await refetch()
                       }}
-                      value={item.value ?? ''}
                     />
                   </Table.Td>
                 </Table.Tr>
@@ -61,14 +65,10 @@ export function AdminCacheConfigFeature() {
 }
 
 function CacheConfigInput({
-  key,
-  type,
-  value,
+  item: { key, type, value },
   onChange,
 }: {
-  key: CacheConfigKey
-  type: CacheConfigType
-  value: string
+  item: CacheConfigItem
   onChange: (value: string) => void
 }) {
   switch (type) {

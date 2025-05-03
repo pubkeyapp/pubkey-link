@@ -1,43 +1,28 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, ObjectType } from '@nestjs/graphql'
+import { NetworkToken } from '@pubkey-link/api-network-token-data-access'
+import { CollectionAsset } from './collection-asset'
+import { CollectionAssetAttribute } from './collection-asset-attribute'
 
 @ObjectType()
 export class Collection {
   @Field()
   id!: string
+  @Field({ nullable: true })
+  createdAt?: Date
+  @Field({ nullable: true })
+  updatedAt?: Date
   @Field()
   name!: string
   @Field()
-  description?: string
+  slug!: string
   @Field()
-  imageUrl?: string
+  description?: string | null
+  @Field()
+  imageUrl?: string | null
+  @Field(() => NetworkToken, { nullable: true })
+  token?: NetworkToken | null
   @Field(() => [CollectionAsset], { nullable: true })
   assets?: CollectionAsset[]
   @Field(() => [CollectionAssetAttribute], { nullable: true })
   attributes?: CollectionAssetAttribute[]
-}
-
-@ObjectType()
-export class CollectionAsset {
-  @Field()
-  id!: string
-  @Field()
-  name!: string
-  @Field()
-  description?: string
-  @Field()
-  imageUrl?: string
-  @Field()
-  owner?: string
-  @Field(() => [CollectionAssetAttribute], { nullable: true })
-  attributes?: CollectionAssetAttribute[]
-}
-
-@ObjectType()
-export class CollectionAssetAttribute {
-  @Field()
-  key!: string
-  @Field({ nullable: true })
-  value!: string
-  @Field(() => Int, { nullable: true })
-  count?: number
 }

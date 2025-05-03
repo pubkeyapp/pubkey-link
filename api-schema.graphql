@@ -163,7 +163,6 @@ input AdminUpdateNetworkInput {
 
 input AdminUpdateNetworkTokenInput {
   cache: Boolean
-  featured: Boolean
   name: String
 }
 
@@ -292,10 +291,14 @@ type CacheStatus {
 type Collection {
   assets: [CollectionAsset!]
   attributes: [CollectionAssetAttribute!]
+  createdAt: DateTime
   description: String!
   id: String!
   imageUrl: String!
   name: String!
+  slug: String!
+  token: NetworkToken
+  updatedAt: DateTime
 }
 
 type CollectionAsset {
@@ -529,6 +532,8 @@ type Mutation {
   logout: Boolean
   userAddCommunityMember(communityId: String!, input: UserAddCommunityMemberInput!): CommunityMember
   userAddIdentityGrant(input: UserAddIdentityGrantInput!): Boolean
+  userCollectionCreate(input: UserCollectionCreateInput!): Collection
+  userCollectionDelete(collectionId: String!): Collection
   userCreateBot(input: UserCreateBotInput!): Bot
   userCreateCommunity(input: UserCreateCommunityInput!): Community
   userCreateRole(input: UserCreateRoleInput!): Role
@@ -632,7 +637,6 @@ type NetworkToken {
   cluster: NetworkCluster!
   createdAt: DateTime
   description: String
-  featured: Boolean
   id: String!
   imageUrl: String
   metadataUrl: String
@@ -706,7 +710,7 @@ type Query {
   appConfig: AppConfig!
   me: User
   uptime: Float!
-  userCollectionFindMany: [Collection!]
+  userCollectionFindMany(input: UserCollectionFindManyInput!): [Collection!]
   userCollectionFindOne(collectionId: String!): Collection
   userFindManyBotRoles(botId: String!, serverId: String!): [BotRole!]
   userFindManyCommunity(input: UserFindManyCommunityInput!): CommunityPaging!
@@ -872,6 +876,16 @@ input UserAddIdentityGrantInput {
   granteeId: String!
   provider: IdentityProvider!
   providerId: String!
+}
+
+input UserCollectionCreateInput {
+  communityId: String!
+  tokenId: String!
+}
+
+input UserCollectionFindManyInput {
+  communityId: String!
+  search: String
 }
 
 input UserCreateBotInput {

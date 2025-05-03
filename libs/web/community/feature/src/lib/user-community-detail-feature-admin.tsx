@@ -1,5 +1,6 @@
 import { AppFeature, Community } from '@pubkey-link/sdk'
 import { UserBotFeature } from '@pubkey-link/web-bot-feature'
+import { UserCollectionFeature } from '@pubkey-link/web-collection-feature'
 import { UserCommunityMemberFeature } from '@pubkey-link/web-community-member-feature'
 import { useAppConfig } from '@pubkey-link/web-core-data-access'
 import { UiIcon } from '@pubkey-link/web-core-ui'
@@ -7,7 +8,7 @@ import { UserLogFeature } from '@pubkey-link/web-log-feature'
 import { UserRoleFeature } from '@pubkey-link/web-role-feature'
 import { UserSnapshotFeature } from '@pubkey-link/web-snapshot-feature'
 import { UiGridRoute, UiGridRoutes } from '@pubkey-ui/core'
-import { IconBrandDiscord } from '@tabler/icons-react'
+import { IconBrandDiscord, IconPhotoHeart } from '@tabler/icons-react'
 import { lazy } from 'react'
 
 const RouteDashboard = lazy(() => import('./user-community-detail-dashboard.tab'))
@@ -30,8 +31,14 @@ export function UserCommunityDetailFeatureAdmin({
     {
       path: 'dashboard',
       label: 'Dashboard',
-      element: <RouteDashboard community={item} />,
+      element: <RouteDashboard community={item} communityAdmin={communityAdmin} />,
       leftSection: <UiIcon type="dashboard" size={20} />,
+    },
+    {
+      path: 'collections',
+      label: 'Collections',
+      element: <UserCollectionFeature communityId={item.id} />,
+      leftSection: <IconPhotoHeart size={20} />,
     },
     communityAdmin && {
       path: 'discord',

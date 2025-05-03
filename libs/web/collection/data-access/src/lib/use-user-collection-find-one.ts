@@ -10,13 +10,3 @@ export function useUserCollectionFindOne({ collectionId }: { collectionId: strin
     },
   })
 }
-
-export function useUserCollectionAssetFindOne({ assetId, collectionId }: { assetId: string; collectionId: string }) {
-  const sdk = useSdk()
-  return useQuery({
-    queryKey: ['user-collection-asset-find-one', { assetId, collectionId }],
-    queryFn: async () => {
-      return null
-    },
-  })
-}

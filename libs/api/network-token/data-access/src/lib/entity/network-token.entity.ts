@@ -21,8 +21,6 @@ export class NetworkToken {
   account!: string
   @Field({ nullable: true })
   cache?: boolean
-  @Field({ nullable: true })
-  featured?: boolean
   @Field()
   name!: string
   @Field()
