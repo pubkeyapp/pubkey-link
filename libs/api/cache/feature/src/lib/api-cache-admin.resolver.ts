@@ -17,10 +17,7 @@ export class ApiCacheAdminResolver {
 
   @Query(() => GraphQLJSON, { nullable: true })
   adminCacheDetail(
-    @Args({
-      name: 'cluster',
-      type: () => NetworkCluster,
-    })
+    @Args({ name: 'cluster', type: () => NetworkCluster })
     cluster: NetworkCluster,
     @Args('cacheId') cacheId: string,
   ) {
@@ -29,13 +26,19 @@ export class ApiCacheAdminResolver {
 
   @Mutation(() => GraphQLJSON, { nullable: true })
   adminCacheResolve(
-    @Args({
-      name: 'cluster',
-      type: () => NetworkCluster,
-    })
+    @Args({ name: 'cluster', type: () => NetworkCluster })
     cluster: NetworkCluster,
     @Args('cacheId') cacheId: string,
   ) {
     return this.service.resolveCache({ cluster, id: cacheId })
+  }
+
+  @Mutation(() => GraphQLJSON, { nullable: true })
+  adminCacheSync(
+    @Args({ name: 'cluster', type: () => NetworkCluster })
+    cluster: NetworkCluster,
+    @Args('cacheId') cacheId: string,
+  ) {
+    return this.service.syncCacheNetworkAssets({ cluster, id: cacheId })
   }
 }

@@ -1,5 +1,7 @@
 export * from './lib/use-admin-cache-config'
+export * from './lib/use-admin-cache-config-set'
 export * from './lib/use-admin-cache-detail'
 export * from './lib/use-admin-cache-resolve'
 export * from './lib/use-admin-cache-status'
+export * from './lib/use-admin-cache-sync'
 export * from './lib/use-token-account-reducer'

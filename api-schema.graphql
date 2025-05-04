@@ -491,6 +491,7 @@ type Mutation {
   adminAddCommunityMember(communityId: String!, input: AdminAddCommunityMemberInput!): CommunityMember
   adminCacheConfigSet(key: CacheConfigKey!, value: String!): Boolean
   adminCacheResolve(cacheId: String!, cluster: NetworkCluster!): JSON
+  adminCacheSync(cacheId: String!, cluster: NetworkCluster!): JSON
   adminCleanupNetworkAssets(cluster: NetworkCluster!): Boolean
   adminCreateBackup: Boolean!
   adminCreateBot(input: AdminCreateBotInput!): Bot

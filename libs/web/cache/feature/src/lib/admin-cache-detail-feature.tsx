@@ -1,6 +1,6 @@
 import { Button, Container, Group, Stack, Text } from '@mantine/core'
 import { NetworkCluster } from '@pubkey-link/sdk'
-import { useAdminCacheDetail, useAdminCacheResolve } from '@pubkey-link/web-cache-data-access'
+import { useAdminCacheDetail, useAdminCacheResolve, useAdminCacheSync } from '@pubkey-link/web-cache-data-access'
 import { CacheUiRenderData } from '@pubkey-link/web-cache-ui'
 import { UiBack, UiDebugModal, UiLoader, UiTime } from '@pubkey-ui/core'
 import React from 'react'
@@ -13,9 +13,15 @@ export function AdminCacheDetailFeature() {
   }
   const { isLoading, data, refetch } = useAdminCacheDetail({ cacheId, cluster })
   const resolveMutation = useAdminCacheResolve()
+  const syncMutation = useAdminCacheSync()
 
   async function resolve() {
-    await resolveMutation.mutateAsync({ cluster, resolverId: cacheId })
+    await resolveMutation.mutateAsync({ cacheId, cluster })
+    await refetch()
+  }
+
+  async function sync() {
+    await syncMutation.mutateAsync({ cacheId, cluster })
     await refetch()
   }
 
@@ -30,6 +36,9 @@ export function AdminCacheDetailFeature() {
           <Group>
             <Button size="xs" variant="light" onClick={resolve}>
               Resolve
+            </Button>
+            <Button size="xs" variant="light" onClick={sync}>
+              Sync
             </Button>
             <UiDebugModal data={data} />
           </Group>

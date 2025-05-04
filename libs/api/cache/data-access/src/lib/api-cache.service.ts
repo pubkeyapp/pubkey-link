@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
-import { NetworkCluster, NetworkToken, NetworkTokenType } from '@prisma/client'
+import { NetworkCluster, NetworkToken, NetworkTokenType, Prisma } from '@prisma/client'
 import {
   createResolver,
   getResolverOwner,
@@ -11,6 +11,7 @@ import {
 } from '@pubkey-cache/resolver'
 import { ApiCacheConfigService, EVENT_CACHE_CONFIG_LOADED } from '@pubkey-link/api-cache-config-data-access'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
+import { ApiNetworkAssetService } from '@pubkey-link/api-network-asset-data-access'
 import { ApiNetworkTokenService } from '@pubkey-link/api-network-token-data-access'
 import { DAS, Helius } from 'helius-sdk'
 import { Storage } from 'unstorage'
@@ -18,6 +19,7 @@ import { ApiCache } from './api-cache'
 import { createTraitCountMap, sortAssetsByName, TraitCountMap } from './create-trait-count-map'
 import { CacheStatus } from './entity/cache-status'
 import { getStorage } from './get-storage'
+import { formatSnapshot } from './helpers/format-snapshot'
 
 export interface CachedResult {
   cluster: NetworkCluster
@@ -57,6 +59,7 @@ export class ApiCacheService {
   constructor(
     private readonly core: ApiCoreService,
     private readonly cacheConfig: ApiCacheConfigService,
+    private readonly networkAsset: ApiNetworkAssetService,
     private readonly networkToken: ApiNetworkTokenService,
   ) {
     this.storage = getStorage({ redisUrl: this.core.config.redisUrl })
@@ -188,9 +191,10 @@ export class ApiCacheService {
           result,
           storage: cache.storage,
         })
+        await this.syncCacheNetworkAssets({ cluster: cache.cluster, id: resolver.id })
+
         const endTimeResolver = new Date().getTime()
         const durationResolver = endTimeResolver - startTimeResolver
-
         results.push(
           `Synced resolver ${resolver.id}, wrote ${writeCount} items to storage (${durationResolver / 1000} seconds)`,
         )
@@ -219,22 +223,27 @@ export class ApiCacheService {
   }
 
   async assetsSnapshot(param: { cluster: NetworkCluster; id: string }) {
+    try {
+      return await this.getSnapshot(param)
+    } catch (e) {
+      this.logger.error(`Error getting snapshot for ${param.id}`, e)
+      throw e
+    }
+  }
+
+  private async getSnapshot(param: { cluster: NetworkCluster; id: string }): Promise<CachedResult> {
     const { cache, resolver } = await this.getResolver(param)
     const result = await getResult({ resolver, storage: cache.storage })
+    if (!result) {
+      throw new Error('No result found')
+    }
 
     const cachedAt = result?.cachedAt ? new Date(result.cachedAt) : new Date()
-    const cacheAge = new Date().getTime() - cachedAt.getTime()
-    return result
-      ? {
-          id: result.id,
-          cachedAt,
-          cacheAge,
-          type: result.type,
-          total: result.total,
-          traits: result.traits,
-          items: result.items,
-        }
-      : { error: 'No snapshot found' }
+    return {
+      ...result,
+      cluster: param.cluster,
+      cachedAt,
+    }
   }
 
   private async getResolver(param: { cluster: NetworkCluster; id: string }) {
@@ -282,5 +291,35 @@ export class ApiCacheService {
       default:
         throw new Error(`Unknown resolver type: ${resolver.type}`)
     }
+  }
+
+  async syncCacheNetworkAssets(param: { cluster: NetworkCluster; id: string }) {
+    const snapshot = await this.getSnapshot({ cluster: param.cluster, id: param.id })
+    if (!snapshot) {
+      throw new Error(`Snapshot not found for ${param.id}`)
+    }
+    const networkToken = await this.getSnapshotNetworkToken(snapshot)
+    const assets: Prisma.NetworkAssetCreateInput[] = formatSnapshot({
+      items: snapshot.items,
+      networkToken,
+      type: snapshot.type,
+    })
+    if (assets.length) {
+      this.logger.verbose(`syncCache: Upserting ${assets.length} assets`)
+      await this.networkAsset.sync.upsertAssets({ cluster: snapshot.cluster, assets, linkIdentity: false })
+    }
+    return {
+      total: snapshot.total,
+      items: snapshot.items,
+    }
+  }
+
+  private async getSnapshotNetworkToken(snapshot: CachedResult): Promise<NetworkToken> {
+    const account = snapshot.id?.split(':')[1]
+    const found = await this.core.data.networkToken.findFirst({ where: { account, cluster: snapshot.cluster } })
+    if (!found) {
+      throw new Error(`getSnapshotToken: Token ${account} not found on cluster ${snapshot.cluster}`)
+    }
+    return found
   }
 }

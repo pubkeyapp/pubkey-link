@@ -37,22 +37,27 @@ export class ApiCollectionService {
       throw new Error(`Resolver ${collection.token.account} not found`)
     }
 
-    const snapshot = await this.cache.assetsSnapshot({ cluster: collection.token.cluster, id: resolver.id })
-    const items: DAS.GetAssetResponse[] = (snapshot.items ?? []) as DAS.GetAssetResponse[]
+    try {
+      const snapshot = await this.cache.assetsSnapshot({ cluster: collection.token.cluster, id: resolver.id })
+      const items: DAS.GetAssetResponse[] = (snapshot.items ?? []) as DAS.GetAssetResponse[]
 
-    const assets = items.map((asset) => ({
-      id: asset.id,
-      name: asset.content?.metadata?.name ?? '',
-      description: asset.content?.metadata?.description ?? '',
-      imageUrl: asset.content?.files?.[0]?.uri ?? '',
-      owner: asset.ownership.owner,
-      attributes: renameAttributes(asset.content?.metadata?.attributes ?? []),
-    }))
+      const assets = items.map((asset) => ({
+        id: asset.id,
+        name: asset.content?.metadata?.name ?? '',
+        description: asset.content?.metadata?.description ?? '',
+        imageUrl: asset.content?.files?.[0]?.uri ?? '',
+        owner: asset.ownership.owner,
+        attributes: renameAttributes(asset.content?.metadata?.attributes ?? []),
+      }))
 
-    return {
-      ...collection,
-      attributes: accumulateAttributes(assets),
-      assets,
+      return {
+        ...collection,
+        attributes: accumulateAttributes(assets),
+        assets,
+      }
+    } catch (e) {
+      console.log('error', e)
+      throw e
     }
   }
 

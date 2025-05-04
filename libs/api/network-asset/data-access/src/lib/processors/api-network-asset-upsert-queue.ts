@@ -12,12 +12,13 @@ import {
 } from '../helpers/api-network-asset.constants'
 
 export interface ApiNetworkAssetUpsertPayload {
-  cluster: NetworkCluster
   asset: NetworkAssetInput
+  cluster: NetworkCluster
+  linkIdentity: boolean
 }
 
 @Processor(API_NETWORK_ASSET_UPSERT_QUEUE, {
-  concurrency: parseInt(process.env['SYNC_NETWORK_ASSETS_CONCURRENT'] || '2'),
+  concurrency: parseInt(process.env['SYNC_NETWORK_ASSETS_UPSERT_CONCURRENT'] || '2'),
 })
 export class ApiNetworkAssetUpsertQueue extends WorkerHost {
   private readonly logger = new Logger(ApiNetworkAssetUpsertQueue.name)
@@ -32,7 +33,11 @@ export class ApiNetworkAssetUpsertQueue extends WorkerHost {
     switch (job.name) {
       case ASSET_UPSERT_QUEUE:
         this.logger.debug(`Upserting asset ${job.data.asset.account}`)
-        return this.sync.upsertAsset({ cluster: job.data.cluster, asset: job.data.asset })
+        return this.sync.upsertAsset({
+          cluster: job.data.cluster,
+          asset: job.data.asset,
+          linkIdentity: job.data.linkIdentity ?? false,
+        })
       case ASSET_UPSERT_FLOW:
         this.logger.debug(`Upserting assets...`)
         return await job.getChildrenValues().then((res) => {

@@ -185,7 +185,7 @@ export class ApiNetworkAssetSyncService {
   }): Promise<Prisma.NetworkAssetCreateInput[]> {
     cluster = cluster ?? this.network.cluster.getDefaultCluster()
     // Get the tokens for the cluster
-    const tokens = await this.core.data.networkToken.findMany({ where: { network: { cluster } } })
+    const tokens = await this.core.data.networkToken.findMany({ where: { network: { cluster }, cache: false } })
 
     // Get the fungible and non-fungible tokens for the cluster
     const solanaFungibleTokens: NetworkToken[] = tokens.filter((t) => t.type === NetworkTokenType.Fungible)
@@ -215,15 +215,7 @@ export class ApiNetworkAssetSyncService {
     }
 
     // Upsert the assets
-    await this.networkAssetUpsertFlow.add({
-      name: ASSET_UPSERT_FLOW,
-      queueName: API_NETWORK_ASSET_UPSERT_QUEUE,
-      children: assets.map((asset) => ({
-        queueName: API_NETWORK_ASSET_UPSERT_QUEUE,
-        name: ASSET_UPSERT_QUEUE,
-        data: { cluster, asset },
-      })),
-    })
+    await this.upsertAssets({ cluster, assets, linkIdentity: true })
 
     // Remove any assets that are not in the list
     const removedIds = await this.core.data.networkAsset.deleteMany({
@@ -277,7 +269,36 @@ export class ApiNetworkAssetSyncService {
     return true
   }
 
-  async upsertAsset({ asset, cluster }: { cluster: NetworkCluster; asset: NetworkAssetInput }) {
+  async upsertAssets({
+    cluster,
+    assets,
+    linkIdentity = false,
+  }: {
+    cluster: NetworkCluster
+    assets: NetworkAssetInput[]
+    linkIdentity: boolean
+  }) {
+    // Upsert the assets
+    await this.networkAssetUpsertFlow.add({
+      name: ASSET_UPSERT_FLOW,
+      queueName: API_NETWORK_ASSET_UPSERT_QUEUE,
+      children: assets.map((asset) => ({
+        queueName: API_NETWORK_ASSET_UPSERT_QUEUE,
+        name: ASSET_UPSERT_QUEUE,
+        data: { cluster, asset, linkIdentity },
+      })),
+    })
+  }
+
+  async upsertAsset({
+    asset,
+    cluster,
+    linkIdentity = false,
+  }: {
+    cluster: NetworkCluster
+    asset: NetworkAssetInput
+    linkIdentity: boolean
+  }) {
     const found = await this.core.data.networkAsset.findUnique({
       where: { account_cluster: { account: asset.account, cluster } },
     })
@@ -293,8 +314,8 @@ export class ApiNetworkAssetSyncService {
             create: {
               level: LogLevel.Info,
               message: 'Asset updated',
-              identityProviderId: asset.owner,
-              identityProvider: IdentityProvider.Solana,
+              identityProviderId: linkIdentity ? asset.owner : undefined,
+              identityProvider: linkIdentity ? IdentityProvider.Solana : undefined,
               data: findNetworkAssetDiff({ found, asset }),
             },
           },
@@ -309,8 +330,9 @@ export class ApiNetworkAssetSyncService {
           create: {
             level: LogLevel.Info,
             message: `Asset created: ${asset.name} (${asset.symbol})`,
-            identityProviderId: asset.owner,
-            identityProvider: IdentityProvider.Solana,
+            identityProviderId: linkIdentity ? asset.owner : undefined,
+            identityProvider: linkIdentity ? IdentityProvider.Solana : undefined,
+            data: findNetworkAssetDiff({ found: {}, asset }),
           },
         },
       },

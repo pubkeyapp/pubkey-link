@@ -4,9 +4,11 @@ import { CacheUiGroup } from './cache-ui-group'
 
 export function CacheUiStatus({
   status,
+  sync,
   resolve,
 }: {
   status: CacheStatus
+  sync: (cluster: NetworkCluster, resolverId: string) => Promise<void>
   resolve: (cluster: NetworkCluster, resolverId: string) => Promise<void>
 }) {
   if (!status.caches?.length) {
@@ -15,7 +17,12 @@ export function CacheUiStatus({
   return (
     <UiStack>
       {status?.caches?.map((group) => (
-        <CacheUiGroup key={group.cluster} group={group} resolve={(resolverId) => resolve(group.cluster, resolverId)} />
+        <CacheUiGroup
+          key={group.cluster}
+          group={group}
+          sync={(resolverId) => sync(group.cluster, resolverId)}
+          resolve={(resolverId) => resolve(group.cluster, resolverId)}
+        />
       ))}
     </UiStack>
   )

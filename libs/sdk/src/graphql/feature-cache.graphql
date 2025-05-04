@@ -22,3 +22,7 @@ query adminCacheDetail($cluster: NetworkCluster!, $cacheId: String!) {
 mutation adminCacheResolve($cluster: NetworkCluster!, $cacheId: String!) {
   adminCacheResolve(cluster: $cluster, cacheId: $cacheId)
 }
+
+mutation adminCacheSync($cluster: NetworkCluster!, $cacheId: String!) {
+  adminCacheSync(cluster: $cluster, cacheId: $cacheId)
+}

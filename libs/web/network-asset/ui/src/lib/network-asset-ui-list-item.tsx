@@ -20,8 +20,8 @@ export function NetworkAssetUiListItem({
         <NetworkAssetUiAvatar radius="sm" networkAsset={networkAsset} />
       </UiAnchor>
       <Stack gap={0}>
-        <Text fw="bold">{networkAsset?.symbol}</Text>
-        <Text fz="xs">{networkAsset?.name}</Text>
+        <Text fw="bold">{networkAsset?.name}</Text>
+        <Text fz="xs">{networkAsset?.metadata?.description || networkAsset?.symbol}</Text>
       </Stack>
       <Group justify="between">{networkAsset.burnt ? <Badge>Burnt</Badge> : null}</Group>
     </Group>

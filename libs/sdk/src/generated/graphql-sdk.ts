@@ -528,6 +528,7 @@ export type Mutation = {
   adminAddCommunityMember?: Maybe<CommunityMember>
   adminCacheConfigSet?: Maybe<Scalars['Boolean']['output']>
   adminCacheResolve?: Maybe<Scalars['JSON']['output']>
+  adminCacheSync?: Maybe<Scalars['JSON']['output']>
   adminCleanupNetworkAssets?: Maybe<Scalars['Boolean']['output']>
   adminCreateBackup: Scalars['Boolean']['output']
   adminCreateBot?: Maybe<Bot>
@@ -617,6 +618,11 @@ export type MutationAdminCacheConfigSetArgs = {
 }
 
 export type MutationAdminCacheResolveArgs = {
+  cacheId: Scalars['String']['input']
+  cluster: NetworkCluster
+}
+
+export type MutationAdminCacheSyncArgs = {
   cacheId: Scalars['String']['input']
   cluster: NetworkCluster
 }
@@ -2406,6 +2412,13 @@ export type AdminCacheResolveMutationVariables = Exact<{
 }>
 
 export type AdminCacheResolveMutation = { __typename?: 'Mutation'; adminCacheResolve?: any | null }
+
+export type AdminCacheSyncMutationVariables = Exact<{
+  cluster: NetworkCluster
+  cacheId: Scalars['String']['input']
+}>
+
+export type AdminCacheSyncMutation = { __typename?: 'Mutation'; adminCacheSync?: any | null }
 
 export type CollectionDetailsFragment = {
   __typename?: 'Collection'
@@ -9748,6 +9761,11 @@ export const AdminCacheResolveDocument = gql`
     adminCacheResolve(cluster: $cluster, cacheId: $cacheId)
   }
 `
+export const AdminCacheSyncDocument = gql`
+  mutation adminCacheSync($cluster: NetworkCluster!, $cacheId: String!) {
+    adminCacheSync(cluster: $cluster, cacheId: $cacheId)
+  }
+`
 export const UserCollectionFindManyDocument = gql`
   query userCollectionFindMany($input: UserCollectionFindManyInput!) {
     items: userCollectionFindMany(input: $input) {
@@ -10824,6 +10842,7 @@ const AdminCacheConfigSetDocumentString = print(AdminCacheConfigSetDocument)
 const AdminCacheStatusDocumentString = print(AdminCacheStatusDocument)
 const AdminCacheDetailDocumentString = print(AdminCacheDetailDocument)
 const AdminCacheResolveDocumentString = print(AdminCacheResolveDocument)
+const AdminCacheSyncDocumentString = print(AdminCacheSyncDocument)
 const UserCollectionFindManyDocumentString = print(UserCollectionFindManyDocument)
 const UserCollectionFindOneDocumentString = print(UserCollectionFindOneDocument)
 const UserCollectionCreateDocumentString = print(UserCollectionCreateDocument)
@@ -11635,6 +11654,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'adminCacheResolve',
+        'mutation',
+        variables,
+      )
+    },
+    adminCacheSync(
+      variables: AdminCacheSyncMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminCacheSyncMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminCacheSyncMutation>(AdminCacheSyncDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminCacheSync',
         'mutation',
         variables,
       )
