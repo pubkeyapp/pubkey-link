@@ -217,6 +217,7 @@ model Network {
   endpoint   String
   voters     String[]
   assets     NetworkAsset[]
+  resolvers  Resolver[]
   tokens     NetworkToken[]
 }
 
@@ -271,6 +272,17 @@ model NetworkToken {
   conditions  RoleCondition[]
 
   @@unique([account, cluster])
+}
+
+model Resolver {
+  id        String         @id @default(cuid())
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  network   Network        @relation(fields: [cluster], references: [cluster])
+  cluster   NetworkCluster
+  type      ResolverType
+  name      String
+  config    Json?
 }
 
 model Role {
@@ -408,6 +420,11 @@ enum NetworkTokenType {
 
 enum NetworkType {
   Solana
+}
+
+enum ResolverType {
+  HeliusCollectionAssets
+  HeliusTokenAccounts
 }
 
 enum UserRole {

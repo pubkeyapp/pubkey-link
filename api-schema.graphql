@@ -35,6 +35,12 @@ input AdminCreateNetworkTokenInput {
   cluster: NetworkCluster!
 }
 
+input AdminCreateResolverInput {
+  cluster: NetworkCluster!
+  config: JSON
+  type: ResolverType!
+}
+
 input AdminCreateRoleInput {
   communityId: String!
   name: String!
@@ -106,6 +112,13 @@ input AdminFindManyNetworkTokenInput {
   search: String
 }
 
+input AdminFindManyResolverInput {
+  cluster: NetworkCluster!
+  limit: Int = 10
+  page: Int = 1
+  search: String
+}
+
 input AdminFindManyRoleInput {
   communityId: String!
   limit: Int = 10
@@ -163,6 +176,11 @@ input AdminUpdateNetworkInput {
 
 input AdminUpdateNetworkTokenInput {
   cache: Boolean
+  name: String
+}
+
+input AdminUpdateResolverInput {
+  config: JSON
   name: String
 }
 
@@ -499,6 +517,7 @@ type Mutation {
   adminCreateIdentity(input: AdminCreateIdentityInput!): Identity
   adminCreateNetwork(input: AdminCreateNetworkInput!): Network
   adminCreateNetworkToken(input: AdminCreateNetworkTokenInput!): NetworkToken
+  adminCreateResolver(input: AdminCreateResolverInput!): Resolver
   adminCreateRole(input: AdminCreateRoleInput!): Role
   adminCreateSnapshot(input: AdminCreateSnapshotInput!): Snapshot
   adminDeleteBackup(name: String!): Boolean!
@@ -509,6 +528,7 @@ type Mutation {
   adminDeleteNetwork(networkId: String!): Boolean
   adminDeleteNetworkAsset(networkAssetId: String!): Boolean
   adminDeleteNetworkToken(networkTokenId: String!): Boolean
+  adminDeleteResolver(resolverId: String!): Boolean
   adminDeleteRole(roleId: String!): Boolean
   adminDeleteSnapshot(snapshotId: String!): Boolean
   adminDeleteUser(userId: String!): Boolean
@@ -526,6 +546,7 @@ type Mutation {
   adminUpdateNetwork(input: AdminUpdateNetworkInput!, networkId: String!): Network
   adminUpdateNetworkToken(input: AdminUpdateNetworkTokenInput!, networkTokenId: String!): NetworkToken
   adminUpdateNetworkTokenMetadata(networkTokenId: String!): NetworkToken
+  adminUpdateResolver(input: AdminUpdateResolverInput!, resolverId: String!): Resolver
   adminUpdateRole(input: AdminUpdateRoleInput!, roleId: String!): Role
   adminUpdateUser(input: AdminUpdateUserInput!, userId: String!): User
   adminVerifyNetworkAssets: Boolean
@@ -687,6 +708,7 @@ type Query {
   adminFindManyNetwork(input: AdminFindManyNetworkInput!): NetworkPaging!
   adminFindManyNetworkAsset(input: AdminFindManyNetworkAssetInput!): NetworkAssetPaging!
   adminFindManyNetworkToken(input: AdminFindManyNetworkTokenInput!): NetworkTokenPaging!
+  adminFindManyResolver(input: AdminFindManyResolverInput!): ResolverPaging!
   adminFindManyRole(input: AdminFindManyRoleInput!): RolePaging!
   adminFindManySnapshot(input: AdminFindManySnapshotInput!): SnapshotPaging!
   adminFindManyUser(input: AdminFindManyUserInput!): UserPaging!
@@ -697,6 +719,7 @@ type Query {
   adminFindOneNetwork(networkId: String!): Network
   adminFindOneNetworkAsset(networkAssetId: String!): NetworkAsset
   adminFindOneNetworkToken(networkTokenId: String!): NetworkToken
+  adminFindOneResolver(resolverId: String!): Resolver
   adminFindOneRole(roleId: String!): Role
   adminFindOneSnapshot(snapshotId: String!): Snapshot
   adminFindOneUser(userId: String!): User
@@ -751,6 +774,27 @@ input RequestIdentityChallengeInput {
   name: String
   provider: IdentityProvider!
   providerId: String!
+}
+
+type Resolver {
+  cluster: NetworkCluster!
+  config: JSON
+  createdAt: DateTime
+  id: String!
+  name: String!
+  network: Network
+  type: ResolverType!
+  updatedAt: DateTime
+}
+
+type ResolverPaging {
+  data: [Resolver!]!
+  meta: PagingMeta!
+}
+
+enum ResolverType {
+  HeliusCollectionAssets
+  HeliusTokenAccounts
 }
 
 type Role {

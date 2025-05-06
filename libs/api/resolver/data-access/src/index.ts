@@ -1,0 +1,6 @@
+export * from './lib/api-resolver.data-access.module'
+export * from './lib/api-resolver.service'
+export * from './lib/entity/resolver.entity'
+export * from './lib/dto/admin-create-resolver.input'
+export * from './lib/dto/admin-find-many-resolver.input'
+export * from './lib/dto/admin-update-resolver.input'

@@ -13,6 +13,7 @@ import {
   IconBug,
   IconCalendarTime,
   IconChartBar,
+  IconCheckupList,
   IconFileDatabase,
   IconFileText,
   IconNetwork,
@@ -33,7 +34,7 @@ const links: UiDashboardItem[] = [
   { label: 'Users', icon: IconUsers, to: '/admin/users' },
   { label: 'Scheduled Jobs', icon: IconCalendarTime, to: '/admin/schedule' },
   { label: 'Stats', icon: IconChartBar, to: '/admin/stats' },
-  // { label: 'Verify', icon: IconCheckupList, to: '/admin/verify' },
+  { label: 'Verify', icon: IconCheckupList, to: '/admin/verify' },
 ]
 
 const routes: RouteObject[] = [

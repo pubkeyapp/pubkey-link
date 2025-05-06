@@ -57,6 +57,12 @@ export type AdminCreateNetworkTokenInput = {
   cluster: NetworkCluster
 }
 
+export type AdminCreateResolverInput = {
+  cluster: NetworkCluster
+  config?: InputMaybe<Scalars['JSON']['input']>
+  type: ResolverType
+}
+
 export type AdminCreateRoleInput = {
   communityId: Scalars['String']['input']
   name: Scalars['String']['input']
@@ -128,6 +134,13 @@ export type AdminFindManyNetworkTokenInput = {
   search?: InputMaybe<Scalars['String']['input']>
 }
 
+export type AdminFindManyResolverInput = {
+  cluster: NetworkCluster
+  limit?: InputMaybe<Scalars['Int']['input']>
+  page?: InputMaybe<Scalars['Int']['input']>
+  search?: InputMaybe<Scalars['String']['input']>
+}
+
 export type AdminFindManyRoleInput = {
   communityId: Scalars['String']['input']
   limit?: InputMaybe<Scalars['Int']['input']>
@@ -185,6 +198,11 @@ export type AdminUpdateNetworkInput = {
 
 export type AdminUpdateNetworkTokenInput = {
   cache?: InputMaybe<Scalars['Boolean']['input']>
+  name?: InputMaybe<Scalars['String']['input']>
+}
+
+export type AdminUpdateResolverInput = {
+  config?: InputMaybe<Scalars['JSON']['input']>
   name?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -536,6 +554,7 @@ export type Mutation = {
   adminCreateIdentity?: Maybe<Identity>
   adminCreateNetwork?: Maybe<Network>
   adminCreateNetworkToken?: Maybe<NetworkToken>
+  adminCreateResolver?: Maybe<Resolver>
   adminCreateRole?: Maybe<Role>
   adminCreateSnapshot?: Maybe<Snapshot>
   adminDeleteBackup: Scalars['Boolean']['output']
@@ -546,6 +565,7 @@ export type Mutation = {
   adminDeleteNetwork?: Maybe<Scalars['Boolean']['output']>
   adminDeleteNetworkAsset?: Maybe<Scalars['Boolean']['output']>
   adminDeleteNetworkToken?: Maybe<Scalars['Boolean']['output']>
+  adminDeleteResolver?: Maybe<Scalars['Boolean']['output']>
   adminDeleteRole?: Maybe<Scalars['Boolean']['output']>
   adminDeleteSnapshot?: Maybe<Scalars['Boolean']['output']>
   adminDeleteUser?: Maybe<Scalars['Boolean']['output']>
@@ -563,6 +583,7 @@ export type Mutation = {
   adminUpdateNetwork?: Maybe<Network>
   adminUpdateNetworkToken?: Maybe<NetworkToken>
   adminUpdateNetworkTokenMetadata?: Maybe<NetworkToken>
+  adminUpdateResolver?: Maybe<Resolver>
   adminUpdateRole?: Maybe<Role>
   adminUpdateUser?: Maybe<User>
   adminVerifyNetworkAssets?: Maybe<Scalars['Boolean']['output']>
@@ -651,6 +672,10 @@ export type MutationAdminCreateNetworkTokenArgs = {
   input: AdminCreateNetworkTokenInput
 }
 
+export type MutationAdminCreateResolverArgs = {
+  input: AdminCreateResolverInput
+}
+
 export type MutationAdminCreateRoleArgs = {
   input: AdminCreateRoleInput
 }
@@ -689,6 +714,10 @@ export type MutationAdminDeleteNetworkAssetArgs = {
 
 export type MutationAdminDeleteNetworkTokenArgs = {
   networkTokenId: Scalars['String']['input']
+}
+
+export type MutationAdminDeleteResolverArgs = {
+  resolverId: Scalars['String']['input']
 }
 
 export type MutationAdminDeleteRoleArgs = {
@@ -755,6 +784,11 @@ export type MutationAdminUpdateNetworkTokenArgs = {
 
 export type MutationAdminUpdateNetworkTokenMetadataArgs = {
   networkTokenId: Scalars['String']['input']
+}
+
+export type MutationAdminUpdateResolverArgs = {
+  input: AdminUpdateResolverInput
+  resolverId: Scalars['String']['input']
 }
 
 export type MutationAdminUpdateRoleArgs = {
@@ -1056,6 +1090,7 @@ export type Query = {
   adminFindManyNetwork: NetworkPaging
   adminFindManyNetworkAsset: NetworkAssetPaging
   adminFindManyNetworkToken: NetworkTokenPaging
+  adminFindManyResolver: ResolverPaging
   adminFindManyRole: RolePaging
   adminFindManySnapshot: SnapshotPaging
   adminFindManyUser: UserPaging
@@ -1066,6 +1101,7 @@ export type Query = {
   adminFindOneNetwork?: Maybe<Network>
   adminFindOneNetworkAsset?: Maybe<NetworkAsset>
   adminFindOneNetworkToken?: Maybe<NetworkToken>
+  adminFindOneResolver?: Maybe<Resolver>
   adminFindOneRole?: Maybe<Role>
   adminFindOneSnapshot?: Maybe<Snapshot>
   adminFindOneUser?: Maybe<User>
@@ -1153,6 +1189,10 @@ export type QueryAdminFindManyNetworkTokenArgs = {
   input: AdminFindManyNetworkTokenInput
 }
 
+export type QueryAdminFindManyResolverArgs = {
+  input: AdminFindManyResolverInput
+}
+
 export type QueryAdminFindManyRoleArgs = {
   input: AdminFindManyRoleInput
 }
@@ -1191,6 +1231,10 @@ export type QueryAdminFindOneNetworkAssetArgs = {
 
 export type QueryAdminFindOneNetworkTokenArgs = {
   networkTokenId: Scalars['String']['input']
+}
+
+export type QueryAdminFindOneResolverArgs = {
+  resolverId: Scalars['String']['input']
 }
 
 export type QueryAdminFindOneRoleArgs = {
@@ -1367,6 +1411,29 @@ export type RequestIdentityChallengeInput = {
   name?: InputMaybe<Scalars['String']['input']>
   provider: IdentityProvider
   providerId: Scalars['String']['input']
+}
+
+export type Resolver = {
+  __typename?: 'Resolver'
+  cluster: NetworkCluster
+  config?: Maybe<Scalars['JSON']['output']>
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  id: Scalars['String']['output']
+  name: Scalars['String']['output']
+  network?: Maybe<Network>
+  type: ResolverType
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type ResolverPaging = {
+  __typename?: 'ResolverPaging'
+  data: Array<Resolver>
+  meta: PagingMeta
+}
+
+export enum ResolverType {
+  HeliusCollectionAssets = 'HeliusCollectionAssets',
+  HeliusTokenAccounts = 'HeliusTokenAccounts',
 }
 
 export type Role = {
@@ -6743,6 +6810,109 @@ export type AdminRefreshVoteIdentitiesMutationVariables = Exact<{
 
 export type AdminRefreshVoteIdentitiesMutation = { __typename?: 'Mutation'; refreshed?: boolean | null }
 
+export type ResolverDetailsFragment = {
+  __typename?: 'Resolver'
+  createdAt?: Date | null
+  id: string
+  cluster: NetworkCluster
+  type: ResolverType
+  name: string
+  config?: any | null
+  updatedAt?: Date | null
+}
+
+export type AdminFindManyResolverQueryVariables = Exact<{
+  input: AdminFindManyResolverInput
+}>
+
+export type AdminFindManyResolverQuery = {
+  __typename?: 'Query'
+  paging: {
+    __typename?: 'ResolverPaging'
+    data: Array<{
+      __typename?: 'Resolver'
+      createdAt?: Date | null
+      id: string
+      cluster: NetworkCluster
+      type: ResolverType
+      name: string
+      config?: any | null
+      updatedAt?: Date | null
+    }>
+    meta: {
+      __typename?: 'PagingMeta'
+      currentPage: number
+      isFirstPage: boolean
+      isLastPage: boolean
+      nextPage?: number | null
+      pageCount?: number | null
+      previousPage?: number | null
+      totalCount?: number | null
+    }
+  }
+}
+
+export type AdminFindOneResolverQueryVariables = Exact<{
+  resolverId: Scalars['String']['input']
+}>
+
+export type AdminFindOneResolverQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'Resolver'
+    createdAt?: Date | null
+    id: string
+    cluster: NetworkCluster
+    type: ResolverType
+    name: string
+    config?: any | null
+    updatedAt?: Date | null
+  } | null
+}
+
+export type AdminCreateResolverMutationVariables = Exact<{
+  input: AdminCreateResolverInput
+}>
+
+export type AdminCreateResolverMutation = {
+  __typename?: 'Mutation'
+  created?: {
+    __typename?: 'Resolver'
+    createdAt?: Date | null
+    id: string
+    cluster: NetworkCluster
+    type: ResolverType
+    name: string
+    config?: any | null
+    updatedAt?: Date | null
+  } | null
+}
+
+export type AdminUpdateResolverMutationVariables = Exact<{
+  resolverId: Scalars['String']['input']
+  input: AdminUpdateResolverInput
+}>
+
+export type AdminUpdateResolverMutation = {
+  __typename?: 'Mutation'
+  updated?: {
+    __typename?: 'Resolver'
+    createdAt?: Date | null
+    id: string
+    cluster: NetworkCluster
+    type: ResolverType
+    name: string
+    config?: any | null
+    updatedAt?: Date | null
+  } | null
+}
+
+export type AdminDeleteResolverMutationVariables = Exact<{
+  resolverId: Scalars['String']['input']
+}>
+
+export type AdminDeleteResolverMutation = { __typename?: 'Mutation'; deleted?: boolean | null }
+
 export type RoleDetailsFragment = {
   __typename?: 'Role'
   createdAt?: Date | null
@@ -9482,6 +9652,17 @@ export const NetworkDetailsFragmentDoc = gql`
     voters
   }
 `
+export const ResolverDetailsFragmentDoc = gql`
+  fragment ResolverDetails on Resolver {
+    createdAt
+    id
+    cluster
+    type
+    name
+    config
+    updatedAt
+  }
+`
 export const SnapshotDetailsFragmentDoc = gql`
   fragment SnapshotDetails on Snapshot {
     createdAt
@@ -10503,6 +10684,49 @@ export const AdminRefreshVoteIdentitiesDocument = gql`
     refreshed: adminRefreshVoteIdentities(networkId: $networkId)
   }
 `
+export const AdminFindManyResolverDocument = gql`
+  query adminFindManyResolver($input: AdminFindManyResolverInput!) {
+    paging: adminFindManyResolver(input: $input) {
+      data {
+        ...ResolverDetails
+      }
+      meta {
+        ...PagingMetaDetails
+      }
+    }
+  }
+  ${ResolverDetailsFragmentDoc}
+  ${PagingMetaDetailsFragmentDoc}
+`
+export const AdminFindOneResolverDocument = gql`
+  query adminFindOneResolver($resolverId: String!) {
+    item: adminFindOneResolver(resolverId: $resolverId) {
+      ...ResolverDetails
+    }
+  }
+  ${ResolverDetailsFragmentDoc}
+`
+export const AdminCreateResolverDocument = gql`
+  mutation adminCreateResolver($input: AdminCreateResolverInput!) {
+    created: adminCreateResolver(input: $input) {
+      ...ResolverDetails
+    }
+  }
+  ${ResolverDetailsFragmentDoc}
+`
+export const AdminUpdateResolverDocument = gql`
+  mutation adminUpdateResolver($resolverId: String!, $input: AdminUpdateResolverInput!) {
+    updated: adminUpdateResolver(resolverId: $resolverId, input: $input) {
+      ...ResolverDetails
+    }
+  }
+  ${ResolverDetailsFragmentDoc}
+`
+export const AdminDeleteResolverDocument = gql`
+  mutation adminDeleteResolver($resolverId: String!) {
+    deleted: adminDeleteResolver(resolverId: $resolverId)
+  }
+`
 export const AdminFindManyRoleDocument = gql`
   query adminFindManyRole($input: AdminFindManyRoleInput!) {
     paging: adminFindManyRole(input: $input) {
@@ -10924,6 +11148,11 @@ const UserGetTokenMetadataDocumentString = print(UserGetTokenMetadataDocument)
 const UserGetTokenAccountsDocumentString = print(UserGetTokenAccountsDocument)
 const UserGetEnabledNetworkClustersDocumentString = print(UserGetEnabledNetworkClustersDocument)
 const AdminRefreshVoteIdentitiesDocumentString = print(AdminRefreshVoteIdentitiesDocument)
+const AdminFindManyResolverDocumentString = print(AdminFindManyResolverDocument)
+const AdminFindOneResolverDocumentString = print(AdminFindOneResolverDocument)
+const AdminCreateResolverDocumentString = print(AdminCreateResolverDocument)
+const AdminUpdateResolverDocumentString = print(AdminUpdateResolverDocument)
+const AdminDeleteResolverDocumentString = print(AdminDeleteResolverDocument)
 const AdminFindManyRoleDocumentString = print(AdminFindManyRoleDocument)
 const AdminFindOneRoleDocumentString = print(AdminFindOneRoleDocument)
 const AdminCreateRoleDocumentString = print(AdminCreateRoleDocument)
@@ -13372,6 +13601,111 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       )
     },
+    adminFindManyResolver(
+      variables: AdminFindManyResolverQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindManyResolverQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindManyResolverQuery>(AdminFindManyResolverDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindManyResolver',
+        'query',
+        variables,
+      )
+    },
+    adminFindOneResolver(
+      variables: AdminFindOneResolverQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminFindOneResolverQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminFindOneResolverQuery>(AdminFindOneResolverDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminFindOneResolver',
+        'query',
+        variables,
+      )
+    },
+    adminCreateResolver(
+      variables: AdminCreateResolverMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminCreateResolverMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminCreateResolverMutation>(AdminCreateResolverDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminCreateResolver',
+        'mutation',
+        variables,
+      )
+    },
+    adminUpdateResolver(
+      variables: AdminUpdateResolverMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminUpdateResolverMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminUpdateResolverMutation>(AdminUpdateResolverDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminUpdateResolver',
+        'mutation',
+        variables,
+      )
+    },
+    adminDeleteResolver(
+      variables: AdminDeleteResolverMutationVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: AdminDeleteResolverMutation
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<AdminDeleteResolverMutation>(AdminDeleteResolverDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'adminDeleteResolver',
+        'mutation',
+        variables,
+      )
+    },
     adminFindManyRole(
       variables: AdminFindManyRoleQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -14101,6 +14435,8 @@ export const NetworkTokenTypeSchema = z.nativeEnum(NetworkTokenType)
 
 export const NetworkTypeSchema = z.nativeEnum(NetworkType)
 
+export const ResolverTypeSchema = z.nativeEnum(ResolverType)
+
 export const UserRoleSchema = z.nativeEnum(UserRole)
 
 export const UserStatusSchema = z.nativeEnum(UserStatus)
@@ -14147,6 +14483,14 @@ export function AdminCreateNetworkTokenInputSchema(): z.ZodObject<Properties<Adm
   return z.object({
     account: z.string(),
     cluster: NetworkClusterSchema,
+  })
+}
+
+export function AdminCreateResolverInputSchema(): z.ZodObject<Properties<AdminCreateResolverInput>> {
+  return z.object({
+    cluster: NetworkClusterSchema,
+    config: definedNonNullAnySchema.nullish(),
+    type: ResolverTypeSchema,
   })
 }
 
@@ -14241,6 +14585,15 @@ export function AdminFindManyNetworkTokenInputSchema(): z.ZodObject<Properties<A
   })
 }
 
+export function AdminFindManyResolverInputSchema(): z.ZodObject<Properties<AdminFindManyResolverInput>> {
+  return z.object({
+    cluster: NetworkClusterSchema,
+    limit: z.number().nullish(),
+    page: z.number().nullish(),
+    search: z.string().nullish(),
+  })
+}
+
 export function AdminFindManyRoleInputSchema(): z.ZodObject<Properties<AdminFindManyRoleInput>> {
   return z.object({
     communityId: z.string(),
@@ -14313,6 +14666,13 @@ export function AdminUpdateNetworkInputSchema(): z.ZodObject<Properties<AdminUpd
 export function AdminUpdateNetworkTokenInputSchema(): z.ZodObject<Properties<AdminUpdateNetworkTokenInput>> {
   return z.object({
     cache: z.boolean().nullish(),
+    name: z.string().nullish(),
+  })
+}
+
+export function AdminUpdateResolverInputSchema(): z.ZodObject<Properties<AdminUpdateResolverInput>> {
+  return z.object({
+    config: definedNonNullAnySchema.nullish(),
     name: z.string().nullish(),
   })
 }

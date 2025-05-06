@@ -1,0 +1,42 @@
+fragment ResolverDetails on Resolver {
+  createdAt
+  id
+  cluster
+  type
+  name
+  config
+  updatedAt
+}
+
+query adminFindManyResolver($input: AdminFindManyResolverInput!) {
+  paging: adminFindManyResolver(input: $input) {
+    data {
+      ...ResolverDetails
+    }
+    meta {
+      ...PagingMetaDetails
+    }
+  }
+}
+
+query adminFindOneResolver($resolverId: String!) {
+  item: adminFindOneResolver(resolverId: $resolverId) {
+    ...ResolverDetails
+  }
+}
+
+mutation adminCreateResolver($input: AdminCreateResolverInput!) {
+  created: adminCreateResolver(input: $input) {
+    ...ResolverDetails
+  }
+}
+
+mutation adminUpdateResolver($resolverId: String!, $input: AdminUpdateResolverInput!) {
+  updated: adminUpdateResolver(resolverId: $resolverId, input: $input) {
+    ...ResolverDetails
+  }
+}
+
+mutation adminDeleteResolver($resolverId: String!) {
+  deleted: adminDeleteResolver(resolverId: $resolverId)
+}

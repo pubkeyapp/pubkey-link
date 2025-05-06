@@ -5,6 +5,7 @@ import { AdminNetworkAssetFeature } from '@pubkey-link/web-network-asset-feature
 import { useAdminFindOneNetwork } from '@pubkey-link/web-network-data-access'
 import { AdminNetworkTokenFeature } from '@pubkey-link/web-network-token-feature'
 import { NetworkUiItem, NetworkUiSyncBadge } from '@pubkey-link/web-network-ui'
+import { AdminResolverFeature } from '@pubkey-link/web-resolver-feature'
 import { UiBack, UiDebugModal, UiError, UiLoader, UiPage, UiTabRoute, UiTabRoutes } from '@pubkey-ui/core'
 import { useParams } from 'react-router-dom'
 import { AdminNetworkDetailSettingsTab } from './admin-network-detail-settings.tab'
@@ -20,14 +21,14 @@ export function AdminNetworkDetailFeature() {
   const tabs: UiTabRoute[] = [
     { path: 'tokens', label: 'Tokens', element: item ? <AdminNetworkTokenFeature cluster={item.cluster} /> : null },
     {
-      path: 'settings',
-      label: 'Settings',
-      element: <AdminNetworkDetailSettingsTab networkId={networkId} />,
-    },
-    {
       path: 'assets',
       label: 'Assets',
       element: item ? <AdminNetworkAssetFeature cluster={item.cluster} /> : null,
+    },
+    {
+      path: 'resolvers',
+      label: 'Resolvers',
+      element: item ? <AdminResolverFeature cluster={item.cluster} /> : null,
     },
   ]
 
@@ -38,6 +39,11 @@ export function AdminNetworkDetailFeature() {
       element: item ? <AdminNetworkDetailVoteIdentitiesTab network={item} refresh={query.refetch} /> : null,
     })
   }
+  tabs.push({
+    path: 'settings',
+    label: 'Settings',
+    element: <AdminNetworkDetailSettingsTab networkId={networkId} />,
+  })
 
   if (query.isLoading) {
     return <UiLoader />
