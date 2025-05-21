@@ -39,7 +39,7 @@
     "@bull-board/express": "^5.14.0",
     "@bull-board/nestjs": "^5.14.0",
     "@clack/prompts": "^0.7.0",
-    "@coral-xyz/anchor": "^0.29.0",
+    "@coral-xyz/anchor": "^0.31.1",
     "@discordjs/rest": "^2.2.0",
     "@mantine/core": "^7.13.4",
     "@mantine/dates": "^7.13.4",
