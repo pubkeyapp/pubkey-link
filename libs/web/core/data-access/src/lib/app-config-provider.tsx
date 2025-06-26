@@ -59,11 +59,13 @@ export function AppConfigProvider({ children }: { children: ReactNode }) {
   const appTheme = useMemo(() => {
     const color =
       appConfig?.appThemeColor && mantineColorIds.includes(appConfig.appThemeColor) ? appConfig.appThemeColor : 'blue'
-    const background: BackgroundColors = appConfig?.appThemeBackground as BackgroundColors
+    // Force a black background
+    const background: BackgroundColors = 'black' as BackgroundColors
     const override =
       background?.length && backgroundColorIds.includes(background)
         ? { colors: { dark: BACKGROUND_COLORS[background] } }
-        : {}
+        // If 'black' is not a valid key, this will need to be adjusted
+        : { colors: { dark: ['#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000', '#000000'] } }
     return themeWithBrand(color, override)
   }, [appConfig])
 
