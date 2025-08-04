@@ -711,6 +711,7 @@ type Query {
   appConfig: AppConfig!
   me: User
   uptime: Float!
+  userCollectionAssetFindMany(input: UserCollectionAssetFindManyInput!): [CollectionAsset!]
   userCollectionFindMany(input: UserCollectionFindManyInput!): [Collection!]
   userCollectionFindOne(collectionId: String!): Collection
   userFindManyBotRoles(botId: String!, serverId: String!): [BotRole!]
@@ -877,6 +878,11 @@ input UserAddIdentityGrantInput {
   granteeId: String!
   provider: IdentityProvider!
   providerId: String!
+}
+
+input UserCollectionAssetFindManyInput {
+  collectionId: String!
+  search: String
 }
 
 input UserCollectionCreateInput {

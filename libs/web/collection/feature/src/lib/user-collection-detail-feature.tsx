@@ -1,6 +1,6 @@
 import { Box, Flex, Grid } from '@mantine/core'
 import {
-  useUserCollectionAssetSearch,
+  useUserCollectionAssetFindMany,
   useUserCollectionFindMany,
   useUserCollectionFindOne,
 } from '@pubkey-link/web-collection-data-access'
@@ -9,15 +9,12 @@ import { UiError, UiLoader, UiPage } from '@pubkey-ui/core'
 import { IconImageInPicture } from '@tabler/icons-react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { CollectionUiAttributeTree } from './collection-ui-attribute-tree'
+import { Collection } from '@pubkey-link/sdk'
 
 export function UserCollectionDetailFeature() {
-  const navigate = useNavigate()
   const { collectionId, communityId } = useParams() as { collectionId: string; communityId: string }
 
   const { data, isLoading } = useUserCollectionFindOne({ collectionId })
-  const { data: collections } = useUserCollectionFindMany({ communityId })
-
-  const { setSearch } = useUserCollectionAssetSearch()
 
   if (isLoading) {
     return <UiLoader />
@@ -27,8 +24,23 @@ export function UserCollectionDetailFeature() {
     return <UiError message="Collection not found." />
   }
 
+  return <UserCollectionDetailLoaded collection={data} communityId={communityId} />
+}
+
+export function UserCollectionDetailLoaded({
+  collection,
+  communityId,
+}: {
+  collection: Collection
+  communityId: string
+}) {
+  const navigate = useNavigate()
+
+  const { data: collections } = useUserCollectionFindMany({ communityId })
+  const { items: assets, setSearch } = useUserCollectionAssetFindMany({ collectionId: collection.id })
+
   return (
-    <UiPage title={`Collection ${data?.name} `} leftAction={<IconImageInPicture />}>
+    <UiPage title={`Collection ${collection?.name} `} leftAction={<IconImageInPicture />}>
       <Flex gap={34}>
         <Box w={230}>
           {collections && (
@@ -37,7 +49,7 @@ export function UserCollectionDetailFeature() {
                 value: collection.id,
                 label: collection.name,
               }))}
-              value={collectionId}
+              value={collection.id}
               onChange={(value) => {
                 navigate(`/c/${communityId}/collections/${value}`)
               }}
@@ -52,10 +64,10 @@ export function UserCollectionDetailFeature() {
 
       <Grid>
         <Grid.Col span={3}>
-          <CollectionUiAttributeTree attributes={data?.attributes ?? []} />
+          <CollectionUiAttributeTree attributes={collection?.attributes ?? []} />
         </Grid.Col>
         <Grid.Col span={9}>
-          {data.assets?.length ? <CollectionUiAssetGrid assets={data.assets} /> : <div>No assets found</div>}
+          {assets?.length ? <CollectionUiAssetGrid assets={assets} /> : <div>No assets found</div>}
         </Grid.Col>
       </Grid>
     </UiPage>

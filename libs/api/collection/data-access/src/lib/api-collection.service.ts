@@ -53,7 +53,6 @@ export class ApiCollectionService {
       return {
         ...collection,
         attributes: accumulateAttributes(assets),
-        assets,
       }
     } catch (e) {
       console.log('error', e)

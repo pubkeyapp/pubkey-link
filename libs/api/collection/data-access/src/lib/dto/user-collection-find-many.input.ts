@@ -7,3 +7,11 @@ export class UserCollectionFindManyInput {
   @Field({ nullable: true })
   search?: string
 }
+
+@InputType()
+export class UserCollectionAssetFindManyInput {
+  @Field()
+  collectionId!: string
+  @Field({ nullable: true })
+  search?: string
+}

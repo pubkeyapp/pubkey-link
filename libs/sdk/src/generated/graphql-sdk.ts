@@ -1080,6 +1080,7 @@ export type Query = {
   appConfig: AppConfig
   me?: Maybe<User>
   uptime: Scalars['Float']['output']
+  userCollectionAssetFindMany?: Maybe<Array<CollectionAsset>>
   userCollectionFindMany?: Maybe<Array<Collection>>
   userCollectionFindOne?: Maybe<Collection>
   userFindManyBotRoles?: Maybe<Array<BotRole>>
@@ -1220,6 +1221,10 @@ export type QueryAdminGetVoteIdentitiesArgs = {
 
 export type QueryAnonRequestIdentityChallengeArgs = {
   input: RequestIdentityChallengeInput
+}
+
+export type QueryUserCollectionAssetFindManyArgs = {
+  input: UserCollectionAssetFindManyInput
 }
 
 export type QueryUserCollectionFindManyArgs = {
@@ -1507,6 +1512,11 @@ export type UserAddIdentityGrantInput = {
   granteeId: Scalars['String']['input']
   provider: IdentityProvider
   providerId: Scalars['String']['input']
+}
+
+export type UserCollectionAssetFindManyInput = {
+  collectionId: Scalars['String']['input']
+  search?: InputMaybe<Scalars['String']['input']>
 }
 
 export type UserCollectionCreateInput = {
@@ -2503,6 +2513,28 @@ export type UserCollectionFindManyQuery = {
   }> | null
 }
 
+export type UserCollectionAssetFindManyQueryVariables = Exact<{
+  input: UserCollectionAssetFindManyInput
+}>
+
+export type UserCollectionAssetFindManyQuery = {
+  __typename?: 'Query'
+  items?: Array<{
+    __typename?: 'CollectionAsset'
+    id: string
+    name: string
+    description: string
+    imageUrl: string
+    owner: string
+    attributes?: Array<{
+      __typename?: 'CollectionAssetAttribute'
+      key: string
+      value?: string | null
+      count?: number | null
+    }> | null
+  }> | null
+}
+
 export type UserCollectionFindOneQueryVariables = Exact<{
   collectionId: Scalars['String']['input']
 }>
@@ -2521,20 +2553,6 @@ export type UserCollectionFindOneQuery = {
       key: string
       value?: string | null
       count?: number | null
-    }> | null
-    assets?: Array<{
-      __typename?: 'CollectionAsset'
-      id: string
-      name: string
-      description: string
-      imageUrl: string
-      owner: string
-      attributes?: Array<{
-        __typename?: 'CollectionAssetAttribute'
-        key: string
-        value?: string | null
-        count?: number | null
-      }> | null
     }> | null
     token?: {
       __typename?: 'NetworkToken'
@@ -9774,6 +9792,14 @@ export const UserCollectionFindManyDocument = gql`
   }
   ${CollectionDetailsFragmentDoc}
 `
+export const UserCollectionAssetFindManyDocument = gql`
+  query userCollectionAssetFindMany($input: UserCollectionAssetFindManyInput!) {
+    items: userCollectionAssetFindMany(input: $input) {
+      ...CollectionAssetDetails
+    }
+  }
+  ${CollectionAssetDetailsFragmentDoc}
+`
 export const UserCollectionFindOneDocument = gql`
   query userCollectionFindOne($collectionId: String!) {
     item: userCollectionFindOne(collectionId: $collectionId) {
@@ -9781,14 +9807,10 @@ export const UserCollectionFindOneDocument = gql`
       attributes {
         ...CollectionAssetAttributeDetails
       }
-      assets {
-        ...CollectionAssetDetails
-      }
     }
   }
   ${CollectionDetailsFragmentDoc}
   ${CollectionAssetAttributeDetailsFragmentDoc}
-  ${CollectionAssetDetailsFragmentDoc}
 `
 export const UserCollectionCreateDocument = gql`
   mutation userCollectionCreate($input: UserCollectionCreateInput!) {
@@ -10844,6 +10866,7 @@ const AdminCacheDetailDocumentString = print(AdminCacheDetailDocument)
 const AdminCacheResolveDocumentString = print(AdminCacheResolveDocument)
 const AdminCacheSyncDocumentString = print(AdminCacheSyncDocument)
 const UserCollectionFindManyDocumentString = print(UserCollectionFindManyDocument)
+const UserCollectionAssetFindManyDocumentString = print(UserCollectionAssetFindManyDocument)
 const UserCollectionFindOneDocumentString = print(UserCollectionFindOneDocument)
 const UserCollectionCreateDocumentString = print(UserCollectionCreateDocument)
 const UserCollectionDeleteDocumentString = print(UserCollectionDeleteDocument)
@@ -11696,6 +11719,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'userCollectionFindMany',
+        'query',
+        variables,
+      )
+    },
+    userCollectionAssetFindMany(
+      variables: UserCollectionAssetFindManyQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserCollectionAssetFindManyQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserCollectionAssetFindManyQuery>(UserCollectionAssetFindManyDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userCollectionAssetFindMany',
         'query',
         variables,
       )
@@ -14363,6 +14407,13 @@ export function UserAddIdentityGrantInputSchema(): z.ZodObject<Properties<UserAd
     granteeId: z.string(),
     provider: IdentityProviderSchema,
     providerId: z.string(),
+  })
+}
+
+export function UserCollectionAssetFindManyInputSchema(): z.ZodObject<Properties<UserCollectionAssetFindManyInput>> {
+  return z.object({
+    collectionId: z.string(),
+    search: z.string().nullish(),
   })
 }
 

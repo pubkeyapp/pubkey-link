@@ -32,14 +32,17 @@ query userCollectionFindMany($input: UserCollectionFindManyInput!) {
   }
 }
 
+query userCollectionAssetFindMany($input: UserCollectionAssetFindManyInput!) {
+  items: userCollectionAssetFindMany(input: $input) {
+    ...CollectionAssetDetails
+  }
+}
+
 query userCollectionFindOne($collectionId: String!) {
   item: userCollectionFindOne(collectionId: $collectionId) {
     ...CollectionDetails
     attributes {
       ...CollectionAssetAttributeDetails
-    }
-    assets {
-      ...CollectionAssetDetails
     }
   }
 }
