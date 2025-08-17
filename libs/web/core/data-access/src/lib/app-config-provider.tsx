@@ -17,6 +17,7 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { createContext, ReactNode, useContext, useMemo } from 'react'
 import { useSdk } from './sdk-provider'
+import { Card, DEFAULT_THEME, MantineColorsTuple, Paper } from '@mantine/core'
 
 export interface AppConfigContext {
   appLogoUrlDark?: string | undefined
@@ -60,11 +61,39 @@ export function AppConfigProvider({ children }: { children: ReactNode }) {
     const color =
       appConfig?.appThemeColor && mantineColorIds.includes(appConfig.appThemeColor) ? appConfig.appThemeColor : 'blue'
     const background: BackgroundColors = appConfig?.appThemeBackground as BackgroundColors
+
+    const dark: MantineColorsTuple = [
+      '#f3f2f8',
+      '#e3e1e9',
+      '#c4c0d5',
+      '#a49cc1',
+      '#222328',
+      '#222328',
+      '#222328',
+      '#222328',
+      '#07060b',
+      '#07060b',
+    ]
+
+    console.log(`dark`, JSON.stringify(dark))
     const override =
       background?.length && backgroundColorIds.includes(background)
         ? { colors: { dark: BACKGROUND_COLORS[background] } }
-        : {}
-    return themeWithBrand(color, override)
+        : { colors: { dark: dark } }
+
+    const generated = themeWithBrand(color, override)
+
+    return {
+      ...generated,
+      components: {
+        Card: Card.extend({
+          styles: { root: { backgroundColor: 'red!important' } },
+        }),
+        Paper: Paper.extend({
+          styles: { root: { backgroundColor: 'red!important' } },
+        }),
+      },
+    }
   }, [appConfig])
 
   const enabledTokenTypes: NetworkTokenType[] = useMemo(

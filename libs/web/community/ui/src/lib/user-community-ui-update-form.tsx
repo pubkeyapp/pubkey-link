@@ -1,4 +1,4 @@
-import { Button, Group } from '@mantine/core'
+import { Button, Card, Group, Paper } from '@mantine/core'
 import { Community, UserUpdateCommunityInput } from '@pubkey-link/sdk'
 import { formFieldCheckbox, formFieldText, UiForm, UiFormField } from '@pubkey-ui/core'
 

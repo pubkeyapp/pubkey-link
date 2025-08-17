@@ -1,4 +1,4 @@
-import { Group, Paper } from '@mantine/core'
+import { Card, Group, Paper } from '@mantine/core'
 import { Community } from '@pubkey-link/sdk'
 import { UserBotFeature } from '@pubkey-link/web-bot-feature'
 import { useUserFindOneCommunity } from '@pubkey-link/web-community-data-access'
@@ -36,6 +36,8 @@ export default function UserCommunityDetailSettingsTab({ community }: { communit
             label: 'Community Settings',
             element: (
               <UiCard>
+                <Paper>PAPER</Paper>
+                <Card>CARD</Card>
                 <UserCommunityUiUpdateForm community={item} submit={updateCommunity} />
               </UiCard>
             ),
