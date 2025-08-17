@@ -369,6 +369,7 @@ export class ApiRoleResolverService {
       case NetworkTokenType.NonFungible:
         return nonFungibleAmount
       case NetworkTokenType.Fungible:
+      case NetworkTokenType.RealmsVoter:
         return fungibleAmount
       default:
         return 0
@@ -442,6 +443,30 @@ export class ApiRoleResolverService {
               return
             }
             solanaIdAssets[NetworkTokenType.NonFungible].push(...assets)
+          })
+      } else {
+        this.logger.warn(`No unique tokens found in ${conditions.length} conditions`)
+      }
+    }
+
+    if (groups[NetworkTokenType.RealmsVoter]?.length) {
+      // Get the unique tokens
+      const tokens = deduplicateTokens(groups[NetworkTokenType.RealmsVoter])
+
+      if (tokens.length) {
+        const accounts = tokens.map((t) => t.account)
+        // We want to look up the tokens with the solanaIds
+        await this.networkAsset
+          .getRealmsVoterAssetsForOwners({
+            accounts,
+            cluster: NetworkCluster.SolanaMainnet,
+            owners: solanaIds ?? [],
+          })
+          .then((assets) => {
+            if (!assets.length) {
+              return
+            }
+            solanaIdAssets[NetworkTokenType.RealmsVoter].push(...assets)
           })
       } else {
         this.logger.warn(`No unique tokens found in ${conditions.length} conditions`)

@@ -39,6 +39,9 @@ export class ApiCoreConfigService {
     if (this.featureResolverSolanaNonFungible) {
       resolvers.push(NetworkResolver.SolanaNonFungible)
     }
+    if (this.featureResolverSolanaRealms) {
+      resolvers.push(NetworkResolver.SolanaRealms)
+    }
     if (this.featureResolverSolanaValidator) {
       resolvers.push(NetworkResolver.SolanaValidator)
     }
@@ -250,6 +253,10 @@ export class ApiCoreConfigService {
 
   get featureResolverSolanaNonFungible() {
     return this.service.get<boolean>('featureResolverSolanaNonFungible')
+  }
+
+  get featureResolverSolanaRealms() {
+    return this.service.get<boolean>('featureResolverSolanaRealms')
   }
 
   get featureResolverSolanaValidator() {

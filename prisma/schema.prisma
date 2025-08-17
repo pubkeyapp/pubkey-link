@@ -397,12 +397,14 @@ enum NetworkResolver {
   Anybodies // TODO: V3: delete this item
   SolanaFungible
   SolanaNonFungible
+  SolanaRealms
   SolanaValidator
 }
 
 enum NetworkTokenType {
   Fungible
   NonFungible
+  RealmsVoter
   Validator
 }
 

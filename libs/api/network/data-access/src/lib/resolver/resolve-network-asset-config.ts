@@ -5,4 +5,5 @@ export interface ResolveNetworkAssetConfig {
   owner: string
   solanaFungibleTokens: NetworkToken[]
   solanaNonFungibleTokens: NetworkToken[]
+  solanaRealmsVoterTokens: NetworkToken[]
 }

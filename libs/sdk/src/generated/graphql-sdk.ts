@@ -994,6 +994,7 @@ export enum NetworkResolver {
   Anybodies = 'Anybodies',
   SolanaFungible = 'SolanaFungible',
   SolanaNonFungible = 'SolanaNonFungible',
+  SolanaRealms = 'SolanaRealms',
   SolanaValidator = 'SolanaValidator',
 }
 
@@ -1025,6 +1026,7 @@ export type NetworkTokenPaging = {
 export enum NetworkTokenType {
   Fungible = 'Fungible',
   NonFungible = 'NonFungible',
+  RealmsVoter = 'RealmsVoter',
   Validator = 'Validator',
 }
 

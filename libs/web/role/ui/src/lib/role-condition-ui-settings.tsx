@@ -29,6 +29,7 @@ export function RoleConditionUiSettings({ condition }: { condition: RoleConditio
         <UiDebug data={condition} />
       )
     case NetworkTokenType.Fungible:
+    case NetworkTokenType.RealmsVoter:
       return condition.token ? (
         <Paper withBorder p="md" radius="sm" shadow="md">
           <UiStack>

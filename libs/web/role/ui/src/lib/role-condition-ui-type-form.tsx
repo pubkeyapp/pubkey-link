@@ -17,6 +17,7 @@ export function RoleConditionUiTypeForm({
   switch (type) {
     case NetworkTokenType.Fungible:
     case NetworkTokenType.NonFungible:
+    case NetworkTokenType.RealmsVoter:
     case NetworkTokenType.Validator:
       return (
         <UiStack>

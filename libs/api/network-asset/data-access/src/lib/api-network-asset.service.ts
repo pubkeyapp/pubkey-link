@@ -53,4 +53,23 @@ export class ApiNetworkAssetService {
       },
     })
   }
+
+  async getRealmsVoterAssetsForOwners({
+    accounts,
+    cluster,
+    owners,
+  }: {
+    accounts: string[]
+    cluster: NetworkCluster
+    owners: string[]
+  }) {
+    return this.core.data.networkAsset.findMany({
+      where: {
+        cluster,
+        group: { in: accounts },
+        owner: { in: owners },
+        type: NetworkTokenType.RealmsVoter,
+      },
+    })
+  }
 }

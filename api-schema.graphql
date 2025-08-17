@@ -629,6 +629,7 @@ enum NetworkResolver {
   Anybodies
   SolanaFungible
   SolanaNonFungible
+  SolanaRealms
   SolanaValidator
 }
 
@@ -658,6 +659,7 @@ type NetworkTokenPaging {
 enum NetworkTokenType {
   Fungible
   NonFungible
+  RealmsVoter
   Validator
 }
 

@@ -70,6 +70,7 @@ export interface ApiCoreConfig {
   featurePubkeyProtocol: boolean
   featureResolverSolanaFungible: boolean
   featureResolverSolanaNonFungible: boolean
+  featureResolverSolanaRealms: boolean
   featureResolverSolanaValidator: boolean
   // Host
   host: string
@@ -140,6 +141,7 @@ export function configuration(): ApiCoreConfig {
     featurePubkeyProtocol: process.env['FEATURE_PUBKEY_PROTOCOL'] === 'true',
     featureResolverSolanaFungible: process.env['FEATURE_RESOLVER_SOLANA_FUNGIBLE'] === 'true',
     featureResolverSolanaNonFungible: process.env['FEATURE_RESOLVER_SOLANA_NON_FUNGIBLE'] === 'true',
+    featureResolverSolanaRealms: process.env['FEATURE_RESOLVER_SOLANA_REALMS'] === 'true',
     featureResolverSolanaValidator: process.env['FEATURE_RESOLVER_SOLANA_VALIDATOR'] === 'true',
     host: process.env['HOST'] as string,
     logColor: process.env['LOG_COLOR'] === 'true',

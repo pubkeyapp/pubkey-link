@@ -3,7 +3,7 @@ import { OnEvent } from '@nestjs/event-emitter'
 import { NetworkCluster, NetworkToken, NetworkTokenType, Prisma } from '@prisma/client'
 import { ApiCoreService, EVENT_APP_STARTED, PagingInputFields } from '@pubkey-link/api-core-data-access'
 import { ApiNetworkService, EVENT_NETWORKS_PROVISIONED } from '@pubkey-link/api-network-data-access'
-import { getNetworkTokenType } from '@pubkey-link/api-network-util'
+import { getNetworkTokenType, REALMS_PROGRAM_ID } from '@pubkey-link/api-network-util'
 import { SystemProgram } from '@solana/web3.js'
 import { AdminUpdateNetworkTokenInput } from './dto/admin-update-network-token.input'
 import { NetworkTokenPaging } from './entity/network-token.entity'
@@ -89,6 +89,8 @@ export class ApiNetworkTokenDataService {
     const type =
       info.owner.toString() === 'CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d'
         ? NetworkTokenType.NonFungible
+        : info.owner.toString() === REALMS_PROGRAM_ID
+        ? NetworkTokenType.RealmsVoter
         : getNetworkTokenType(info?.data?.program)
 
     const data: Prisma.NetworkTokenCreateInput = {

@@ -1,9 +1,15 @@
 import { DasApiAsset } from '@metaplex-foundation/digital-asset-standard-api'
 import { publicKey } from '@metaplex-foundation/umi'
 import { Injectable, Logger } from '@nestjs/common'
-import { NetworkCluster, Prisma } from '@prisma/client'
+import { NetworkCluster, NetworkTokenType, Prisma } from '@prisma/client'
 import { ApiCoreService } from '@pubkey-link/api-core-data-access'
-import { getMetadataProgram, getNetworkTokenType, WNS_PROGRAM_ID } from '@pubkey-link/api-network-util'
+import {
+  getMetadataProgram,
+  getNetworkTokenType,
+  getRealm,
+  REALMS_PROGRAM_ID,
+  WNS_PROGRAM_ID,
+} from '@pubkey-link/api-network-util'
 import { getTokenMetadata, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { TokenMetadata } from '@solana/spl-token-metadata'
 import { AccountInfo, BlockhashWithExpiryBlockHeight, ParsedAccountData, PublicKey } from '@solana/web3.js'
@@ -47,6 +53,26 @@ export class ApiNetworkService {
     return res.blockhash
   }
 
+  async getRealmsMetadata({
+    cluster,
+    account,
+  }: {
+    cluster: NetworkCluster
+    account: PublicKey | string
+  }): Promise<Prisma.NetworkTokenCreateInput> {
+    const found = await getRealm({ realm: account.toString() })
+    if (!found) {
+      throw new Error(`Realm not found`)
+    }
+    return {
+      account: account.toString(),
+      type: NetworkTokenType.RealmsVoter,
+      name: found.name,
+      program: found.program,
+      network: { connect: { cluster } },
+      raw: found,
+    }
+  }
   async getAccountInfo({ cluster, account }: { cluster: NetworkCluster; account: PublicKey | string }) {
     return this.cluster
       .getConnection(cluster)
@@ -70,6 +96,11 @@ export class ApiNetworkService {
   }
 
   async getAllTokenMetadata({ cluster, account }: { cluster: NetworkCluster; account: string }) {
+    const info = await this.getAccountInfo({ account, cluster })
+    if (info.owner.toString() === REALMS_PROGRAM_ID) {
+      return this.getRealmsMetadata({ account, cluster })
+    }
+
     const asset = await this.getAsset({ cluster: cluster, account: account })
 
     // If we have the group pointer, we can fetch the members of the group to create a list of mints

@@ -190,9 +190,10 @@ export class ApiNetworkAssetSyncService {
     // Get the fungible and non-fungible tokens for the cluster
     const solanaFungibleTokens: NetworkToken[] = tokens.filter((t) => t.type === NetworkTokenType.Fungible)
     const solanaNonFungibleTokens: NetworkToken[] = tokens.filter((t) => t.type === NetworkTokenType.NonFungible)
+    const solanaRealmsVoterTokens: NetworkToken[] = tokens.filter((t) => t.type === NetworkTokenType.RealmsVoter)
 
     this.logger.verbose(
-      `[${cluster}] syncIdentity: Syncing assets for ${owner} on ${cluster}, solanaFungibleTokens: ${solanaFungibleTokens.length}, solanaNonFungibleTokens: ${solanaNonFungibleTokens.length},`,
+      `[${cluster}] syncIdentity: Syncing assets for ${owner} on ${cluster}, solanaFungibleTokens: ${solanaFungibleTokens.length}, solanaNonFungibleTokens: ${solanaNonFungibleTokens.length}, solanaRealmsVoterTokens: ${solanaRealmsVoterTokens.length},`,
     )
     // TODO: Move the resolveNetworkAssets function into a separate method
     let assets: NetworkAssetInput[] = []
@@ -202,6 +203,7 @@ export class ApiNetworkAssetSyncService {
         owner,
         solanaFungibleTokens,
         solanaNonFungibleTokens,
+        solanaRealmsVoterTokens,
       })
     } catch (error) {
       this.logger.error(`[${cluster}] syncIdentity: Error syncing assets for ${owner} on ${cluster}: ${error}`)

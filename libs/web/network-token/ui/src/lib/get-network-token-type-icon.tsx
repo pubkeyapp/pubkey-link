@@ -1,5 +1,12 @@
 import { NetworkTokenType } from '@pubkey-link/sdk'
-import { IconListCheck, IconMoneybag, IconPhotoCircle } from '@tabler/icons-react'
+import {
+  IconBuilding,
+  IconBuildingBank,
+  IconListCheck,
+  IconMoneybag,
+  IconPhotoCircle,
+  IconScale,
+} from '@tabler/icons-react'
 import { ComponentType } from 'react'
 
 export function getNetworkTokenTypeIcon(
@@ -10,6 +17,8 @@ export function getNetworkTokenTypeIcon(
       return IconPhotoCircle
     case NetworkTokenType.Fungible:
       return IconMoneybag
+    case NetworkTokenType.RealmsVoter:
+      return IconScale
     case NetworkTokenType.Validator:
       return IconListCheck
     default:

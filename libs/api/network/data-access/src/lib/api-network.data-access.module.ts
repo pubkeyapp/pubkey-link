@@ -8,6 +8,7 @@ import { ApiNetworkProvisionService } from './provision/api-network-provision.se
 import { ApiNetworkResolverSolanaFungibleService } from './resolver/api-network-resolver-solana-fungible.service'
 import { ApiNetworkResolverSolanaNonFungibleService } from './resolver/api-network-resolver-solana-non-fungible.service'
 import { ApiNetworkResolverService } from './resolver/api-network-resolver.service'
+import { ApiNetworkResolverRealmsVoterService } from './resolver/api-network-resolver-realms-voter.service'
 
 @Module({
   imports: [ApiCoreDataAccessModule],
@@ -16,6 +17,7 @@ import { ApiNetworkResolverService } from './resolver/api-network-resolver.servi
     ApiNetworkDataAdminService,
     ApiNetworkDataService,
     ApiNetworkProvisionService,
+    ApiNetworkResolverRealmsVoterService,
     ApiNetworkResolverService,
     ApiNetworkResolverSolanaFungibleService,
     ApiNetworkResolverSolanaNonFungibleService,
