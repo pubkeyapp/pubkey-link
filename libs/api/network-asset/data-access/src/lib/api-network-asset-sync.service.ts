@@ -209,7 +209,6 @@ export class ApiNetworkAssetSyncService {
       this.logger.error(`[${cluster}] syncIdentity: Error syncing assets for ${owner} on ${cluster}: ${error}`)
       throw error
     }
-    const assetIds = assets.map((a) => a.account)
 
     this.logger.verbose(`[${cluster}] syncIdentity: Resolved ${assets.length} assets for ${owner} on ${cluster}`)
     if (!assets.length) {
@@ -219,10 +218,13 @@ export class ApiNetworkAssetSyncService {
     // Upsert the assets
     await this.upsertAssets({ cluster, assets, linkIdentity: true })
 
-    // Remove any assets that are not in the list
+    // Remove any assets that are in these groups and did not get resolved.
+    const groups = tokens.map((t) => t.account)
+    const assetIds = assets.map((a) => a.account)
     const removedIds = await this.core.data.networkAsset.deleteMany({
       where: {
         owner,
+        group: { in: groups },
         NOT: { account: { in: assetIds } },
       },
     })
