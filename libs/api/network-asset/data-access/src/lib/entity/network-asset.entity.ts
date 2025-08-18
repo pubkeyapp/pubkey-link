@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql'
-import { Prisma } from '@prisma/client'
+import { Log, Prisma } from '@prisma/client'
 import { NetworkResolver, PagingResponse } from '@pubkey-link/api-core-data-access'
 import { NetworkCluster } from '@pubkey-link/api-network-data-access'
 import { NetworkTokenType } from '@pubkey-link/api-network-token-data-access'
@@ -35,6 +35,7 @@ export class NetworkAsset {
   burnt?: boolean
   @Field()
   mint!: string
+  logs?: Log[]
   @Field()
   owner!: string
   @Field({ nullable: true })

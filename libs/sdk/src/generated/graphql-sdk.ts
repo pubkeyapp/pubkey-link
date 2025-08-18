@@ -960,6 +960,7 @@ export type NetworkAsset = {
   group?: Maybe<Scalars['String']['output']>
   id: Scalars['String']['output']
   imageUrl?: Maybe<Scalars['String']['output']>
+  logs?: Maybe<Array<Log>>
   metadata?: Maybe<Scalars['JSON']['output']>
   mint: Scalars['String']['output']
   name: Scalars['String']['output']
@@ -6299,6 +6300,194 @@ export type UserFindOneNetworkAssetQuery = {
     explorerUrl: string
     metadata?: any | null
     attributes?: any | null
+    logs?: Array<{
+      __typename?: 'Log'
+      createdAt?: Date | null
+      id: string
+      message: string
+      level: LogLevel
+      relatedId?: string | null
+      relatedType?: LogRelatedType | null
+      communityId?: string | null
+      identityProvider?: IdentityProvider | null
+      identityProviderId?: string | null
+      networkAssetId?: string | null
+      botId?: string | null
+      userId?: string | null
+      roleId?: string | null
+      updatedAt?: Date | null
+      data?: any | null
+      bot?: {
+        __typename?: 'Bot'
+        avatarUrl?: string | null
+        communityId: string
+        createdAt?: Date | null
+        developersUrl: string
+        id: string
+        inviteUrl: string
+        name: string
+        redirectUrl: string
+        redirectUrlSet?: boolean | null
+        started: boolean
+        status: BotStatus
+        updatedAt?: Date | null
+        verificationUrl: string
+        verificationUrlSet?: boolean | null
+      } | null
+      identity?: {
+        __typename?: 'Identity'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        syncStarted?: Date | null
+        syncEnded?: Date | null
+        expired?: boolean | null
+        id: string
+        name: string
+        ownerId?: string | null
+        profile?: any | null
+        provider: IdentityProvider
+        providerId: string
+        updatedAt?: Date | null
+        url?: string | null
+        verified?: boolean | null
+      } | null
+      networkAsset?: {
+        __typename?: 'NetworkAsset'
+        id: string
+        createdAt?: Date | null
+        updatedAt?: Date | null
+        cluster: NetworkCluster
+        resolver: NetworkResolver
+        type: NetworkTokenType
+        account: string
+        balance?: string | null
+        name: string
+        symbol?: string | null
+        program?: string | null
+        decimals: number
+        mint: string
+        burnt?: boolean | null
+        owner: string
+        group?: string | null
+        imageUrl?: string | null
+        explorerUrl: string
+        metadata?: any | null
+        attributes?: any | null
+      } | null
+      role?: {
+        __typename?: 'Role'
+        createdAt?: Date | null
+        id: string
+        communityId: string
+        name: string
+        updatedAt?: Date | null
+        viewUrl?: string | null
+        conditions?: Array<{
+          __typename?: 'RoleCondition'
+          createdAt?: Date | null
+          id: string
+          type: NetworkTokenType
+          amount?: string | null
+          amountMax?: string | null
+          filters?: any | null
+          config?: any | null
+          tokenId?: string | null
+          roleId?: string | null
+          updatedAt?: Date | null
+          valid?: boolean | null
+          token?: {
+            __typename?: 'NetworkToken'
+            id: string
+            createdAt?: Date | null
+            updatedAt?: Date | null
+            cache?: boolean | null
+            cluster: NetworkCluster
+            type: NetworkTokenType
+            account: string
+            program: string
+            name: string
+            mintList?: Array<string> | null
+            symbol?: string | null
+            description?: string | null
+            imageUrl?: string | null
+            metadataUrl?: string | null
+            raw?: any | null
+          } | null
+          asset?: { __typename?: 'SolanaNetworkAsset'; owner: string; amount: string; accounts: Array<string> } | null
+        }> | null
+        permissions?: Array<{
+          __typename?: 'RolePermission'
+          createdAt?: Date | null
+          id: string
+          updatedAt?: Date | null
+          botId?: string | null
+          roleId?: string | null
+          botRole?: {
+            __typename?: 'BotRole'
+            botId?: string | null
+            createdAt?: Date | null
+            id: string
+            serverId?: string | null
+            updatedAt?: Date | null
+            serverRoleId?: string | null
+            serverRole?: {
+              __typename?: 'DiscordRole'
+              id: string
+              name: string
+              managed: boolean
+              color: number
+              position: number
+            } | null
+            server?: {
+              __typename?: 'DiscordServer'
+              id: string
+              name: string
+              icon?: string | null
+              permissions?: Array<string> | null
+            } | null
+          } | null
+        }> | null
+        member?: {
+          __typename?: 'CommunityMember'
+          communityId: string
+          createdAt?: Date | null
+          id: string
+          admin: boolean
+          updatedAt?: Date | null
+          userId: string
+          user?: {
+            __typename?: 'User'
+            avatarUrl?: string | null
+            createdAt?: Date | null
+            developer?: boolean | null
+            private?: boolean | null
+            lastLogin?: Date | null
+            id: string
+            name?: string | null
+            profileUrl: string
+            role?: UserRole | null
+            status?: UserStatus | null
+            updatedAt?: Date | null
+            username?: string | null
+          } | null
+        } | null
+      } | null
+      user?: {
+        __typename?: 'User'
+        avatarUrl?: string | null
+        createdAt?: Date | null
+        developer?: boolean | null
+        private?: boolean | null
+        lastLogin?: Date | null
+        id: string
+        name?: string | null
+        profileUrl: string
+        role?: UserRole | null
+        status?: UserStatus | null
+        updatedAt?: Date | null
+        username?: string | null
+      } | null
+    }> | null
   } | null
 }
 
@@ -10348,9 +10537,13 @@ export const UserFindOneNetworkAssetDocument = gql`
   query userFindOneNetworkAsset($account: String!, $cluster: NetworkCluster!) {
     item: userFindOneNetworkAsset(account: $account, cluster: $cluster) {
       ...NetworkAssetDetails
+      logs {
+        ...LogDetails
+      }
     }
   }
   ${NetworkAssetDetailsFragmentDoc}
+  ${LogDetailsFragmentDoc}
 `
 export const AdminFindManyNetworkAssetDocument = gql`
   query adminFindManyNetworkAsset($input: AdminFindManyNetworkAssetInput!) {

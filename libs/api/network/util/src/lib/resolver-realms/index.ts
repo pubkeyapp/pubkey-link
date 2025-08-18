@@ -85,6 +85,7 @@ function convertVoterToNetworkAsset(voter: RealmVoter): Prisma.NetworkAssetCreat
     network: { connect: { cluster: NetworkCluster.SolanaMainnet } },
     owner: voter.voter,
     resolver: NetworkResolver.SolanaRealms,
+    symbol: 'VOTER',
     type: NetworkTokenType.RealmsVoter,
   }
 }

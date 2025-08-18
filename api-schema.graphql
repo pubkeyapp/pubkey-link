@@ -597,6 +597,7 @@ type NetworkAsset {
   group: String
   id: String!
   imageUrl: String
+  logs: [Log!]
   metadata: JSON
   mint: String!
   name: String!

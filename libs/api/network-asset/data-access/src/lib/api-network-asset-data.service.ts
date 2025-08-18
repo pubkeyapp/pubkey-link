@@ -34,6 +34,12 @@ export class ApiNetworkAssetDataService {
 
   async findOneByAccount(cluster: NetworkCluster, account: string) {
     return this.core.data.networkAsset.findUnique({
+      include: {
+        logs: {
+          include: { identity: { include: { owner: true } } },
+          orderBy: { createdAt: 'desc' },
+        },
+      },
       where: { account_cluster: { cluster, account } },
     })
   }

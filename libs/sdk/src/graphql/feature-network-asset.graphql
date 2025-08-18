@@ -35,6 +35,9 @@ query userFindManyNetworkAsset($input: UserFindManyNetworkAssetInput!) {
 query userFindOneNetworkAsset($account: String!, $cluster: NetworkCluster!) {
   item: userFindOneNetworkAsset(account: $account, cluster: $cluster) {
     ...NetworkAssetDetails
+    logs {
+      ...LogDetails
+    }
   }
 }
 

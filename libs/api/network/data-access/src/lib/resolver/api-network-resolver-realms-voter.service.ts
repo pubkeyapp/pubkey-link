@@ -13,10 +13,12 @@ export class ApiNetworkResolverRealmsVoterService {
 
   async resolve({ owner, tokens }: { owner: string; tokens: NetworkToken[] }): Promise<NetworkAssetInput[]> {
     const cluster = NetworkCluster.SolanaMainnet
-    const tag = `resolveNetworkAssetsSolanaRealmsVoter(${owner}, ${cluster}, ${tokens.map((t) => t.account).join(',')})`
-    this.logger.verbose(`${tag}: Start resolving assets`)
+    const groups = tokens.map((token) => token.account)
 
-    const voters = await getRealmsVoters({ realms: tokens.map((t) => t.account), owner })
+    const tag = `resolveNetworkAssetsSolanaRealmsVoter(${owner}, ${cluster})`
+    this.logger.verbose(`${tag}: Start resolving assets for groups: ${groups.join(',')}`)
+
+    const voters = await getRealmsVoters({ realms: groups, owner })
     if (!voters.length) {
       return []
     }

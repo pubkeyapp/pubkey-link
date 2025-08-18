@@ -1,7 +1,7 @@
 import { Grid, Group } from '@mantine/core'
 import { NetworkCluster } from '@pubkey-link/sdk'
 import { AppUiDebugModal } from '@pubkey-link/web-core-ui'
-import { UserLogListFeature } from '@pubkey-link/web-log-ui'
+import { UserLogListFeature, UserLogUiTable, UserLogUiTableSimple } from '@pubkey-link/web-log-ui'
 import { useUserFindOneNetworkAsset } from '@pubkey-link/web-network-asset-data-access'
 import { NetworkAssetUiItem } from '@pubkey-link/web-network-asset-ui'
 import { NetworkUiClusterBadge } from '@pubkey-link/web-network-ui'
@@ -38,7 +38,7 @@ export default function UserNetworkAssetDetailFeature() {
                   label: 'Overview',
                   element: <UserNetworkAssetDetailOverviewTab account={account} cluster={cluster} />,
                 },
-                { path: 'logs', label: 'Logs', element: <UserLogListFeature networkAssetId={item.id} /> },
+                { path: 'logs', label: 'Logs', element: <UserLogUiTableSimple logs={item.logs ?? []} /> },
               ]}
             />
           </Grid.Col>

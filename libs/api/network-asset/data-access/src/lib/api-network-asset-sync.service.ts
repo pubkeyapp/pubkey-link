@@ -231,6 +231,7 @@ export class ApiNetworkAssetSyncService {
       await this.core.logInfo(`[${cluster}] syncIdentity: Removed ${removedIds.count} assets for ${owner}`, {
         identityProvider: IdentityProvider.Solana,
         identityProviderId: owner,
+        data: { assetIds },
       })
     }
 
@@ -308,6 +309,7 @@ export class ApiNetworkAssetSyncService {
       if (isNetworkAssetEqual({ found, asset })) {
         return true
       }
+      const data = findNetworkAssetDiff({ found, asset })
       const updated = await this.core.data.networkAsset.update({
         where: { account_cluster: { account: asset.account, cluster } },
         data: {
@@ -315,10 +317,10 @@ export class ApiNetworkAssetSyncService {
           logs: {
             create: {
               level: LogLevel.Info,
-              message: 'Asset updated',
+              message: `Asset updated. Type ${asset.type}, diff keys: ${Object.keys(data)}`,
               identityProviderId: linkIdentity ? asset.owner : undefined,
               identityProvider: linkIdentity ? IdentityProvider.Solana : undefined,
-              data: findNetworkAssetDiff({ found, asset }),
+              data,
             },
           },
         },
@@ -331,7 +333,7 @@ export class ApiNetworkAssetSyncService {
         logs: {
           create: {
             level: LogLevel.Info,
-            message: `Asset created: ${asset.name} (${asset.symbol})`,
+            message: `Asset created: ${asset.name} (${asset.symbol}). Owner ${asset.owner ?? 'unknown'}`,
             identityProviderId: linkIdentity ? asset.owner : undefined,
             identityProvider: linkIdentity ? IdentityProvider.Solana : undefined,
             data: findNetworkAssetDiff({ found: {}, asset }),
