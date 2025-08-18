@@ -530,7 +530,11 @@ export class ApiBotInstancesService {
               value: `Conditions (**${role.conditions.length}**):
                ${role.conditions.map(
                  (condition) =>
-                   ` - ${condition.amount} [${condition.token?.symbol}](https://solana.fm/address/${condition.token?.account}) ${condition.token?.name} (${condition.type})\n`,
+                   ` - ${condition.amount} [${
+                     condition.token?.symbol ?? condition.token?.name
+                   }](https://solana.fm/address/${condition.token?.account}) ${condition.token?.name} (${
+                     condition.type
+                   })\n`,
                )}Permissions (**${role.permissions.length}**):
                 ${role.permissions.map(
                   (permission) => ` - <@&${permission.botRole?.serverRoleId}>\n`,
