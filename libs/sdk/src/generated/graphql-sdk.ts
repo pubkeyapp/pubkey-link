@@ -272,6 +272,7 @@ export type BotServer = {
   dryRun?: Maybe<Scalars['Boolean']['output']>
   enableSync?: Maybe<Scalars['Boolean']['output']>
   id: Scalars['String']['output']
+  publicChannel?: Maybe<Scalars['String']['output']>
   serverId: Scalars['String']['output']
   updatedAt?: Maybe<Scalars['DateTime']['output']>
   verbose?: Maybe<Scalars['Boolean']['output']>
@@ -880,6 +881,7 @@ export type MutationUserSyncCommunityRolesArgs = {
 
 export type MutationUserTestBotServerConfigArgs = {
   botId: Scalars['String']['input']
+  channelId: Scalars['String']['input']
   serverId: Scalars['String']['input']
 }
 
@@ -1676,6 +1678,7 @@ export type UserUpdateBotServerInput = {
   botChannel?: InputMaybe<Scalars['String']['input']>
   dryRun?: InputMaybe<Scalars['Boolean']['input']>
   enableSync?: InputMaybe<Scalars['Boolean']['input']>
+  publicChannel?: InputMaybe<Scalars['String']['input']>
   verbose?: InputMaybe<Scalars['Boolean']['input']>
 }
 
@@ -1818,6 +1821,7 @@ export type BotServerDetailsFragment = {
   serverId: string
   adminRoles?: Array<string> | null
   botChannel?: string | null
+  publicChannel?: string | null
   dryRun?: boolean | null
   enableSync?: boolean | null
   verbose?: boolean | null
@@ -2165,6 +2169,7 @@ export type UserFindOneBotServerQuery = {
     serverId: string
     adminRoles?: Array<string> | null
     botChannel?: string | null
+    publicChannel?: string | null
     dryRun?: boolean | null
     enableSync?: boolean | null
     verbose?: boolean | null
@@ -2225,6 +2230,7 @@ export type UserUpdateBotMutation = {
 export type UserTestBotServerConfigMutationVariables = Exact<{
   botId: Scalars['String']['input']
   serverId: Scalars['String']['input']
+  channelId: Scalars['String']['input']
 }>
 
 export type UserTestBotServerConfigMutation = {
@@ -2238,6 +2244,7 @@ export type UserTestBotServerConfigMutation = {
     serverId: string
     adminRoles?: Array<string> | null
     botChannel?: string | null
+    publicChannel?: string | null
     dryRun?: boolean | null
     enableSync?: boolean | null
     verbose?: boolean | null
@@ -2261,6 +2268,7 @@ export type UserUpdateBotServerMutation = {
     serverId: string
     adminRoles?: Array<string> | null
     botChannel?: string | null
+    publicChannel?: string | null
     dryRun?: boolean | null
     enableSync?: boolean | null
     verbose?: boolean | null
@@ -9288,6 +9296,7 @@ export const BotServerDetailsFragmentDoc = gql`
     serverId
     adminRoles
     botChannel
+    publicChannel
     dryRun
     enableSync
     verbose
@@ -9867,8 +9876,8 @@ export const UserUpdateBotDocument = gql`
   ${BotDetailsFragmentDoc}
 `
 export const UserTestBotServerConfigDocument = gql`
-  mutation userTestBotServerConfig($botId: String!, $serverId: String!) {
-    tested: userTestBotServerConfig(botId: $botId, serverId: $serverId) {
+  mutation userTestBotServerConfig($botId: String!, $serverId: String!, $channelId: String!) {
+    tested: userTestBotServerConfig(botId: $botId, serverId: $serverId, channelId: $channelId) {
       ...BotServerDetails
     }
   }
@@ -14788,6 +14797,7 @@ export function UserUpdateBotServerInputSchema(): z.ZodObject<Properties<UserUpd
     botChannel: z.string().nullish(),
     dryRun: z.boolean().nullish(),
     enableSync: z.boolean().nullish(),
+    publicChannel: z.string().nullish(),
     verbose: z.boolean().nullish(),
   })
 }

@@ -38,19 +38,20 @@ model BotRole {
 }
 
 model BotServer {
-  id           String   @id @default(cuid())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  bot          Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
-  botId        String
-  serverId     String
-  enableSync   Boolean  @default(false)
-  dryRun       Boolean  @default(true)
-  mentionRoles Boolean? @default(false) // This field is deprecated and will be removed in a future version
-  mentionUsers Boolean? @default(false) // This field is deprecated and will be removed in a future version
-  verbose      Boolean  @default(false)
-  adminRoles   String[]
-  botChannel   String?
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  bot           Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  botId         String
+  serverId      String
+  enableSync    Boolean  @default(false)
+  dryRun        Boolean  @default(true)
+  mentionRoles  Boolean? @default(false) // This field is deprecated and will be removed in a future version
+  mentionUsers  Boolean? @default(false) // This field is deprecated and will be removed in a future version
+  verbose       Boolean  @default(false)
+  adminRoles    String[]
+  botChannel    String?
+  publicChannel String?
 
   @@unique([botId, serverId])
 }

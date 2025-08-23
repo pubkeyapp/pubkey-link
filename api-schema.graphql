@@ -245,6 +245,7 @@ type BotServer {
   dryRun: Boolean
   enableSync: Boolean
   id: String!
+  publicChannel: String
   serverId: String!
   updatedAt: DateTime
   verbose: Boolean
@@ -557,7 +558,7 @@ type Mutation {
   userStopBot(botId: String!): Boolean
   userSyncBotServer(botId: String!, serverId: String!): Boolean
   userSyncCommunityRoles(communityId: String!): JSON
-  userTestBotServerConfig(botId: String!, serverId: String!): BotServer
+  userTestBotServerConfig(botId: String!, channelId: String!, serverId: String!): BotServer
   userUpdateBot(botId: String!, input: UserUpdateBotInput!): Bot
   userUpdateBotServer(botId: String!, input: UserUpdateBotServerInput!, serverId: String!): BotServer
   userUpdateCommunity(communityId: String!, input: UserUpdateCommunityInput!): Community
@@ -1041,6 +1042,7 @@ input UserUpdateBotServerInput {
   botChannel: String
   dryRun: Boolean
   enableSync: Boolean
+  publicChannel: String
   verbose: Boolean
 }
 

@@ -23,6 +23,7 @@ fragment BotServerDetails on BotServer {
   serverId
   adminRoles
   botChannel
+  publicChannel
   dryRun
   enableSync
   verbose
@@ -130,8 +131,8 @@ mutation userUpdateBot($botId: String!, $input: UserUpdateBotInput!) {
   }
 }
 
-mutation userTestBotServerConfig($botId: String!, $serverId: String!) {
-  tested: userTestBotServerConfig(botId: $botId, serverId: $serverId) {
+mutation userTestBotServerConfig($botId: String!, $serverId: String!, $channelId: String!) {
+  tested: userTestBotServerConfig(botId: $botId, serverId: $serverId, channelId: $channelId) {
     ...BotServerDetails
   }
 }

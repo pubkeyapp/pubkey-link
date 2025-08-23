@@ -7,6 +7,8 @@ export class UserUpdateBotServerInput {
   @Field({ nullable: true })
   botChannel?: string
   @Field({ nullable: true })
+  publicChannel?: string
+  @Field({ nullable: true })
   dryRun?: boolean
   @Field({ nullable: true })
   enableSync?: boolean

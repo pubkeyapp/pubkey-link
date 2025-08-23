@@ -130,23 +130,25 @@ export class ApiBotInstancesService {
     return this.getDiscordRolesFromBotInstance({ botInstance, serverId })
   }
 
-  async sendCommandChannel(botServer: BotServer, content: string | MessageCreateOptions) {
+  async sendToBotChannel(botServer: BotServer, content: string | MessageCreateOptions) {
     if (!botServer.botChannel) {
       return
     }
     await this.getBotInstance(botServer.botId)?.sendChannel(botServer.botChannel, content)
   }
-
-  async sendCommandChannelError(botServer: BotServer, options: MessageContent) {
-    await this.sendCommandChannel(botServer, messageContentError(options))
+  async sendToPublicChannel(botServer: BotServer, content: string | MessageCreateOptions) {
+    if (!botServer.publicChannel) {
+      return
+    }
+    await this.getBotInstance(botServer.botId)?.sendChannel(botServer.publicChannel, content)
   }
 
-  async sendCommandChannelSuccess(botServer: BotServer, options: MessageContent) {
-    await this.sendCommandChannel(botServer, messageContentSuccess(options))
+  async sendCommandChannelError(botServer: BotServer, options: MessageContent) {
+    await this.sendToBotChannel(botServer, messageContentError(options))
   }
 
   async sendCommandChannelInfo(botServer: BotServer, options: MessageContent) {
-    await this.sendCommandChannel(botServer, messageContentInfo(options))
+    await this.sendToBotChannel(botServer, messageContentInfo(options))
   }
 
   /**
@@ -477,7 +479,17 @@ export class ApiBotInstancesService {
     return `${this.core.config.webUrl}/bot/${botId}/verification`
   }
 
-  async testBotServerConfig({ botId, serverId, userId }: { userId: string; botId: string; serverId: string }) {
+  async testBotServerConfig({
+    botId,
+    channelId,
+    serverId,
+    userId,
+  }: {
+    userId: string
+    channelId: string
+    botId: string
+    serverId: string
+  }) {
     const bot = await this.core.data.bot.findUnique({ where: { id: botId }, include: { community: true } })
     if (!bot) {
       throw new Error(`Bot ${botId} not found`)
@@ -497,8 +509,9 @@ export class ApiBotInstancesService {
     if (!botServer) {
       throw new Error(`Bot server ${serverId} not found`)
     }
-    if (!botServer.botChannel) {
-      throw new Error(`This bot does not have a command channel set`)
+
+    if (botServer.botChannel !== channelId && botServer.publicChannel !== channelId) {
+      throw new Error(`Channel ${channelId} is not configured for this bot`)
     }
     const identity = await this.core.data.identity.findFirst({
       where: { ownerId: userId, provider: IdentityProvider.Discord },
@@ -508,7 +521,7 @@ export class ApiBotInstancesService {
     }
     const summary = await this.getCommunityRoleSummary(bot.communityId)
 
-    await discordBot.sendChannel(botServer.botChannel, {
+    await discordBot.sendChannel(channelId, {
       embeds: [
         {
           title: `Configuration for ${discordBot.client?.user?.username} in ${bot.community.name}`,
@@ -521,7 +534,14 @@ export class ApiBotInstancesService {
                 ? botServer.adminRoles.map((role) => `<@&${role}>`).join(' ')
                 : 'Not set',
             },
-            { name: `Bot Channel`, value: `<#${botServer.botChannel}>` },
+            {
+              name: `Bot Channel`,
+              value: botServer.botChannel ? `<#${botServer.botChannel}>` : 'None configured',
+            },
+            {
+              name: `Public Channel`,
+              value: botServer.publicChannel ? `<#${botServer.publicChannel}>` : 'None configured',
+            },
             { name: `Dry Run`, value: botServer.dryRun ? 'Enabled' : 'Disabled' },
             { name: `Enable Sync`, value: botServer.enableSync ? 'Enabled' : 'Disabled' },
             { name: 'Roles:', value: `There are ${summary.length} roles in this community` },

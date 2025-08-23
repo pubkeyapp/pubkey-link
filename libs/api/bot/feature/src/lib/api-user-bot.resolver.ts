@@ -74,8 +74,9 @@ export class ApiUserBotResolver {
     @CtxUserId() userId: string,
     @Args('botId') botId: string,
     @Args('serverId') serverId: string,
+    @Args('channelId') channelId: string,
   ) {
-    return this.service.user.userTestBotServerConfig(userId, botId, serverId)
+    return this.service.user.userTestBotServerConfig(userId, botId, serverId, channelId)
   }
 
   @Query(() => [DiscordRole], { nullable: true })

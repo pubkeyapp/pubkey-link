@@ -32,9 +32,12 @@ export function useUserFindOneBotServer({ botId, serverId }: { botId: string; se
           toastError(err.message)
           return false
         }),
-    testBotServerConfig: async () =>
-      sdk
-        .userTestBotServerConfig({ botId, serverId })
+    testBotServerConfig: async (channelId?: string | null) => {
+      if (!channelId) {
+        return
+      }
+      return sdk
+        .userTestBotServerConfig({ botId, serverId, channelId })
         .then((res) => res.data)
         .then(async (res) => {
           if (res) {
@@ -48,6 +51,7 @@ export function useUserFindOneBotServer({ botId, serverId }: { botId: string; se
         .catch((err) => {
           toastError(err.message)
           return false
-        }),
+        })
+    },
   }
 }

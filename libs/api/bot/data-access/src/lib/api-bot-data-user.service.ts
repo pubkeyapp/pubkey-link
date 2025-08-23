@@ -118,10 +118,10 @@ export class ApiBotDataUserService {
     return this.sync.syncBotServer({ botId, serverId })
   }
 
-  async userTestBotServerConfig(userId: string, botId: string, serverId: string) {
+  async userTestBotServerConfig(userId: string, botId: string, serverId: string, channelId: string) {
     await this.ensureBotAdmin({ botId, userId })
 
-    return this.instances.testBotServerConfig({ userId, botId, serverId })
+    return this.instances.testBotServerConfig({ userId, botId, serverId, channelId })
   }
 
   async userFindManyBotRoles(userId: string, botId: string, serverId: string) {

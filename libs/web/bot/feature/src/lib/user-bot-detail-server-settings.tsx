@@ -7,7 +7,7 @@ import {
 } from '@pubkey-link/web-bot-data-access'
 import { UserBotServerUiUpdateForm } from '@pubkey-link/web-bot-ui'
 import { AppUiDebugModal } from '@pubkey-link/web-core-ui'
-import { UiAlert, UiCard, UiDebugModal, UiLoader, UiStack } from '@pubkey-ui/core'
+import { UiAlert, UiCard, UiLoader, UiStack } from '@pubkey-ui/core'
 
 export function UserBotDetailServerSettings({ botId, serverId }: { botId: string; serverId: string }) {
   const { query, updateBotServer, testBotServerConfig } = useUserFindOneBotServer({ botId, serverId })
@@ -51,9 +51,19 @@ export function UserBotDetailServerSettings({ botId, serverId }: { botId: string
             >
               Sync Server
             </Button>
-
-            <Button variant={'light'} onClick={testBotServerConfig}>
-              Test Bot Server Config
+            <Button
+              disabled={!item.botChannel?.length}
+              variant={'light'}
+              onClick={() => testBotServerConfig(item.botChannel)}
+            >
+              Test Bot Channel
+            </Button>
+            <Button
+              disabled={!item.publicChannel?.length}
+              variant={'light'}
+              onClick={() => testBotServerConfig(item.publicChannel)}
+            >
+              Test Public Channel
             </Button>
           </UserBotServerUiUpdateForm>
         </UiStack>

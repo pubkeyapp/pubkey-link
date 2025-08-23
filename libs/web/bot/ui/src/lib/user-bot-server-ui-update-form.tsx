@@ -24,6 +24,7 @@ export function UserBotServerUiUpdateForm({
     initialValues: {
       adminRoles: botServer.adminRoles,
       botChannel: botServer.botChannel,
+      publicChannel: botServer.publicChannel,
       dryRun: botServer.dryRun ?? false,
       enableSync: botServer.enableSync ?? false,
       verbose: botServer.verbose ?? false,
@@ -47,6 +48,12 @@ export function UserBotServerUiUpdateForm({
           description="The channel where the bot will send log events."
           data={channels}
           {...form.getInputProps('botChannel')}
+        />
+        <DiscordUiChannelSelect
+          label="Public Channel"
+          description="The channel where the bot will send public announcements."
+          data={channels}
+          {...form.getInputProps('publicChannel')}
         />
         <Checkbox
           label="Dry Run"
