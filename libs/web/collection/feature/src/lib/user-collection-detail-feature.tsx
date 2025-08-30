@@ -1,4 +1,4 @@
-import { Box, Flex, Grid } from '@mantine/core'
+import { Box, Flex, Grid, SegmentedControl } from '@mantine/core'
 import {
   useUserCollectionAssetFindMany,
   useUserCollectionFindMany,
@@ -8,6 +8,7 @@ import { CollectionUiAssetGrid, CollectionUiAssetSearch, CollectionUiSelect } fr
 import { UiError, UiLoader, UiPage } from '@pubkey-ui/core'
 import { IconImageInPicture } from '@tabler/icons-react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useState } from 'react'
 import { CollectionUiAttributeTree } from './collection-ui-attribute-tree'
 import { Collection } from '@pubkey-link/sdk'
 
@@ -35,6 +36,7 @@ export function UserCollectionDetailLoaded({
   communityId: string
 }) {
   const navigate = useNavigate()
+  const [cols, setCols] = useState(4)
 
   const { data: collections } = useUserCollectionFindMany({ communityId })
   const { items: assets, setSearch } = useUserCollectionAssetFindMany({ collectionId: collection.id })
@@ -58,7 +60,21 @@ export function UserCollectionDetailLoaded({
         </Box>
 
         <Box flex={1}>
-          <CollectionUiAssetSearch setSearch={setSearch} />
+          <Flex gap="md" align="center">
+            <Box flex={1}>
+              <CollectionUiAssetSearch setSearch={setSearch} />
+            </Box>
+            <SegmentedControl
+              value={cols.toString()}
+              onChange={(value) => setCols(parseInt(value))}
+              data={[
+                { label: '4x', value: '4' },
+                { label: '8x', value: '8' },
+                { label: '12x', value: '12' },
+              ]}
+              withItemsBorders={false}
+            />
+          </Flex>
         </Box>
       </Flex>
 
@@ -67,7 +83,7 @@ export function UserCollectionDetailLoaded({
           <CollectionUiAttributeTree attributes={collection?.attributes ?? []} />
         </Grid.Col>
         <Grid.Col span={9}>
-          {assets?.length ? <CollectionUiAssetGrid assets={assets} /> : <div>No assets found</div>}
+          {assets?.length ? <CollectionUiAssetGrid assets={assets} cols={cols} /> : <div>No assets found</div>}
         </Grid.Col>
       </Grid>
     </UiPage>
