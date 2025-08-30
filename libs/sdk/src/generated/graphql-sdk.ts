@@ -1520,6 +1520,7 @@ export type UserAddIdentityGrantInput = {
 export type UserCollectionAssetFindManyInput = {
   collectionId: Scalars['String']['input']
   search?: InputMaybe<Scalars['String']['input']>
+  searchByOwnerWallet?: InputMaybe<Scalars['String']['input']>
 }
 
 export type UserCollectionCreateInput = {
@@ -14609,6 +14610,7 @@ export function UserCollectionAssetFindManyInputSchema(): z.ZodObject<Properties
   return z.object({
     collectionId: z.string(),
     search: z.string().nullish(),
+    searchByOwnerWallet: z.string().nullish(),
   })
 }
 

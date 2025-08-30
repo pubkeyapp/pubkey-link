@@ -2,7 +2,6 @@ import { AspectRatio, Badge, Box, Group, Image, Popover, SimpleGrid, Text } from
 import { useDisclosure } from '@mantine/hooks'
 import { CollectionAsset, IdentityProvider } from '@pubkey-link/sdk'
 import { useAuth } from '@pubkey-link/web-auth-data-access'
-import React from 'react'
 
 export function CollectionUiAssetGridItem({ asset, cols }: { asset: CollectionAsset; cols: number }) {
   const [opened, { close, open }] = useDisclosure(false)
