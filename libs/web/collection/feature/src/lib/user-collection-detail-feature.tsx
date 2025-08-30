@@ -63,9 +63,11 @@ export function UserCollectionDetailLoaded({
         if (!attributeMap.has(attr.key)) {
           attributeMap.set(attr.key, new Map())
         }
-        const valueMap = attributeMap.get(attr.key)!
-        const currentCount = valueMap.get(attr.value ?? '') || 0
-        valueMap.set(attr.value ?? '', currentCount + 1)
+        const valueMap = attributeMap.get(attr.key)
+        if (valueMap) {
+          const currentCount = valueMap.get(attr.value ?? '') || 0
+          valueMap.set(attr.value ?? '', currentCount + 1)
+        }
       })
     })
 

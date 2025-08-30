@@ -1,5 +1,5 @@
-import { ActionIcon, Button, Group, Popover, Stack, TextInput } from '@mantine/core'
-import { IconChevronDown, IconClipboard, IconSearch, IconX } from '@tabler/icons-react'
+import { ActionIcon, Button, Popover, Stack, TextInput } from '@mantine/core'
+import { IconChevronDown, IconClipboard, IconSearch } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useQueryState, parseAsString } from 'nuqs'
 
@@ -10,12 +10,12 @@ export function CollectionUiOwnerSearch() {
 
   const [searchValue, setSearchValue] = useState(ownerSearch)
 
-  const handleApply = () => {
+  function handleApply() {
     setOwnerSearch(searchValue.trim())
     setOpened(false)
   }
 
-  const handlePaste = async () => {
+  async function handlePaste() {
     try {
       const text = await navigator.clipboard.readText()
       setSearchValue(text.trim())

@@ -24,7 +24,7 @@ export function CollectionUiAttributeTree({ attributes }: { attributes: Collecti
 
   const [selectedFilters, setSelectedFilters] = useQueryState('filters', parseAsArrayOf(parseAsString).withDefault([]))
 
-  const handleAttributeClick = (key: string, value: string) => {
+  function handleAttributeClick(key: string, value: string) {
     const filterKey = `${key}:${value}`
     const isSelected = selectedFilters.includes(filterKey)
 
