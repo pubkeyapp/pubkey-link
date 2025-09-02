@@ -159,7 +159,7 @@
     "@nx/nest": "20.0.7",
     "@nx/node": "20.0.7",
     "@nx/plugin": "20.0.7",
-    "@nx/react": "20.0.7",
+    "@nx/react": "21.4.1",
     "@nx/rollup": "20.0.7",
     "@nx/webpack": "20.0.7",
     "@nx/workspace": "20.0.7",
