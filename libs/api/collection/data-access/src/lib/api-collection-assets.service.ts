@@ -13,7 +13,11 @@ import { Collection } from './entity/collection.entity'
 export class ApiCollectionAssetService {
   constructor(private readonly core: ApiCoreService, private readonly cache: ApiCacheService) {}
 
-  async findMany({ collectionId, search }: UserCollectionAssetFindManyInput): Promise<CollectionAsset[]> {
+  async findMany({
+    collectionId,
+    search,
+    searchByOwnerWallet,
+  }: UserCollectionAssetFindManyInput): Promise<CollectionAsset[]> {
     const collection = await this.ensureCollection(collectionId)
     if (!collection.token) {
       throw new Error(`Token for collection ${collection.slug} not found`)
@@ -36,15 +40,21 @@ export class ApiCollectionAssetService {
         attributes: renameAttributes(asset.content?.metadata?.attributes ?? []),
       }))
 
-      return assets.filter((assets) => {
-        if (!search?.length) {
-          return true
+      return assets.filter((asset) => {
+        let matchesSearch = true
+        let matchesOwner = true
+
+        if (search?.length) {
+          matchesSearch =
+            asset.name.toLowerCase().includes(search.toLowerCase()) ||
+            asset.description.toLowerCase().includes(search.toLowerCase())
         }
 
-        return (
-          assets.name.toLowerCase().includes(search.toLowerCase()) ||
-          assets.description.toLowerCase().includes(search.toLowerCase())
-        )
+        if (searchByOwnerWallet?.length) {
+          matchesOwner = asset.owner.toLowerCase() === searchByOwnerWallet.toLowerCase()
+        }
+
+        return matchesSearch && matchesOwner
       })
     } catch (e) {
       console.log('error', e)

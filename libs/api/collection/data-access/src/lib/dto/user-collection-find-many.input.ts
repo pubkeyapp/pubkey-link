@@ -14,4 +14,6 @@ export class UserCollectionAssetFindManyInput {
   collectionId!: string
   @Field({ nullable: true })
   search?: string
+  @Field({ nullable: true })
+  searchByOwnerWallet?: string
 }
