@@ -44,7 +44,7 @@ export function UserCollectionAssetFeature() {
     return <UiError message="Asset not found." />
   }
 
-  const truncateAddress = (address: string) => {
+  function truncateAddress(address: string) {
     return `${address.slice(0, 4)}...${address.slice(-4)}`
   }
 
