@@ -47,8 +47,8 @@ export function CollectionUiAssetGrid({ assets, cols = 4 }: { assets: Collection
   const cellProps = useMemo(() => ({ assets, cols }), [assets, cols])
 
   const rowCount = Math.ceil(assets.length / cols)
-  const itemWidth = containerSize.width / cols
-  const itemHeight = itemWidth + 60 // Extra space for text
+  const itemWidth = containerSize.width / cols - 8
+  const itemHeight = itemWidth + 60
 
   if (containerSize.width === 0) {
     return <div id="asset-grid-container" style={{ width: '100%', height: '100%' }} />
