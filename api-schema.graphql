@@ -316,6 +316,20 @@ type CollectionAssetAttribute {
   value: String
 }
 
+type CollectionAssetWithDetails {
+  assetType: String
+  attributes: [CollectionAssetAttribute!]
+  description: String!
+  id: String!
+  imageUrl: String!
+  isCompressed: Boolean!
+  jsonMetadataUrl: String
+  name: String!
+  onChainCollectionAddress: String
+  owner: String!
+  royalty: Float
+}
+
 type Community {
   avatarUrl: String
   createdAt: DateTime
@@ -715,6 +729,7 @@ type Query {
   me: User
   uptime: Float!
   userCollectionAssetFindMany(input: UserCollectionAssetFindManyInput!): [CollectionAsset!]
+  userCollectionAssetFindOne(input: UserCollectionAssetFindOneInput!): CollectionAssetWithDetails
   userCollectionFindMany(input: UserCollectionFindManyInput!): [Collection!]
   userCollectionFindOne(collectionId: String!): Collection
   userFindManyBotRoles(botId: String!, serverId: String!): [BotRole!]
@@ -887,6 +902,11 @@ input UserCollectionAssetFindManyInput {
   collectionId: String!
   search: String
   searchByOwnerWallet: String
+}
+
+input UserCollectionAssetFindOneInput {
+  assetId: String!
+  collectionId: String!
 }
 
 input UserCollectionCreateInput {
