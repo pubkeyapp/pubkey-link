@@ -6,7 +6,9 @@ import {
   ApiCollectionService,
   Collection,
   CollectionAsset,
+  CollectionAssetWithDetails,
   UserCollectionAssetFindManyInput,
+  UserCollectionAssetFindOneInput,
   UserCollectionCreateInput,
   UserCollectionFindManyInput,
 } from '@pubkey-link/api-collection-data-access'
@@ -19,5 +21,10 @@ export class ApiCollectionAssetUserResolver {
   @Query(() => [CollectionAsset], { nullable: true })
   userCollectionAssetFindMany(@Args('input') input: UserCollectionAssetFindManyInput) {
     return this.service.findMany(input)
+  }
+
+  @Query(() => CollectionAssetWithDetails, { nullable: true })
+  userCollectionAssetFindOne(@Args('input') input: UserCollectionAssetFindOneInput) {
+    return this.service.findOne(input)
   }
 }

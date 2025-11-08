@@ -26,6 +26,22 @@ fragment CollectionAssetDetails on CollectionAsset {
   }
 }
 
+fragment CollectionAssetWithDetailsFragment on CollectionAssetWithDetails {
+  id
+  name
+  description
+  imageUrl
+  owner
+  isCompressed
+  jsonMetadataUrl
+  onChainCollectionAddress
+  royalty
+  assetType
+  attributes {
+    ...CollectionAssetAttributeDetails
+  }
+}
+
 query userCollectionFindMany($input: UserCollectionFindManyInput!) {
   items: userCollectionFindMany(input: $input) {
     ...CollectionDetails
@@ -44,6 +60,12 @@ query userCollectionFindOne($collectionId: String!) {
     attributes {
       ...CollectionAssetAttributeDetails
     }
+  }
+}
+
+query userCollectionAssetFindOne($input: UserCollectionAssetFindOneInput!) {
+  item: userCollectionAssetFindOne(input: $input) {
+    ...CollectionAssetWithDetailsFragment
   }
 }
 

@@ -350,6 +350,21 @@ export type CollectionAssetAttribute = {
   value?: Maybe<Scalars['String']['output']>
 }
 
+export type CollectionAssetWithDetails = {
+  __typename?: 'CollectionAssetWithDetails'
+  assetType?: Maybe<Scalars['String']['output']>
+  attributes?: Maybe<Array<CollectionAssetAttribute>>
+  description: Scalars['String']['output']
+  id: Scalars['String']['output']
+  imageUrl: Scalars['String']['output']
+  isCompressed: Scalars['Boolean']['output']
+  jsonMetadataUrl?: Maybe<Scalars['String']['output']>
+  name: Scalars['String']['output']
+  onChainCollectionAddress?: Maybe<Scalars['String']['output']>
+  owner: Scalars['String']['output']
+  royalty?: Maybe<Scalars['Float']['output']>
+}
+
 export type Community = {
   __typename?: 'Community'
   avatarUrl?: Maybe<Scalars['String']['output']>
@@ -1084,6 +1099,7 @@ export type Query = {
   me?: Maybe<User>
   uptime: Scalars['Float']['output']
   userCollectionAssetFindMany?: Maybe<Array<CollectionAsset>>
+  userCollectionAssetFindOne?: Maybe<CollectionAssetWithDetails>
   userCollectionFindMany?: Maybe<Array<Collection>>
   userCollectionFindOne?: Maybe<Collection>
   userFindManyBotRoles?: Maybe<Array<BotRole>>
@@ -1228,6 +1244,10 @@ export type QueryAnonRequestIdentityChallengeArgs = {
 
 export type QueryUserCollectionAssetFindManyArgs = {
   input: UserCollectionAssetFindManyInput
+}
+
+export type QueryUserCollectionAssetFindOneArgs = {
+  input: UserCollectionAssetFindOneInput
 }
 
 export type QueryUserCollectionFindManyArgs = {
@@ -1521,6 +1541,11 @@ export type UserCollectionAssetFindManyInput = {
   collectionId: Scalars['String']['input']
   search?: InputMaybe<Scalars['String']['input']>
   searchByOwnerWallet?: InputMaybe<Scalars['String']['input']>
+}
+
+export type UserCollectionAssetFindOneInput = {
+  assetId: Scalars['String']['input']
+  collectionId: Scalars['String']['input']
 }
 
 export type UserCollectionCreateInput = {
@@ -2483,6 +2508,26 @@ export type CollectionAssetDetailsFragment = {
   }> | null
 }
 
+export type CollectionAssetWithDetailsFragmentFragment = {
+  __typename?: 'CollectionAssetWithDetails'
+  id: string
+  name: string
+  description: string
+  imageUrl: string
+  owner: string
+  isCompressed: boolean
+  jsonMetadataUrl?: string | null
+  onChainCollectionAddress?: string | null
+  royalty?: number | null
+  assetType?: string | null
+  attributes?: Array<{
+    __typename?: 'CollectionAssetAttribute'
+    key: string
+    value?: string | null
+    count?: number | null
+  }> | null
+}
+
 export type UserCollectionFindManyQueryVariables = Exact<{
   input: UserCollectionFindManyInput
 }>
@@ -2576,6 +2621,33 @@ export type UserCollectionFindOneQuery = {
       metadataUrl?: string | null
       raw?: any | null
     } | null
+  } | null
+}
+
+export type UserCollectionAssetFindOneQueryVariables = Exact<{
+  input: UserCollectionAssetFindOneInput
+}>
+
+export type UserCollectionAssetFindOneQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'CollectionAssetWithDetails'
+    id: string
+    name: string
+    description: string
+    imageUrl: string
+    owner: string
+    isCompressed: boolean
+    jsonMetadataUrl?: string | null
+    onChainCollectionAddress?: string | null
+    royalty?: number | null
+    assetType?: string | null
+    attributes?: Array<{
+      __typename?: 'CollectionAssetAttribute'
+      key: string
+      value?: string | null
+      count?: number | null
+    }> | null
   } | null
 }
 
@@ -9373,6 +9445,24 @@ export const CollectionAssetDetailsFragmentDoc = gql`
   }
   ${CollectionAssetAttributeDetailsFragmentDoc}
 `
+export const CollectionAssetWithDetailsFragmentFragmentDoc = gql`
+  fragment CollectionAssetWithDetailsFragment on CollectionAssetWithDetails {
+    id
+    name
+    description
+    imageUrl
+    owner
+    isCompressed
+    jsonMetadataUrl
+    onChainCollectionAddress
+    royalty
+    assetType
+    attributes {
+      ...CollectionAssetAttributeDetails
+    }
+  }
+  ${CollectionAssetAttributeDetailsFragmentDoc}
+`
 export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
     createdAt
@@ -10003,6 +10093,14 @@ export const UserCollectionFindOneDocument = gql`
   }
   ${CollectionDetailsFragmentDoc}
   ${CollectionAssetAttributeDetailsFragmentDoc}
+`
+export const UserCollectionAssetFindOneDocument = gql`
+  query userCollectionAssetFindOne($input: UserCollectionAssetFindOneInput!) {
+    item: userCollectionAssetFindOne(input: $input) {
+      ...CollectionAssetWithDetailsFragment
+    }
+  }
+  ${CollectionAssetWithDetailsFragmentFragmentDoc}
 `
 export const UserCollectionCreateDocument = gql`
   mutation userCollectionCreate($input: UserCollectionCreateInput!) {
@@ -11064,6 +11162,7 @@ const AdminCacheSyncDocumentString = print(AdminCacheSyncDocument)
 const UserCollectionFindManyDocumentString = print(UserCollectionFindManyDocument)
 const UserCollectionAssetFindManyDocumentString = print(UserCollectionAssetFindManyDocument)
 const UserCollectionFindOneDocumentString = print(UserCollectionFindOneDocument)
+const UserCollectionAssetFindOneDocumentString = print(UserCollectionAssetFindOneDocument)
 const UserCollectionCreateDocumentString = print(UserCollectionCreateDocument)
 const UserCollectionDeleteDocumentString = print(UserCollectionDeleteDocument)
 const AdminFindManyCommunityMemberDocumentString = print(AdminFindManyCommunityMemberDocument)
@@ -11957,6 +12056,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'userCollectionFindOne',
+        'query',
+        variables,
+      )
+    },
+    userCollectionAssetFindOne(
+      variables: UserCollectionAssetFindOneQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserCollectionAssetFindOneQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserCollectionAssetFindOneQuery>(UserCollectionAssetFindOneDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userCollectionAssetFindOne',
         'query',
         variables,
       )
@@ -14611,6 +14731,13 @@ export function UserCollectionAssetFindManyInputSchema(): z.ZodObject<Properties
     collectionId: z.string(),
     search: z.string().nullish(),
     searchByOwnerWallet: z.string().nullish(),
+  })
+}
+
+export function UserCollectionAssetFindOneInputSchema(): z.ZodObject<Properties<UserCollectionAssetFindOneInput>> {
+  return z.object({
+    assetId: z.string(),
+    collectionId: z.string(),
   })
 }
 
