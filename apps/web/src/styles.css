@@ -5,5 +5,5 @@ body,
 }
 
 :root[data-mantine-color-scheme='dark'] {
-  --mantine-color-body: var(--mantine-color-dark-8) !important;
+  --mantine-color-body: #07060b !important;
 }
