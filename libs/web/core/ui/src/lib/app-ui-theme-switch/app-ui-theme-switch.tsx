@@ -1,5 +1,5 @@
 import { rem, Switch, SwitchProps, Tooltip, useMantineTheme } from '@mantine/core'
-import { useUiColorScheme } from '@pubkey-ui/core'
+import { useUiColorScheme } from '../app-ui-theme'
 import { IconMoonStars, IconSun } from '@tabler/icons-react'
 
 export function AppUiThemeSwitch(props: SwitchProps) {

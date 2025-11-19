@@ -1,6 +1,7 @@
 import { useAppConfig } from '@pubkey-link/web-core-data-access'
 import { SolanaClusterProvider } from '@pubkey-link/web-solana-data-access'
-import { UiThemeLink, UiThemeProvider } from '@pubkey-ui/core'
+import { UiThemeLink } from '@pubkey-ui/core'
+import { UiThemeProvider } from '@pubkey-link/web-core-ui'
 import '@pubkey-ui/core/index.esm.css'
 import 'mantine-datatable/styles.layer.css'
 import { Link } from 'react-router-dom'

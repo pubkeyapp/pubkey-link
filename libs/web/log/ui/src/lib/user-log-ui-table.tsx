@@ -1,7 +1,8 @@
 import { Anchor, Badge, Group, ScrollArea } from '@mantine/core'
 import { Log, LogLevel } from '@pubkey-link/sdk'
 import { UserUiAvatarLoader } from '@pubkey-link/web-user-ui'
-import { UiDebugModal, UiTime, useUiColorScheme } from '@pubkey-ui/core'
+import { UiDebugModal, UiTime } from '@pubkey-ui/core'
+import { useUiColorScheme } from '@pubkey-link/web-core-ui'
 import { DataTable, DataTableProps } from 'mantine-datatable'
 import { Link } from 'react-router-dom'
 
