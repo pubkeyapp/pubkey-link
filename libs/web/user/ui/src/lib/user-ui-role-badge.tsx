@@ -1,6 +1,6 @@
 import { Badge } from '@mantine/core'
 import { UserRole } from '@pubkey-link/sdk'
-import { useUiColorScheme } from '../../../../core/ui/src/lib/app-ui-theme'
+import { useUiColorScheme } from '@pubkey-link/web-core-ui'
 
 export const USER_ROLE_COLORS: Record<UserRole, string> = {
   [UserRole.Admin]: 'pink',

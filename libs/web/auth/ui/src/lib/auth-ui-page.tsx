@@ -5,7 +5,7 @@ import { CommunityUiFeatured } from '@pubkey-link/web-community-ui'
 import { useAppConfig } from '@pubkey-link/web-core-data-access'
 import { AppLogo, UiBackgroundImage, UiSocialDiscord, UiSocialGithub, UiSocialX } from '@pubkey-link/web-core-ui'
 import { UiStack } from '@pubkey-ui/core'
-import { useUiColorScheme } from '../../../../core/ui/src/lib/app-ui-theme'
+import { useUiColorScheme } from '@pubkey-link/web-core-ui'
 import { ReactNode } from 'react'
 import { AuthUiEnabled } from './auth-ui-enabled'
 

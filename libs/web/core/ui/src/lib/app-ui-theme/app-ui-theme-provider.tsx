@@ -28,11 +28,13 @@ export type UiThemeLink = FunctionComponent<{
   rel?: HTMLAnchorElement['rel']
 }>
 
-export const defaultUiThemeLink: UiThemeLink = ({ children, ...props }) => (
-  <a href={props.to} {...props}>
-    {children}
-  </a>
-)
+export function defaultUiThemeLink({ children, ...props }: Parameters<UiThemeLink>[0]): ReturnType<UiThemeLink> {
+  return (
+    <a href={props.to} {...props}>
+      {children}
+    </a>
+  )
+}
 
 export interface UiThemeProviderOptions {
   children: ReactNode
