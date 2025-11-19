@@ -1,6 +1,6 @@
 import { Badge } from '@mantine/core'
 import { UserStatus } from '@pubkey-link/sdk'
-import { useUiColorScheme } from '@pubkey-ui/core'
+import { useUiColorScheme } from '../../../../core/ui/src/lib/app-ui-theme'
 
 export const USER_STATUS_COLORS: Record<UserStatus, string> = {
   [UserStatus.Active]: 'green',

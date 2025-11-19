@@ -1,6 +1,7 @@
 import { Group, Paper, PaperProps, Stack, Text, useMantineTheme } from '@mantine/core'
 import { User } from '@pubkey-link/sdk'
-import { UiGroup, useUiColorScheme } from '@pubkey-ui/core'
+import { UiGroup } from '@pubkey-ui/core'
+import { useUiColorScheme } from '../../../../core/ui/src/lib/app-ui-theme'
 
 import { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
