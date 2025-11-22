@@ -6,7 +6,7 @@ export function UserProfile() {
   const { username } = useParams<{ username: string }>() as { username: string }
 
   return username ? (
-    <UiContainer size={800}>
+    <UiContainer size={1080}>
       <UserProfileLoader username={username} />
     </UiContainer>
   ) : null
