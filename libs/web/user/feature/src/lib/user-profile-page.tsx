@@ -1,4 +1,4 @@
-import { Divider, Group, Stack } from '@mantine/core'
+import { Divider, Group, Stack, Text } from '@mantine/core'
 import { User } from '@pubkey-link/sdk'
 import { AppUiDebugModal } from '@pubkey-link/web-core-ui'
 import { IdentityUiIconGroup } from '@pubkey-link/web-identity-ui'
@@ -8,16 +8,21 @@ import { UserProfileTabs } from './user-profile-tabs'
 
 export function UserProfilePage({ isAuthUser, user }: { isAuthUser: boolean; user: User }) {
   return (
-    <UiContainer size={800}>
-      <UiStack>
-        <UserUiProfileItem user={user} isAuthUser={isAuthUser} my="md">
+    <UiContainer size={'100%'}>
+      <UiStack align="center">
+        {/* <UserUiProfileItem user={user} isAuthUser={isAuthUser} my="md">
           {user.private && !isAuthUser ? null : (
             <Stack align="center" w="100%">
               <Divider label="Verified identities" mt="sm" w="50%" />
               <IdentityUiIconGroup identities={user.identities ?? []} />
             </Stack>
           )}
-        </UserUiProfileItem>
+        </UserUiProfileItem> */}
+
+        <Text size="xl" fw="bold">
+          Welcome {user.name}!
+        </Text>
+        <Text size="lg">Discover, Join and Manage Communities</Text>
         <UserProfileTabs user={user} isAuthUser={isAuthUser} />
         <Group justify="center" gap="xs">
           <AppUiDebugModal data={{ user }} />
