@@ -1,12 +1,13 @@
-import { Box, Button, Paper, Text } from '@mantine/core'
+import { AspectRatio, Box, Button, Grid, Paper, SimpleGrid, Text } from '@mantine/core'
 import { Community } from '@pubkey-link/sdk'
 import { AppUiDebugModal } from '@pubkey-link/web-core-ui'
 import { RoleUiList } from '@pubkey-link/web-role-ui'
-import { UiGroup, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
+import { UiAnchor, UiGroup, UiInfo, UiLoader, UiStack } from '@pubkey-ui/core'
 import { Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { CommunityUiItem } from './community-ui-item'
 import { CommunityUiSocials } from './community-ui-socials'
+import { CommunityUiAvatar } from './community-ui-avatar'
 
 export function CommunityUiListItem({
   isAuthUser,
@@ -26,55 +27,22 @@ export function CommunityUiListItem({
 
   return (
     <Paper withBorder p="md">
-      <UiStack>
-        <UiGroup>
-          <CommunityUiItem community={item} to={to} />
-          <UiStack align="end">
-            <CommunityUiSocials community={item}>
-              <AppUiDebugModal data={item} />
-              {isAdmin && (
-                <Button component={Link} to={item.viewUrl} variant="light">
-                  Manage Community
-                </Button>
-              )}
-            </CommunityUiSocials>
+      <UiAnchor to={to ? to : undefined} underline="never" style={{ textDecoration: 'none' }}>
+        <AspectRatio ratio={1.15}>
+          <UiStack align="center" justify="center">
+            <CommunityUiAvatar size="lg" community={item} />
+            <Text size="xl" fw="bold">
+              {item?.name}
+            </Text>
+            <AppUiDebugModal data={item} />
+            {isAdmin && (
+              <Button component={Link} to={item.viewUrl} variant="light">
+                Manage Community
+              </Button>
+            )}
           </UiStack>
-        </UiGroup>
-        {hasRoles ? (
-          <Suspense fallback={<UiLoader />}>
-            <Box>
-              <Text fz="sm" c="dimmed">
-                Roles assigned to {isAuthUser ? 'you' : username}
-              </Text>
-              {rolesAssigned?.length ? (
-                <RoleUiList mt="xs" roles={rolesAssigned} username={username} withAssets />
-              ) : (
-                <UiInfo
-                  mt="xs"
-                  title="No roles assigned"
-                  message={`${isAuthUser ? 'You have' : `${username} has`} no assigned roles in this community.`}
-                />
-              )}
-            </Box>
-            <Box>
-              <Text fz="sm" c="dimmed">
-                Available roles
-              </Text>
-              {rolesAvailable?.length ? (
-                <RoleUiList mt="xs" roles={rolesAvailable} username={username} />
-              ) : (
-                <UiInfo
-                  mt="xs"
-                  title="All roles are assigned"
-                  message={`${isAuthUser ? 'You have' : `${username} has`} all available roles assigned.`}
-                />
-              )}
-            </Box>
-          </Suspense>
-        ) : (
-          <UiInfo title="No roles defined" message="This community has no roles defined." />
-        )}
-      </UiStack>
+        </AspectRatio>
+      </UiAnchor>
     </Paper>
   )
 }
