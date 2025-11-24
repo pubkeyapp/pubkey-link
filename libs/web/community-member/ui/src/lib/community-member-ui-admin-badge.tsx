@@ -1,6 +1,6 @@
 import { Badge, BadgeProps } from '@mantine/core'
 import { CommunityMember } from '@pubkey-link/sdk'
-import { useUiColorScheme } from '@pubkey-link/web-core-ui'
+import { useUiColorScheme } from '@pubkey-ui/core'
 
 export function CommunityMemberUiAdminBadge({ member, ...props }: BadgeProps & { member: CommunityMember }) {
   const { colorScheme } = useUiColorScheme()
