@@ -5,8 +5,7 @@ import { useAuth } from '@pubkey-link/web-auth-data-access'
 import { useAppConfig } from '@pubkey-link/web-core-data-access'
 import { useUserFindManyIdentity } from '@pubkey-link/web-identity-data-access'
 import { IdentityUiLinkButton, IdentityUiSolanaLinkCliButton } from '@pubkey-link/web-identity-ui'
-import { UiStack } from '@pubkey-ui/core'
-import { useUiColorScheme } from '@pubkey-link/web-core-ui'
+import { UiStack, useUiColorScheme } from '@pubkey-ui/core'
 import { Navigate, useNavigate } from 'react-router-dom'
 
 export function OnboardingFeature() {
