@@ -17,6 +17,7 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { createContext, ReactNode, useContext, useMemo } from 'react'
 import { useSdk } from './sdk-provider'
+import { Input, MantineThemeOverride, Paper, Select } from '@mantine/core'
 
 export interface AppConfigContext {
   appLogoUrlDark?: string | undefined
@@ -34,6 +35,33 @@ export interface AppConfigContext {
 }
 
 const Context = createContext<AppConfigContext>({} as AppConfigContext)
+
+const themeOverrides: MantineThemeOverride = {
+  components: {
+    Paper: Paper.extend({
+      styles: {
+        root: {
+          backgroundColor: 'transparent',
+        },
+      },
+    }),
+
+    Input: Input.extend({
+      styles: {
+        input: {
+          backgroundColor: 'transparent',
+        },
+      },
+    }),
+    Select: Select.extend({
+      styles: {
+        input: {
+          backgroundColor: 'transparent',
+        },
+      },
+    }),
+  },
+}
 
 export function AppConfigProvider({ children }: { children: ReactNode }) {
   const sdk = useSdk()
@@ -60,10 +88,10 @@ export function AppConfigProvider({ children }: { children: ReactNode }) {
     const color =
       appConfig?.appThemeColor && mantineColorIds.includes(appConfig.appThemeColor) ? appConfig.appThemeColor : 'blue'
     const background: BackgroundColors = appConfig?.appThemeBackground as BackgroundColors
-    const override =
+    const override: MantineThemeOverride =
       background?.length && backgroundColorIds.includes(background)
-        ? { colors: { dark: BACKGROUND_COLORS[background] } }
-        : {}
+        ? { ...themeOverrides, colors: { dark: BACKGROUND_COLORS[background] } }
+        : themeOverrides
     return themeWithBrand(color, override)
   }, [appConfig])
 
