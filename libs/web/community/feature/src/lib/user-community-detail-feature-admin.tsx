@@ -7,7 +7,7 @@ import { UiIcon } from '@pubkey-link/web-core-ui'
 import { UserLogFeature } from '@pubkey-link/web-log-feature'
 import { UserRoleFeature } from '@pubkey-link/web-role-feature'
 import { UserSnapshotFeature } from '@pubkey-link/web-snapshot-feature'
-import { UiGridRoute, UiGridRoutes } from '@pubkey-ui/core'
+import { UiTabRoute, UiTabRoutes } from '@pubkey-ui/core'
 import { IconBrandDiscord, IconPhotoHeart } from '@tabler/icons-react'
 import { lazy } from 'react'
 
@@ -27,7 +27,7 @@ export function UserCommunityDetailFeatureAdmin({
 
   const hasSnapshots = hasFeature(AppFeature.CommunitySnapshots)
 
-  const routes: UiGridRoute[] = [
+  const routes: UiTabRoute[] = [
     {
       path: 'dashboard',
       label: 'Dashboard',
@@ -77,7 +77,7 @@ export function UserCommunityDetailFeatureAdmin({
       element: <RouteSettings community={item} />,
       leftSection: <UiIcon type="settings" size={20} />,
     },
-  ].filter(Boolean) as UiGridRoute[]
+  ].filter(Boolean) as UiTabRoute[]
 
-  return <UiGridRoutes basePath={`/c/${communityId}`} routes={routes} />
+  return <UiTabRoutes basePath={`/c/${communityId}`} tabs={routes} />
 }
