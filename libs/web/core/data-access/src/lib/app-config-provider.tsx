@@ -17,7 +17,7 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { createContext, ReactNode, useContext, useMemo } from 'react'
 import { useSdk } from './sdk-provider'
-import { Input, MantineThemeOverride, Paper, Select } from '@mantine/core'
+import { Input, MantineThemeOverride, Paper, Select, Tabs } from '@mantine/core'
 
 export interface AppConfigContext {
   appLogoUrlDark?: string | undefined
@@ -57,6 +57,16 @@ const themeOverrides: MantineThemeOverride = {
       styles: {
         input: {
           backgroundColor: 'transparent',
+        },
+      },
+    }),
+    Tabs: Tabs.extend({
+      defaultProps: {
+        color: '#F2F2F2',
+      },
+      styles: {
+        tab: {
+          textTransform: 'uppercase',
         },
       },
     }),
