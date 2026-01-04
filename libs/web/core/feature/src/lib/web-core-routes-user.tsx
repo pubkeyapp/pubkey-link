@@ -5,6 +5,7 @@ import { UserListFeature, UserProfileFeature, UserProfileRedirectFeature } from 
 import { UiDashboardItem } from '@pubkey-ui/core'
 import { IconSettings, IconUsers, IconUsersGroup } from '@tabler/icons-react'
 import { RouteObject, useRoutes } from 'react-router-dom'
+import { UserWalletFeature } from '@pubkey-link/web-mpl-core-wallet-feature'
 
 const links: UiDashboardItem[] = [
   // User Dashboard Links are added by the web-crud generator
@@ -21,6 +22,7 @@ const routes: RouteObject[] = [
   { path: '/settings/*', element: <UserProfileRedirectFeature to="settings" /> },
   { path: '/u/*', element: <UserProfileFeature /> },
   { path: '/users/*', element: <UserListFeature /> },
+  { path: '/wallet/*', element: <UserWalletFeature /> },
 ]
 
 export default function WebCoreRoutesUser() {

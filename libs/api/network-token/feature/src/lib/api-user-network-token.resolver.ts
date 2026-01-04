@@ -4,6 +4,7 @@ import { User } from '@prisma/client'
 import { ApiAuthGraphQLUserGuard, CtxUser } from '@pubkey-link/api-auth-data-access'
 import {
   ApiNetworkTokenService,
+  NetworkToken,
   NetworkTokenPaging,
   UserFindManyNetworkTokenInput,
 } from '@pubkey-link/api-network-token-data-access'
@@ -16,5 +17,10 @@ export class ApiUserNetworkTokenResolver {
   @Query(() => NetworkTokenPaging)
   userFindManyNetworkToken(@CtxUser() actor: User, @Args('input') input: UserFindManyNetworkTokenInput) {
     return this.service.user.findManyNetworkToken(actor, input)
+  }
+
+  @Query(() => NetworkToken, { nullable: true })
+  userFindOneNetworkToken(@Args('account') account: string) {
+    return this.service.user.findOneNetworkToken(account)
   }
 }

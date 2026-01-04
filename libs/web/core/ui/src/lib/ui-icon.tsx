@@ -7,9 +7,10 @@ import {
   IconTimelineEventText,
   IconUsers,
   IconUsersGroup,
+  IconWallet,
 } from '@tabler/icons-react'
 
-export type UiIconType = 'community' | 'dashboard' | 'logs' | 'roles' | 'settings' | 'snapshot' | 'users'
+export type UiIconType = 'community' | 'dashboard' | 'logs' | 'roles' | 'settings' | 'snapshot' | 'users' | 'wallet'
 
 export function UiIcon({ type, ...props }: { type: UiIconType | string; size?: number }) {
   switch (type) {
@@ -27,6 +28,8 @@ export function UiIcon({ type, ...props }: { type: UiIconType | string; size?: n
       return <IconCameraBolt {...props} />
     case 'users':
       return <IconUsers {...props} />
+    case 'wallet':
+      return <IconWallet {...props} />
     default:
       return <IconQuestionMark {...props} />
   }

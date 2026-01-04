@@ -139,6 +139,14 @@ export class ApiNetworkTokenDataService {
     return found
   }
 
+  async findOneByAccount(account: string) {
+    const found = await this.core.data.networkToken.findFirst({ where: { account } })
+    if (!found) {
+      throw new Error(`Network token by account ${account} not found`)
+    }
+    return found
+  }
+
   async update(networkTokenId: string, input: AdminUpdateNetworkTokenInput) {
     const token = await this.findOne(networkTokenId)
 

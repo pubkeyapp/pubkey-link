@@ -1,4 +1,4 @@
-import { Box, Group, Paper, Text, UnstyledButton, useMantineTheme } from '@mantine/core'
+import { Box, DEFAULT_THEME, Group, Paper, Text, UnstyledButton, useMantineTheme } from '@mantine/core'
 import { IconEye, IconEyeOff } from '@tabler/icons-react'
 import { ReactNode, useState } from 'react'
 
@@ -21,7 +21,11 @@ export function AppUiDebug({
         fz="xs"
         m={0}
         p={theme.spacing.xs}
-        style={{ overflow: 'auto', textOverflow: 'ellipsis' }}
+        style={{
+          overflow: 'auto',
+          textOverflow: 'ellipsis',
+          background: DEFAULT_THEME.components['Paper']?.styles.root.backgroundColor,
+        }}
         withBorder
       >
         {hideButton ? null : (

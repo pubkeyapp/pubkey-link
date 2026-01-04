@@ -65,3 +65,9 @@ query userFindManyNetworkToken($input: UserFindManyNetworkTokenInput!) {
     }
   }
 }
+
+query userFindOneNetworkToken($account: String!) {
+  item: userFindOneNetworkToken(account: $account) {
+    ...NetworkTokenDetails
+  }
+}

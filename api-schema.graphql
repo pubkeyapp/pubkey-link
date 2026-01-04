@@ -749,6 +749,7 @@ type Query {
   userFindOneIdentity(provider: IdentityProvider!, providerId: String!): Identity
   userFindOneLog(logId: String!): Log
   userFindOneNetworkAsset(account: String!, cluster: NetworkCluster!): NetworkAsset
+  userFindOneNetworkToken(account: String!): NetworkToken
   userFindOneRole(roleId: String!): Role
   userFindOneSnapshot(snapshotId: String!): Snapshot
   userFindOneUser(username: String!): User

@@ -1119,6 +1119,7 @@ export type Query = {
   userFindOneIdentity?: Maybe<Identity>
   userFindOneLog?: Maybe<Log>
   userFindOneNetworkAsset?: Maybe<NetworkAsset>
+  userFindOneNetworkToken?: Maybe<NetworkToken>
   userFindOneRole?: Maybe<Role>
   userFindOneSnapshot?: Maybe<Snapshot>
   userFindOneUser?: Maybe<User>
@@ -1328,6 +1329,10 @@ export type QueryUserFindOneLogArgs = {
 export type QueryUserFindOneNetworkAssetArgs = {
   account: Scalars['String']['input']
   cluster: NetworkCluster
+}
+
+export type QueryUserFindOneNetworkTokenArgs = {
+  account: Scalars['String']['input']
 }
 
 export type QueryUserFindOneRoleArgs = {
@@ -6867,6 +6872,32 @@ export type UserFindManyNetworkTokenQuery = {
   }
 }
 
+export type UserFindOneNetworkTokenQueryVariables = Exact<{
+  account: Scalars['String']['input']
+}>
+
+export type UserFindOneNetworkTokenQuery = {
+  __typename?: 'Query'
+  item?: {
+    __typename?: 'NetworkToken'
+    id: string
+    createdAt?: Date | null
+    updatedAt?: Date | null
+    cache?: boolean | null
+    cluster: NetworkCluster
+    type: NetworkTokenType
+    account: string
+    program: string
+    name: string
+    mintList?: Array<string> | null
+    symbol?: string | null
+    description?: string | null
+    imageUrl?: string | null
+    metadataUrl?: string | null
+    raw?: any | null
+  } | null
+}
+
 export type NetworkDetailsFragment = {
   __typename?: 'Network'
   createdAt?: Date | null
@@ -10751,6 +10782,14 @@ export const UserFindManyNetworkTokenDocument = gql`
   ${NetworkTokenDetailsFragmentDoc}
   ${PagingMetaDetailsFragmentDoc}
 `
+export const UserFindOneNetworkTokenDocument = gql`
+  query userFindOneNetworkToken($account: String!) {
+    item: userFindOneNetworkToken(account: $account) {
+      ...NetworkTokenDetails
+    }
+  }
+  ${NetworkTokenDetailsFragmentDoc}
+`
 export const AdminFindManyNetworkDocument = gql`
   query adminFindManyNetwork($input: AdminFindManyNetworkInput!) {
     paging: adminFindManyNetwork(input: $input) {
@@ -11232,6 +11271,7 @@ const AdminUpdateNetworkTokenDocumentString = print(AdminUpdateNetworkTokenDocum
 const AdminUpdateNetworkTokenMetadataDocumentString = print(AdminUpdateNetworkTokenMetadataDocument)
 const AdminDeleteNetworkTokenDocumentString = print(AdminDeleteNetworkTokenDocument)
 const UserFindManyNetworkTokenDocumentString = print(UserFindManyNetworkTokenDocument)
+const UserFindOneNetworkTokenDocumentString = print(UserFindOneNetworkTokenDocument)
 const AdminFindManyNetworkDocumentString = print(AdminFindManyNetworkDocument)
 const AdminGetVoteIdentitiesDocumentString = print(AdminGetVoteIdentitiesDocument)
 const AdminFindOneNetworkDocumentString = print(AdminFindOneNetworkDocument)
@@ -13517,6 +13557,27 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'userFindManyNetworkToken',
+        'query',
+        variables,
+      )
+    },
+    userFindOneNetworkToken(
+      variables: UserFindOneNetworkTokenQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<{
+      data: UserFindOneNetworkTokenQuery
+      errors?: GraphQLError[]
+      extensions?: any
+      headers: Headers
+      status: number
+    }> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.rawRequest<UserFindOneNetworkTokenQuery>(UserFindOneNetworkTokenDocumentString, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'userFindOneNetworkToken',
         'query',
         variables,
       )

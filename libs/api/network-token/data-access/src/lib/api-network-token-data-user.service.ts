@@ -23,4 +23,8 @@ export class ApiNetworkTokenDataUserService {
       page: input.page,
     })
   }
+
+  async findOneNetworkToken(account: string) {
+    return this.data.findOneByAccount(account)
+  }
 }

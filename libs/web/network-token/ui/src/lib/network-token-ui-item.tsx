@@ -7,6 +7,7 @@ import { NetworkTokenUiAvatar } from './network-token-ui-avatar'
 import { NetworkTokenUiCache } from './network-token-ui-cache'
 import { NetworkTokenUiExplorerIcon } from './network-token-ui-explorer-icon'
 import { NetworkTokenUiTypeBadge } from './network-token-ui-type-badge'
+import { NetworkUiWalletButton } from './network-ui-wallet-button'
 
 export function NetworkTokenUiItem({
   anchorProps,
@@ -60,6 +61,7 @@ export function NetworkTokenUiItem({
                 label="View token on Explorer"
               />
               <AppUiDebugModal data={networkToken} />
+              <NetworkUiWalletButton token={networkToken} />
             </Group>
           )}
         </Stack>

@@ -1,0 +1,12 @@
+{
+  "name": "web-mpl-core-wallet-feature",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/web/mpl-core-wallet/feature/src",
+  "projectType": "library",
+  "tags": ["app:web", "type:feature"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}
