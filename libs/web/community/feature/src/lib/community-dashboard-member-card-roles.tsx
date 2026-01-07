@@ -14,7 +14,7 @@ export function CommunityDashboardMemberCardRoles({ community }: { community: Co
 
   return (
     <UiStack>
-      <UiCard title="Community Roles">
+      <UiCard title="Roles">
         {query.isLoading ? (
           <UiLoader />
         ) : filtered?.length ? (

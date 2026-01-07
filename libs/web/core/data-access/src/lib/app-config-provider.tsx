@@ -39,9 +39,16 @@ const Context = createContext<AppConfigContext>({} as AppConfigContext)
 const themeOverrides: MantineThemeOverride = {
   components: {
     Paper: Paper.extend({
+      defaultProps: {
+        radius: 'none',
+        withBorder: true,
+        shadow: 'sm',
+        p: 'md',
+      },
       styles: {
         root: {
-          backgroundColor: 'transparent',
+          backgroundColor: 'transparent', // dark, slightly translucent card background
+          borderColor: 'rgba(148, 163, 184, 0.35)', // subtle soft border
         },
       },
     }),
