@@ -351,7 +351,7 @@ export class ApiRoleResolverService {
 
   private getAssetAmount(condition: RoleCondition, assets: NetworkAsset[]) {
     const filtered =
-      condition.type === NetworkTokenType.NonFungible && Object.keys(condition.filters ?? {})
+      condition.type === NetworkTokenType.NonFungible && Object.keys(condition.filters ?? {}).length > 0
         ? assets
             .filter((assets) => !!Object.keys(assets.attributes ?? {})?.length)
             .filter((assets) =>
