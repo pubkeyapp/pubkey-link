@@ -70,6 +70,32 @@ pnpm dev:web
 pnpm dev:sdk
 ```
 
+### Running everything at once
+
+Alternatively, you can start all services with a single command:
+
+```shell
+pnpm dev
+```
+
+This runs pre-flight checks, starts Docker services, pushes the database schema, builds the SDK, and starts both API and Web servers in parallel with color-coded output.
+
+Additional useful commands:
+
+```shell
+# Start Docker services in the background
+pnpm dev:services:detached
+
+# View Docker service logs
+pnpm dev:services:logs
+
+# Stop Docker services
+pnpm dev:services:stop
+
+# Clean up (stop services and remove volumes)
+pnpm dev:clean
+```
+
 ## Extending the application
 
 You can use the following commands to generate new models, API features, web features and SDK types.
